@@ -1,0 +1,7 @@
+ecmwf-opendata
+xarray
+cfgrib
+eccodes
+pandas
+numpy
+netcdf4

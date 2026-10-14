@@ -1,0 +1,10 @@
+*.grib2
+*.idx
+*.nc
+*.zarr/
+__pycache__/
+.venv/
+hindcast/**/raw/
+docs/Caso_de_Negocio*
+docs/earth2_model.py
+CLAUDE.local.md

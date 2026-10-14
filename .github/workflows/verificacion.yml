@@ -1,0 +1,50 @@
+name: verificacion-diaria
+on:
+  schedule:
+    - cron: "30 2,8,14,20 * * *"   # ~7 h después de cada corrida AIFS (00/06/12/18 UTC)
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: verificacion
+  cancel-in-progress: false
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r verificacion/requirements.txt
+      - name: Observaciones METAR
+        working-directory: verificacion
+        run: python fetch_metar.py
+      - name: Última corrida AIFS
+        working-directory: verificacion
+        run: python fetch_aifs.py
+      - name: Verificar y generar sitio
+        working-directory: verificacion
+        run: python verify.py
+      - name: Guardar observaciones y resultados
+        run: |
+          git config user.name "earth2-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add verificacion/data/metar_obs.csv verificacion/data/verif_*.csv site/
+          git diff --cached --quiet || git commit -m "verificación $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+  publicar:
+    needs: verificar
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

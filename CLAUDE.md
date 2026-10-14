@@ -1,6 +1,6 @@
 # Earth-2 Chile — contexto técnico para Claude Code
 
-**Este repo es público.** El contexto de negocio (estrategia, cifras, socios, conversaciones con terceros) está en `CLAUDE.local.md`, que no se versiona y solo existe en la copia de trabajo de Pancho. Léelo si existe. Nunca subas a este repo el caso de negocio, cifras, nombres de clientes ni correspondencia.
+**Este repo es público.** El contexto de negocio (estrategia, cifras, socios, conversaciones con terceros) está en `CLAUDE.local.md` y en la carpeta `privado/`, que no se versionan y solo existe en la copia de trabajo de Pancho. Léelo si existe. Nunca subas a este repo el caso de negocio, cifras, nombres de clientes ni correspondencia.
 
 ## Qué es
 

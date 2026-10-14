@@ -1,16 +1,58 @@
 """Descarga AIFS-single (ECMWF open data vía AWS, CC-BY 4.0): 2t, 10u, 10v, tp a 0,25°.
-Uso: python fetch_aifs.py              -> última corrida disponible
-     python fetch_aifs.py 2026-10-13 6 -> corrida específica (fecha, hora UTC)"""
-import os, sys, time
+Uso: python fetch_aifs.py              -> última corrida completa disponible
+     python fetch_aifs.py 2026-10-13 6 -> corrida específica (fecha, hora UTC)
+
+Elige la corrida sin usar Client.latest(): mientras ECMWF publica una corrida, el bucket
+responde 503 y el cliente reintenta cada 120 s hasta 500 veces, lo que colgaba el job."""
+import datetime as dt, os, sys, time, urllib.request
 from ecmwf.opendata import Client
 
 STEPS = [0, 6, 12, 18, 24, 36, 48]
+PARAMS = ["2t", "10u", "10v", "tp"]
+BASE = "https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com"
 os.makedirs("data", exist_ok=True)
-c = Client(source="aws", model="aifs-single", resol="0p25")
-kw = dict(date=sys.argv[1], time=int(sys.argv[2])) if len(sys.argv) >= 3 else {}
+
+
+def disponible(run):
+    """True si la corrida está publicada completa: los índices del primer y del último plazo responden 200."""
+    for step in (STEPS[0], STEPS[-1]):
+        url = f"{BASE}/{run:%Y%m%d}/{run:%H}z/aifs-single/0p25/oper/{run:%Y%m%d%H}0000-{step}h-oper-fc.index"
+        try:
+            with urllib.request.urlopen(urllib.request.Request(url, method="HEAD"), timeout=20) as r:
+                if r.status != 200:
+                    return False
+        except Exception:
+            return False
+    return True
+
+
+def ultima_corrida():
+    """Recorre las corridas 6-horarias hacia atrás (hasta 2 días) y devuelve la primera completa."""
+    now = dt.datetime.now(dt.timezone.utc).replace(tzinfo=None)
+    run = now.replace(hour=(now.hour // 6) * 6, minute=0, second=0, microsecond=0)
+    for _ in range(8):
+        if disponible(run):
+            return run
+        print("corrida", f"{run:%Y-%m-%d %Hz}", "no disponible aún")
+        run -= dt.timedelta(hours=6)
+    raise SystemExit("ninguna corrida AIFS completa en los últimos 2 días")
+
+
+if len(sys.argv) >= 3:
+    run = dt.datetime.strptime(sys.argv[1], "%Y-%m-%d").replace(hour=int(sys.argv[2]))
+else:
+    run = ultima_corrida()
+
+name = f"data/aifs_{run:%Y%m%d_%H}.grib2"
+if os.path.exists(name):
+    print("AIFS run:", run, "ya descargado en", name)
+    raise SystemExit(0)
+
+# Reintentos acotados (por defecto: 500 veces cada 120 s).
+c = Client(source="aws", model="aifs-single", resol="0p25",
+           maximum_retries=5, retry_after=20, use_server_retry_after=False)
 t0 = time.time()
 tmp = "data/_dl.grib2"
-r = c.retrieve(type="fc", step=STEPS, param=["2t", "10u", "10v", "tp"], target=tmp, **kw)
-name = f"data/aifs_{r.datetime:%Y%m%d_%H}.grib2"
+r = c.retrieve(type="fc", step=STEPS, param=PARAMS, target=tmp, date=f"{run:%Y-%m-%d}", time=run.hour)
 os.replace(tmp, name)
 print("AIFS run:", r.datetime, "->", name, "en", round(time.time() - t0), "s")

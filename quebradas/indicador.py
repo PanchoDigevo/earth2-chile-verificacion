@@ -103,6 +103,9 @@ def main():
     except FileNotFoundError:
         print("sin cuencas.geojson todavía; el indicador se calcula cuando existan las capas estáticas"); return
     pron = lluvia_pronosticada()
+    ruta_salida = os.path.join(SITE_Q, "indicador.json")
+    if not pron and os.path.exists(ruta_salida):
+        print("sin GRIB de modelos en este job: se conserva el indicador.json anterior"); return
     h7 = horas_lluvia_7d()
     horas7 = max(h7.values()) if h7 else 0
     factor_ant = min(1.4, 1.0 + 0.02 * horas7)

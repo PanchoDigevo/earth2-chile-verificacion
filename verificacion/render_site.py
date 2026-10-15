@@ -117,6 +117,26 @@ def narrativa():
     return "".join(bloques), aviso
 
 
+HIST_INFO = os.path.join(AQUI, "..", "historico", "estaciones.csv")
+
+
+def estaciones_historico():
+    """Por modelo, el error por estación a 24 h del histórico 2025-2026 (solo estaciones con >= MIN_PARES).
+    Devuelve {modelo: DataFrame con las mismas columnas que bye_all} o None si el histórico no existe."""
+    try:
+        h = pd.read_csv(HIST_EST); est = pd.read_csv(HIST_INFO)
+    except Exception:
+        return None
+    h = h[(h.lead_h == 24) & (h.n >= MIN_PARES)].merge(est, on="icao", how="left")
+    out = {}
+    for m, g in h.groupby("modelo"):
+        if len(g) < 5:
+            continue
+        out[m] = pd.DataFrame({"modelo": m, "icao": g.icao, "name": g.nombre, "lat": g.lat, "lon": g.lon, "elev": g.elev,
+                               "n": g.n, "t_bias": g.sesgo, "t_mae": g["mae"], "w_mae": float("nan")}).sort_values("t_mae", ascending=False)
+    return out or None
+
+
 def brecha_fuente(bye):
     """Estaciones con su error a 24 h para la cifra de portada. Prefiere el histórico 2025-2026 (AIFS, 24 h, >= MIN_PARES);
     si no existe, usa la verificación diaria. Devuelve (tabla icao/n/t_mae, texto de fuente, preliminar)."""
@@ -377,9 +397,17 @@ def render_site(pts):
                                                    n=("t_err", "size"), t_bias=("t_err", "mean"), t_mae=("t_err", mae), w_mae=("w_err", mae))
                .reset_index())
     bye_m = {m: bye_all[bye_all.modelo == m].sort_values("t_mae", ascending=False) for m in presentes}
-    base = "AIFS" if "AIFS" in bye_m else presentes[0]
+    hist_m = estaciones_historico()
+    if hist_m:
+        bye_m = hist_m                      # cifras por estación desde el histórico 2025-2026 (24 h, >= MIN_PARES)
+        bye_all = pd.concat(hist_m.values(), ignore_index=True)
+        fuente_est = "histórico 2025–2026, pronósticos a 24 h"
+    else:
+        fuente_est = "verificación diaria, todos los plazos"
+    modelos_est = [m for m in ORDEN if m in bye_m]
+    base = "AIFS" if "AIFS" in bye_m else modelos_est[0]
     bye = bye_m[base]
-    estaciones = sorted(set(pts.icao))
+    estaciones = sorted(set(bye_all.icao))
     por_run = pts.pivot_table(index="run", columns="modelo", values="t_err", aggfunc=mae).sort_index()
     por_run_n = pts.groupby("run").size()
 
@@ -464,8 +492,8 @@ def render_site(pts):
                    f"las horas pronosticadas." if plazos_pend else "")
 
     # --- tabla por estación: base AIFS, columnas de error de temperatura por modelo ---
-    tmae_m = {m: bye_m[m].set_index("icao").t_mae for m in presentes}
-    n_m = {m: bye_m[m].set_index("icao").n for m in presentes}
+    tmae_m = {m: bye_m[m].set_index("icao").t_mae for m in modelos_est}
+    n_m = {m: bye_m[m].set_index("icao").n for m in modelos_est}
     filas_est = []
     orden_est = list(bye.icao) + [i for i in estaciones if i not in set(bye.icao)]
     info = bye_all.drop_duplicates("icao").set_index("icao")
@@ -474,7 +502,7 @@ def render_site(pts):
         corto, region = nombre(icao, info.loc[icao, "name"])
         elev_v = info.loc[icao, "elev"]
         elev = "" if pd.isna(elev_v) else f"{int(float(elev_v))} m"
-        vals = {m: (float(tmae_m[m].get(icao, float("nan"))) if int(n_m[m].get(icao, 0)) >= MIN_PARES else float("nan")) for m in presentes}
+        vals = {m: (float(tmae_m[m].get(icao, float("nan"))) if int(n_m[m].get(icao, 0)) >= MIN_PARES else float("nan")) for m in modelos_est}
         validos = {m: v for m, v in vals.items() if not math.isnan(v)}
         mejor_est = min(validos, key=validos.get) if len(validos) > 1 else None
         celdas = ""
@@ -577,7 +605,7 @@ def render_site(pts):
 <section class="dos">
   <div class="card">
     <div class="sec-head"><h2>Dónde acierta y dónde no</h2>
-    <p class="muted small">Error medio de temperatura por estación. Elige el modelo y pasa el cursor sobre un punto para ver el detalle.</p></div>
+    <p class="muted small">Error medio de temperatura por estación ({fuente_est}). Elige el modelo y pasa el cursor sobre un punto para ver el detalle.</p></div>
     {mapas(bye_m)}
     <div class="leyenda"><span class="item">{chip("bueno")} menos de {num(UMBRAL_T[0])} °C</span><span class="item">{chip("medio")} {num(UMBRAL_T[0])} a {num(UMBRAL_T[1])} °C</span><span class="item">{chip("alto")} {num(UMBRAL_T[1])} °C o más</span></div>
   </div>
@@ -615,7 +643,7 @@ def render_site(pts):
 
 <section>
   <div class="sec-head"><h2>Error por estación</h2>
-  <p class="muted">Ordenado de mayor a menor error de temperatura de {MODELOS[base][0]}, para ver primero lo que requiere atención. Error de temperatura a 2 m de cada modelo (el menor va destacado); pares, sesgo, viento a 10 m y nivel corresponden a {MODELOS[base][0]}. Todos los plazos juntos.</p></div>
+  <p class="muted">Fuente: {fuente_est}. Ordenado de mayor a menor error de temperatura de {MODELOS[base][0]}, para ver primero lo que requiere atención. Error de temperatura a 2 m de cada modelo (el menor va destacado); pares, sesgo, viento a 10 m y nivel corresponden a {MODELOS[base][0]}. Todos los plazos juntos.</p></div>
   <div class="card tabla">
     <table>
       <thead><tr><th class="l">Estación</th><th>Pares</th>{cab_modelos}<th>Sesgo temp.</th><th>Error viento</th><th class="l">Nivel</th></tr></thead>

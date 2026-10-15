@@ -163,7 +163,10 @@ footer p{max-width:90ch}
   }
   const nivel = (p) => p < PAR.umbrales[0] ? "bajo" : p < PAR.umbrales[1] ? "atencion" : "aviso";
 
-  const mapa = L.map("mapa", { zoomControl: true }).setView([-33.42, -70.50], 12);
+  // La rueda del ratón no hace zoom hasta que el mapa tiene el foco (clic), para no secuestrar el scroll de la página.
+  const mapa = L.map("mapa", { zoomControl: true, scrollWheelZoom: false }).setView([-33.43, -70.52], 12);
+  mapa.on("focus", () => mapa.scrollWheelZoom.enable()); mapa.on("blur", () => mapa.scrollWheelZoom.disable());
+  const encima = () => { ["cicatrices", "cauces", "remociones"].forEach(k => { if (capas[k] && mapa.hasLayer(capas[k])) capas[k].bringToFront(); }); };
   const osm = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 18, attribution: "© OpenStreetMap" }).addTo(mapa);
   const topo = L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", { maxZoom: 16, attribution: "© OpenStreetMap, SRTM · OpenTopoMap (CC-BY-SA)" });
   L.control.layers({ "Mapa": osm, "Relieve": topo }, null, { position: "topleft", collapsed: true }).addTo(mapa);
@@ -237,11 +240,13 @@ footer p{max-width:90ch}
     if (cuencas) {
       capas.cuencas = L.geoJSON(cuencas, { style: estiloCuenca, onEachFeature: (f, l) => {
         l.bindTooltip(() => `${f.properties.nombre}: ${f.properties._p == null ? "sin indicador" : num(100 * f.properties._p, 0) + " %"}`, { sticky: true });
-        l.on("click", () => { seleccion = f.properties.id; repintar(); ficha(f); });
+        l.on("click", () => { seleccion = f.properties.id; repintar(); ficha(f);
+          if (window.innerWidth < 960) document.getElementById("ficha").scrollIntoView({ behavior: "smooth", block: "nearest" }); });
       } }).addTo(mapa);
-      mapa.fitBounds(capas.cuencas.getBounds(), { padding: [10, 10] });
     }
-    repintar();
+    // vista inicial: la precordillera habitada (San Carlos de Apoquindo, Peñalolén), no toda la cordillera
+    mapa.setView([-33.43, -70.52], 12);
+    repintar(); encima();
     const pie = document.getElementById("pie");
     if (cic && cic.pre) pie.insertAdjacentHTML("afterbegin", `Cicatrices: Sentinel-2 ${cic.pre.slice(0, 10)} a ${cic.post.slice(0, 10)}. `);
     if (rem && rem.fuente) pie.insertAdjacentHTML("afterbegin", `Remociones: ${rem.fuente}. `);
@@ -255,7 +260,7 @@ footer p{max-width:90ch}
   Object.entries(toggles).forEach(([id, k]) => document.getElementById(id).addEventListener("change", (e) => {
     if (!capas[k]) return;
     if (e.target.checked) capas[k].addTo(mapa); else mapa.removeLayer(capas[k]);
-    if (k === "cuencas" && e.target.checked) capas.cuencas.bringToFront();
+    encima();
   }));
   try { const t = localStorage.getItem("q-mm"); if (t) { sl.value = t; val.textContent = t + " mm"; } } catch (e) {}
   sl.addEventListener("change", () => { try { localStorage.setItem("q-mm", sl.value); } catch (e) {} });

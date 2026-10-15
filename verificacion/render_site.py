@@ -71,7 +71,7 @@ def barra(v, vmax, nv):
 
 
 # ---------- mapa ----------
-K = 17.0            # px por grado de latitud
+K = 20.0            # px por grado de latitud
 LAT_TOP = -17.0
 CX = 0.80           # cos(37°): compresión de la longitud a la latitud media de Chile
 FRANJAS = [("Norte", -17.3, -30.6, -71.9, -66.9), ("Centro", -30.6, -43.9, -75.0, -70.0), ("Sur", -43.9, -56.2, -76.0, -66.0)]
@@ -164,7 +164,7 @@ header .lead{font-size:18px;color:var(--muted);max-width:62ch}
 .aviso{border-left:3px solid var(--accent);padding:10px 14px;background:var(--accent-soft);border-radius:0 var(--radius) var(--radius) 0;max-width:72ch}
 .aviso p{max-width:none}
 .tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-@media (min-width:600px){.tiles{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (min-width:600px){.tiles{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (min-width:960px){.tiles{grid-template-columns:repeat(6,minmax(0,1fr))}}
 .tile{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;display:grid;gap:4px;align-content:start}
 .tile .label{font-size:13px;color:var(--muted)}
@@ -177,7 +177,7 @@ header .lead{font-size:18px;color:var(--muted);max-width:62ch}
 section{display:grid;gap:14px}
 .sec-head{display:grid;gap:4px}
 .dos{display:grid;gap:24px}
-@media (min-width:860px){.dos{grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);align-items:start}}
+@media (min-width:860px){.dos{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:start}}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;display:grid;gap:12px;min-width:0}
 .leyenda{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:14px;color:var(--muted);align-items:center}
 .chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:2px 9px 2px 7px;border-radius:999px;

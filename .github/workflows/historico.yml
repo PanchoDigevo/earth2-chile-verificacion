@@ -1,0 +1,118 @@
+name: historico
+# Verificación retroactiva: extrae por meses los pronósticos históricos de AIFS, IFS y GFS en las estaciones,
+# baja el METAR histórico, consolida, analiza y publica historico.html. Todo lo pesado corre aquí, no en el Mac.
+on:
+  workflow_dispatch:
+    inputs:
+      desde:
+        description: "Primer mes (YYYY-MM)"
+        default: "2025-01"
+      hasta:
+        description: "Último mes (YYYY-MM)"
+        default: "2026-10"
+      modelos:
+        description: "Modelos, separados por coma"
+        default: "aifs,ifs,gfs"
+      solo_analizar:
+        description: "true = no extraer nada, solo consolidar y analizar lo ya guardado"
+        default: "false"
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: historico
+  cancel-in-progress: false
+jobs:
+  preparar:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.m.outputs.matrix }}
+    steps:
+      - id: m
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import calendar, datetime as dt, json, os
+          solo = "${{ inputs.solo_analizar }}" == "true"
+          a0, m0 = map(int, "${{ inputs.desde }}".split("-")); a1, m1 = map(int, "${{ inputs.hasta }}".split("-"))
+          modelos = [m.strip() for m in "${{ inputs.modelos }}".split(",") if m.strip()]
+          hoy = dt.date.today()
+          inc = []
+          a, m = a0, m0
+          while (a, m) <= (a1, m1) and not solo:
+              d0 = dt.date(a, m, 1); d1 = min(dt.date(a, m, calendar.monthrange(a, m)[1]), hoy - dt.timedelta(days=1))
+              if d0 <= d1:
+                  for mod in modelos:
+                      inc.append({"modelo": mod, "mes": f"{a}-{m:02d}", "desde": d0.isoformat(), "hasta": d1.isoformat()})
+              a, m = (a + 1, 1) if m == 12 else (a, m + 1)
+          print("matrix=" + json.dumps({"include": inc or [{"modelo": "ninguno", "mes": "-", "desde": "-", "hasta": "-"}]}))
+          PY
+  metar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python historico/metar_historico.py 2025 2026
+      - uses: actions/upload-artifact@v4
+        with:
+          name: metar
+          path: historico/data/metar_*.csv.gz
+  extraer:
+    needs: preparar
+    if: ${{ inputs.solo_analizar != 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix: ${{ fromJSON(needs.preparar.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r historico/requirements.txt
+      - name: Extraer ${{ matrix.modelo }} ${{ matrix.mes }}
+        run: python historico/extraer_puntos.py --modelo ${{ matrix.modelo }} --desde ${{ matrix.desde }} --hasta ${{ matrix.hasta }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: puntos-${{ matrix.modelo }}-${{ matrix.mes }}
+          path: historico/data/puntos/*.csv
+  consolidar:
+    needs: [metar, extraer]
+    if: ${{ always() && needs.metar.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r historico/requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: puntos-*
+          path: historico/data/puntos
+          merge-multiple: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: metar
+          path: historico/data
+      - run: python historico/consolidar.py
+      - run: python historico/analizar.py
+      - name: Guardar resultados
+        run: |
+          git config user.name "earth2-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add historico/data/pronosticos.csv.gz historico/data/metar_*.csv.gz historico/data/resultados site/historico.html
+          git diff --cached --quiet || git commit -m "histórico: $(date -u +%Y-%m-%dT%H:%MZ)"
+          git pull --rebase -X theirs origin main
+          git push
+      - name: Publicar el sitio
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run verificacion.yml --ref main

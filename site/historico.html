@@ -182,13 +182,25 @@ td.mm.fuerte{font-weight:600}
 .ev-tabla td.sat{font-family:var(--font-data);font-size:13.5px;font-variant-numeric:tabular-nums;color:var(--fg)}
 .lectura{border-left:3px solid var(--accent);padding:10px 14px;background:var(--accent-soft);border-radius:0 var(--radius) var(--radius) 0;max-width:80ch}
 .lectura p{max-width:none}
+
+.topnav{position:sticky;top:0;z-index:1100;background:var(--surface);border-bottom:1px solid var(--line)}
+.topnav .in{max-width:1400px;margin:0 auto;padding-inline:16px;display:flex;align-items:center;gap:16px;min-height:52px;overflow-x:auto;scrollbar-width:none}
+.topnav .in::-webkit-scrollbar{display:none}
+.topnav .marca{font-family:var(--font-display);font-weight:600;font-size:15px;color:var(--fg);text-decoration:none;white-space:nowrap;letter-spacing:-.01em}
+.topnav .marca small{color:var(--muted);font-weight:500;font-size:13px;margin-left:8px}
+.topnav .tabs{display:flex;gap:2px;margin-left:auto}
+.topnav .tabs a{display:inline-flex;align-items:center;height:52px;padding:0 12px;color:var(--muted);text-decoration:none;font-weight:600;font-size:14.5px;border-bottom:3px solid transparent;white-space:nowrap}
+.topnav .tabs a:hover{color:var(--fg)}
+.topnav .tabs a.activa{color:var(--fg);border-bottom-color:var(--accent)}
+.topnav .tabs a:focus-visible{outline:2px solid var(--accent);outline-offset:-4px;border-radius:4px}
+@media (max-width:520px){.topnav .marca small{display:none}.topnav .tabs a{padding:0 9px;font-size:14px}}
 </style>
 </head>
 <body>
+<nav class="topnav" aria-label="Secciones del sitio"><div class="in"><a class="marca" href="./">Earth-2 Chile<small>verificación pública</small></a><div class="tabs"><a href="./">Hoy</a><a href="historico.html" class="activa" aria-current="page">Histórico 2025–26</a><a href="quebradas.html">Quebradas</a></div></div></nav>
 <div class="wrap">
 <header>
   <div class="eyebrow">Earth-2 Chile · verificación retroactiva</div>
-  <p class="nav"><a href="./">← Verificación diaria</a></p>
   <h1>Lo que los modelos decían antes de que pasara</h1>
   <p class="lead">En vez de esperar a que pasen los días, miramos hacia atrás: tomamos los pronósticos que AIFS, IFS y GFS
   emitieron a las 00 y 12 UTC entre 2 de ene de 2025 y 15 de oct de 2026, con 24, 48 y 72 horas de anticipación,
@@ -256,7 +268,7 @@ td.mm.fuerte{font-weight:600}
 <p>Corrección por estación: sesgo medio de 2025 por estación, modelo, plazo y hora de corrida, con al menos 30 pares; se resta del pronóstico de 2026. Las celdas sin suficientes pares de 2025 no se corrigen y no entran en la comparación.</p>
 </div></details></section>
 <footer>
-  <p>Generado el 15 oct 2026, 05:36 UTC. Datos: ECMWF open data (CC-BY 4.0), NOAA GFS (dominio público), Iowa Environmental Mesonet (archivo ASOS/METAR).
+  <p>Generado el 15 oct 2026, 18:33 UTC. Datos: ECMWF open data (CC-BY 4.0), NOAA GFS (dominio público), Iowa Environmental Mesonet (archivo ASOS/METAR).
   Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">github.com/PanchoDigevo/earth2-chile-verificacion</a>.</p>
   <p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p>
 </footer>

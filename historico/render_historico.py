@@ -6,6 +6,7 @@ import numpy as np, pandas as pd
 AQUI = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(AQUI, "..", "verificacion"))
 from render_site import CSS, MODELOS, ORDEN, UMBRAL_T, chip, nivel, nombre, num, signo, barra  # noqa: E402
+from comun import CSS_NAV, nav  # noqa: E402
 
 SITE = os.path.join(AQUI, "..", "site")
 REPO = "https://github.com/PanchoDigevo/earth2-chile-verificacion"
@@ -276,13 +277,13 @@ def render(pares, r):
 <meta name="description" content="Qué decían AIFS, IFS y GFS 24, 48 y 72 horas antes, comparado con lo que midieron los aeródromos de Chile en 2025 y 2026, y cuánto mejora una corrección por estación.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
-<style>{CSS}{CSS_EXTRA}</style>
+<style>{CSS}{CSS_EXTRA}{CSS_NAV}</style>
 </head>
 <body>
+{nav("historico")}
 <div class="wrap">
 <header>
   <div class="eyebrow">Earth-2 Chile · verificación retroactiva</div>
-  <p class="nav"><a href="./">← Verificación diaria</a></p>
   <h1>Lo que los modelos decían antes de que pasara</h1>
   <p class="lead">En vez de esperar a que pasen los días, miramos hacia atrás: tomamos los pronósticos que {', '.join(modelos[:-1]) + ' y ' + modelos[-1] if len(modelos) > 1 else (modelos[0] if modelos else 'los modelos')}
   emitieron a las 00 y 12 UTC entre {d0.day} de {MESES[d0.month - 1]} de {d0.year} y {d1.day} de {MESES[d1.month - 1]} de {d1.year}, con 24, 48 y 72 horas de anticipación,

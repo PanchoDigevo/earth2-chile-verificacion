@@ -9,6 +9,7 @@ de modelo, tablas con barras de error y semáforo de tres niveles con texto (nun
 Lenguaje: "aviso"/"pronóstico de impacto", nunca "alerta"; las alertas oficiales son de la DMC y SENAPRED."""
 import json, math, os, re
 import pandas as pd
+from comun import CSS_NAV, nav
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 SITE = os.path.join(AQUI, "..", "site")
@@ -543,9 +544,10 @@ def render_site(pts):
 <meta name="description" content="Cada día comparamos el pronóstico de inteligencia artificial de ECMWF (AIFS) y los modelos físicos IFS (ECMWF) y GFS (NOAA) con lo que midieron los aeródromos de Chile. Error por plazo y por estación, en lenguaje simple.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
-<style>{CSS}</style>
+<style>{CSS}{CSS_NAV}</style>
 </head>
 <body>
+{nav("hoy")}
 <div class="wrap">
 
 <header>
@@ -555,7 +557,6 @@ def render_site(pts):
   <div class="aviso"><p class="small">Esta página es apoyo a la decisión y verificación pública de modelos. Las alertas oficiales son de la
   <a href="https://www.meteochile.gob.cl/" rel="noopener">Dirección Meteorológica de Chile</a> y de
   <a href="https://www.senapred.cl/" rel="noopener">SENAPRED</a>.</p></div>
-  <p class="nav"><a href="historico.html">Verificación retroactiva 2025–2026: qué decían los modelos 72, 48 y 24 h antes →</a><br><a href="quebradas.html">Visor de quebradas de Santiago oriente: laderas quemadas, pendiente y lluvia prevista por cuenca →</a></p>
 </header>
 
 <section>

@@ -150,9 +150,22 @@ td.modelo-nombre{font-weight:600}
 td.modelo-nombre .tipo{display:block;font-size:12px;color:var(--muted);font-weight:400}
 td.num.mejor{font-weight:700;color:var(--accent)}
 th.grupo{text-align:center;border-bottom:0;padding-bottom:0}
+
+.topnav{position:sticky;top:0;z-index:1100;background:var(--surface);border-bottom:1px solid var(--line)}
+.topnav .in{max-width:1400px;margin:0 auto;padding-inline:16px;display:flex;align-items:center;gap:16px;min-height:52px;overflow-x:auto;scrollbar-width:none}
+.topnav .in::-webkit-scrollbar{display:none}
+.topnav .marca{font-family:var(--font-display);font-weight:600;font-size:15px;color:var(--fg);text-decoration:none;white-space:nowrap;letter-spacing:-.01em}
+.topnav .marca small{color:var(--muted);font-weight:500;font-size:13px;margin-left:8px}
+.topnav .tabs{display:flex;gap:2px;margin-left:auto}
+.topnav .tabs a{display:inline-flex;align-items:center;height:52px;padding:0 12px;color:var(--muted);text-decoration:none;font-weight:600;font-size:14.5px;border-bottom:3px solid transparent;white-space:nowrap}
+.topnav .tabs a:hover{color:var(--fg)}
+.topnav .tabs a.activa{color:var(--fg);border-bottom-color:var(--accent)}
+.topnav .tabs a:focus-visible{outline:2px solid var(--accent);outline-offset:-4px;border-radius:4px}
+@media (max-width:520px){.topnav .marca small{display:none}.topnav .tabs a{padding:0 9px;font-size:14px}}
 </style>
 </head>
 <body>
+<nav class="topnav" aria-label="Secciones del sitio"><div class="in"><a class="marca" href="./">Earth-2 Chile<small>verificación pública</small></a><div class="tabs"><a href="./" class="activa" aria-current="page">Hoy</a><a href="historico.html">Histórico 2025–26</a><a href="quebradas.html">Quebradas</a></div></div></nav>
 <div class="wrap">
 
 <header>
@@ -162,7 +175,6 @@ th.grupo{text-align:center;border-bottom:0;padding-bottom:0}
   <div class="aviso"><p class="small">Esta página es apoyo a la decisión y verificación pública de modelos. Las alertas oficiales son de la
   <a href="https://www.meteochile.gob.cl/" rel="noopener">Dirección Meteorológica de Chile</a> y de
   <a href="https://www.senapred.cl/" rel="noopener">SENAPRED</a>.</p></div>
-  <p class="nav"><a href="historico.html">Verificación retroactiva 2025–2026: qué decían los modelos 72, 48 y 24 h antes →</a><br><a href="quebradas.html">Visor de quebradas de Santiago oriente: laderas quemadas, pendiente y lluvia prevista por cuenca →</a></p>
 </header>
 
 <section>
@@ -249,7 +261,7 @@ th.grupo{text-align:center;border-bottom:0;padding-bottom:0}
 </section>
 
 <footer>
-  <p>Generado el 15 oct 2026, 14:07 UTC. Datos: ECMWF open data, AIFS e IFS (CC-BY 4.0); NOAA GFS (dominio público); NOAA/AWC METAR (dominio público); contorno de Natural Earth (dominio público).
+  <p>Generado el 15 oct 2026, 18:33 UTC. Datos: ECMWF open data, AIFS e IFS (CC-BY 4.0); NOAA GFS (dominio público); NOAA/AWC METAR (dominio público); contorno de Natural Earth (dominio público).
   Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">github.com/PanchoDigevo/earth2-chile-verificacion</a>.</p>
   <p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p>
 </footer>

@@ -25,7 +25,8 @@ El texto público de la portada está en `docs/narrativa_sitio.md`. Es la fuente
 1. Sitio: serie de 30 días, precipitación; estaciones DMC cuando haya token. (IFS y GFS ya se comparan; el mapa ya colorea por error y modelo.)
 2. Hindcast: catálogo de eventos (`hindcast/eventos/`), capa de lluvia, capa de superficie para RM y V Región, cruce con la verdad. Resultado: "de N eventos, M marcados con X h de anticipación".
 3. Página de aviso simulado: cómo se ve el mensaje para un municipio.
-4. CorrDiff-Chile (downscaling 25 → 4 km) con SAAG-WRF 4 km + ERA5, en GPUs L40S con PhysicsNeMo. No bloquea los puntos anteriores.
+4. Capa de superficie y mapa de quebradas quemadas (primera venta, sin GPU): Sentinel-2 dNBR del verano 2026 sobre Santiago oriente (incendio de enero sobre San Carlos de Apoquindo, ~1.012 ha), DEM Copernicus 30 m → pendiente, cauces OSM/DGA, humedad SMAP, catálogo de remociones en masa de SERNAGEOMIN. Salida: GeoJSON de cuencas de quebrada con quema × pendiente × historial, publicado en `site/quebradas.html` sobre el mapa de Natural Earth + teselas abiertas. Luego, umbral de intensidad-duración tipo USGS por cuenca para el aviso. Eventos: `hindcast/eventos/eventos_2026.csv`.
+5. CorrDiff-Chile (downscaling 25 → 4 km) con SAAG-WRF 4 km + ERA5, en GPUs L40S con PhysicsNeMo. No bloquea los puntos anteriores.
 
 ## Dónde corre cada cosa
 

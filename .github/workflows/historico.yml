@@ -106,6 +106,10 @@ jobs:
           name: metar
           path: historico/data
       - run: python historico/consolidar.py
+      - name: Lluvia satelital de los eventos (IMERG con token, si no PERSIANN-CCS)
+        env:
+          EARTHDATA_TOKEN: ${{ secrets.EARTHDATA_TOKEN }}
+        run: python historico/lluvia_satelite.py
       - run: python historico/analizar.py
       - name: Guardar resultados
         run: |

@@ -71,6 +71,7 @@ section{display:grid;gap:14px}
 .chip i{width:8px;height:8px;border-radius:50%;background:var(--sin)}
 .chip.bueno i{background:var(--bueno)} .chip.medio i{background:var(--medio)} .chip.alto i{background:var(--alto)}
 .chip.sin{color:var(--muted)}
+.chip.prelim{color:var(--muted);border-style:dashed}
 .mapa{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:flex-start;justify-content:center}
 .franja{margin:0;display:grid;gap:4px;justify-items:center}
 .franja svg{max-width:100%;height:auto;display:block}
@@ -96,6 +97,8 @@ td.medida{min-width:9.5em}
 .bar.bueno i{background:var(--bueno)} .bar.medio i{background:var(--medio)} .bar.alto i{background:var(--alto)}
 tbody tr:hover{background:color-mix(in srgb,var(--accent) 6%,transparent)}
 .narrativa{display:grid;gap:12px;max-width:68ch}
+header .narrativa{font-size:18px}
+header .narrativa p{color:var(--fg)}
 .narrativa h2{font-size:24px}
 .narrativa p{max-width:none}
 .narrativa ol{margin:0;padding-left:1.25em;display:grid;gap:8px}
@@ -171,6 +174,14 @@ td.mm{font-family:var(--font-data);font-size:14px;font-variant-numeric:tabular-n
 td.mm.fuerte{font-weight:600}
 .si{color:var(--fg);font-weight:600} .no{color:var(--muted)}
 .nav{font-size:14px}
+.ancho{width:min(100vw - 32px,1400px);margin-left:calc(50% - min(100vw - 32px,1400px)/2)}
+.ev-tabla table{font-size:13.5px}
+.ev-tabla th,.ev-tabla td{padding:6px 7px}
+.ev-tabla th.grupo{text-align:center;border-bottom:1px solid var(--line-soft);color:var(--fg);letter-spacing:.04em}
+.ev-tabla th.sub{font-size:11px}
+.ev-tabla td.sat{font-family:var(--font-data);font-size:13.5px;font-variant-numeric:tabular-nums;color:var(--fg)}
+.lectura{border-left:3px solid var(--accent);padding:10px 14px;background:var(--accent-soft);border-radius:0 var(--radius) var(--radius) 0;max-width:80ch}
+.lectura p{max-width:none}
 </style>
 </head>
 <body>
@@ -194,13 +205,15 @@ td.mm.fuerte{font-weight:600}
 <section><div class="sec-head"><h2>Global frente a global corregido</h2>
 <p class="muted">La corrección por estación se aprende con los pares de 2025 y se evalúa con los de 2026. Aparecerá aquí cuando
 el histórico de 2025 esté extraído.</p></div></section>
-<section>
+<section class="ancho">
   <div class="sec-head"><h2>Los tres eventos de 2026, vistos desde antes</h2>
   <p class="muted">Para cada día de cada evento: qué lluvia anunciaba cada modelo con 72, 48 y 24 horas de anticipación en los aeródromos de la zona,
   y si de verdad llovió según los reportes horarios. Un modelo "marca" lluvia cuando pronostica 1 mm o más en 24 h.</p></div>
-  <div class="evento"><h3>Las Condes, 8 de octubre</h3><p class="desc">Las Condes (San Carlos de Apoquindo). De 2 día-estación con observación, en 1 llovió.
-  Las columnas muestran la lluvia pronosticada (mm) para las 24 h de ese día, de las 12 UTC (8 o 9 de la mañana en Chile) a las 12 UTC del día siguiente, según la corrida emitida 72, 48 y 24 h antes del cierre de esa ventana; en negrita 10 mm o más.</p>
-  <ul><li><strong>AIFS</strong> marcó lluvia en 1 de 1 a 24 h.</li><li><strong>IFS</strong> marcó lluvia en 1 de 1 a 24 h.</li><li><strong>GFS</strong> marcó lluvia en 1 de 1 a 24 h, 1 de 1 a 48 h, 1 de 1 a 72 h.</li></ul><div class="card tabla"><table><thead><tr><th class='l'>Día</th><th>Estación</th><th>Observado en las 24 h del día</th><th>AIFS 72 h</th><th>IFS 72 h</th><th>GFS 72 h</th><th>AIFS 48 h</th><th>IFS 48 h</th><th>GFS 48 h</th><th>AIFS 24 h</th><th>IFS 24 h</th><th>GFS 24 h</th></tr></thead><tbody><tr><td class='l'>08 oct</td><td class='l'>Santiago (Pudahuel) <span class='muted small'>SCEL</span></td><td class='l'><span class='si'>Llovió</span> <span class='muted small'>(11 h con lluvia)</span><span class='muted small'> · 11 °C</span></td><td class='mm'>–</td><td class='mm'>–</td><td class='mm'>8,1</td><td class='mm'>–</td><td class='mm'>–</td><td class='mm fuerte'>12,8</td><td class='mm fuerte'>19,7</td><td class='mm fuerte'>25,2</td><td class='mm fuerte'>10,1</td></tr><tr><td class='l'>08 oct</td><td class='l'>Santo Domingo <span class='muted small'>SCSN</span></td><td class='l'><span class='no'>No llovió</span><span class='muted small'> · 14 °C</span></td><td class='mm'>–</td><td class='mm'>–</td><td class='mm'>1,7</td><td class='mm'>–</td><td class='mm'>–</td><td class='mm'>1,4</td><td class='mm'>5,5</td><td class='mm'>2,5</td><td class='mm'>0,8</td></tr></tbody></table></div></div>
+  <div class="evento"><h3>Las Condes, 8 de octubre</h3><p class="desc">Las Condes (San Carlos de Apoquindo). Estaciones de referencia: Tobalaba (Las Condes) (SCTB), Santiago (Pudahuel) (SCEL), Santo Domingo (SCSN). De 2 día-estación con observación, en 1 llovió.
+  Las columnas muestran la lluvia pronosticada (mm) para las 24 h de ese día, de las 12 UTC (8 o 9 de la mañana en Chile) a las 12 UTC del día siguiente, según la corrida emitida 72, 48 y 24 h antes del cierre de esa ventana; en negrita 10 mm o más.
+  </p>
+  <div class="lectura"><p><strong>Lectura.</strong> Los tres modelos anunciaban entre 10 y 25 mm para esas 24 h con un día de anticipación: la cantidad se vio. Lo que no se vio fue dónde se iba a concentrar la lluvia ni el estado de las laderas quemadas sobre San Carlos de Apoquindo. Esa es la capa que falta: el zoom a 4 km y la superficie.</p></div>
+  <ul><li><strong>AIFS</strong> marcó lluvia en 1 de 1 a 24 h.</li><li><strong>IFS</strong> marcó lluvia en 1 de 1 a 24 h.</li><li><strong>GFS</strong> marcó lluvia en 1 de 1 a 24 h, 1 de 1 a 48 h, 1 de 1 a 72 h.</li></ul><div class="card tabla ev-tabla"><table><thead><tr><th class='l' rowspan='2'>Día</th><th class='l' rowspan='2'>Estación</th><th class='l' rowspan='2'>Observado (24 h del día)</th><th rowspan='2'>Satélite<br><span class='muted'>mm, día UTC</span></th><th class='grupo' colspan='3'>72 h antes</th><th class='grupo' colspan='3'>48 h antes</th><th class='grupo' colspan='3'>24 h antes</th></tr><tr><th class='sub'>AIFS</th><th class='sub'>IFS</th><th class='sub'>GFS</th><th class='sub'>AIFS</th><th class='sub'>IFS</th><th class='sub'>GFS</th><th class='sub'>AIFS</th><th class='sub'>IFS</th><th class='sub'>GFS</th></tr></thead><tbody><tr><td class='l'>8 oct</td><td class='l'>Santiago (Pudahuel) <span class='muted small'>SCEL</span></td><td class='l'><span class='si'>Llovió</span> <span class='muted small'>(11 h con lluvia)</span><span class='muted small'> · 11 °C</span></td><td class='sat muted'>–</td><td class='mm'>–</td><td class='mm'>–</td><td class='mm'>8,1</td><td class='mm'>–</td><td class='mm'>–</td><td class='mm fuerte'>12,8</td><td class='mm fuerte'>19,7</td><td class='mm fuerte'>25,2</td><td class='mm fuerte'>10,1</td></tr><tr><td class='l'>8 oct</td><td class='l'>Santo Domingo <span class='muted small'>SCSN</span></td><td class='l'><span class='no'>No llovió</span><span class='muted small'> · 14 °C</span></td><td class='sat muted'>–</td><td class='mm'>–</td><td class='mm'>–</td><td class='mm'>1,7</td><td class='mm'>–</td><td class='mm'>–</td><td class='mm'>1,4</td><td class='mm'>5,5</td><td class='mm'>2,5</td><td class='mm'>0,8</td></tr></tbody></table></div></div>
 </section>
 <section>
   <div class="sec-head"><h2>Lluvia: cuándo avisó y cuándo no</h2>
@@ -221,7 +234,7 @@ el histórico de 2025 esté extraído.</p></div></section>
 <p>Corrección por estación: sesgo medio de 2025 por estación, modelo, plazo y hora de corrida, con al menos 30 pares; se resta del pronóstico de 2026. Las celdas sin suficientes pares de 2025 no se corrigen y no entran en la comparación.</p>
 </div></details></section>
 <footer>
-  <p>Generado el 15 oct 2026, 02:10 UTC. Datos: ECMWF open data (CC-BY 4.0), NOAA GFS (dominio público), Iowa Environmental Mesonet (archivo ASOS/METAR).
+  <p>Generado el 15 oct 2026, 02:35 UTC. Datos: ECMWF open data (CC-BY 4.0), NOAA GFS (dominio público), Iowa Environmental Mesonet (archivo ASOS/METAR).
   Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">github.com/PanchoDigevo/earth2-chile-verificacion</a>.</p>
   <p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p>
 </footer>

@@ -3,7 +3,7 @@ Acumula en data/metar_obs.csv sin duplicados."""
 import csv, json, os, urllib.request
 
 ICAO = ("SCEL,SCSE,SCIE,SCDA,SCAR,SCCF,SCFA,SCTE,SCCI,SCBA,SCVD,SCTC,SCQP,SCIC,SCCH,SCGE,"
-        "SCJO,SCSN,SCER,SCRM,SCAT,SCPC,SCAS,SCNT,SCCY")
+        "SCJO,SCSN,SCER,SCRM,SCAT,SCPC,SCAS,SCNT,SCCY,SCTB")
 URL = f"https://aviationweather.gov/api/data/metar?ids={ICAO}&format=json&hours=48"
 PATH = "data/metar_obs.csv"
 FIELDS = ["icao", "name", "lat", "lon", "elev", "time", "temp_c", "dewp_c", "wdir", "wspd_kt", "raw"]

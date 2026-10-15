@@ -38,6 +38,14 @@ td.mm{font-family:var(--font-data);font-size:14px;font-variant-numeric:tabular-n
 td.mm.fuerte{font-weight:600}
 .si{color:var(--fg);font-weight:600} .no{color:var(--muted)}
 .nav{font-size:14px}
+.ancho{width:min(100vw - 32px,1400px);margin-left:calc(50% - min(100vw - 32px,1400px)/2)}
+.ev-tabla table{font-size:13.5px}
+.ev-tabla th,.ev-tabla td{padding:6px 7px}
+.ev-tabla th.grupo{text-align:center;border-bottom:1px solid var(--line-soft);color:var(--fg);letter-spacing:.04em}
+.ev-tabla th.sub{font-size:11px}
+.ev-tabla td.sat{font-family:var(--font-data);font-size:13.5px;font-variant-numeric:tabular-nums;color:var(--fg)}
+.lectura{border-left:3px solid var(--accent);padding:10px 14px;background:var(--accent-soft);border-radius:0 var(--radius) var(--radius) 0;max-width:80ch}
+.lectura p{max-width:none}
 """
 
 
@@ -112,10 +120,31 @@ el histórico de 2025 esté extraído.</p></div></section>"""
 </section>"""
 
 
+def cargar_eventos_extra():
+    """Lectura escrita a mano por evento (columna 'lectura' del catálogo) y lluvia satelital en mm si existe."""
+    lecturas = {}
+    try:
+        ev = pd.read_csv(os.path.join(AQUI, "..", "hindcast", "eventos", "eventos_2026.csv"))
+        if "lectura" in ev.columns:
+            lecturas = {k: v for k, v in zip(ev.id, ev.lectura.fillna("")) if v}
+    except Exception:
+        pass
+    sat = pd.DataFrame()
+    try:
+        sat = pd.read_csv(os.path.join(AQUI, "data", "resultados", "lluvia_satelite_eventos.csv"), parse_dates=["dia"])
+    except Exception:
+        pass
+    return lecturas, sat
+
+
 def seccion_eventos(r):
     det, res = r["eventos_detalle"], r["eventos_resumen"]
     if det.empty:
         return ""
+    lecturas, sat = cargar_eventos_extra()
+    sat_idx = {(e, d.date(), i): (m, f) for e, d, i, m, f in zip(sat.evento, sat.dia, sat.icao, sat.mm, sat.fuente)} if not sat.empty else {}
+    fuente_sat = sat.fuente.iloc[0] if not sat.empty else ""
+    from analizar import ZONAS
     bloques = []
     for ev, d in det.groupby("evento", sort=False):
         titulo = TITULOS_EVENTO.get(ev, ev)
@@ -129,6 +158,8 @@ def seccion_eventos(r):
                     partes.append(f"{int(x.aciertos.iloc[0])} de {int(x.aciertos.iloc[0] + x.fallas.iloc[0])} a {l} h")
             if partes:
                 frases.append(f"<li><strong>{m}</strong> marcó lluvia en {', '.join(partes)}.</li>")
+        ref = ", ".join(f"{nombre(i, i)[0]} ({i})" for i in ZONAS.get(ev, []))
+        lectura = lecturas.get(ev, "")
         obs_dias = d.drop_duplicates(["dia", "icao"])
         con_lluvia = int((obs_dias.lluvia_obs == 1).sum()); total = int(obs_dias.lluvia_obs.notna().sum())
         filas = []
@@ -151,13 +182,20 @@ def seccion_eventos(r):
                         v = float(x.tp24_fc.iloc[0])
                         celdas.append(f"<td class='mm{' fuerte' if v >= 10 else ''}'>{num(v, 1)}</td>")
             t_obs = "" if pd.isna(g0.t_obs) else f" · {num(g0.t_obs, 0)} °C"
-            filas.append(f"<tr><td class='l'>{dia.strftime('%d %b').replace(dia.strftime('%b'), MESES[dia.month - 1])}</td>"
-                         f"<td class='l'>{corto} <span class='muted small'>{icao}</span></td><td class='l'>{obs_html}<span class='muted small'>{t_obs}</span></td>{''.join(celdas)}</tr>")
-        enc = ["Día", "Estación", "Observado en las 24 h del día"] + [f"{m} {l} h" for l in (72, 48, 24) for m in ORDEN]
-        bloques.append(f"""<div class="evento"><h3>{titulo}</h3><p class="desc">{d.zona.iloc[0]}. De {total} día-estación con observación, en {con_lluvia} llovió.
-  Las columnas muestran la lluvia pronosticada (mm) para las 24 h de ese día, de las 12 UTC (8 o 9 de la mañana en Chile) a las 12 UTC del día siguiente, según la corrida emitida 72, 48 y 24 h antes del cierre de esa ventana; en negrita 10 mm o más.</p>
-  <ul>{''.join(frases)}</ul>{tabla(enc, filas)}</div>""")
-    return f"""<section>
+            mm_sat = sat_idx.get((ev, pd.Timestamp(dia).date(), icao))
+            celda_sat = f"<td class='sat'>{num(mm_sat[0], 1)}</td>" if mm_sat and mm_sat[0] is not None and not pd.isna(mm_sat[0]) else "<td class='sat muted'>–</td>"
+            filas.append(f"<tr><td class='l'>{dia.day} {MESES[dia.month - 1]}</td>"
+                         f"<td class='l'>{corto} <span class='muted small'>{icao}</span></td><td class='l'>{obs_html}<span class='muted small'>{t_obs}</span></td>{celda_sat}{''.join(celdas)}</tr>")
+        cab1 = ("<tr><th class='l' rowspan='2'>Día</th><th class='l' rowspan='2'>Estación</th><th class='l' rowspan='2'>Observado (24 h del día)</th>"
+                f"<th rowspan='2'>Satélite<br><span class='muted'>mm, día UTC</span></th>" + "".join(f"<th class='grupo' colspan='{len(ORDEN)}'>{l} h antes</th>" for l in (72, 48, 24)) + "</tr>")
+        cab2 = "<tr>" + "".join(f"<th class='sub'>{m}</th>" for l in (72, 48, 24) for m in ORDEN) + "</tr>"
+        tabla_ev = f'<div class="card tabla ev-tabla"><table><thead>{cab1}{cab2}</thead><tbody>{"".join(filas)}</tbody></table></div>'
+        bloques.append(f"""<div class="evento"><h3>{titulo}</h3><p class="desc">{d.zona.iloc[0]}. Estaciones de referencia: {ref}. De {total} día-estación con observación, en {con_lluvia} llovió.
+  Las columnas muestran la lluvia pronosticada (mm) para las 24 h de ese día, de las 12 UTC (8 o 9 de la mañana en Chile) a las 12 UTC del día siguiente, según la corrida emitida 72, 48 y 24 h antes del cierre de esa ventana; en negrita 10 mm o más.
+  {f"La columna Satélite es la lluvia estimada por {fuente_sat} en la celda de cada estación, para el día calendario UTC." if fuente_sat else ""}</p>
+  {f'<div class="lectura"><p><strong>Lectura.</strong> {lectura}</p></div>' if lectura else ""}
+  <ul>{''.join(frases)}</ul>{tabla_ev}</div>""")
+    return f"""<section class="ancho">
   <div class="sec-head"><h2>Los tres eventos de 2026, vistos desde antes</h2>
   <p class="muted">Para cada día de cada evento: qué lluvia anunciaba cada modelo con 72, 48 y 24 horas de anticipación en los aeródromos de la zona,
   y si de verdad llovió según los reportes horarios. Un modelo "marca" lluvia cuando pronostica {num(UMBRAL_LLUVIA_MM(), 0)} mm o más en 24 h.</p></div>

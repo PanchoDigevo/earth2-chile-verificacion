@@ -7,7 +7,7 @@ Compara tres modelos globales contra las mismas estaciones: AIFS (IA, ECMWF), IF
 Diseño: una sola columna, resumen antes del detalle, mapa de Chile en tres franjas (norte, centro, sur) con selector
 de modelo, tablas con barras de error y semáforo de tres niveles con texto (nunca solo color). Modo claro y oscuro.
 Lenguaje: "aviso"/"pronóstico de impacto", nunca "alerta"; las alertas oficiales son de la DMC y SENAPRED."""
-import json, math, os
+import json, math, os, re
 import pandas as pd
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
@@ -20,6 +20,7 @@ ESTACIONES = {
     "SCAR": ("Arica", "Arica y Parinacota"), "SCDA": ("Iquique", "Tarapacá"), "SCCF": ("Calama", "Antofagasta"),
     "SCFA": ("Antofagasta", "Antofagasta"), "SCAT": ("Caldera", "Atacama"), "SCSE": ("La Serena", "Coquimbo"),
     "SCER": ("Quintero", "Valparaíso"), "SCSN": ("Santo Domingo", "Valparaíso"), "SCEL": ("Santiago (Pudahuel)", "Metropolitana"),
+    "SCTB": ("Tobalaba (Las Condes)", "Metropolitana"),
     "SCIC": ("Curicó", "Maule"), "SCCH": ("Chillán", "Ñuble"), "SCIE": ("Concepción", "Biobío"), "SCGE": ("Los Ángeles", "Biobío"),
     "SCTC": ("Temuco (Maquehue)", "La Araucanía"), "SCQP": ("Temuco (La Araucanía)", "La Araucanía"), "SCPC": ("Pucón", "La Araucanía"),
     "SCVD": ("Valdivia", "Los Ríos"), "SCJO": ("Osorno", "Los Lagos"), "SCTE": ("Puerto Montt", "Los Lagos"),
@@ -33,6 +34,9 @@ ORDEN = list(MODELOS)
 
 # Umbrales del semáforo (error medio absoluto). Temperatura en °C, viento en m/s.
 UMBRAL_T = (1.5, 3.0)
+UMBRAL_BRECHA = 2.5     # "la brecha": estaciones con error medio de temperatura sobre este valor
+MIN_PARES = 30          # por debajo de esto una estación se muestra como "preliminar", sin cifras
+HIST_EST = os.path.join(AQUI, "..", "historico", "data", "resultados", "estaciones.csv")
 UMBRAL_W = (1.5, 3.0)
 NIVELES = {"bueno": "Bueno", "medio": "Aceptable", "alto": "Alto"}
 
@@ -67,6 +71,8 @@ def nombre(icao, fallback):
 def chip(nv):
     if nv == "sin":
         return '<span class="chip sin">Sin datos</span>'
+    if nv == "prelim":
+        return '<span class="chip prelim">Preliminar</span>'
     return f'<span class="chip {nv}"><i aria-hidden="true"></i>{NIVELES[nv]}</span>'
 
 
@@ -110,6 +116,23 @@ def narrativa():
     return "".join(bloques), aviso
 
 
+def brecha_fuente(bye):
+    """Estaciones con su error a 24 h para la cifra de portada. Prefiere el histórico 2025-2026 (AIFS, 24 h, >= MIN_PARES);
+    si no existe, usa la verificación diaria. Devuelve (tabla icao/n/t_mae, texto de fuente, preliminar)."""
+    try:
+        h = pd.read_csv(HIST_EST)
+        h = h[(h.modelo == "AIFS") & (h.lead_h == 24) & (h.n >= MIN_PARES)].rename(columns={"mae": "t_mae"})
+        if len(h) >= 5:
+            return h[["icao", "n", "t_mae"]].reset_index(drop=True), "histórico 2025–2026 (AIFS a 24 h)", False
+    except Exception:
+        pass
+    d = bye[["icao", "n", "t_mae"]].reset_index(drop=True)
+    ok = d[d.n >= MIN_PARES]
+    if len(ok) >= 5:
+        return ok, "verificación diaria (AIFS, todos los plazos)", False
+    return d, "verificación diaria (AIFS, todos los plazos)", True
+
+
 # ---------- mapa ----------
 K = 20.0            # px por grado de latitud
 LAT_TOP = -17.0
@@ -149,11 +172,13 @@ def mapa(bye, modelo):
             if not (la1 <= r.lat <= la0 and lo0 <= r.lon <= lo1):
                 continue
             x, y = proj(r.lon, r.lat)
-            nv = nivel(r.t_mae, UMBRAL_T)
+            prelim = int(r.n) < MIN_PARES
+            nv = "sin" if prelim else nivel(r.t_mae, UMBRAL_T)
             corto, _ = nombre(r.icao, r.name)
             etiqueta = f'<text x="{x + 7:.1f}" y="{y + 3.5:.1f}">{r.icao}</text>' if nv == "alto" else ""
-            puntos.append(f'<g class="est {nv}"><title>{corto} ({r.icao}), {corto_m}: error medio de temperatura {num(r.t_mae, 1, " °C")}, '
-                          f'viento {num(r.w_mae, 1, " m/s")}, {int(r.n)} pares</title>'
+            detalle = (f"preliminar: {int(r.n)} pares, se publica desde {MIN_PARES}" if prelim else
+                       f"error medio de temperatura {num(r.t_mae, 1, ' °C')}, viento {num(r.w_mae, 1, ' m/s')}, {int(r.n)} pares")
+            puntos.append(f'<g class="est {nv}"><title>{corto} ({r.icao}), {corto_m}: {detalle}</title>'
                           f'<circle cx="{x:.1f}" cy="{y:.1f}" r="4.5"/>{etiqueta}</g>')
         svgs.append(f'<figure class="franja"><svg viewBox="{x0:.1f} {y0:.1f} {w:.1f} {h:.1f}" width="{w:.0f}" height="{h:.0f}" '
                     f'role="img" aria-label="Mapa de la zona {titulo.lower()} de Chile con las estaciones, modelo {corto_m}">'
@@ -247,6 +272,7 @@ section{display:grid;gap:14px}
 .chip i{width:8px;height:8px;border-radius:50%;background:var(--sin)}
 .chip.bueno i{background:var(--bueno)} .chip.medio i{background:var(--medio)} .chip.alto i{background:var(--alto)}
 .chip.sin{color:var(--muted)}
+.chip.prelim{color:var(--muted);border-style:dashed}
 .mapa{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:flex-start;justify-content:center}
 .franja{margin:0;display:grid;gap:4px;justify-items:center}
 .franja svg{max-width:100%;height:auto;display:block}
@@ -272,6 +298,8 @@ td.medida{min-width:9.5em}
 .bar.bueno i{background:var(--bueno)} .bar.medio i{background:var(--medio)} .bar.alto i{background:var(--alto)}
 tbody tr:hover{background:color-mix(in srgb,var(--accent) 6%,transparent)}
 .narrativa{display:grid;gap:12px;max-width:68ch}
+header .narrativa{font-size:18px}
+header .narrativa p{color:var(--fg)}
 .narrativa h2{font-size:24px}
 .narrativa p{max-width:none}
 .narrativa ol{margin:0;padding-left:1.25em;display:grid;gap:8px}
@@ -436,6 +464,7 @@ def render_site(pts):
 
     # --- tabla por estación: base AIFS, columnas de error de temperatura por modelo ---
     tmae_m = {m: bye_m[m].set_index("icao").t_mae for m in presentes}
+    n_m = {m: bye_m[m].set_index("icao").n for m in presentes}
     filas_est = []
     orden_est = list(bye.icao) + [i for i in estaciones if i not in set(bye.icao)]
     info = bye_all.drop_duplicates("icao").set_index("icao")
@@ -444,7 +473,7 @@ def render_site(pts):
         corto, region = nombre(icao, info.loc[icao, "name"])
         elev_v = info.loc[icao, "elev"]
         elev = "" if pd.isna(elev_v) else f"{int(float(elev_v))} m"
-        vals = {m: float(tmae_m[m].get(icao, float("nan"))) for m in presentes}
+        vals = {m: (float(tmae_m[m].get(icao, float("nan"))) if int(n_m[m].get(icao, 0)) >= MIN_PARES else float("nan")) for m in presentes}
         validos = {m: v for m, v in vals.items() if not math.isnan(v)}
         mejor_est = min(validos, key=validos.get) if len(validos) > 1 else None
         celdas = ""
@@ -455,7 +484,10 @@ def render_site(pts):
             else:
                 celdas += (f"<td class='medida'><span class='medida-in'>{barra(v, t_max, nivel(v, UMBRAL_T))}"
                            f"<span class='num{' mejor' if m == mejor_est else ''}'>{num(v, 1, ' °C')}</span></span></td>")
-        nt = nivel(r.t_mae, UMBRAL_T) if r is not None else "sin"
+        prelim = r is None or int(r.n) < MIN_PARES
+        nt = "prelim" if prelim else nivel(r.t_mae, UMBRAL_T)
+        if prelim and r is not None:
+            r = r.copy(); r[["t_bias", "w_mae"]] = float("nan")
         filas_est.append(
             f"<tr><td class='l est-nombre'>{corto}<span class='icao'>{icao}</span>"
             f"<span class='region'>{region}{' · ' if region and elev else ''}{elev}</span></td>"
@@ -465,7 +497,11 @@ def render_site(pts):
             f"<td>{chip(nt)}</td></tr>")
     cab_modelos = "".join(f"<th>Error temp. {MODELOS[m][0]}</th>" for m in ORDEN)
 
-    n_alto = int((bye.t_mae >= UMBRAL_T[1]).sum()); n_bueno = int((bye.t_mae < UMBRAL_T[0]).sum())
+    bye_ok = bye[bye.n >= MIN_PARES]
+    n_alto = int((bye_ok.t_mae >= UMBRAL_T[1]).sum()); n_bueno = int((bye_ok.t_mae < UMBRAL_T[0]).sum())
+    brecha, brecha_fuente_txt, brecha_prelim = brecha_fuente(bye)
+    brecha_est = brecha[brecha.t_mae >= UMBRAL_BRECHA].sort_values("t_mae", ascending=False)
+    brecha_nombres = ", ".join(f"{nombre(i, i)[0]} ({num(v, 1)} °C)" for i, v in zip(brecha_est.icao, brecha_est.t_mae))
     sesgo_global = float(pts[pts.modelo == base].t_err.mean())
     frio_calor = "frío (el modelo pronostica más frío de lo observado)" if sesgo_global < -0.3 else \
                  "cálido (el modelo pronostica más calor de lo observado)" if sesgo_global > 0.3 else "casi nulo"
@@ -489,6 +525,9 @@ def render_site(pts):
 </section>"""
 
     narr_html, narr_aviso = narrativa()
+    m_narr = re.match(r"\s*<h2>(.*?)</h2>(.*)$", narr_html, flags=re.S) if narr_html else None
+    narr_titulo = m_narr.group(1) if m_narr else "¿Qué tan bien acierta el pronóstico de IA en Chile?"
+    narr_cuerpo = m_narr.group(2) if m_narr else ""
     MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
     fecha_ultima = f"{ultima.day} {MESES[ultima.month - 1]} · {ultima:%H} UTC"
     generado = f"{ahora.day} {MESES[ahora.month - 1]} {ahora.year}, {ahora:%H:%M} UTC"
@@ -511,10 +550,8 @@ def render_site(pts):
 
 <header>
   <div class="eyebrow">Earth-2 Chile · verificación diaria</div>
-  <h1>¿Qué tan bien acierta el pronóstico de IA en Chile?</h1>
-  <p class="lead">Cada día tomamos el pronóstico del modelo de inteligencia artificial de ECMWF (AIFS), lo ponemos junto a los dos
-  modelos físicos de referencia, IFS (ECMWF) y GFS (NOAA), y comparamos los tres con lo que realmente midieron {n_est} aeródromos del país,
-  de Arica a la Antártica. Aquí está el resultado, sin maquillaje.</p>
+  <h1>{narr_titulo}</h1>
+  {f'<div class="narrativa">{narr_cuerpo}</div>' if narr_cuerpo else f'<p class="lead">Cada día comparamos AIFS (IA, ECMWF), IFS (ECMWF) y GFS (NOAA) con lo que midieron {n_est} aeródromos del país.</p>'}
   <div class="aviso"><p class="small">Esta página es apoyo a la decisión y verificación pública de modelos. Las alertas oficiales son de la
   <a href="https://www.meteochile.gob.cl/" rel="noopener">Dirección Meteorológica de Chile</a> y de
   <a href="https://www.senapred.cl/" rel="noopener">SENAPRED</a>.</p></div>
@@ -524,26 +561,17 @@ def render_site(pts):
 <section>
   <div class="tiles">
     <div class="tile hero">
-      <div class="label">Error medio de temperatura de la IA ({MODELOS[base][0]}) a {hero_lead} h</div>
-      <div class="value">{num(hero_mae, 1)}<small>°C</small></div>
-      <div class="foot">{chip(hero_nv)} &nbsp;{hero_txt} {hero_n} pares.</div>
+      <div class="label">La brecha: estaciones donde el pronóstico global se equivoca más de {num(UMBRAL_BRECHA)} °C</div>
+      <div class="value">{len(brecha_est)}<small>de {len(brecha)}</small></div>
+      <div class="foot">{chip("prelim") if brecha_prelim else (chip("alto") if len(brecha_est) else chip("bueno"))} &nbsp;{brecha_nombres if len(brecha_est) else "Ninguna por ahora."}
+      Fuente: {brecha_fuente_txt}{f"; preliminar, aún con menos de {MIN_PARES} pares por estación" if brecha_prelim else ""}.</div>
     </div>
     <div class="tile"><div class="label">Última corrida verificada</div><div class="value fecha">{fecha_ultima}</div><div class="foot">{ultima.year}. Los modelos corren 4 veces al día.</div></div>
     <div class="tile"><div class="label">Corridas acumuladas</div><div class="value">{n_runs}</div><div class="foot">Desde el {pd.Timestamp(runs[0]).day} {MESES[pd.Timestamp(runs[0]).month - 1]} {pd.Timestamp(runs[0]).year}</div></div>
     <div class="tile"><div class="label">Pares pronóstico–observación</div><div class="value">{len(pts)}</div><div class="foot">{n_est} estaciones · {len(presentes)} modelo{'s' if len(presentes) != 1 else ''}</div></div>
-    <div class="tile"><div class="label">Estaciones con error alto ({MODELOS[base][0]})</div><div class="value">{n_alto}<small>de {len(bye)}</small></div><div class="foot">{n_bueno} con error bajo (menos de {num(UMBRAL_T[0])} °C)</div></div>
+    <div class="tile"><div class="label">Error medio de {MODELOS[base][0]} a {hero_lead} h</div><div class="value">{num(hero_mae, 1)}<small>°C</small></div><div class="foot">{chip("prelim") if hero_n < MIN_PARES else chip(hero_nv)} {hero_n} pares, todas las estaciones.</div></div>
   </div>
 </section>
-
-<section>
-  <div class="sec-head"><h2>La IA frente al modelo físico</h2>
-  <p class="frase">{frase}</p>
-  {f'<p class="muted small">{nota_cmp}</p>' if nota_cmp else ''}</div>
-  <div class="modelos">{''.join(tarjetas)}</div>
-  <p class="muted small">Los tres modelos usan la misma grilla de 25 km y se miden contra las mismas estaciones y observaciones. AIFS es la versión de inteligencia artificial de ECMWF; IFS es su modelo físico tradicional; GFS es el modelo físico global de Estados Unidos (NOAA). Cada uno se verifica en su última corrida completa, por eso el número de pares puede diferir.</p>
-</section>
-
-{f'<section class="narrativa">{narr_html}</section>' if narr_html else ""}
 
 <section class="dos">
   <div class="card">
@@ -563,6 +591,14 @@ def render_site(pts):
     </ol>
     <p class="muted small">Umbrales: menos de {num(UMBRAL_T[0])} °C es bueno, hasta {num(UMBRAL_T[1])} °C aceptable, y más de eso alto. Son umbrales de trabajo; el asesor meteorológico del proyecto los revisará.</p>
   </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>La IA frente al modelo físico</h2>
+  <p class="frase">{frase}</p>
+  {f'<p class="muted small">{nota_cmp}</p>' if nota_cmp else ''}</div>
+  <div class="modelos">{''.join(tarjetas)}</div>
+  <p class="muted small">Los tres modelos usan la misma grilla de 25 km y se miden contra las mismas estaciones y observaciones. AIFS es la versión de inteligencia artificial de ECMWF; IFS es su modelo físico tradicional; GFS es el modelo físico global de Estados Unidos (NOAA). Cada uno se verifica en su última corrida completa, por eso el número de pares puede diferir.</p>
 </section>
 
 <section>

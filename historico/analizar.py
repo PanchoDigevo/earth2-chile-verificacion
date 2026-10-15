@@ -26,7 +26,8 @@ MIN_PARES_SESGO = 30         # pares mínimos (en 2025) para aprender el sesgo d
 ANIO_ENTRENA, ANIO_EVALUA = 2025, 2026
 
 # Estaciones que representan cada zona de evento (aeródromos más cercanos).
-ZONAS = {"coquimbo-jul": ["SCSE", "SCAT"], "centrosur-ago": ["SCQP", "SCTC", "SCGE", "SCCH", "SCIE"], "lascondes-oct": ["SCTB", "SCEL", "SCSN"]}
+ZONAS = {"coquimbo-jul": ["SCSE", "SCAT"], "centrosur-ago": ["SCQP", "SCTC", "SCGE", "SCCH", "SCIE"], "lascondes-oct": ["SCTB", "SCEL", "SCSN"],
+         "santiago-13oct": ["SCTB", "SCEL", "SCSN"]}
 RE_LLUVIA = re.compile(r"(RA|DZ|SN|GR|GS|PL|UP)")
 
 

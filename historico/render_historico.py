@@ -12,7 +12,7 @@ REPO = "https://github.com/PanchoDigevo/earth2-chile-verificacion"
 MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
 PLAZOS = [24, 48, 72]
 TITULOS_EVENTO = {"coquimbo-jul": "Coquimbo y Huasco, 14 al 24 de julio", "centrosur-ago": "Centro-sur, 30 de julio al 2 de agosto",
-                  "lascondes-oct": "Las Condes, 8 de octubre"}
+                  "lascondes-oct": "Las Condes, 8 de octubre", "santiago-13oct": "Santiago, tormenta convectiva del 13 de octubre"}
 
 CSS_EXTRA = """
 :root{--serie-global:#0e7c86;--serie-corr:#d95926}
@@ -147,7 +147,9 @@ def seccion_eventos(r):
     from analizar import ZONAS
     bloques = []
     for ev, d in det.groupby("evento", sort=False):
-        titulo = TITULOS_EVENTO.get(ev, ev)
+        d0 = pd.Timestamp(d.dia.min()); d1 = pd.Timestamp(d.dia.max())
+        fecha = f"{d0.day} de {MESES[d0.month - 1]}" if d0 == d1 else f"{d0.day} de {MESES[d0.month - 1]} al {d1.day} de {MESES[d1.month - 1]}"
+        titulo = TITULOS_EVENTO.get(ev, f"{d.zona.iloc[0]}, {fecha}")
         resumen = res[res.evento == ev] if not res.empty else pd.DataFrame()
         frases = []
         for m in ORDEN:

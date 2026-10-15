@@ -2,7 +2,7 @@
 Se importa desde render_site.py y render_historico.py; site/quebradas.html (estática) lleva el mismo HTML y CSS copiados
 de aquí. Si cambias algo, actualiza también quebradas.html."""
 
-SECCIONES = [("hoy", "./", "Hoy"), ("historico", "historico.html", "Histórico 2025–26"), ("quebradas", "quebradas.html", "Quebradas")]
+SECCIONES = [("hoy", "./", "Hoy"), ("historico", "historico.html", "Histórico <span class=\"largo\">2025–26</span>"), ("quebradas", "quebradas.html", "Quebradas")]
 
 CSS_NAV = """
 .topnav{position:sticky;top:0;z-index:1100;background:var(--surface);border-bottom:1px solid var(--line)}
@@ -15,7 +15,7 @@ CSS_NAV = """
 .topnav .tabs a:hover{color:var(--fg)}
 .topnav .tabs a.activa{color:var(--fg);border-bottom-color:var(--accent)}
 .topnav .tabs a:focus-visible{outline:2px solid var(--accent);outline-offset:-4px;border-radius:4px}
-@media (max-width:520px){.topnav .marca small{display:none}.topnav .tabs a{padding:0 9px;font-size:14px}}
+@media (max-width:520px){.topnav .marca small{display:none}.topnav .largo{display:none}.topnav .tabs a{padding:0 9px;font-size:14px}}
 """
 
 

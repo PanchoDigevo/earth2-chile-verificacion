@@ -1,21 +1,21 @@
 {
-"generado": "2026-10-15T03:28Z",
+"generado": "2026-10-15T05:35Z",
 "lluvia_prevista": {
 "AIFS": {
-"corrida": "20261014_18",
-"mm6": 0.2,
-"mm24": 0.4,
-"mm48": 1.3
+"corrida": "20261015_00",
+"mm6": 0.0,
+"mm24": 0.9,
+"mm48": 1.0
 },
 "GFS": {
-"corrida": "20261014_18",
-"mm6": 0.6,
-"mm24": 0.6,
-"mm48": 1.4
+"corrida": "20261015_00",
+"mm6": 0.1,
+"mm24": 0.7,
+"mm48": 1.2
 }
 },
-"mm6": 0.6,
-"mm24": 0.6,
+"mm6": 0.1,
+"mm24": 0.9,
 "horas_lluvia_7d": {},
 "factor_antecedente": 1.0,
 "parametros": {
@@ -36,121 +36,121 @@
 {
 "id": 6120889500,
 "nombre": "Quebrada de Apoquindo (San Carlos de Apoquindo)",
-"p6": 0.027,
+"p6": 0.026,
 "p24": 0.026,
-"p": 0.027,
+"p": 0.026,
 "nivel": "bajo"
 },
 {
 "id": 6120891320,
 "nombre": "Quebrada El Temple",
-"p6": 0.027,
+"p6": 0.026,
 "p24": 0.026,
-"p": 0.027,
+"p": 0.026,
 "nivel": "bajo"
 },
 {
 "id": 6121325370,
 "nombre": "Quebrada de Macul",
-"p6": 0.027,
+"p6": 0.026,
 "p24": 0.026,
-"p": 0.027,
+"p": 0.026,
 "nivel": "bajo"
 },
 {
 "id": 6120888170,
 "nombre": "Quebrada Cerro del Gordo",
-"p6": 0.027,
+"p6": 0.026,
 "p24": 0.026,
-"p": 0.027,
+"p": 0.026,
 "nivel": "bajo"
 },
 {
 "id": 6120888130,
 "nombre": "Quebrada El Loro",
-"p6": 0.027,
+"p6": 0.026,
 "p24": 0.026,
-"p": 0.027,
+"p": 0.026,
 "nivel": "bajo"
 },
 {
 "id": 6120888370,
 "nombre": "Quebrada El Manzano",
-"p6": 0.027,
+"p6": 0.026,
 "p24": 0.026,
-"p": 0.027,
+"p": 0.026,
 "nivel": "bajo"
 },
 {
 "id": 6120888360,
 "nombre": "Quebrada El Carrizo",
-"p6": 0.027,
+"p6": 0.026,
 "p24": 0.026,
-"p": 0.027,
+"p": 0.026,
 "nivel": "bajo"
 },
 {
 "id": 6121325780,
 "nombre": "Quebrada El Toro",
-"p6": 0.027,
+"p6": 0.026,
 "p24": 0.026,
-"p": 0.027,
+"p": 0.026,
 "nivel": "bajo"
 },
 {
 "id": 6120888330,
 "nombre": "Quebrada Agua de Aranda",
-"p6": 0.027,
+"p6": 0.026,
 "p24": 0.026,
-"p": 0.027,
+"p": 0.026,
 "nivel": "bajo"
 },
 {
 "id": 6120888280,
 "nombre": "Quebrada El Bolsón",
-"p6": 0.027,
+"p6": 0.026,
 "p24": 0.026,
-"p": 0.027,
+"p": 0.026,
 "nivel": "bajo"
 },
 {
 "id": 6120890830,
 "nombre": "Quebrada La Buitrera",
-"p6": 0.027,
+"p6": 0.026,
 "p24": 0.026,
-"p": 0.027,
+"p": 0.026,
 "nivel": "bajo"
 },
 {
 "id": 6120888460,
 "nombre": "Quebrada La Pipa",
-"p6": 0.027,
+"p6": 0.026,
 "p24": 0.026,
-"p": 0.027,
+"p": 0.026,
 "nivel": "bajo"
 },
 {
 "id": 6120888410,
 "nombre": "Quebrada del Agua",
-"p6": 0.027,
+"p6": 0.026,
 "p24": 0.026,
-"p": 0.027,
+"p": 0.026,
 "nivel": "bajo"
 },
 {
 "id": 6120888180,
 "nombre": "Estero Manzanito",
-"p6": 0.027,
+"p6": 0.026,
 "p24": 0.026,
-"p": 0.027,
+"p": 0.026,
 "nivel": "bajo"
 },
 {
 "id": 6120888140,
 "nombre": "Quebrada El Escorial",
-"p6": 0.027,
+"p6": 0.026,
 "p24": 0.026,
-"p": 0.027,
+"p": 0.026,
 "nivel": "bajo"
 }
 ]

@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quebradas de Santiago oriente · Earth-2 Chile</title>
+<!-- CÁSCARA DEL VISOR. Los datos de ejemplo (DEMO) se reemplazan por los GeoJSON reales que genera el pipeline:
+     data/quebradas/cuencas.geojson, quema.geojson, pendiente.geojson, remociones.geojson, lluvia.json -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{--bg:#f3f6fb;--bg2:#fff;--fg:#0f1a2e;--fg2:#4b5b76;--line:#d5deeb;--rain:#0f8fb8;--amber:#b57a0c;--red:#c9343f;--green:#2e8b57;
+  --display:"Bricolage Grotesque",system-ui,sans-serif;--body:"IBM Plex Sans",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding:24px 16px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--rain);margin:0 0 10px}
+h1{font-family:var(--display);font-size:clamp(28px,4.5vw,44px);line-height:1.05;margin:0 0 12px}
+p.lead{color:var(--fg2);max-width:70ch;margin:0 0 16px}
+.note{background:#d9eff4;border-left:4px solid var(--rain);padding:10px 14px;border-radius:8px;font-size:14px;margin:0 0 18px}
+.demo{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.08em;padding:3px 8px;border-radius:999px;background:var(--amber);color:#fff;vertical-align:middle;margin-left:8px}
+.grid{display:grid;grid-template-columns:1fr 340px;gap:16px}
+@media (max-width:900px){.grid{grid-template-columns:1fr}}
+#map{height:620px;border-radius:14px;border:1px solid var(--line);background:#e9eef5}
+@media (max-width:600px){#map{height:460px}}
+.panel{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:16px}
+.panel h3{font-family:var(--display);font-size:18px;margin:0 0 8px}
+.layers label{display:flex;gap:8px;align-items:center;font-size:14px;padding:4px 0}
+.layers i{width:14px;height:14px;border-radius:3px;display:inline-block}
+.slider{margin-top:14px}
+.slider input{width:100%}
+.slider .v{font-family:var(--mono);font-size:22px;color:var(--rain)}
+.ficha{margin-top:14px;border-top:1px solid var(--line);padding-top:12px;font-size:14px}
+.ficha dl{display:grid;grid-template-columns:1fr auto;gap:4px 12px;margin:8px 0}
+.ficha dt{color:var(--fg2)}.ficha dd{margin:0;font-family:var(--mono);text-align:right}
+.nivel{display:inline-block;padding:3px 10px;border-radius:999px;font-size:13px;font-weight:600;color:#fff}
+.n0{background:var(--green)}.n1{background:var(--amber)}.n2{background:var(--red)}
+.leg{display:flex;flex-wrap:wrap;gap:12px;font-family:var(--mono);font-size:12px;color:var(--fg2);margin-top:10px}
+.leg i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:middle}
+.src{font-family:var(--mono);font-size:12px;color:var(--fg2);margin-top:18px}
+footer{font-size:13px;color:var(--fg2);margin-top:28px;border-top:1px solid var(--line);padding-top:12px}
+a{color:var(--rain)}
+.leaflet-container{font-family:var(--body)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">Earth-2 Chile · geografía</p>
+  <h1>Quebradas de Santiago oriente: dónde se quemó, cuánta pendiente hay y qué lluvia viene <span class="demo">DEMO · datos de ejemplo</span></h1>
+  <p class="lead">Un aluvión no lo explica solo la lluvia: lo explica la lluvia sobre una ladera concreta, en un estado concreto. Este visor cruza las cuatro cosas que ya se pueden medir con datos abiertos y las resume en un indicador por cuenca. Mueve la barra para ver qué pasaría con más lluvia en dos horas.</p>
+  <div class="note">Indicador de apoyo a la decisión, en prueba. No reemplaza los avisos ni las alertas oficiales de la <a href="https://www.meteochile.gob.cl/">Dirección Meteorológica de Chile</a>, de <a href="https://senapred.cl/">SENAPRED</a> ni de <a href="https://www.sernageomin.cl/">SERNAGEOMIN</a>. El umbral de lluvia es una regla publicada (USGS post-incendio) todavía no calibrada para Chile.</div>
+
+  <div class="grid">
+    <div id="map" role="application" aria-label="Mapa de cuencas de quebrada de Santiago oriente"></div>
+    <aside class="panel">
+      <h3>Capas</h3>
+      <div class="layers">
+        <label><input type="checkbox" id="l-cuencas" checked><i style="background:#b57a0c"></i>Cuencas de quebrada (indicador)</label>
+        <label><input type="checkbox" id="l-quema" checked><i style="background:#c9343f;opacity:.6"></i>Laderas quemadas, verano 2026</label>
+        <label><input type="checkbox" id="l-pend"><i style="background:#4b5b76;opacity:.5"></i>Pendiente &gt; 25°</label>
+        <label><input type="checkbox" id="l-hist" checked><i style="background:#0f1a2e;border-radius:50%"></i>Remociones en masa anteriores</label>
+      </div>
+      <div class="slider">
+        <h3>¿Y si cayeran…</h3>
+        <div class="v"><span id="mmv">20</span> mm en 2 horas</div>
+        <input type="range" id="mm" min="0" max="60" step="2" value="20" aria-label="Lluvia en 2 horas, milímetros">
+        <div class="leg"><span><i style="background:var(--green)"></i>bajo</span><span><i style="background:var(--amber)"></i>medio</span><span><i style="background:var(--red)"></i>alto</span></div>
+        <p style="font-size:13px;color:var(--fg2);margin:8px 0 0">Hoy el modelo global prevé <b id="fc24">— mm</b> en 24 h y han caído <b id="acc7">— mm</b> en los últimos 7 días.</p>
+      </div>
+      <div class="ficha" id="ficha"><h3>Haz clic en una cuenca</h3><p style="color:var(--fg2);margin:0">Verás su porcentaje quemado, su pendiente media, cuántas veces ha bajado y a cuánta lluvia cruza el umbral.</p></div>
+    </aside>
+  </div>
+
+  <p class="src">Fuentes previstas: Sentinel-2 (ESA/Copernicus, dNBR pre y post incendio) · Copernicus DEM 30 m · HydroBASINS y cauces OSM/DGA · catálogo de remociones en masa de SERNAGEOMIN · lluvia prevista AIFS/IFS/GFS y acumulada METAR (Tobalaba, Pudahuel). Mapa base © OpenStreetMap. Regla del indicador: lluvia en 2 h sobre un umbral que baja con la fracción quemada, la pendiente y el suelo húmedo (USGS, Staley et al. 2017), documentada en el repositorio.</p>
+  <footer>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED. Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion">github.com/PanchoDigevo/earth2-chile-verificacion</a> · <a href="index.html">Verificación diaria</a> · <a href="historico.html">Verificación retroactiva</a></footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+// ====== DATOS. En producción se cargan con fetch() desde data/quebradas/*.geojson. Aquí: ejemplo aproximado, SOLO para la cáscara. ======
+var DEMO = true;
+var cuencas = {"type":"FeatureCollection","features":[
+ {"type":"Feature","properties":{"nombre":"Quebrada Honda","quema":0.62,"pend":31,"hist":3,"area_km2":4.1},"geometry":{"type":"Polygon","coordinates":[[[-70.515,-33.395],[-70.49,-33.39],[-70.47,-33.40],[-70.465,-33.42],[-70.49,-33.43],[-70.515,-33.415],[-70.515,-33.395]]]}},
+ {"type":"Feature","properties":{"nombre":"Quebrada Grande","quema":0.45,"pend":28,"hist":2,"area_km2":5.3},"geometry":{"type":"Polygon","coordinates":[[[-70.515,-33.415],[-70.49,-33.43],[-70.47,-33.445],[-70.49,-33.46],[-70.515,-33.45],[-70.52,-33.43],[-70.515,-33.415]]]}},
+ {"type":"Feature","properties":{"nombre":"Quebrada de Apoquindo","quema":0.30,"pend":26,"hist":2,"area_km2":6.0},"geometry":{"type":"Polygon","coordinates":[[[-70.52,-33.45],[-70.49,-33.46],[-70.475,-33.48],[-70.5,-33.49],[-70.525,-33.475],[-70.52,-33.45]]]}},
+ {"type":"Feature","properties":{"nombre":"Quebrada Las Ondas","quema":0.55,"pend":30,"hist":1,"area_km2":2.2},"geometry":{"type":"Polygon","coordinates":[[[-70.49,-33.39],[-70.47,-33.375],[-70.455,-33.39],[-70.47,-33.40],[-70.49,-33.39]]]}},
+ {"type":"Feature","properties":{"nombre":"Quebrada de Ramón","quema":0.05,"pend":27,"hist":4,"area_km2":9.0},"geometry":{"type":"Polygon","coordinates":[[[-70.52,-33.475],[-70.5,-33.49],[-70.48,-33.51],[-70.51,-33.52],[-70.535,-33.5],[-70.52,-33.475]]]}}
+]};
+var quema = {"type":"FeatureCollection","features":[{"type":"Feature","properties":{"ha":1012},"geometry":{"type":"Polygon","coordinates":[[[-70.505,-33.385],[-70.47,-33.38],[-70.455,-33.405],[-70.465,-33.44],[-70.49,-33.455],[-70.51,-33.44],[-70.505,-33.385]]]}}]};
+var pendiente = {"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[-70.5,-33.38],[-70.45,-33.37],[-70.44,-33.52],[-70.49,-33.52],[-70.5,-33.38]]]}}]};
+var remociones = {"type":"FeatureCollection","features":[
+ {"type":"Feature","properties":{"fecha":"2026-10-08","desc":"Aluvión San Carlos de Apoquindo"},"geometry":{"type":"Point","coordinates":[-70.49,-33.415]}},
+ {"type":"Feature","properties":{"fecha":"2026-01-31","desc":"Activación de quebradas (SERNAGEOMIN, feb-2026)"},"geometry":{"type":"Point","coordinates":[-70.485,-33.44]}},
+ {"type":"Feature","properties":{"fecha":"1993-05-03","desc":"Aluvión de la Quebrada de Macul"},"geometry":{"type":"Point","coordinates":[-70.52,-33.50]}}
+]};
+var lluvia = {"fc24_mm":12, "acc7_mm":144}; // en producción: data/quebradas/lluvia.json desde el pipeline
+
+// ====== INDICADOR. Regla simple y documentada; se calibra con los eventos de 2026. ======
+// Umbral base de intensidad (mm en 2 h) para una cuenca sin quema, pendiente moderada y suelo seco.
+function umbral(p, acc7){
+  var base = 40;                                   // mm/2 h, cuenca sana
+  var fq = 1 - 0.55*Math.min(1,p.quema);           // quema reduce el umbral hasta 55 %
+  var fp = p.pend>=30 ? 0.8 : p.pend>=25 ? 0.9 : 1; // pendiente
+  var fs = acc7>=100 ? 0.7 : acc7>=50 ? 0.85 : 1;   // suelo húmedo (lluvia 7 días)
+  var fh = p.hist>=3 ? 0.9 : 1;                     // historial
+  return base*fq*fp*fs*fh;
+}
+function nivel(mm, p, acc7){ var u=umbral(p,acc7); return mm>=u ? 2 : mm>=0.6*u ? 1 : 0; }
+var COL=['#2e8b57','#b57a0c','#c9343f'];
+
+// ====== MAPA ======
+var map = L.map('map',{scrollWheelZoom:false}).setView([-33.435,-70.49],13);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:17,attribution:'&copy; OpenStreetMap'}).addTo(map);
+
+var mm = +document.getElementById('mm').value, acc7 = lluvia.acc7_mm;
+document.getElementById('fc24').textContent = lluvia.fc24_mm+' mm'; document.getElementById('acc7').textContent = acc7+' mm';
+
+function estilo(f){ var n=nivel(mm,f.properties,acc7); return {color:COL[n],weight:2,fillColor:COL[n],fillOpacity:.28}; }
+var capaCuencas = L.geoJSON(cuencas,{style:estilo,onEachFeature:function(f,l){
+  l.bindTooltip(f.properties.nombre,{sticky:true});
+  l.on('click',function(){ ficha(f.properties); });
+}}).addTo(map);
+var capaQuema = L.geoJSON(quema,{style:{color:'#c9343f',weight:1,fillColor:'#c9343f',fillOpacity:.35}}).addTo(map);
+var capaPend = L.geoJSON(pendiente,{style:{color:'#4b5b76',weight:0,fillColor:'#4b5b76',fillOpacity:.18}});
+var capaHist = L.geoJSON(remociones,{pointToLayer:function(f,ll){return L.circleMarker(ll,{radius:6,color:'#0f1a2e',fillColor:'#0f1a2e',fillOpacity:.9});},
+  onEachFeature:function(f,l){ l.bindPopup('<b>'+f.properties.fecha+'</b><br>'+f.properties.desc); }}).addTo(map);
+if(DEMO){ L.control({position:'topright'}).onAdd=function(){var d=L.DomUtil.create('div');d.style.cssText='background:#b57a0c;color:#fff;font:600 12px IBM Plex Mono,monospace;padding:4px 8px;border-radius:6px';d.textContent='DEMO · polígonos de ejemplo';return d;};
+  var c=L.control({position:'topright'}); c.onAdd=function(){var d=L.DomUtil.create('div');d.style.cssText='background:#b57a0c;color:#fff;font:600 12px IBM Plex Mono,monospace;padding:4px 8px;border-radius:6px';d.textContent='DEMO · polígonos de ejemplo';return d;}; c.addTo(map); }
+
+function toggle(id,layer){ document.getElementById(id).addEventListener('change',function(e){ e.target.checked?layer.addTo(map):map.removeLayer(layer); }); }
+toggle('l-cuencas',capaCuencas); toggle('l-quema',capaQuema); toggle('l-pend',capaPend); toggle('l-hist',capaHist);
+
+document.getElementById('mm').addEventListener('input',function(e){ mm=+e.target.value; document.getElementById('mmv').textContent=mm; capaCuencas.setStyle(estilo); if(sel) ficha(sel); });
+
+var sel=null;
+function ficha(p){ sel=p; var u=umbral(p,acc7), n=nivel(mm,p,acc7), nom=['bajo','medio','alto'][n];
+  document.getElementById('ficha').innerHTML='<h3>'+p.nombre+'</h3><span class="nivel n'+n+'">indicador '+nom+' con '+mm+' mm en 2 h</span>'+
+   '<dl><dt>Superficie quemada (verano 2026)</dt><dd>'+Math.round(p.quema*100)+' %</dd><dt>Pendiente media</dt><dd>'+p.pend+'°</dd><dt>Remociones registradas</dt><dd>'+p.hist+'</dd><dt>Área</dt><dd>'+p.area_km2+' km²</dd><dt>Lluvia 7 días</dt><dd>'+acc7+' mm</dd><dt><b>Umbral estimado</b></dt><dd><b>'+u.toFixed(0)+' mm / 2 h</b></dd></dl>'+
+   '<p style="color:var(--fg2);margin:0">Con la lluvia prevista para hoy ('+lluvia.fc24_mm+' mm en 24 h) el indicador queda en <b>'+['bajo','medio','alto'][nivel(lluvia.fc24_mm/2,p,acc7)]+'</b> si cayera concentrada en dos horas.</p>'; }
+</script>
+</body>
+</html>

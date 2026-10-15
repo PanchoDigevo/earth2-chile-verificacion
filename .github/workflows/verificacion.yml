@@ -1,7 +1,7 @@
 name: verificacion-diaria
 on:
   schedule:
-    - cron: "30 2,8,14,20 * * *"   # ~7 h después de cada corrida AIFS (00/06/12/18 UTC)
+    - cron: "30 2,8,14,20 * * *"   # ~8 h después de cada corrida (00/06/12/18 UTC): AIFS, IFS y GFS ya están completas
   workflow_dispatch:
 permissions:
   contents: write
@@ -24,9 +24,19 @@ jobs:
       - name: Observaciones METAR
         working-directory: verificacion
         run: python fetch_metar.py
-      - name: Última corrida AIFS
+      # Cada modelo baja su última corrida completa. Si uno falla, los otros se verifican igual.
+      - name: Última corrida AIFS (ECMWF, IA)
         working-directory: verificacion
+        continue-on-error: true
         run: python fetch_aifs.py
+      - name: Última corrida IFS (ECMWF, físico)
+        working-directory: verificacion
+        continue-on-error: true
+        run: python fetch_ifs.py
+      - name: Última corrida GFS (NOAA, físico)
+        working-directory: verificacion
+        continue-on-error: true
+        run: python fetch_gfs.py
       - name: Verificar y generar sitio
         working-directory: verificacion
         run: python verify.py

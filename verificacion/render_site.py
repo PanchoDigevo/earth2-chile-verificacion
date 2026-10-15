@@ -3,8 +3,9 @@
 Uso: python render_site.py            -> regenera el sitio con lo que hay en data/
      desde verify.py: render_site(pts)
 
-Diseño: una sola columna, resumen antes del detalle, mapa de Chile en tres franjas (norte, centro, sur),
-tablas con barras de error y semáforo de tres niveles con texto (nunca solo color). Modo claro y oscuro.
+Compara tres modelos globales contra las mismas estaciones: AIFS (IA, ECMWF), IFS (físico, ECMWF) y GFS (físico, NOAA).
+Diseño: una sola columna, resumen antes del detalle, mapa de Chile en tres franjas (norte, centro, sur) con selector
+de modelo, tablas con barras de error y semáforo de tres niveles con texto (nunca solo color). Modo claro y oscuro.
 Lenguaje: "aviso"/"pronóstico de impacto", nunca "alerta"; las alertas oficiales son de la DMC y SENAPRED."""
 import json, math, os
 import pandas as pd
@@ -25,6 +26,10 @@ ESTACIONES = {
     "SCAS": ("Puerto Aysén", "Aysén"), "SCCY": ("Coyhaique", "Aysén"), "SCBA": ("Balmaceda", "Aysén"),
     "SCNT": ("Puerto Natales", "Magallanes"), "SCCI": ("Punta Arenas", "Magallanes"), "SCRM": ("Base Frei (Antártica)", "Antártica"),
 }
+
+# Modelos comparados, en orden de presentación. (nombre corto, tipo, centro)
+MODELOS = {"AIFS": ("AIFS", "Inteligencia artificial", "ECMWF"), "IFS": ("IFS", "Modelo físico", "ECMWF"), "GFS": ("GFS", "Modelo físico", "NOAA")}
+ORDEN = list(MODELOS)
 
 # Umbrales del semáforo (error medio absoluto). Temperatura en °C, viento en m/s.
 UMBRAL_T = (1.5, 3.0)
@@ -130,16 +135,15 @@ def contorno_path():
     return "".join(partes)
 
 
-def mapa(bye):
-    path = contorno_path()
-    if not path:
-        return ""
+def mapa(bye, modelo):
+    """Tres franjas (norte, centro, sur) con las estaciones coloreadas por el error medio de temperatura de un modelo.
+    El contorno de Chile se define una sola vez en la página (defs_contorno) y aquí se referencia con <use>."""
     svgs = []
-    for i, (titulo, la0, la1, lo0, lo1) in enumerate(FRANJAS):
+    corto_m = MODELOS[modelo][0]
+    for titulo, la0, la1, lo0, lo1 in FRANJAS:
         x0, y0 = proj(lo0, la0)
         x1, y1 = proj(lo1, la1)
         w, h = x1 - x0, y1 - y0
-        defs = f'<defs><path id="chile" d="{path}"/></defs>' if i == 0 else ""
         puntos = []
         for r in bye.itertuples(index=False):
             if not (la1 <= r.lat <= la0 and lo0 <= r.lon <= lo1):
@@ -148,13 +152,34 @@ def mapa(bye):
             nv = nivel(r.t_mae, UMBRAL_T)
             corto, _ = nombre(r.icao, r.name)
             etiqueta = f'<text x="{x + 7:.1f}" y="{y + 3.5:.1f}">{r.icao}</text>' if nv == "alto" else ""
-            puntos.append(f'<g class="est {nv}"><title>{corto} ({r.icao}): error medio de temperatura {num(r.t_mae, 1, " °C")}, '
+            puntos.append(f'<g class="est {nv}"><title>{corto} ({r.icao}), {corto_m}: error medio de temperatura {num(r.t_mae, 1, " °C")}, '
                           f'viento {num(r.w_mae, 1, " m/s")}, {int(r.n)} pares</title>'
                           f'<circle cx="{x:.1f}" cy="{y:.1f}" r="4.5"/>{etiqueta}</g>')
         svgs.append(f'<figure class="franja"><svg viewBox="{x0:.1f} {y0:.1f} {w:.1f} {h:.1f}" width="{w:.0f}" height="{h:.0f}" '
-                    f'role="img" aria-label="Mapa de la zona {titulo.lower()} de Chile con las estaciones">{defs}'
+                    f'role="img" aria-label="Mapa de la zona {titulo.lower()} de Chile con las estaciones, modelo {corto_m}">'
                     f'<use href="#chile" class="tierra"/>{"".join(puntos)}</svg><figcaption>{titulo}</figcaption></figure>')
-    return '<div class="mapa">' + "".join(svgs) + "</div>"
+    return f'<div class="mapa mapa-modelo" data-modelo="{modelo}">' + "".join(svgs) + "</div>"
+
+
+def defs_contorno():
+    path = contorno_path()
+    if not path:
+        return ""
+    return f'<svg width="0" height="0" aria-hidden="true" style="position:absolute"><defs><path id="chile" d="{path}"/></defs></svg>'
+
+
+def mapas(bye_m):
+    """Selector de modelo (botones de radio, sin JavaScript) y un mapa por modelo; se muestra el elegido."""
+    defs = defs_contorno()
+    if not defs:
+        return ""
+    presentes = [m for m in ORDEN if m in bye_m]
+    botones = "".join(f'<label><input type="radio" name="mapa" id="mapa-{m}" value="{m}"{" checked" if i == 0 else ""}>'
+                      f'{MODELOS[m][0]} <span class="muted">{MODELOS[m][1].split()[0].lower() if m != "AIFS" else "IA"}</span></label>'
+                      for i, m in enumerate(presentes))
+    cuerpo = "".join(mapa(bye_m[m], m) for m in presentes)
+    return (f'<div class="mapas">{defs}<fieldset class="selector"><legend class="eyebrow">Modelo</legend>{botones}</fieldset>'
+            f'{cuerpo}</div>')
 
 
 # ---------- página ----------
@@ -262,90 +287,212 @@ footer{border-top:1px solid var(--line);padding-top:20px;display:grid;gap:8px;fo
 footer p{max-width:80ch}
 @media (max-width:600px){.tile .value{font-size:26px}.tile.hero .value{font-size:38px}}
 @media (prefers-reduced-motion:no-preference){.est circle{transition:r .15s ease}}
+/* comparación de modelos */
+.modelos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.modelos{grid-template-columns:1fr}}
+.modelo{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;display:grid;gap:4px;align-content:start}
+.modelo.ia{border-color:var(--accent)}
+.modelo .tipo{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.modelo .nombre{font-family:var(--font-display);font-size:20px;font-weight:600}
+.modelo .nombre small{font-size:14px;font-weight:500;color:var(--muted);margin-left:6px}
+.modelo .value{font-family:var(--font-display);font-size:34px;font-weight:600;line-height:1.1}
+.modelo .value small{font-size:15px;font-weight:500;color:var(--muted);margin-left:2px}
+.modelo .foot{font-size:13px;color:var(--muted)}
+.modelo .mejor{display:inline-block;font-size:12px;font-weight:600;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:1px 8px;margin-left:6px;vertical-align:middle}
+.frase{font-size:18px;max-width:70ch}
+.frase strong{color:var(--accent)}
+/* selector de modelo del mapa */
+.mapas{display:grid;gap:12px;position:relative}
+.selector{display:flex;flex-wrap:wrap;gap:6px 8px;border:0;padding:0;margin:0;align-items:center}
+.selector legend{float:left;margin-right:6px;padding:0}
+.selector label{position:relative;cursor:pointer;border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:14px;font-weight:600;background:var(--bg)}
+.selector label .muted{font-weight:400;font-size:13px}
+.selector input{position:absolute;opacity:0;width:0;height:0;margin:0}
+.selector label:has(input:checked){background:var(--accent-soft);border-color:var(--accent)}
+.selector label:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.mapas:has(.selector) .mapa-modelo{display:none}
+.mapas:has(#mapa-AIFS:checked) .mapa-modelo[data-modelo="AIFS"]{display:flex}
+.mapas:has(#mapa-IFS:checked) .mapa-modelo[data-modelo="IFS"]{display:flex}
+.mapas:has(#mapa-GFS:checked) .mapa-modelo[data-modelo="GFS"]{display:flex}
+@supports not selector(:has(a)){.mapas .mapa-modelo{display:flex}.mapa-modelo::before{content:attr(data-modelo);width:100%;text-align:center;font-weight:600}}
+/* tablas con fila por modelo */
+td.plazo{font-weight:600;vertical-align:top}
+tr.sep td{border-top:1px solid var(--line)}
+td.modelo-nombre{font-weight:600}
+td.modelo-nombre .tipo{display:block;font-size:12px;color:var(--muted);font-weight:400}
+td.num.mejor{font-weight:700;color:var(--accent)}
+th.grupo{text-align:center;border-bottom:0;padding-bottom:0}
 """
+
+
+def etiqueta_modelo(m):
+    corto, tipo, centro = MODELOS[m]
+    return f"{corto} ({'IA' if m == 'AIFS' else 'físico'}, {centro})"
 
 
 def render_site(pts):
     pts = pts.copy()
+    if "modelo" not in pts.columns:
+        pts.insert(0, "modelo", "AIFS")
+    pts["modelo"] = pts["modelo"].fillna("AIFS")
     pts["run"] = pd.to_datetime(pts["run"])
     pts["valid"] = pd.to_datetime(pts["valid"])
     mae = lambda e: e.abs().mean()
+    presentes = [m for m in ORDEN if m in set(pts.modelo)]
+    ausentes = [m for m in ORDEN if m not in presentes]
 
-    res = (pts.groupby("lead_h").agg(n=("t_err", "size"), t_bias=("t_err", "mean"), t_mae=("t_err", mae),
-                                     w_bias=("w_err", "mean"), w_mae=("w_err", mae)).reset_index().sort_values("lead_h"))
-    bye = (pts.groupby("icao").agg(name=("name", "first"), lat=("lat", "first"), lon=("lon", "first"), elev=("elev", "first"),
-                                   n=("t_err", "size"), t_bias=("t_err", "mean"), t_mae=("t_err", mae), w_mae=("w_err", mae))
-           .reset_index().sort_values("t_mae", ascending=False))
-    por_run = pts.groupby("run").agg(n=("t_err", "size"), t_mae=("t_err", mae)).reset_index().sort_values("run")
+    res = (pts.groupby(["modelo", "lead_h"]).agg(n=("t_err", "size"), t_bias=("t_err", "mean"), t_mae=("t_err", mae),
+                                                 w_bias=("w_err", "mean"), w_mae=("w_err", mae)).reset_index().sort_values(["lead_h", "modelo"]))
+    bye_all = (pts.groupby(["modelo", "icao"]).agg(name=("name", "first"), lat=("lat", "first"), lon=("lon", "first"), elev=("elev", "first"),
+                                                   n=("t_err", "size"), t_bias=("t_err", "mean"), t_mae=("t_err", mae), w_mae=("w_err", mae))
+               .reset_index())
+    bye_m = {m: bye_all[bye_all.modelo == m].sort_values("t_mae", ascending=False) for m in presentes}
+    base = "AIFS" if "AIFS" in bye_m else presentes[0]
+    bye = bye_m[base]
+    estaciones = sorted(set(pts.icao))
+    por_run = pts.pivot_table(index="run", columns="modelo", values="t_err", aggfunc=mae).sort_index()
+    por_run_n = pts.groupby("run").size()
 
     runs = sorted(pts.run.unique())
     ultima = pd.Timestamp(runs[-1])
     n_runs = len(runs)
     ahora = pd.Timestamp.now("UTC")
 
-    # Cifra principal: error a 24 h si existe; si no, el plazo más largo disponible.
-    fila_hero = res[res.lead_h == 24]
+    # Cifra principal (AIFS): error a 24 h si existe; si no, el plazo más largo disponible.
+    res_base = res[res.modelo == base]
+    fila_hero = res_base[res_base.lead_h == 24]
     if fila_hero.empty:
-        fila_hero = res.iloc[[-1]]
+        fila_hero = res_base.iloc[[-1]]
     hero_lead = int(fila_hero.lead_h.iloc[0]); hero_mae = float(fila_hero.t_mae.iloc[0]); hero_n = int(fila_hero.n.iloc[0])
     hero_nv = nivel(hero_mae, UMBRAL_T)
     hero_txt = {"bueno": "Dentro de lo que un buen pronóstico puede ofrecer a esta escala.",
                 "medio": "Aceptable para una grilla de 25 km; mejora con el downscaling.",
                 "alto": "La grilla de 25 km no resuelve bien estos lugares."}[hero_nv]
 
-    t_max = max(4.0, math.ceil(max(res.t_mae.max(), bye.t_mae.max()) + 0.01))
-    w_max = max(4.0, math.ceil(max(res.w_mae.max(), bye.w_mae.max()) + 0.01))
+    t_max = max(4.0, math.ceil(max(res.t_mae.max(), bye_all.t_mae.max()) + 0.01))
+    w_max = max(4.0, math.ceil(max(res.w_mae.max(), bye_all.w_mae.max()) + 0.01))
 
-    # --- tabla por plazo ---
+    # --- comparación: plazo común a todos los modelos presentes (24 h si se puede) ---
+    leads_por_modelo = [set(res[res.modelo == m].lead_h) for m in presentes]
+    comunes = set.intersection(*leads_por_modelo) if leads_por_modelo else set()
+    lead_cmp = 24 if 24 in comunes else (max(comunes) if comunes else hero_lead)
+    cmp = {r.modelo: r for r in res[res.lead_h == lead_cmp].itertuples(index=False)}
+    mejor = min((m for m in presentes if m in cmp), key=lambda m: cmp[m].t_mae, default=None)
+
+    tarjetas = []
+    for m in ORDEN:
+        corto, tipo, centro = MODELOS[m]
+        clase = "modelo ia" if m == "AIFS" else "modelo"
+        if m in cmp:
+            r = cmp[m]
+            sello = '<span class="mejor">menor error</span>' if m == mejor and len(cmp) > 1 else ""
+            tarjetas.append(f'<div class="{clase}"><div class="tipo">{tipo} · {centro}</div><div class="nombre">{corto}{sello}</div>'
+                            f'<div class="value">{num(r.t_mae, 1)}<small>°C</small></div>'
+                            f'<div class="foot">{chip(nivel(r.t_mae, UMBRAL_T))} &nbsp;Error medio de temperatura a {lead_cmp} h, {int(r.n)} pares. '
+                            f'Viento {num(r.w_mae, 1, " m/s")}.</div></div>')
+        else:
+            motivo = "Todavía sin pares a este plazo." if m in presentes else "Entra en la próxima corrida del pipeline."
+            tarjetas.append(f'<div class="{clase}"><div class="tipo">{tipo} · {centro}</div><div class="nombre">{corto}</div>'
+                            f'<div class="value muted">–</div><div class="foot">{chip("sin")} &nbsp;{motivo}</div></div>')
+
+    if len(cmp) >= 2 and "AIFS" in cmp:
+        fisicos = [m for m in ("IFS", "GFS") if m in cmp]
+        mejor_fis = min(fisicos, key=lambda m: cmp[m].t_mae)
+        d = cmp["AIFS"].t_mae - cmp[mejor_fis].t_mae
+        veredicto = (f"Hoy la IA va <strong>por delante</strong> del mejor modelo físico ({MODELOS[mejor_fis][0]}) por {num(abs(d), 1, ' °C')}." if d < -0.1 else
+                     f"Hoy la IA va <strong>por detrás</strong> del mejor modelo físico ({MODELOS[mejor_fis][0]}) por {num(abs(d), 1, ' °C')}." if d > 0.1 else
+                     f"Hoy la IA y el mejor modelo físico ({MODELOS[mejor_fis][0]}) están <strong>empatados</strong>.")
+        partes = [f"la IA ({MODELOS['AIFS'][0]}) se equivoca en promedio <strong>{num(cmp['AIFS'].t_mae, 1, ' °C')}</strong> en la temperatura"]
+        partes += [f"el modelo físico de {MODELOS[m][2]} ({MODELOS[m][0]}) {num(cmp[m].t_mae, 1, ' °C')}" for m in fisicos]
+        frase = f"A {lead_cmp} h de anticipación, " + "; ".join(partes) + f". {veredicto}"
+    elif "AIFS" in cmp:
+        frase = (f"A {lead_cmp} h de anticipación, la IA ({MODELOS['AIFS'][0]}) se equivoca en promedio <strong>{num(cmp['AIFS'].t_mae, 1, ' °C')}</strong> "
+                 f"en la temperatura. Los modelos físicos (IFS y GFS) aparecerán aquí en cuanto tengan pares al mismo plazo.")
+    else:
+        frase = "La comparación aparecerá cuando los tres modelos tengan pares al mismo plazo."
+    nota_cmp = (f"Se compara al plazo de {lead_cmp} h porque es el más largo que ya tienen los tres modelos; a medida que lleguen las observaciones, pasa a 24 h."
+                if lead_cmp != 24 and len(cmp) > 1 else "")
+
+    # --- tabla por plazo: una fila por plazo y modelo ---
     filas_plazo = []
-    for r in res.itertuples(index=False):
-        nt, nw = nivel(r.t_mae, UMBRAL_T), nivel(r.w_mae, UMBRAL_W)
-        filas_plazo.append(
-            f"<tr><td class='l num'>{int(r.lead_h)} h</td><td class='num'>{int(r.n)}</td>"
-            f"<td class='medida'><span class='medida-in'>{barra(r.t_mae, t_max, nt)}<span class='num'>{num(r.t_mae, 2, ' °C')}</span></span></td>"
-            f"<td class='num'>{signo(r.t_bias, 2, ' °C')}</td>"
-            f"<td class='medida'><span class='medida-in'>{barra(r.w_mae, w_max, nw)}<span class='num'>{num(r.w_mae, 2, ' m/s')}</span></span></td>"
-            f"<td class='num'>{signo(r.w_bias, 2, ' m/s')}</td><td>{chip(nt)}</td></tr>")
+    for lead, grupo in res.groupby("lead_h", sort=True):
+        grupo = grupo.set_index("modelo").reindex([m for m in ORDEN if m in grupo.modelo.values])
+        mejor_lead = grupo.t_mae.idxmin() if len(grupo) > 1 else None
+        for i, (m, r) in enumerate(grupo.iterrows()):
+            nt, nw = nivel(r.t_mae, UMBRAL_T), nivel(r.w_mae, UMBRAL_W)
+            celda_plazo = f"<td class='l num plazo' rowspan='{len(grupo)}'>{int(lead)} h</td>" if i == 0 else ""
+            filas_plazo.append(
+                f"<tr class='{'sep' if i == 0 else ''}'>{celda_plazo}"
+                f"<td class='l modelo-nombre'>{MODELOS[m][0]}<span class='tipo'>{'IA' if m == 'AIFS' else 'físico'} · {MODELOS[m][2]}</span></td>"
+                f"<td class='num'>{int(r.n)}</td>"
+                f"<td class='medida'><span class='medida-in'>{barra(r.t_mae, t_max, nt)}<span class='num{' mejor' if m == mejor_lead else ''}'>{num(r.t_mae, 2, ' °C')}</span></span></td>"
+                f"<td class='num'>{signo(r.t_bias, 2, ' °C')}</td>"
+                f"<td class='medida'><span class='medida-in'>{barra(r.w_mae, w_max, nw)}<span class='num'>{num(r.w_mae, 2, ' m/s')}</span></span></td>"
+                f"<td class='num'>{signo(r.w_bias, 2, ' m/s')}</td><td>{chip(nt)}</td></tr>")
     plazos_pend = [h for h in (0, 6, 12, 18, 24, 36, 48) if h not in set(res.lead_h)]
     nota_plazos = (f"Los plazos de {', '.join(str(h) for h in plazos_pend)} h aparecerán a medida que las observaciones alcancen "
                    f"las horas pronosticadas." if plazos_pend else "")
 
-    # --- tabla por estación ---
+    # --- tabla por estación: base AIFS, columnas de error de temperatura por modelo ---
+    tmae_m = {m: bye_m[m].set_index("icao").t_mae for m in presentes}
     filas_est = []
-    for r in bye.itertuples(index=False):
-        nt, nw = nivel(r.t_mae, UMBRAL_T), nivel(r.w_mae, UMBRAL_W)
-        corto, region = nombre(r.icao, r.name)
-        elev = "" if pd.isna(r.elev) else f"{int(float(r.elev))} m"
+    orden_est = list(bye.icao) + [i for i in estaciones if i not in set(bye.icao)]
+    info = bye_all.drop_duplicates("icao").set_index("icao")
+    for icao in orden_est:
+        r = bye.set_index("icao").loc[icao] if icao in set(bye.icao) else None
+        corto, region = nombre(icao, info.loc[icao, "name"])
+        elev_v = info.loc[icao, "elev"]
+        elev = "" if pd.isna(elev_v) else f"{int(float(elev_v))} m"
+        vals = {m: float(tmae_m[m].get(icao, float("nan"))) for m in presentes}
+        validos = {m: v for m, v in vals.items() if not math.isnan(v)}
+        mejor_est = min(validos, key=validos.get) if len(validos) > 1 else None
+        celdas = ""
+        for m in ORDEN:
+            v = vals.get(m, float("nan"))
+            if math.isnan(v):
+                celdas += "<td class='num muted'>–</td>"
+            else:
+                celdas += (f"<td class='medida'><span class='medida-in'>{barra(v, t_max, nivel(v, UMBRAL_T))}"
+                           f"<span class='num{' mejor' if m == mejor_est else ''}'>{num(v, 1, ' °C')}</span></span></td>")
+        nt = nivel(r.t_mae, UMBRAL_T) if r is not None else "sin"
         filas_est.append(
-            f"<tr><td class='l est-nombre'>{corto}<span class='icao'>{r.icao}</span>"
+            f"<tr><td class='l est-nombre'>{corto}<span class='icao'>{icao}</span>"
             f"<span class='region'>{region}{' · ' if region and elev else ''}{elev}</span></td>"
-            f"<td class='num'>{int(r.n)}</td>"
-            f"<td class='medida'><span class='medida-in'>{barra(r.t_mae, t_max, nt)}<span class='num'>{num(r.t_mae, 1, ' °C')}</span></span></td>"
-            f"<td class='num'>{signo(r.t_bias, 1, ' °C')}</td>"
-            f"<td class='medida'><span class='medida-in'>{barra(r.w_mae, w_max, nw)}<span class='num'>{num(r.w_mae, 1, ' m/s')}</span></span></td>"
+            f"<td class='num'>{int(r.n) if r is not None else 0}</td>{celdas}"
+            f"<td class='num'>{signo(r.t_bias, 1, ' °C') if r is not None else '–'}</td>"
+            f"<td class='medida'><span class='medida-in'>{barra(r.w_mae, w_max, nivel(r.w_mae, UMBRAL_W)) if r is not None else ''}<span class='num'>{num(r.w_mae, 1, ' m/s') if r is not None else '–'}</span></span></td>"
             f"<td>{chip(nt)}</td></tr>")
+    cab_modelos = "".join(f"<th>Error temp. {MODELOS[m][0]}</th>" for m in ORDEN)
 
     n_alto = int((bye.t_mae >= UMBRAL_T[1]).sum()); n_bueno = int((bye.t_mae < UMBRAL_T[0]).sum())
-    sesgo_global = float(pts.t_err.mean())
+    sesgo_global = float(pts[pts.modelo == base].t_err.mean())
     frio_calor = "frío (el modelo pronostica más frío de lo observado)" if sesgo_global < -0.3 else \
                  "cálido (el modelo pronostica más calor de lo observado)" if sesgo_global > 0.3 else "casi nulo"
 
-    # --- serie por corrida (cuando haya más de una) ---
+    # --- serie por corrida (cuando haya más de una): una columna por modelo ---
     serie = ""
     if n_runs >= 2:
-        filas = "".join(f"<tr><td class='l num'>{pd.Timestamp(r.run):%d-%m %H}z</td><td class='num'>{int(r.n)}</td>"
-                        f"<td class='medida'><span class='medida-in'>{barra(r.t_mae, t_max, nivel(r.t_mae, UMBRAL_T))}"
-                        f"<span class='num'>{num(r.t_mae, 2, ' °C')}</span></span></td></tr>" for r in por_run.tail(30).itertuples(index=False))
+        cab = "".join(f"<th>{MODELOS[m][0]}</th>" for m in presentes)
+        filas = []
+        for run, fila in por_run.tail(30).iterrows():
+            celdas = ""
+            for m in presentes:
+                v = fila.get(m, float("nan"))
+                celdas += ("<td class='num muted'>–</td>" if pd.isna(v) else
+                           f"<td class='medida'><span class='medida-in'>{barra(v, t_max, nivel(v, UMBRAL_T))}<span class='num'>{num(v, 2, ' °C')}</span></span></td>")
+            filas.append(f"<tr><td class='l num'>{pd.Timestamp(run):%d-%m %H}z</td><td class='num'>{int(por_run_n[run])}</td>{celdas}</tr>")
         serie = f"""<section>
   <div class="sec-head"><h2>Corrida por corrida</h2>
-  <p class="muted">Error medio de temperatura de cada corrida del modelo, todos los plazos y estaciones juntos. Últimas {min(30, n_runs)} corridas.</p></div>
-  <div class="card tabla"><table><thead><tr><th class="l">Corrida (UTC)</th><th>Pares</th><th>Error temp.</th></tr></thead><tbody>{filas}</tbody></table></div>
+  <p class="muted">Error medio de temperatura de cada corrida, por modelo, con todos los plazos y estaciones juntos. Últimas {min(30, n_runs)} corridas.</p></div>
+  <div class="card tabla"><table><thead><tr><th class="l">Corrida (UTC)</th><th>Pares</th>{cab}</tr></thead><tbody>{''.join(filas)}</tbody></table></div>
 </section>"""
 
     narr_html, narr_aviso = narrativa()
     MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
     fecha_ultima = f"{ultima.day} {MESES[ultima.month - 1]} · {ultima:%H} UTC"
     generado = f"{ahora.day} {MESES[ahora.month - 1]} {ahora.year}, {ahora:%H:%M} UTC"
+    n_est = len(estaciones)
+    lista_modelos = ", ".join(etiqueta_modelo(m) for m in presentes)
 
     html = f"""<!doctype html>
 <html lang="es">
@@ -353,7 +500,7 @@ def render_site(pts):
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Verificación Earth-2 Chile</title>
-<meta name="description" content="Cada día comparamos el pronóstico de inteligencia artificial de ECMWF (AIFS) con lo que midieron los aeródromos de Chile. Error por plazo y por estación, en lenguaje simple.">
+<meta name="description" content="Cada día comparamos el pronóstico de inteligencia artificial de ECMWF (AIFS) y los modelos físicos IFS (ECMWF) y GFS (NOAA) con lo que midieron los aeródromos de Chile. Error por plazo y por estación, en lenguaje simple.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
 <style>{CSS}</style>
@@ -364,9 +511,10 @@ def render_site(pts):
 <header>
   <div class="eyebrow">Earth-2 Chile · verificación diaria</div>
   <h1>¿Qué tan bien acierta el pronóstico de IA en Chile?</h1>
-  <p class="lead">Cada día tomamos el pronóstico del modelo de inteligencia artificial de ECMWF (AIFS) y lo comparamos con lo que
-  realmente midieron {bye.icao.nunique()} aeródromos del país, de Arica a la Antártica. Aquí está el resultado, sin maquillaje.</p>
-  <div class="aviso"><p class="small">Esta página es apoyo a la decisión y verificación pública de un modelo. Las alertas oficiales son de la
+  <p class="lead">Cada día tomamos el pronóstico del modelo de inteligencia artificial de ECMWF (AIFS), lo ponemos junto a los dos
+  modelos físicos de referencia, IFS (ECMWF) y GFS (NOAA), y comparamos los tres con lo que realmente midieron {n_est} aeródromos del país,
+  de Arica a la Antártica. Aquí está el resultado, sin maquillaje.</p>
+  <div class="aviso"><p class="small">Esta página es apoyo a la decisión y verificación pública de modelos. Las alertas oficiales son de la
   <a href="https://www.meteochile.gob.cl/" rel="noopener">Dirección Meteorológica de Chile</a> y de
   <a href="https://www.senapred.cl/" rel="noopener">SENAPRED</a>.</p></div>
 </header>
@@ -374,15 +522,23 @@ def render_site(pts):
 <section>
   <div class="tiles">
     <div class="tile hero">
-      <div class="label">Error medio de temperatura a {hero_lead} h</div>
+      <div class="label">Error medio de temperatura de la IA ({MODELOS[base][0]}) a {hero_lead} h</div>
       <div class="value">{num(hero_mae, 1)}<small>°C</small></div>
       <div class="foot">{chip(hero_nv)} &nbsp;{hero_txt} {hero_n} pares.</div>
     </div>
-    <div class="tile"><div class="label">Última corrida verificada</div><div class="value fecha">{fecha_ultima}</div><div class="foot">{ultima.year}. El modelo corre 4 veces al día.</div></div>
+    <div class="tile"><div class="label">Última corrida verificada</div><div class="value fecha">{fecha_ultima}</div><div class="foot">{ultima.year}. Los modelos corren 4 veces al día.</div></div>
     <div class="tile"><div class="label">Corridas acumuladas</div><div class="value">{n_runs}</div><div class="foot">Desde el {pd.Timestamp(runs[0]).day} {MESES[pd.Timestamp(runs[0]).month - 1]} {pd.Timestamp(runs[0]).year}</div></div>
-    <div class="tile"><div class="label">Pares pronóstico–observación</div><div class="value">{len(pts)}</div><div class="foot">{bye.icao.nunique()} estaciones</div></div>
-    <div class="tile"><div class="label">Estaciones con error alto</div><div class="value">{n_alto}<small>de {len(bye)}</small></div><div class="foot">{n_bueno} con error bajo (menos de {num(UMBRAL_T[0])} °C)</div></div>
+    <div class="tile"><div class="label">Pares pronóstico–observación</div><div class="value">{len(pts)}</div><div class="foot">{n_est} estaciones · {len(presentes)} modelo{'s' if len(presentes) != 1 else ''}</div></div>
+    <div class="tile"><div class="label">Estaciones con error alto ({MODELOS[base][0]})</div><div class="value">{n_alto}<small>de {len(bye)}</small></div><div class="foot">{n_bueno} con error bajo (menos de {num(UMBRAL_T[0])} °C)</div></div>
   </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>La IA frente al modelo físico</h2>
+  <p class="frase">{frase}</p>
+  {f'<p class="muted small">{nota_cmp}</p>' if nota_cmp else ''}</div>
+  <div class="modelos">{''.join(tarjetas)}</div>
+  <p class="muted small">Los tres modelos usan la misma grilla de 25 km y se miden contra las mismas estaciones y observaciones. AIFS es la versión de inteligencia artificial de ECMWF; IFS es su modelo físico tradicional; GFS es el modelo físico global de Estados Unidos (NOAA). Cada uno se verifica en su última corrida completa, por eso el número de pares puede diferir.</p>
 </section>
 
 {f'<section class="narrativa">{narr_html}</section>' if narr_html else ""}
@@ -390,17 +546,18 @@ def render_site(pts):
 <section class="dos">
   <div class="card">
     <div class="sec-head"><h2>Dónde acierta y dónde no</h2>
-    <p class="muted small">Error medio de temperatura por estación. Pasa el cursor sobre un punto para ver el detalle.</p></div>
-    {mapa(bye)}
+    <p class="muted small">Error medio de temperatura por estación. Elige el modelo y pasa el cursor sobre un punto para ver el detalle.</p></div>
+    {mapas(bye_m)}
     <div class="leyenda"><span class="item">{chip("bueno")} menos de {num(UMBRAL_T[0])} °C</span><span class="item">{chip("medio")} {num(UMBRAL_T[0])} a {num(UMBRAL_T[1])} °C</span><span class="item">{chip("alto")} {num(UMBRAL_T[1])} °C o más</span></div>
   </div>
   <div class="explica">
     <h2>Cómo leer esta página</h2>
     <ol>
       <li><strong>Error medio</strong> es cuánto se equivocó el modelo en promedio, sin importar el signo. Si dice 1,5 °C, el pronóstico estuvo típicamente un grado y medio arriba o abajo de lo medido.</li>
-      <li><strong>Sesgo</strong> es la dirección del error. Negativo: el modelo pronostica más frío de lo que ocurre. Hoy el sesgo global es {signo(sesgo_global, 1, " °C")}, {frio_calor}.</li>
+      <li><strong>Sesgo</strong> es la dirección del error. Negativo: el modelo pronostica más frío de lo que ocurre. Hoy el sesgo global de {MODELOS[base][0]} es {signo(sesgo_global, 1, " °C")}, {frio_calor}.</li>
       <li><strong>Plazo</strong> es cuántas horas antes se hizo el pronóstico. A 0 h es casi una foto del presente; a 48 h ya es un pronóstico de dos días.</li>
-      <li>El modelo trabaja con una grilla de 25 km. Donde el error es alto suele haber mar y cordillera en una misma celda (costa del norte, Patagonia). Esa es la brecha que el downscaling a 2 a 4 km debe cerrar.</li>
+      <li><strong>IA frente a físico.</strong> AIFS aprende de décadas de datos; IFS y GFS resuelven las ecuaciones de la atmósfera. Si la IA empata o gana a 25 km, el siguiente paso es bajarla a 4 km con Chile adentro.</li>
+      <li>Los tres modelos trabajan con una grilla de 25 km. Donde el error es alto suele haber mar y cordillera en una misma celda (costa del norte, Patagonia). Esa es la brecha que el downscaling a 2 a 4 km debe cerrar.</li>
     </ol>
     <p class="muted small">Umbrales: menos de {num(UMBRAL_T[0])} °C es bueno, hasta {num(UMBRAL_T[1])} °C aceptable, y más de eso alto. Son umbrales de trabajo; el asesor meteorológico del proyecto los revisará.</p>
   </div>
@@ -408,10 +565,10 @@ def render_site(pts):
 
 <section>
   <div class="sec-head"><h2>Error por plazo</h2>
-  <p class="muted">Cuánto se equivoca el modelo según las horas de anticipación. Todas las estaciones juntas. {nota_plazos}</p></div>
+  <p class="muted">Cuánto se equivoca cada modelo según las horas de anticipación. Todas las estaciones juntas; en cada plazo, el menor error de temperatura va destacado. {nota_plazos}</p></div>
   <div class="card tabla">
     <table>
-      <thead><tr><th class="l">Plazo</th><th>Pares</th><th>Error temp.</th><th>Sesgo temp.</th><th>Error viento</th><th>Sesgo viento</th><th class="l">Nivel</th></tr></thead>
+      <thead><tr><th class="l">Plazo</th><th class="l">Modelo</th><th>Pares</th><th>Error temp.</th><th>Sesgo temp.</th><th>Error viento</th><th>Sesgo viento</th><th class="l">Nivel</th></tr></thead>
       <tbody>{''.join(filas_plazo)}</tbody>
     </table>
   </div>
@@ -419,10 +576,10 @@ def render_site(pts):
 
 <section>
   <div class="sec-head"><h2>Error por estación</h2>
-  <p class="muted">Ordenado de mayor a menor error de temperatura, para ver primero lo que requiere atención. Temperatura a 2 m y viento a 10 m, todos los plazos juntos.</p></div>
+  <p class="muted">Ordenado de mayor a menor error de temperatura de {MODELOS[base][0]}, para ver primero lo que requiere atención. Error de temperatura a 2 m de cada modelo (el menor va destacado); pares, sesgo, viento a 10 m y nivel corresponden a {MODELOS[base][0]}. Todos los plazos juntos.</p></div>
   <div class="card tabla">
     <table>
-      <thead><tr><th class="l">Estación</th><th>Pares</th><th>Error temp.</th><th>Sesgo temp.</th><th>Error viento</th><th class="l">Nivel</th></tr></thead>
+      <thead><tr><th class="l">Estación</th><th>Pares</th>{cab_modelos}<th>Sesgo temp.</th><th>Error viento</th><th class="l">Nivel</th></tr></thead>
       <tbody>{''.join(filas_est)}</tbody>
     </table>
   </div>
@@ -434,16 +591,16 @@ def render_site(pts):
   <details>
     <summary>Cómo se calcula</summary>
     <div class="body">
-      <p>Pronóstico: AIFS single (ECMWF, grilla global de 0,25°, datos abiertos CC-BY 4.0), variables temperatura a 2 m, viento a 10 m y precipitación, plazos 0, 6, 12, 18, 24, 36 y 48 h. Se toma el punto de grilla más cercano a cada aeródromo, sin corrección por altura.</p>
-      <p>Observación: reportes METAR horarios de {bye.icao.nunique()} aeródromos chilenos (emitidos por la DMC, distribuidos por NOAA/AWC, dominio público). Un par se forma cuando hay una observación a menos de 31 minutos de la hora pronosticada.</p>
-      <p>Error medio absoluto = promedio de |pronóstico − observación|. Sesgo = promedio de (pronóstico − observación). El pipeline corre 4 veces al día en GitHub Actions y acumula todos los pares; los resultados y el código son públicos.</p>
-      <p>Próximos pasos: comparar también IFS (ECMWF físico) y GFS (NOAA), sumar estaciones de la DMC, precipitación y la serie de 30 días.</p>
+      <p>Pronósticos: {lista_modelos}{'; pendientes: ' + ', '.join(etiqueta_modelo(m) for m in ausentes) if ausentes else ''}. Los tres en grilla global de 0,25° (unos 25 km), con temperatura a 2 m, viento a 10 m y precipitación, plazos 0, 6, 12, 18, 24, 36 y 48 h. AIFS e IFS vienen de los datos abiertos de ECMWF (CC-BY 4.0); GFS, del bucket público de NOAA en AWS (dominio público). Se toma el punto de grilla más cercano a cada aeródromo, sin corrección por altura.</p>
+      <p>Observación: reportes METAR horarios de {n_est} aeródromos chilenos (emitidos por la DMC, distribuidos por NOAA/AWC, dominio público). Un par se forma cuando hay una observación a menos de 31 minutos de la hora pronosticada. Los valores pronosticados en cada estación se guardan, así que los plazos largos se emparejan en las corridas siguientes, cuando ya existe la observación.</p>
+      <p>Error medio absoluto = promedio de |pronóstico − observación|. Sesgo = promedio de (pronóstico − observación). El pipeline corre 4 veces al día en GitHub Actions, toma la última corrida completa de cada modelo y acumula todos los pares; los resultados y el código son públicos.</p>
+      <p>Próximos pasos: sumar estaciones de la DMC, verificar precipitación y mostrar la serie de 30 días.</p>
     </div>
   </details>
 </section>
 
 <footer>
-  <p>Generado el {generado}. Datos: ECMWF open data (CC-BY 4.0), NOAA/AWC METAR (dominio público), contorno de Natural Earth (dominio público).
+  <p>Generado el {generado}. Datos: ECMWF open data, AIFS e IFS (CC-BY 4.0); NOAA GFS (dominio público); NOAA/AWC METAR (dominio público); contorno de Natural Earth (dominio público).
   Código abierto: <a href="{REPO}" rel="noopener">github.com/PanchoDigevo/earth2-chile-verificacion</a>.</p>
   <p><em>{narr_aviso or 'Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.'}</em></p>
 </footer>
@@ -455,7 +612,7 @@ def render_site(pts):
     os.makedirs(SITE, exist_ok=True)
     with open(os.path.join(SITE, "index.html"), "w", encoding="utf-8") as f:
         f.write(html)
-    print(f"site/index.html listo ({len(html) // 1024} KB, {n_runs} corridas, {len(pts)} pares, {len(bye)} estaciones)")
+    print(f"site/index.html listo ({len(html) // 1024} KB, {n_runs} corridas, {len(pts)} pares, {n_est} estaciones, modelos: {', '.join(presentes)})")
 
 
 if __name__ == "__main__":

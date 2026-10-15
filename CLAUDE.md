@@ -11,7 +11,7 @@ Inteligencia climática con IA para Chile a escala kilométrica (lluvia, tempera
 
 ## Qué hay aquí
 
-- `verificacion/` — pipeline diario: AIFS (ECMWF, 0,25°) vs METAR de 25 aeródromos chilenos; genera `site/`. Corre en GitHub Actions 4×/día (`.github/workflows/verificacion.yml`).
+- `verificacion/` — pipeline diario: AIFS, IFS (ECMWF) y GFS (NOAA), los tres a 0,25°, vs METAR de 25 aeródromos chilenos; genera `site/`. Corre en GitHub Actions 4×/día (`.github/workflows/verificacion.yml`). `corridas.py` elige la última corrida completa con HEAD a los índices (nunca `Client.latest()`); `verify.py` guarda los pronósticos por estación en `data/pronostico_puntos.csv` y empareja con METAR cuando llega la observación; los pares llevan columna `modelo`.
 - `site/` — página pública en GitHub Pages.
 - `hindcast/` — eventos 2026 en tres capas: lluvia (ERA5 + pronósticos históricos IFS/GFS/AIFS a 24-48-72 h), superficie (Sentinel-2 dNBR de incendios, DEM 30 m, quebradas OSM, humedad de suelo), verdad (SERNAGEOMIN, SENAPRED). Lógica tipo USGS post-incendio: intensidad de lluvia × severidad de quema × pendiente × suelo.
 - `docs/chile_natural_earth_10m.json` — contorno de Chile (Natural Earth, dominio público) para mapas.
@@ -22,7 +22,7 @@ El texto público de la portada está en `docs/narrativa_sitio.md`. Es la fuente
 
 ## Próximos pasos técnicos
 
-1. Sitio: sumar IFS y GFS (comparar tres modelos), mapa de estaciones por error, serie de 30 días, precipitación; estaciones DMC cuando haya token.
+1. Sitio: serie de 30 días, precipitación; estaciones DMC cuando haya token. (IFS y GFS ya se comparan; el mapa ya colorea por error y modelo.)
 2. Hindcast: catálogo de eventos (`hindcast/eventos/`), capa de lluvia, capa de superficie para RM y V Región, cruce con la verdad. Resultado: "de N eventos, M marcados con X h de anticipación".
 3. Página de aviso simulado: cómo se ve el mensaje para un municipio.
 4. CorrDiff-Chile (downscaling 25 → 4 km) con SAAG-WRF 4 km + ERA5, en GPUs L40S con PhysicsNeMo. No bloquea los puntos anteriores.

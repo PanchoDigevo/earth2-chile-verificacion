@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Verificación retroactiva Earth-2 Chile</title>
+<meta name="description" content="Qué decían AIFS, IFS y GFS 24, 48 y 72 horas antes, comparado con lo que midieron los aeródromos de Chile en 2025 y 2026, y cuánto mejora una corrección por estación.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Diseño: columna única de 1080 px, resumen antes del detalle; franjas de mapa + tablas con barras.
+   Neutros fríos con leve sesgo azul (cielo y hielo), acento verde glaciar; semáforo fijo con texto. */
+:root{
+  --bg:#f4f6f8; --surface:#ffffff; --fg:#17212b; --muted:#5a6977; --line:#d8dfe6; --line-soft:#e9eef2;
+  --accent:#0e7c86; --accent-soft:#d7eef0; --tierra:#e3e9ee; --costa:#9fb0bd;
+  --bueno:#0ca30c; --medio:#c98500; --alto:#d03b3b; --sin:#8a99a6;
+  --font-display:"Sora",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-body:"Source Sans 3","Source Sans Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-data:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --radius:10px; color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111821; --surface:#19222c; --fg:#e7ecf1; --muted:#9fadba; --line:#2c3845; --line-soft:#232e3a;
+  --accent:#44bcc6; --accent-soft:#163b40; --tierra:#243040; --costa:#4f6071;
+  --bueno:#2fbf2f; --medio:#e0a428; --alto:#ee6a6a; --sin:#7d8c99; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111821; --surface:#19222c; --fg:#e7ecf1; --muted:#9fadba; --line:#2c3845; --line-soft:#232e3a;
+  --accent:#44bcc6; --accent-soft:#163b40; --tierra:#243040; --costa:#4f6071;
+  --bueno:#2fbf2f; --medio:#e0a428; --alto:#ee6a6a; --sin:#7d8c99; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:17px;line-height:1.5;
+  -webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:16px;padding-block:28px 56px;display:grid;gap:28px}
+@media (min-width:720px){.wrap{padding-inline:28px;padding-block:40px 72px;gap:36px}}
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(26px,3.6vw,38px);line-height:1.15;font-weight:600;max-width:24ch}
+h2{font-size:20px;font-weight:600}
+h3{font-size:16px;font-weight:600}
+p{margin:0;max-width:65ch}
+.eyebrow{font-family:var(--font-display);font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.muted{color:var(--muted)}
+.nav{font-size:15px;max-width:none}
+.small{font-size:14.5px}
+header{display:grid;gap:12px}
+header .lead{font-size:18px;color:var(--muted);max-width:62ch}
+.aviso{border-left:3px solid var(--accent);padding:10px 14px;background:var(--accent-soft);border-radius:0 var(--radius) var(--radius) 0;max-width:72ch}
+.aviso p{max-width:none}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (min-width:600px){.tiles{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (min-width:960px){.tiles{grid-template-columns:repeat(6,minmax(0,1fr))}}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;display:grid;gap:4px;align-content:start}
+.tile .label{font-size:13px;color:var(--muted)}
+.tile .value{font-family:var(--font-display);font-size:30px;font-weight:600;line-height:1.1}
+.tile .value small{font-size:15px;font-weight:500;color:var(--muted);margin-left:2px}
+.tile .value.fecha{font-size:22px;line-height:1.2}
+.tile.hero{grid-column:span 2;border-color:var(--accent)}
+.tile.hero .value{font-size:44px}
+.tile .foot{font-size:13px;color:var(--muted)}
+section{display:grid;gap:14px}
+.sec-head{display:grid;gap:4px}
+.dos{display:grid;gap:24px}
+@media (min-width:860px){.dos{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:start}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;display:grid;gap:12px;min-width:0}
+.leyenda{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:14px;color:var(--muted);align-items:center}
+.leyenda span.item{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:2px 9px 2px 7px;border-radius:999px;
+  border:1px solid var(--line);background:var(--bg);color:var(--fg);white-space:nowrap}
+.chip i{width:8px;height:8px;border-radius:50%;background:var(--sin)}
+.chip.bueno i{background:var(--bueno)} .chip.medio i{background:var(--medio)} .chip.alto i{background:var(--alto)}
+.chip.sin{color:var(--muted)}
+.mapa{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:flex-start;justify-content:center}
+.franja{margin:0;display:grid;gap:4px;justify-items:center}
+.franja svg{max-width:100%;height:auto;display:block}
+.franja figcaption{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.tierra{fill:var(--tierra);stroke:var(--costa);stroke-width:.6;vector-effect:non-scaling-stroke}
+.est circle{stroke:var(--surface);stroke-width:2;fill:var(--sin)}
+.est.bueno circle{fill:var(--bueno)} .est.medio circle{fill:var(--medio)} .est.alto circle{fill:var(--alto)}
+.est text{font:600 9px var(--font-data);fill:var(--fg)}
+.est:hover circle{r:6.5}
+.tabla{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line-soft);text-align:right;vertical-align:middle;white-space:nowrap}
+th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line)}
+th.l,td.l{text-align:left}
+td.num{font-family:var(--font-data);font-size:14px;font-variant-numeric:tabular-nums}
+td.est-nombre{white-space:normal;min-width:11em}
+td.est-nombre .icao{font-family:var(--font-data);font-size:12.5px;color:var(--muted);margin-left:6px}
+td.est-nombre .region{display:block;font-size:13px;color:var(--muted)}
+td.medida{min-width:9.5em}
+.medida-in{display:inline-grid;grid-template-columns:72px auto;gap:8px;align-items:center;justify-items:end}
+.bar{display:block;width:72px;height:8px;border-radius:4px;background:var(--line-soft);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:4px;background:var(--sin)}
+.bar.bueno i{background:var(--bueno)} .bar.medio i{background:var(--medio)} .bar.alto i{background:var(--alto)}
+tbody tr:hover{background:color-mix(in srgb,var(--accent) 6%,transparent)}
+.narrativa{display:grid;gap:12px;max-width:68ch}
+.narrativa h2{font-size:24px}
+.narrativa p{max-width:none}
+.narrativa ol{margin:0;padding-left:1.25em;display:grid;gap:8px}
+.explica{display:grid;gap:10px}
+.explica ol{margin:0;padding-left:1.2em;display:grid;gap:6px;max-width:65ch}
+details{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);padding:0}
+summary{cursor:pointer;padding:12px 16px;font-weight:600;font-family:var(--font-display);font-size:15px;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--muted);font-weight:400}
+details[open] summary::after{content:"–"}
+details .body{padding:0 16px 16px;display:grid;gap:10px}
+details .body p{max-width:72ch}
+footer{border-top:1px solid var(--line);padding-top:20px;display:grid;gap:8px;font-size:14px;color:var(--muted)}
+footer p{max-width:80ch}
+@media (max-width:600px){.tile .value{font-size:26px}.tile.hero .value{font-size:38px}}
+@media (prefers-reduced-motion:no-preference){.est circle{transition:r .15s ease}}
+/* comparación de modelos */
+.modelos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.modelos{grid-template-columns:1fr}}
+.modelo{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;display:grid;gap:4px;align-content:start}
+.modelo.ia{border-color:var(--accent)}
+.modelo .tipo{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.modelo .nombre{font-family:var(--font-display);font-size:20px;font-weight:600}
+.modelo .nombre small{font-size:14px;font-weight:500;color:var(--muted);margin-left:6px}
+.modelo .value{font-family:var(--font-display);font-size:34px;font-weight:600;line-height:1.1}
+.modelo .value small{font-size:15px;font-weight:500;color:var(--muted);margin-left:2px}
+.modelo .foot{font-size:13px;color:var(--muted)}
+.modelo .mejor{display:inline-block;font-size:12px;font-weight:600;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:1px 8px;margin-left:6px;vertical-align:middle}
+.frase{font-size:18px;max-width:70ch}
+.frase strong{color:var(--accent)}
+/* selector de modelo del mapa */
+.mapas{display:grid;gap:12px;position:relative}
+.selector{display:flex;flex-wrap:wrap;gap:6px 8px;border:0;padding:0;margin:0;align-items:center}
+.selector legend{float:left;margin-right:6px;padding:0}
+.selector label{position:relative;cursor:pointer;border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:14px;font-weight:600;background:var(--bg)}
+.selector label .muted{font-weight:400;font-size:13px}
+.selector input{position:absolute;opacity:0;width:0;height:0;margin:0}
+.selector label:has(input:checked){background:var(--accent-soft);border-color:var(--accent)}
+.selector label:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.mapas:has(.selector) .mapa-modelo{display:none}
+.mapas:has(#mapa-AIFS:checked) .mapa-modelo[data-modelo="AIFS"]{display:flex}
+.mapas:has(#mapa-IFS:checked) .mapa-modelo[data-modelo="IFS"]{display:flex}
+.mapas:has(#mapa-GFS:checked) .mapa-modelo[data-modelo="GFS"]{display:flex}
+@supports not selector(:has(a)){.mapas .mapa-modelo{display:flex}.mapa-modelo::before{content:attr(data-modelo);width:100%;text-align:center;font-weight:600}}
+/* tablas con fila por modelo */
+td.plazo{font-weight:600;vertical-align:top}
+tr.sep td{border-top:1px solid var(--line)}
+td.modelo-nombre{font-weight:600}
+td.modelo-nombre .tipo{display:block;font-size:12px;color:var(--muted);font-weight:400}
+td.num.mejor{font-weight:700;color:var(--accent)}
+th.grupo{text-align:center;border-bottom:0;padding-bottom:0}
+
+:root{--serie-global:#0e7c86;--serie-corr:#d95926}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--serie-global:#44bcc6;--serie-corr:#f08a5d}}
+:root[data-theme="dark"]{--serie-global:#44bcc6;--serie-corr:#f08a5d}
+.multiples{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.multiples figure{margin:0;display:grid;gap:6px}
+.multiples figcaption{font-family:var(--font-display);font-weight:600;font-size:15px}
+.multiples svg{width:100%;height:auto;display:block}
+.grid-l{stroke:var(--line-soft);stroke-width:1}
+.eje{font:11px var(--font-data);fill:var(--muted)}
+.serie{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.serie.global{stroke:var(--serie-global)} .serie.corr{stroke:var(--serie-corr)}
+.pto{stroke:var(--surface);stroke-width:2}
+.pto.global{fill:var(--serie-global)} .pto.corr{fill:var(--serie-corr)}
+.etq{font:600 11px var(--font-data);fill:var(--fg)}
+.ley{display:flex;gap:16px;flex-wrap:wrap;font-size:14px;color:var(--muted)}
+.ley i{display:inline-block;width:18px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+.ley .g i{background:var(--serie-global)} .ley .c i{background:var(--serie-corr)}
+.evento{display:grid;gap:10px}
+.evento .desc{color:var(--muted);max-width:72ch}
+td.mm{font-family:var(--font-data);font-size:14px;font-variant-numeric:tabular-nums}
+td.mm.fuerte{font-weight:600}
+.si{color:var(--fg);font-weight:600} .no{color:var(--muted)}
+.nav{font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Earth-2 Chile · verificación retroactiva</div>
+  <p class="nav"><a href="./">← Verificación diaria</a></p>
+  <h1>Lo que los modelos decían antes de que pasara</h1>
+  <p class="lead">En vez de esperar a que pasen los días, miramos hacia atrás: tomamos los pronósticos que AIFS, IFS y GFS
+  emitieron a las 00 y 12 UTC entre 6 de oct de 2026 y 11 de oct de 2026, con 24, 48 y 72 horas de anticipación,
+  y los comparamos con lo que después midieron 20 aeródromos del país.</p>
+  <div class="aviso"><p class="small">Verificación pública de modelos; apoyo a la decisión. Las alertas oficiales son de la
+  <a href="https://www.meteochile.gob.cl/" rel="noopener">Dirección Meteorológica de Chile</a> y de <a href="https://www.senapred.cl/" rel="noopener">SENAPRED</a>.</p></div>
+</header>
+<section><div class="tiles">
+  <div class="tile"><div class="label">Pares pronóstico–observación</div><div class="value">992</div><div class="foot">temperatura a 2 m</div></div>
+  <div class="tile"><div class="label">Corridas de modelo</div><div class="value">8</div><div class="foot">00 y 12 UTC</div></div>
+  <div class="tile"><div class="label">Modelos</div><div class="value">3</div><div class="foot">AIFS, IFS, GFS</div></div>
+  <div class="tile"><div class="label">Estaciones</div><div class="value">20</div><div class="foot">aeródromos con METAR</div></div>
+</div></section>
+<section><div class="sec-head"><h2>Global frente a global corregido</h2>
+<p class="muted">La corrección por estación se aprende con los pares de 2025 y se evalúa con los de 2026. Aparecerá aquí cuando
+el histórico de 2025 esté extraído.</p></div></section>
+<section>
+  <div class="sec-head"><h2>Los tres eventos de 2026, vistos desde antes</h2>
+  <p class="muted">Para cada día de cada evento: qué lluvia anunciaba cada modelo con 72, 48 y 24 horas de anticipación en los aeródromos de la zona,
+  y si de verdad llovió según los reportes horarios. Un modelo "marca" lluvia cuando pronostica 1 mm o más en 24 h.</p></div>
+  <div class="evento"><h3>Las Condes, 8 de octubre</h3><p class="desc">Las Condes (San Carlos de Apoquindo). De 2 día-estación con observación, en 1 llovió.
+  Las columnas muestran la lluvia pronosticada (mm) para las 24 h de ese día, de las 12 UTC (8 o 9 de la mañana en Chile) a las 12 UTC del día siguiente, según la corrida emitida 72, 48 y 24 h antes del cierre de esa ventana; en negrita 10 mm o más.</p>
+  <ul><li><strong>AIFS</strong> marcó lluvia en 1 de 1 a 24 h.</li><li><strong>IFS</strong> marcó lluvia en 1 de 1 a 24 h.</li><li><strong>GFS</strong> marcó lluvia en 1 de 1 a 24 h, 1 de 1 a 48 h, 1 de 1 a 72 h.</li></ul><div class="card tabla"><table><thead><tr><th class='l'>Día</th><th>Estación</th><th>Observado en las 24 h del día</th><th>AIFS 72 h</th><th>IFS 72 h</th><th>GFS 72 h</th><th>AIFS 48 h</th><th>IFS 48 h</th><th>GFS 48 h</th><th>AIFS 24 h</th><th>IFS 24 h</th><th>GFS 24 h</th></tr></thead><tbody><tr><td class='l'>08 oct</td><td class='l'>Santiago (Pudahuel) <span class='muted small'>SCEL</span></td><td class='l'><span class='si'>Llovió</span> <span class='muted small'>(11 h con lluvia)</span><span class='muted small'> · 11 °C</span></td><td class='mm'>–</td><td class='mm'>–</td><td class='mm'>8,1</td><td class='mm'>–</td><td class='mm'>–</td><td class='mm fuerte'>12,8</td><td class='mm fuerte'>19,7</td><td class='mm fuerte'>25,2</td><td class='mm fuerte'>10,1</td></tr><tr><td class='l'>08 oct</td><td class='l'>Santo Domingo <span class='muted small'>SCSN</span></td><td class='l'><span class='no'>No llovió</span><span class='muted small'> · 14 °C</span></td><td class='mm'>–</td><td class='mm'>–</td><td class='mm'>1,7</td><td class='mm'>–</td><td class='mm'>–</td><td class='mm'>1,4</td><td class='mm'>5,5</td><td class='mm'>2,5</td><td class='mm'>0,8</td></tr></tbody></table></div></div>
+</section>
+<section>
+  <div class="sec-head"><h2>Lluvia: cuándo avisó y cuándo no</h2>
+  <p class="muted">El METAR chileno dice si está lloviendo pero no cuánto, así que aquí la pregunta es sí o no. "Acertó cuando llovió" es la parte de los
+  días con lluvia observada en que el modelo había anunciado lluvia. "Avisó en falso" es la parte de los avisos del modelo en que después no llovió.</p></div>
+  <div class="card tabla"><table><thead><tr><th class='l'>Modelo</th><th>Plazo</th><th>Casos</th><th>Días con lluvia</th><th>Acertó cuando llovió</th><th>Avisó en falso</th></tr></thead><tbody><tr><td class='l'>AIFS <span class='muted small'>(inteligencia artificial, ECMWF)</span></td><td class='num'>24 h</td><td class='num'>96</td><td class='num'>54 %</td><td class='num'>81 %</td><td class='num'>18 %</td></tr><tr><td class='l'>AIFS <span class='muted small'>(inteligencia artificial, ECMWF)</span></td><td class='num'>48 h</td><td class='num'>96</td><td class='num'>48 %</td><td class='num'>85 %</td><td class='num'>20 %</td></tr><tr><td class='l'>AIFS <span class='muted small'>(inteligencia artificial, ECMWF)</span></td><td class='num'>72 h</td><td class='num'>95</td><td class='num'>38 %</td><td class='num'>67 %</td><td class='num'>31 %</td></tr><tr><td class='l'>GFS <span class='muted small'>(modelo físico, NOAA)</span></td><td class='num'>24 h</td><td class='num'>154</td><td class='num'>56 %</td><td class='num'>78 %</td><td class='num'>12 %</td></tr><tr><td class='l'>GFS <span class='muted small'>(modelo físico, NOAA)</span></td><td class='num'>48 h</td><td class='num'>153</td><td class='num'>49 %</td><td class='num'>68 %</td><td class='num'>20 %</td></tr><tr><td class='l'>GFS <span class='muted small'>(modelo físico, NOAA)</span></td><td class='num'>72 h</td><td class='num'>152</td><td class='num'>39 %</td><td class='num'>51 %</td><td class='num'>27 %</td></tr><tr><td class='l'>IFS <span class='muted small'>(modelo físico, ECMWF)</span></td><td class='num'>24 h</td><td class='num'>96</td><td class='num'>54 %</td><td class='num'>85 %</td><td class='num'>12 %</td></tr><tr><td class='l'>IFS <span class='muted small'>(modelo físico, ECMWF)</span></td><td class='num'>48 h</td><td class='num'>96</td><td class='num'>48 %</td><td class='num'>76 %</td><td class='num'>20 %</td></tr><tr><td class='l'>IFS <span class='muted small'>(modelo físico, ECMWF)</span></td><td class='num'>72 h</td><td class='num'>95</td><td class='num'>38 %</td><td class='num'>61 %</td><td class='num'>37 %</td></tr></tbody></table></div>
+</section>
+<section>
+  <div class="sec-head"><h2>Temperatura: error por plazo, por mes y por estación</h2>
+  <p class="muted">Error medio absoluto de la temperatura a 2 m, sin corrección, en todo el período. Mismas estaciones y mismas horas para los tres modelos.</p></div>
+  <div class="card tabla"><table><thead><tr><th class='l'>Modelo</th><th>Plazo</th><th>Pares</th><th>Error medio</th><th>Sesgo</th><th>Nivel</th></tr></thead><tbody><tr><td class='l'>AIFS <span class='muted small'>(inteligencia artificial, ECMWF)</span></td><td class='num'>24 h</td><td class='num'>91</td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:27%"></i></span><span class='num'>1,08 °C</span></span></td><td class='num'>-0,58 °C</td><td><span class="chip bueno"><i aria-hidden="true"></i>Bueno</span></td></tr><tr><td class='l'>AIFS <span class='muted small'>(inteligencia artificial, ECMWF)</span></td><td class='num'>48 h</td><td class='num'>92</td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:30%"></i></span><span class='num'>1,22 °C</span></span></td><td class='num'>-0,65 °C</td><td><span class="chip bueno"><i aria-hidden="true"></i>Bueno</span></td></tr><tr><td class='l'>AIFS <span class='muted small'>(inteligencia artificial, ECMWF)</span></td><td class='num'>72 h</td><td class='num'>91</td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:34%"></i></span><span class='num'>1,37 °C</span></span></td><td class='num'>-0,75 °C</td><td><span class="chip bueno"><i aria-hidden="true"></i>Bueno</span></td></tr><tr><td class='l'>GFS <span class='muted small'>(modelo físico, NOAA)</span></td><td class='num'>24 h</td><td class='num'>148</td><td class='medida'><span class='medida-in'><span class="bar medio" aria-hidden="true"><i style="width:47%"></i></span><span class='num'>1,88 °C</span></span></td><td class='num'>-1,45 °C</td><td><span class="chip medio"><i aria-hidden="true"></i>Aceptable</span></td></tr><tr><td class='l'>GFS <span class='muted small'>(modelo físico, NOAA)</span></td><td class='num'>48 h</td><td class='num'>148</td><td class='medida'><span class='medida-in'><span class="bar medio" aria-hidden="true"><i style="width:49%"></i></span><span class='num'>1,95 °C</span></span></td><td class='num'>-1,34 °C</td><td><span class="chip medio"><i aria-hidden="true"></i>Aceptable</span></td></tr><tr><td class='l'>GFS <span class='muted small'>(modelo físico, NOAA)</span></td><td class='num'>72 h</td><td class='num'>148</td><td class='medida'><span class='medida-in'><span class="bar medio" aria-hidden="true"><i style="width:49%"></i></span><span class='num'>1,96 °C</span></span></td><td class='num'>-1,38 °C</td><td><span class="chip medio"><i aria-hidden="true"></i>Aceptable</span></td></tr><tr><td class='l'>IFS <span class='muted small'>(modelo físico, ECMWF)</span></td><td class='num'>24 h</td><td class='num'>91</td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:34%"></i></span><span class='num'>1,37 °C</span></span></td><td class='num'>-0,93 °C</td><td><span class="chip bueno"><i aria-hidden="true"></i>Bueno</span></td></tr><tr><td class='l'>IFS <span class='muted small'>(modelo físico, ECMWF)</span></td><td class='num'>48 h</td><td class='num'>92</td><td class='medida'><span class='medida-in'><span class="bar medio" aria-hidden="true"><i style="width:40%"></i></span><span class='num'>1,61 °C</span></span></td><td class='num'>-0,97 °C</td><td><span class="chip medio"><i aria-hidden="true"></i>Aceptable</span></td></tr><tr><td class='l'>IFS <span class='muted small'>(modelo físico, ECMWF)</span></td><td class='num'>72 h</td><td class='num'>91</td><td class='medida'><span class='medida-in'><span class="bar medio" aria-hidden="true"><i style="width:43%"></i></span><span class='num'>1,72 °C</span></span></td><td class='num'>-1,27 °C</td><td><span class="chip medio"><i aria-hidden="true"></i>Aceptable</span></td></tr></tbody></table></div>
+  <h3>Por mes, a 24 h</h3><div class="card tabla"><table><thead><tr><th class='l'>Mes</th><th>Pares</th><th>AIFS (°C)</th><th>IFS (°C)</th><th>GFS (°C)</th></tr></thead><tbody><tr><td class='l'>oct 2026</td><td class='num'>330</td><td class='num'>1,08</td><td class='num'>1,37</td><td class='num'>1,88</td></tr></tbody></table></div>
+  <h3>Por estación, a 24 h (de mayor a menor error)</h3><div class="card tabla"><table><thead><tr><th class='l'>Estación</th><th>AIFS a 24 h (°C)</th><th>IFS a 24 h (°C)</th><th>GFS a 24 h (°C)</th></tr></thead><tbody><tr><td class='l est-nombre'>Arica<span class='icao'>SCAR</span><span class='region'>Arica y Parinacota</span></td><td class='medida'><span class='medida-in'><span class="bar medio" aria-hidden="true"><i style="width:43%"></i></span><span class='num'>2,6</span></span></td><td class='medida'><span class='medida-in'><span class="bar medio" aria-hidden="true"><i style="width:47%"></i></span><span class='num'>2,8</span></span></td><td class='medida'><span class='medida-in'><span class="bar alto" aria-hidden="true"><i style="width:72%"></i></span><span class='num'>4,3</span></span></td></tr><tr><td class='l est-nombre'>Balmaceda<span class='icao'>SCBA</span><span class='region'>Aysén</span></td><td class='medida'><span class='medida-in'><span class="bar medio" aria-hidden="true"><i style="width:42%"></i></span><span class='num'>2,5</span></span></td><td class='medida'><span class='medida-in'><span class="bar alto" aria-hidden="true"><i style="width:70%"></i></span><span class='num'>4,2</span></span></td><td class='medida'><span class='medida-in'><span class="bar alto" aria-hidden="true"><i style="width:63%"></i></span><span class='num'>3,8</span></span></td></tr><tr><td class='l est-nombre'>Iquique<span class='icao'>SCDA</span><span class='region'>Tarapacá</span></td><td class='medida'><span class='medida-in'><span class="bar medio" aria-hidden="true"><i style="width:40%"></i></span><span class='num'>2,4</span></span></td><td class='medida'><span class='medida-in'><span class="bar medio" aria-hidden="true"><i style="width:30%"></i></span><span class='num'>1,8</span></span></td><td class='medida'><span class='medida-in'><span class="bar alto" aria-hidden="true"><i style="width:65%"></i></span><span class='num'>3,9</span></span></td></tr><tr><td class='l est-nombre'>Calama<span class='icao'>SCCF</span><span class='region'>Antofagasta</span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:19%"></i></span><span class='num'>1,2</span></span></td><td class='medida'><span class='medida-in'><span class="bar medio" aria-hidden="true"><i style="width:32%"></i></span><span class='num'>1,9</span></span></td><td class='medida'><span class='medida-in'><span class="bar medio" aria-hidden="true"><i style="width:48%"></i></span><span class='num'>2,9</span></span></td></tr><tr><td class='l est-nombre'>Temuco (La Araucanía)<span class='icao'>SCQP</span><span class='region'>La Araucanía</span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:12%"></i></span><span class='num'>0,7</span></span></td><td class='medida'><span class='medida-in'><span class="bar medio" aria-hidden="true"><i style="width:26%"></i></span><span class='num'>1,6</span></span></td><td class='medida'><span class='medida-in'><span class="bar medio" aria-hidden="true"><i style="width:42%"></i></span><span class='num'>2,5</span></span></td></tr><tr><td class='l est-nombre'>Osorno<span class='icao'>SCJO</span><span class='region'>Los Lagos</span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:7%"></i></span><span class='num'>0,4</span></span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:14%"></i></span><span class='num'>0,9</span></span></td><td class='medida'><span class='medida-in'><span class="bar medio" aria-hidden="true"><i style="width:41%"></i></span><span class='num'>2,5</span></span></td></tr><tr><td class='l est-nombre'>Valdivia<span class='icao'>SCVD</span><span class='region'>Los Ríos</span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:15%"></i></span><span class='num'>0,9</span></span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:11%"></i></span><span class='num'>0,7</span></span></td><td class='medida'><span class='medida-in'><span class="bar medio" aria-hidden="true"><i style="width:41%"></i></span><span class='num'>2,5</span></span></td></tr><tr><td class='l est-nombre'>Concepción<span class='icao'>SCIE</span><span class='region'>Biobío</span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:14%"></i></span><span class='num'>0,9</span></span></td><td class='medida'><span class='medida-in'><span class="bar medio" aria-hidden="true"><i style="width:36%"></i></span><span class='num'>2,2</span></span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:23%"></i></span><span class='num'>1,4</span></span></td></tr><tr><td class='l est-nombre'>Santo Domingo<span class='icao'>SCSN</span><span class='region'>Valparaíso</span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:20%"></i></span><span class='num'>1,2</span></span></td><td class='medida'><span class='medida-in'><span class="bar medio" aria-hidden="true"><i style="width:28%"></i></span><span class='num'>1,7</span></span></td><td class='medida'><span class='medida-in'><span class="bar medio" aria-hidden="true"><i style="width:36%"></i></span><span class='num'>2,2</span></span></td></tr><tr><td class='l est-nombre'>Antofagasta<span class='icao'>SCFA</span><span class='region'>Antofagasta</span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:8%"></i></span><span class='num'>0,5</span></span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:18%"></i></span><span class='num'>1,1</span></span></td><td class='medida'><span class='medida-in'><span class="bar medio" aria-hidden="true"><i style="width:30%"></i></span><span class='num'>1,8</span></span></td></tr><tr><td class='l est-nombre'>Curicó<span class='icao'>SCIC</span><span class='region'>Maule</span></td><td class='medida'><span class='medida-in'><span class="bar medio" aria-hidden="true"><i style="width:27%"></i></span><span class='num'>1,6</span></span></td><td class='medida'><span class='medida-in'><span class="bar medio" aria-hidden="true"><i style="width:29%"></i></span><span class='num'>1,7</span></span></td><td class='medida'><span class='medida-in'><span class="bar medio" aria-hidden="true"><i style="width:27%"></i></span><span class='num'>1,6</span></span></td></tr><tr><td class='l est-nombre'>Puerto Montt<span class='icao'>SCTE</span><span class='region'>Los Lagos</span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:10%"></i></span><span class='num'>0,6</span></span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:15%"></i></span><span class='num'>0,9</span></span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:23%"></i></span><span class='num'>1,4</span></span></td></tr><tr><td class='l est-nombre'>Los Ángeles<span class='icao'>SCGE</span><span class='region'>Biobío</span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:19%"></i></span><span class='num'>1,2</span></span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:11%"></i></span><span class='num'>0,7</span></span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:15%"></i></span><span class='num'>0,9</span></span></td></tr><tr><td class='l est-nombre'>Punta Arenas<span class='icao'>SCCI</span><span class='region'>Magallanes</span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:14%"></i></span><span class='num'>0,9</span></span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:10%"></i></span><span class='num'>0,6</span></span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:12%"></i></span><span class='num'>0,7</span></span></td></tr><tr><td class='l est-nombre'>Puerto Natales<span class='icao'>SCNT</span><span class='region'>Magallanes</span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:8%"></i></span><span class='num'>0,5</span></span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:9%"></i></span><span class='num'>0,5</span></span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:14%"></i></span><span class='num'>0,9</span></span></td></tr><tr><td class='l est-nombre'>Base Frei (Antártica)<span class='icao'>SCRM</span><span class='region'>Antártica</span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:14%"></i></span><span class='num'>0,9</span></span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:9%"></i></span><span class='num'>0,6</span></span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:9%"></i></span><span class='num'>0,5</span></span></td></tr><tr><td class='l est-nombre'>Chillán<span class='icao'>SCCH</span><span class='region'>Ñuble</span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:10%"></i></span><span class='num'>0,6</span></span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:13%"></i></span><span class='num'>0,8</span></span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:8%"></i></span><span class='num'>0,5</span></span></td></tr><tr><td class='l est-nombre'>La Serena<span class='icao'>SCSE</span><span class='region'>Coquimbo</span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:8%"></i></span><span class='num'>0,5</span></span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:5%"></i></span><span class='num'>0,3</span></span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:12%"></i></span><span class='num'>0,7</span></span></td></tr><tr><td class='l est-nombre'>Caldera<span class='icao'>SCAT</span><span class='region'>Atacama</span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:12%"></i></span><span class='num'>0,7</span></span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:12%"></i></span><span class='num'>0,7</span></span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:12%"></i></span><span class='num'>0,7</span></span></td></tr><tr><td class='l est-nombre'>Santiago (Pudahuel)<span class='icao'>SCEL</span><span class='region'>Metropolitana</span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:8%"></i></span><span class='num'>0,5</span></span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:9%"></i></span><span class='num'>0,6</span></span></td><td class='medida'><span class='medida-in'><span class="bar bueno" aria-hidden="true"><i style="width:9%"></i></span><span class='num'>0,6</span></span></td></tr></tbody></table></div>
+</section>
+<section><details><summary>Cómo se calcula</summary><div class="body">
+<p>Pronósticos: archivo de datos abiertos de ECMWF en AWS (AIFS single e IFS, 0,25°, CC-BY 4.0) y archivo del GFS de NOAA en AWS (0,25°, dominio público). De cada corrida de 00 y 12 UTC se leen solo los campos de temperatura a 2 m y precipitación acumulada a 24, 48 y 72 h, en el punto de grilla más cercano a cada aeródromo. No se guardan los archivos de modelo, solo los valores en las estaciones.</p>
+<p>Observaciones: archivo METAR de la Iowa Environmental Mesonet (reportes de la DMC distribuidos por la red mundial). Temperatura: la observación más cercana a la hora pronosticada, a menos de 31 minutos. Lluvia: los METAR chilenos no informan milímetros, así que se usa el tiempo presente (RA, DZ, SH, TS, SN...) para saber si llovió en las 24 h que terminan a la hora pronosticada; se exige al menos 12 reportes en esas 24 h.</p>
+<p>Corrección por estación: sesgo medio de 2025 por estación, modelo, plazo y hora de corrida, con al menos 30 pares; se resta del pronóstico de 2026. Las celdas sin suficientes pares de 2025 no se corrigen y no entran en la comparación.</p>
+</div></details></section>
+<footer>
+  <p>Generado el 15 oct 2026, 02:10 UTC. Datos: ECMWF open data (CC-BY 4.0), NOAA GFS (dominio público), Iowa Environmental Mesonet (archivo ASOS/METAR).
+  Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">github.com/PanchoDigevo/earth2-chile-verificacion</a>.</p>
+  <p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p>
+</footer>
+</div>
+</body>
+</html>

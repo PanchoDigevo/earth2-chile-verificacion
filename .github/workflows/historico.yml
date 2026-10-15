@@ -39,10 +39,13 @@ jobs:
           inc = []
           a, m = a0, m0
           while (a, m) <= (a1, m1) and not solo:
-              d0 = dt.date(a, m, 1); d1 = min(dt.date(a, m, calendar.monthrange(a, m)[1]), hoy - dt.timedelta(days=1))
-              if d0 <= d1:
-                  for mod in modelos:
-                      inc.append({"modelo": mod, "mes": f"{a}-{m:02d}", "desde": d0.isoformat(), "hasta": d1.isoformat()})
+              ult = calendar.monthrange(a, m)[1]
+              # dos trozos por mes (1-15 y 16-fin) para que ningún job pase de ~2 h aunque ECMWF limite el ritmo
+              for d0, d1 in ((dt.date(a, m, 1), dt.date(a, m, 15)), (dt.date(a, m, 16), dt.date(a, m, ult))):
+                  d1 = min(d1, hoy - dt.timedelta(days=1))
+                  if d0 <= d1:
+                      for mod in modelos:
+                          inc.append({"modelo": mod, "mes": f"{a}-{m:02d}{'a' if d0.day == 1 else 'b'}", "desde": d0.isoformat(), "hasta": d1.isoformat()})
               a, m = (a + 1, 1) if m == 12 else (a, m + 1)
           print("matrix=" + json.dumps({"include": inc or [{"modelo": "ninguno", "mes": "-", "desde": "-", "hasta": "-"}]}))
           PY
@@ -63,10 +66,10 @@ jobs:
     needs: preparar
     if: ${{ inputs.solo_analizar != 'true' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 300
     strategy:
       fail-fast: false
-      max-parallel: 6
+      max-parallel: 5
       matrix: ${{ fromJSON(needs.preparar.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4

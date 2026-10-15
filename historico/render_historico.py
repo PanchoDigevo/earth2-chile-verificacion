@@ -153,9 +153,9 @@ def seccion_eventos(r):
             t_obs = "" if pd.isna(g0.t_obs) else f" · {num(g0.t_obs, 0)} °C"
             filas.append(f"<tr><td class='l'>{dia.strftime('%d %b').replace(dia.strftime('%b'), MESES[dia.month - 1])}</td>"
                          f"<td class='l'>{corto} <span class='muted small'>{icao}</span></td><td class='l'>{obs_html}<span class='muted small'>{t_obs}</span></td>{''.join(celdas)}</tr>")
-        enc = ["Día", "Estación", "Observado (24 h hasta las 12 UTC)"] + [f"{m} {l} h" for l in (72, 48, 24) for m in ORDEN]
+        enc = ["Día", "Estación", "Observado en las 24 h del día"] + [f"{m} {l} h" for l in (72, 48, 24) for m in ORDEN]
         bloques.append(f"""<div class="evento"><h3>{titulo}</h3><p class="desc">{d.zona.iloc[0]}. De {total} día-estación con observación, en {con_lluvia} llovió.
-  Las columnas muestran la lluvia pronosticada para las 24 h de ese día (en mm) según la corrida de 72, 48 y 24 h antes; en negrita 10 mm o más.</p>
+  Las columnas muestran la lluvia pronosticada (mm) para las 24 h de ese día, de las 12 UTC (8 o 9 de la mañana en Chile) a las 12 UTC del día siguiente, según la corrida emitida 72, 48 y 24 h antes del cierre de esa ventana; en negrita 10 mm o más.</p>
   <ul>{''.join(frases)}</ul>{tabla(enc, filas)}</div>""")
     return f"""<section>
   <div class="sec-head"><h2>Los tres eventos de 2026, vistos desde antes</h2>

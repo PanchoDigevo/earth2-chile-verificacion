@@ -5,7 +5,8 @@ histórico (data/metar_*.csv.gz) y produce data/resultados/*.csv y, vía render_
  2. Lluvia como sí/no: el METAR chileno no trae milímetros, pero sí "está lloviendo" (RA, DZ, SH, TS...).
     Observado = algún reporte con lluvia en las 24 h que terminan en la hora pronosticada.
     Pronosticado = precipitación acumulada en esas 24 h >= 1 mm.
- 3. Eventos 2026 (hindcast/eventos/eventos_2026.csv): lo que decía cada modelo 72, 48 y 24 h antes.
+ 3. Eventos 2026 (hindcast/eventos/eventos_2026.csv): lo que decía cada modelo 72, 48 y 24 h antes. El "día" del evento
+    va de las 12 UTC de ese día a las 12 UTC del siguiente (8 o 9 de la mañana en Chile), para captar la lluvia de la tarde y la noche.
  4. Error de temperatura por plazo, por mes y por estación.
  5. Corrección por estación: sesgo medio por estación × modelo × plazo × hora de corrida, aprendido
     SOLO con 2025 y aplicado SOLO a 2026. Se publica el error global vs. el corregido.
@@ -119,12 +120,12 @@ def eventos(pares):
     for e in ev.itertuples(index=False):
         ests = ZONAS.get(e.id, [])
         for dia in pd.date_range(e.inicio, e.fin, freq="D"):
-            valid = dia + pd.Timedelta(hours=12)
+            valid = dia + pd.Timedelta(hours=36)   # ventana del día: de las 12 UTC de ese día a las 12 UTC del siguiente
             sel = pares[(pares.icao.isin(ests)) & (pares.valid == valid)]
             for r in sel.itertuples(index=False):
                 filas.append(dict(evento=e.id, zona=e.zona, dia=dia.date(), icao=r.icao, modelo=r.modelo, lead_h=r.lead_h,
                                   tp24_fc=r.tp24_fc, t_fc=r.t_fc, t_obs=r.t_obs, horas_lluvia_obs=r.horas_lluvia_obs,
-                                  n_rep_24h=r.n_rep_24h, lluvia_obs=r.lluvia_obs))
+                                  n_rep_24h=r.n_rep_24h, lluvia_obs=r.lluvia_obs, lluvia_fc=r.lluvia_fc))
     det = pd.DataFrame(filas)
     if det.empty:
         return det, pd.DataFrame()

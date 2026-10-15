@@ -198,8 +198,8 @@ def seccion_eventos(r):
   {f'<div class="lectura"><p><strong>Lectura.</strong> {lectura}</p></div>' if lectura else ""}
   <ul>{''.join(frases)}</ul>{tabla_ev}</div>""")
     return f"""<section class="ancho">
-  <div class="sec-head"><h2>Los tres eventos de 2026, vistos desde antes</h2>
-  <p class="muted">Para cada día de cada evento: qué lluvia anunciaba cada modelo con 72, 48 y 24 horas de anticipación en los aeródromos de la zona,
+  <div class="sec-head"><h2>Los eventos de 2026, vistos desde antes</h2>
+  <p class="muted">Para cada día de cada evento del catálogo: qué lluvia anunciaba cada modelo con 72, 48 y 24 horas de anticipación en los aeródromos de la zona,
   y si de verdad llovió según los reportes horarios. Un modelo "marca" lluvia cuando pronostica {num(UMBRAL_LLUVIA_MM(), 0)} mm o más en 24 h.</p></div>
   {''.join(bloques)}
 </section>"""

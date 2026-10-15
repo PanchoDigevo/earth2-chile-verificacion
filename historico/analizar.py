@@ -115,7 +115,8 @@ def contingencia(pares, por):
 def eventos(pares):
     try:
         ev = pd.read_csv(EVENTOS, parse_dates=["inicio", "fin"])
-    except FileNotFoundError:
+    except (FileNotFoundError, pd.errors.ParserError) as e:
+        print("catálogo de eventos no legible, se omite la sección:", e)
         return pd.DataFrame(), pd.DataFrame()
     filas = []
     for e in ev.itertuples(index=False):

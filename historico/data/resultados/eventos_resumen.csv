@@ -26,3 +26,12 @@ lascondes-oct,GFS,72,2,1,0,1,0,1.0,0.5,0.5
 lascondes-oct,IFS,24,2,1,0,1,0,1.0,0.5,0.5
 lascondes-oct,IFS,48,2,1,0,1,0,1.0,0.5,0.5
 lascondes-oct,IFS,72,2,1,0,0,1,1.0,0.0,0.5
+santiago-13oct,AIFS,24,2,2,0,0,0,1.0,0.0,1.0
+santiago-13oct,AIFS,48,2,2,0,0,0,1.0,0.0,1.0
+santiago-13oct,AIFS,72,2,2,0,0,0,1.0,0.0,1.0
+santiago-13oct,GFS,24,2,2,0,0,0,1.0,0.0,1.0
+santiago-13oct,GFS,48,2,2,0,0,0,1.0,0.0,1.0
+santiago-13oct,GFS,72,2,2,0,0,0,1.0,0.0,1.0
+santiago-13oct,IFS,24,2,2,0,0,0,1.0,0.0,1.0
+santiago-13oct,IFS,48,2,2,0,0,0,1.0,0.0,1.0
+santiago-13oct,IFS,72,2,2,0,0,0,1.0,0.0,1.0

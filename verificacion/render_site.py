@@ -180,6 +180,7 @@ section{display:grid;gap:14px}
 @media (min-width:860px){.dos{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:start}}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;display:grid;gap:12px;min-width:0}
 .leyenda{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:14px;color:var(--muted);align-items:center}
+.leyenda span.item{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
 .chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:2px 9px 2px 7px;border-radius:999px;
   border:1px solid var(--line);background:var(--bg);color:var(--fg);white-space:nowrap}
 .chip i{width:8px;height:8px;border-radius:50%;background:var(--sin)}
@@ -349,7 +350,7 @@ def render_site(pts):
     <div class="sec-head"><h2>Dónde acierta y dónde no</h2>
     <p class="muted small">Error medio de temperatura por estación. Pasa el cursor sobre un punto para ver el detalle.</p></div>
     {mapa(bye)}
-    <div class="leyenda">{chip("bueno")} menos de {num(UMBRAL_T[0])} °C &nbsp; {chip("medio")} {num(UMBRAL_T[0])} a {num(UMBRAL_T[1])} °C &nbsp; {chip("alto")} {num(UMBRAL_T[1])} °C o más</div>
+    <div class="leyenda"><span class="item">{chip("bueno")} menos de {num(UMBRAL_T[0])} °C</span><span class="item">{chip("medio")} {num(UMBRAL_T[0])} a {num(UMBRAL_T[1])} °C</span><span class="item">{chip("alto")} {num(UMBRAL_T[1])} °C o más</span></div>
   </div>
   <div class="explica">
     <h2>Cómo leer esta página</h2>

@@ -404,3 +404,30 @@ lascondes-oct,Las Condes (San Carlos de Apoquindo),2026-10-08,SCTB,GFS,24,26.25,
 lascondes-oct,Las Condes (San Carlos de Apoquindo),2026-10-08,SCSN,GFS,24,0.75,11.51,14.0,0.0,23.0,0.0,0.0
 lascondes-oct,Las Condes (San Carlos de Apoquindo),2026-10-08,SCEL,AIFS,72,12.850000000000001,10.33,11.0,11.0,25.0,1.0,1.0
 lascondes-oct,Las Condes (San Carlos de Apoquindo),2026-10-08,SCEL,GFS,24,10.06,11.11,11.0,11.0,25.0,1.0,1.0
+santiago-13oct,Región Metropolitana (Providencia a Puente Alto; sector oriente),2026-10-13,SCEL,IFS,24,6.75,10.64,11.0,4.0,24.0,1.0,1.0
+santiago-13oct,Región Metropolitana (Providencia a Puente Alto; sector oriente),2026-10-13,SCTB,IFS,24,11.9,8.82,,2.0,10.0,,1.0
+santiago-13oct,Región Metropolitana (Providencia a Puente Alto; sector oriente),2026-10-13,SCSN,GFS,24,1.75,12.85,,1.0,20.0,1.0,1.0
+santiago-13oct,Región Metropolitana (Providencia a Puente Alto; sector oriente),2026-10-13,SCTB,GFS,24,17.25,9.95,,2.0,10.0,,1.0
+santiago-13oct,Región Metropolitana (Providencia a Puente Alto; sector oriente),2026-10-13,SCSN,AIFS,72,3.5500000000000007,13.0,,1.0,20.0,1.0,1.0
+santiago-13oct,Región Metropolitana (Providencia a Puente Alto; sector oriente),2026-10-13,SCSN,IFS,24,3.66,11.82,,1.0,20.0,1.0,1.0
+santiago-13oct,Región Metropolitana (Providencia a Puente Alto; sector oriente),2026-10-13,SCTB,AIFS,72,5.139999999999999,6.0,,2.0,10.0,,1.0
+santiago-13oct,Región Metropolitana (Providencia a Puente Alto; sector oriente),2026-10-13,SCTB,AIFS,24,5.81,6.15,,2.0,10.0,,1.0
+santiago-13oct,Región Metropolitana (Providencia a Puente Alto; sector oriente),2026-10-13,SCEL,AIFS,72,6.02,11.43,11.0,4.0,24.0,1.0,1.0
+santiago-13oct,Región Metropolitana (Providencia a Puente Alto; sector oriente),2026-10-13,SCEL,AIFS,24,6.65,11.55,11.0,4.0,24.0,1.0,1.0
+santiago-13oct,Región Metropolitana (Providencia a Puente Alto; sector oriente),2026-10-13,SCSN,IFS,48,3.6799999999999997,11.13,,1.0,20.0,1.0,1.0
+santiago-13oct,Región Metropolitana (Providencia a Puente Alto; sector oriente),2026-10-13,SCEL,IFS,48,6.850000000000001,10.03,11.0,4.0,24.0,1.0,1.0
+santiago-13oct,Región Metropolitana (Providencia a Puente Alto; sector oriente),2026-10-13,SCTB,IFS,48,9.21,8.38,,2.0,10.0,,1.0
+santiago-13oct,Región Metropolitana (Providencia a Puente Alto; sector oriente),2026-10-13,SCSN,AIFS,24,3.68,13.37,,1.0,20.0,1.0,1.0
+santiago-13oct,Región Metropolitana (Providencia a Puente Alto; sector oriente),2026-10-13,SCEL,GFS,48,5.5,12.4,11.0,4.0,24.0,1.0,1.0
+santiago-13oct,Región Metropolitana (Providencia a Puente Alto; sector oriente),2026-10-13,SCEL,AIFS,48,6.590000000000001,11.42,11.0,4.0,24.0,1.0,1.0
+santiago-13oct,Región Metropolitana (Providencia a Puente Alto; sector oriente),2026-10-13,SCSN,GFS,48,1.12,12.9,,1.0,20.0,1.0,1.0
+santiago-13oct,Región Metropolitana (Providencia a Puente Alto; sector oriente),2026-10-13,SCEL,IFS,72,6.079999999999998,9.96,11.0,4.0,24.0,1.0,1.0
+santiago-13oct,Región Metropolitana (Providencia a Puente Alto; sector oriente),2026-10-13,SCEL,GFS,72,7.629999999999999,11.77,11.0,4.0,24.0,1.0,1.0
+santiago-13oct,Región Metropolitana (Providencia a Puente Alto; sector oriente),2026-10-13,SCSN,IFS,72,4.84,10.9,,1.0,20.0,1.0,1.0
+santiago-13oct,Región Metropolitana (Providencia a Puente Alto; sector oriente),2026-10-13,SCTB,IFS,72,11.649999999999999,8.12,,2.0,10.0,,1.0
+santiago-13oct,Región Metropolitana (Providencia a Puente Alto; sector oriente),2026-10-13,SCTB,GFS,72,11.190000000000001,9.67,,2.0,10.0,,1.0
+santiago-13oct,Región Metropolitana (Providencia a Puente Alto; sector oriente),2026-10-13,SCSN,GFS,72,1.5,12.67,,1.0,20.0,1.0,1.0
+santiago-13oct,Región Metropolitana (Providencia a Puente Alto; sector oriente),2026-10-13,SCTB,GFS,48,8.19,10.2,,2.0,10.0,,1.0
+santiago-13oct,Región Metropolitana (Providencia a Puente Alto; sector oriente),2026-10-13,SCEL,GFS,24,11.31,12.05,11.0,4.0,24.0,1.0,1.0
+santiago-13oct,Región Metropolitana (Providencia a Puente Alto; sector oriente),2026-10-13,SCTB,AIFS,48,5.84,6.1,,2.0,10.0,,1.0
+santiago-13oct,Región Metropolitana (Providencia a Puente Alto; sector oriente),2026-10-13,SCSN,AIFS,48,3.9399999999999995,13.17,,1.0,20.0,1.0,1.0

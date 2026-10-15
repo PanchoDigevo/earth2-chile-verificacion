@@ -289,6 +289,8 @@ def hidrologia(z, tr):
     """Relleno de pozos y depresiones, resolución de planos, dirección D8 y acumulación con pysheds.
     Devuelve (grid, fdir, acumulación en celdas, DEM rellenado)."""
     import pyproj
+    if not hasattr(np, "in1d"):                # numpy ≥ 2.4 quitó in1d; pysheds 0.5 todavía lo usa
+        np.in1d = np.isin
     from pysheds.grid import Grid
     from pysheds.view import Raster, ViewFinder
     vf = ViewFinder(affine=tr, shape=z.shape, crs=pyproj.Proj("EPSG:4326"), nodata=-9999.0)

@@ -555,7 +555,7 @@ def render_site(pts):
   <div class="aviso"><p class="small">Esta página es apoyo a la decisión y verificación pública de modelos. Las alertas oficiales son de la
   <a href="https://www.meteochile.gob.cl/" rel="noopener">Dirección Meteorológica de Chile</a> y de
   <a href="https://www.senapred.cl/" rel="noopener">SENAPRED</a>.</p></div>
-  <p class="nav"><a href="historico.html">Ver también la verificación retroactiva 2025–2026: qué decían los modelos 72, 48 y 24 h antes →</a></p>
+  <p class="nav"><a href="historico.html">Verificación retroactiva 2025–2026: qué decían los modelos 72, 48 y 24 h antes →</a><br><a href="quebradas.html">Visor de quebradas de Santiago oriente: laderas quemadas, pendiente y lluvia prevista por cuenca →</a></p>
 </header>
 
 <section>

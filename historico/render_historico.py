@@ -196,6 +196,7 @@ def seccion_eventos(r):
   Las columnas muestran la lluvia pronosticada (mm) para las 24 h de ese día, de las 12 UTC (8 o 9 de la mañana en Chile) a las 12 UTC del día siguiente, según la corrida emitida 72, 48 y 24 h antes del cierre de esa ventana; en negrita 10 mm o más.
   {f"La columna Satélite es la lluvia estimada por {fuente_sat} en la celda de cada estación, para el día calendario UTC." if fuente_sat else ""}</p>
   {f'<div class="lectura"><p><strong>Lectura.</strong> {lectura}</p></div>' if lectura else ""}
+  {'<p class="nav"><a href="quebradas.html">Ver las laderas quemadas, la pendiente y el indicador por quebrada en el visor de Santiago oriente →</a></p>' if ev in ("lascondes-oct", "santiago-13oct") else ""}
   <ul>{''.join(frases)}</ul>{tabla_ev}</div>""")
     return f"""<section class="ancho">
   <div class="sec-head"><h2>Los eventos de 2026, vistos desde antes</h2>

@@ -1,0 +1,50 @@
+name: quebradas-capas
+# Capas estáticas del visor de quebradas (incendios, pendiente, cuencas, cauces, remociones).
+# Corre bajo demanda y el día 1 de cada mes; el indicador dinámico se recalcula 4x/día en verificacion.yml.
+on:
+  workflow_dispatch:
+    inputs:
+      capas:
+        description: "Capas a reconstruir (todo, o lista: pendiente,cicatrices,cauces,remociones,cuencas)"
+        default: "todo"
+  schedule:
+    - cron: "15 6 1 * *"
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: quebradas
+  cancel-in-progress: false
+jobs:
+  capas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r quebradas/requirements.txt
+      - name: Construir capas
+        run: |
+          capas="${{ inputs.capas || 'todo' }}"
+          if [ "$capas" = "todo" ]; then
+            python quebradas/capas_estaticas.py todo
+          else
+            for c in $(echo "$capas" | tr ',' ' '); do python quebradas/capas_estaticas.py "$c"; done
+          fi
+      - name: Indicador con la lluvia del último pipeline
+        run: python quebradas/indicador.py
+      - name: Guardar capas
+        run: |
+          git config user.name "earth2-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add site/quebradas
+          git diff --cached --quiet || git commit -m "quebradas: capas $(date -u +%Y-%m-%dT%H:%MZ)"
+          git pull --rebase -X theirs origin main
+          git push
+      - name: Publicar el sitio
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run verificacion.yml --ref main

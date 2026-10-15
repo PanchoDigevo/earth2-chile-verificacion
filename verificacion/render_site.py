@@ -218,6 +218,7 @@ h3{font-size:16px;font-weight:600}
 p{margin:0;max-width:65ch}
 .eyebrow{font-family:var(--font-display);font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600}
 .muted{color:var(--muted)}
+.nav{font-size:15px;max-width:none}
 .small{font-size:14.5px}
 header{display:grid;gap:12px}
 header .lead{font-size:18px;color:var(--muted);max-width:62ch}
@@ -517,6 +518,7 @@ def render_site(pts):
   <div class="aviso"><p class="small">Esta página es apoyo a la decisión y verificación pública de modelos. Las alertas oficiales son de la
   <a href="https://www.meteochile.gob.cl/" rel="noopener">Dirección Meteorológica de Chile</a> y de
   <a href="https://www.senapred.cl/" rel="noopener">SENAPRED</a>.</p></div>
+  <p class="nav"><a href="historico.html">Ver también la verificación retroactiva 2025–2026: qué decían los modelos 72, 48 y 24 h antes →</a></p>
 </header>
 
 <section>

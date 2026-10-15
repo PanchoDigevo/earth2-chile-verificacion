@@ -75,8 +75,13 @@ pron.to_csv(PRON, index=False)
 print(f"pronósticos guardados: {len(pron)} filas ({pron.modelo.nunique()} modelos, {pron.run.nunique()} corridas)")
 
 # 2. emparejar con la observación más cercana (±31 min) ------------------------------------------
-cand = pron[pron.valid <= obs.time.max()].sort_values("valid")
-o = obs[["icao", "time", "temp_c", "wspd_ms"]].rename(columns={"time": "t_obs_time"}).sort_values("t_obs_time")
+# Misma resolución temporal en ambas claves (pandas >= 3 infiere microsegundos al leer CSV; merge_asof exige igualdad).
+cand = pron[pron.valid <= obs.time.max()].copy()
+cand["valid"] = cand["valid"].astype("datetime64[ns]")
+cand = cand.sort_values("valid")
+o = obs[["icao", "time", "temp_c", "wspd_ms"]].rename(columns={"time": "t_obs_time"})
+o["t_obs_time"] = o["t_obs_time"].astype("datetime64[ns]")
+o = o.sort_values("t_obs_time")
 pares = pd.merge_asof(cand, o, left_on="valid", right_on="t_obs_time", by="icao",
                       tolerance=pd.Timedelta("31min"), direction="nearest").dropna(subset=["temp_c"])
 pares = pares.rename(columns={"temp_c": "t_obs", "wspd_ms": "w_obs"}).drop(columns=["t_obs_time"])

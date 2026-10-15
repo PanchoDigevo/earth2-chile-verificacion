@@ -1,8 +1,21 @@
 {
-"generado": "2026-10-15T03:24Z",
-"lluvia_prevista": {},
-"mm6": 0.0,
-"mm24": 0.0,
+"generado": "2026-10-15T03:25Z",
+"lluvia_prevista": {
+"AIFS": {
+"corrida": "20261014_18",
+"mm6": 0.2,
+"mm24": 0.4,
+"mm48": 1.3
+},
+"GFS": {
+"corrida": "20261014_18",
+"mm6": 0.6,
+"mm24": 0.6,
+"mm48": 1.4
+}
+},
+"mm6": 0.6,
+"mm24": 0.6,
 "horas_lluvia_7d": {},
 "factor_antecedente": 1.0,
 "parametros": {

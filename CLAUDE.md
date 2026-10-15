@@ -14,6 +14,7 @@ Inteligencia climática con IA para Chile a escala kilométrica (lluvia, tempera
 - `verificacion/` — pipeline diario: AIFS, IFS (ECMWF) y GFS (NOAA), los tres a 0,25°, vs METAR de 25 aeródromos chilenos; genera `site/`. Corre en GitHub Actions 4×/día (`.github/workflows/verificacion.yml`). `corridas.py` elige la última corrida completa con HEAD a los índices (nunca `Client.latest()`); `verify.py` guarda los pronósticos por estación en `data/pronostico_puntos.csv` y empareja con METAR cuando llega la observación; los pares llevan columna `modelo`.
 - `site/` — página pública en GitHub Pages.
 - `hindcast/` — eventos 2026 en tres capas: lluvia (ERA5 + pronósticos históricos IFS/GFS/AIFS a 24-48-72 h), superficie (Sentinel-2 dNBR de incendios, DEM 30 m, quebradas OSM, humedad de suelo), verdad (SERNAGEOMIN, SENAPRED). Lógica tipo USGS post-incendio: intensidad de lluvia × severidad de quema × pendiente × suelo.
+- `earth2/` — cómo usamos Earth2Studio (dependencia, no copia): conectores de datos sin GPU (`AIFS_FX`, `IFS_FX`, `GFS_FX`, `IEM_ASOS`, `GOES`, `GOESGLM`, `ARCO_ERA5`) y, con GPU, `AIFS`, `StormScopeGOES` (nowcaster base) y CorrDiff. `earth2/fetch_e2s.py` reemplaza a `fetch_aifs.py` cuando se valide (revisar la selección por estación con `sel`, está esbozada).
 - `docs/chile_natural_earth_10m.json` — contorno de Chile (Natural Earth, dominio público) para mapas.
 
 ## Narrativa del sitio

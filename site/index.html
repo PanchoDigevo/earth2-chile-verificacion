@@ -94,6 +94,10 @@ td.medida{min-width:9.5em}
 .bar i{display:block;height:100%;border-radius:4px;background:var(--sin)}
 .bar.bueno i{background:var(--bueno)} .bar.medio i{background:var(--medio)} .bar.alto i{background:var(--alto)}
 tbody tr:hover{background:color-mix(in srgb,var(--accent) 6%,transparent)}
+.narrativa{display:grid;gap:12px;max-width:68ch}
+.narrativa h2{font-size:24px}
+.narrativa p{max-width:none}
+.narrativa ol{margin:0;padding-left:1.25em;display:grid;gap:8px}
 .explica{display:grid;gap:10px}
 .explica ol{margin:0;padding-left:1.2em;display:grid;gap:6px;max-width:65ch}
 details{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);padding:0}
@@ -135,6 +139,8 @@ footer p{max-width:80ch}
     <div class="tile"><div class="label">Estaciones con error alto</div><div class="value">2<small>de 20</small></div><div class="foot">12 con error bajo (menos de 1,5 °C)</div></div>
   </div>
 </section>
+
+<section class="narrativa"><h2>Lo que el pronóstico global no alcanza a ver de Chile</h2><p>Los mejores modelos de pronóstico del mundo, como AIFS del Centro Europeo (ECMWF), ven el planeta en cuadrados de unos 25 kilómetros. Para Europa o Estados Unidos eso basta muchas veces. Para Chile no.</p><p>En 25 kilómetros caben el mar y la costa de Iquique, el valle de Santiago y la cordillera sobre Las Condes, o un fiordo y la montaña que lo rodea. El modelo tiene que darles a todos el mismo número. No es un error del modelo: es lo que se puede ver a esa escala.</p><p><strong>Esta página mide eso todos los días.</strong> Comparamos el pronóstico global con lo que de verdad registran los aeródromos del país, hora a hora, y publicamos dónde acierta y dónde se le escapa. Los primeros resultados muestran lo esperado: en la costa norte y en la Patagonia la diferencia llega a 3 °C. Eso basta para confundir lluvia con nieve, una helada con una noche fría o un camino abierto con uno cerrado.</p><p><strong>Lo que estamos construyendo agrega tres capas encima del pronóstico global:</strong></p><ol><li><strong>Un zoom entrenado con Chile.</strong> Un modelo de IA que toma el pronóstico de 25 km y lo baja a 4 km. Lo entrenamos con 22 años de simulación del clima chileno a alta resolución, para que reconozca la costa, los valles y la cordillera.</li><li><strong>La corrección de cada lugar.</strong> Cada estación le enseña al sistema su sesgo propio, porque cada lugar tiene su clima.</li><li><strong>Lo que un modelo del tiempo no ve.</strong> El satélite cada 10 minutos para las próximas dos horas, y la superficie tal como está hoy: laderas quemadas en el verano, pendientes y suelo saturado. Un aluvión no lo explica solo la lluvia; lo explica la lluvia sobre una ladera que ya no la retiene.</li></ol><p><strong>Cómo vamos a saber si funciona:</strong> con esta misma página. Cuando la capa chilena esté lista, vas a ver aquí las dos curvas lado a lado, el pronóstico global y el pronóstico con la capa chilena, contra las mismas estaciones. Si no mejora, se va a ver.</p></section>
 
 <section class="dos">
   <div class="card">
@@ -192,9 +198,9 @@ footer p{max-width:80ch}
 </section>
 
 <footer>
-  <p>Generado el 15 oct 2026, 00:46 UTC. Datos: ECMWF open data (CC-BY 4.0), NOAA/AWC METAR (dominio público), contorno de Natural Earth (dominio público).
+  <p>Generado el 15 oct 2026, 00:47 UTC. Datos: ECMWF open data (CC-BY 4.0), NOAA/AWC METAR (dominio público), contorno de Natural Earth (dominio público).
   Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">github.com/PanchoDigevo/earth2-chile-verificacion</a>.</p>
-  <p>Earth-2 Chile es un proyecto de inteligencia climática con IA a escala kilométrica. Esta verificación es información de apoyo a la decisión y no sustituye las alertas oficiales de la DMC ni de SENAPRED.</p>
+  <p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p>
 </footer>
 
 </div>

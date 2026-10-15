@@ -16,6 +16,10 @@ Inteligencia climática con IA para Chile a escala kilométrica (lluvia, tempera
 - `hindcast/` — eventos 2026 en tres capas: lluvia (ERA5 + pronósticos históricos IFS/GFS/AIFS a 24-48-72 h), superficie (Sentinel-2 dNBR de incendios, DEM 30 m, quebradas OSM, humedad de suelo), verdad (SERNAGEOMIN, SENAPRED). Lógica tipo USGS post-incendio: intensidad de lluvia × severidad de quema × pendiente × suelo.
 - `docs/chile_natural_earth_10m.json` — contorno de Chile (Natural Earth, dominio público) para mapas.
 
+## Narrativa del sitio
+
+El texto público de la portada está en `docs/narrativa_sitio.md`. Es la fuente de verdad del mensaje: el sitio no dice que AIFS sea malo, dice que 25 km no alcanza para la geografía chilena y que la capa chilena (CorrDiff 4 km + corrección por estación + satélite y superficie) se va a medir en esta misma página contra el global. `verify.py` debe insertar este texto arriba, antes de las tablas, con el aviso final al pie.
+
 ## Próximos pasos técnicos
 
 1. Sitio: sumar IFS y GFS (comparar tres modelos), mapa de estaciones por error, serie de 30 días, precipitación; estaciones DMC cuando haya token.

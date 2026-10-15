@@ -70,6 +70,41 @@ def barra(v, vmax, nv):
     return f'<span class="bar {nv}" aria-hidden="true"><i style="width:{pct:.0f}%"></i></span>'
 
 
+NARRATIVA = os.path.join(AQUI, "..", "docs", "narrativa_sitio.md")
+
+
+def narrativa():
+    """Lee docs/narrativa_sitio.md (fuente de verdad del mensaje público). Devuelve (html, aviso_final)."""
+    import re
+    try:
+        texto = open(NARRATIVA, encoding="utf-8").read()
+    except Exception:
+        return "", ""
+    if "\n---\n" in texto:
+        texto = texto.split("\n---\n", 1)[1]
+    inline = lambda t: re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", t.strip())
+    bloques, aviso, lista = [], "", []
+    def cierra_lista():
+        nonlocal lista
+        if lista:
+            bloques.append("<ol>" + "".join(f"<li>{inline(x)}</li>" for x in lista) + "</ol>"); lista = []
+    for parrafo in re.split(r"\n\s*\n", texto.strip()):
+        parrafo = parrafo.strip()
+        if not parrafo:
+            continue
+        if parrafo.startswith("## "):
+            cierra_lista(); bloques.append(f"<h2>{inline(parrafo[3:])}</h2>")
+        elif re.match(r"^\d+\.\s", parrafo):
+            for linea in re.split(r"\n(?=\d+\.\s)", parrafo):
+                lista.append(re.sub(r"^\d+\.\s+", "", linea.strip()))
+        elif parrafo.startswith("*") and parrafo.endswith("*") and not parrafo.startswith("**"):
+            cierra_lista(); aviso = inline(parrafo.strip("*"))
+        else:
+            cierra_lista(); bloques.append(f"<p>{inline(' '.join(parrafo.splitlines()))}</p>")
+    cierra_lista()
+    return "".join(bloques), aviso
+
+
 # ---------- mapa ----------
 K = 20.0            # px por grado de latitud
 LAT_TOP = -17.0
@@ -210,6 +245,10 @@ td.medida{min-width:9.5em}
 .bar i{display:block;height:100%;border-radius:4px;background:var(--sin)}
 .bar.bueno i{background:var(--bueno)} .bar.medio i{background:var(--medio)} .bar.alto i{background:var(--alto)}
 tbody tr:hover{background:color-mix(in srgb,var(--accent) 6%,transparent)}
+.narrativa{display:grid;gap:12px;max-width:68ch}
+.narrativa h2{font-size:24px}
+.narrativa p{max-width:none}
+.narrativa ol{margin:0;padding-left:1.25em;display:grid;gap:8px}
 .explica{display:grid;gap:10px}
 .explica ol{margin:0;padding-left:1.2em;display:grid;gap:6px;max-width:65ch}
 details{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);padding:0}
@@ -303,6 +342,7 @@ def render_site(pts):
   <div class="card tabla"><table><thead><tr><th class="l">Corrida (UTC)</th><th>Pares</th><th>Error temp.</th></tr></thead><tbody>{filas}</tbody></table></div>
 </section>"""
 
+    narr_html, narr_aviso = narrativa()
     MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
     fecha_ultima = f"{ultima.day} {MESES[ultima.month - 1]} · {ultima:%H} UTC"
     generado = f"{ahora.day} {MESES[ahora.month - 1]} {ahora.year}, {ahora:%H:%M} UTC"
@@ -344,6 +384,8 @@ def render_site(pts):
     <div class="tile"><div class="label">Estaciones con error alto</div><div class="value">{n_alto}<small>de {len(bye)}</small></div><div class="foot">{n_bueno} con error bajo (menos de {num(UMBRAL_T[0])} °C)</div></div>
   </div>
 </section>
+
+{f'<section class="narrativa">{narr_html}</section>' if narr_html else ""}
 
 <section class="dos">
   <div class="card">
@@ -403,7 +445,7 @@ def render_site(pts):
 <footer>
   <p>Generado el {generado}. Datos: ECMWF open data (CC-BY 4.0), NOAA/AWC METAR (dominio público), contorno de Natural Earth (dominio público).
   Código abierto: <a href="{REPO}" rel="noopener">github.com/PanchoDigevo/earth2-chile-verificacion</a>.</p>
-  <p>Earth-2 Chile es un proyecto de inteligencia climática con IA a escala kilométrica. Esta verificación es información de apoyo a la decisión y no sustituye las alertas oficiales de la DMC ni de SENAPRED.</p>
+  <p><em>{narr_aviso or 'Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.'}</em></p>
 </footer>
 
 </div>

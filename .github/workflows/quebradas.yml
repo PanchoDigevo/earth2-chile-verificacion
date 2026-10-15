@@ -1,6 +1,8 @@
 name: quebradas-capas
 # Capas estáticas del visor de quebradas (incendios, pendiente, cuencas, cauces, remociones).
 # Corre bajo demanda y el día 1 de cada mes; el indicador dinámico se recalcula 4x/día en verificacion.yml.
+# Las cuencas se delimitan desde el Copernicus DEM (pysheds) aguas arriba de los puntos de quebradas/salidas.csv;
+# al editar ese CSV, lanzar este workflow con capas=cicatrices,cuencas (cuencas necesita el dNBR del mismo job).
 on:
   workflow_dispatch:
     inputs:

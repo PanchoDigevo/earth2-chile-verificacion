@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Quebradas de Santiago oriente</title>
-<meta name="description" content="Visor de las quebradas de Las Condes, Lo Barnechea, La Reina y Peñalolén: laderas quemadas en el verano de 2026, pendiente, cuencas y un indicador de flujo de detritos con la lluvia prevista. Apoyo a la decisión; las alertas son de la DMC y SENAPRED.">
+<meta name="description" content="Visor de las quebradas de Las Condes, Lo Barnechea, La Reina y Peñalolén: laderas quemadas en el verano de 2026, pendiente, cuencas delimitadas desde el DEM y un indicador de flujo de detritos con la lluvia prevista. Apoyo a la decisión; las alertas son de la DMC y SENAPRED.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" crossorigin="">
@@ -101,6 +101,7 @@ footer p{max-width:90ch}
     <div class="card ficha" id="ficha">
       <h2>Elige una cuenca en el mapa</h2>
       <p class="muted small">Haz clic en una cuenca para ver su ficha: área, superficie quemada, pendiente y el indicador con la lluvia prevista.</p>
+      <p class="muted small"><strong>Nuevo:</strong> las cuencas ya no son las de HydroBASINS (demasiado grandes para estas quebradas): se delimitan desde el modelo de elevación Copernicus a 30 m, aguas arriba del punto donde cada quebrada entra a la ciudad. Los puntos de salida se pueden corregir en <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion/blob/main/quebradas/salidas.csv" rel="noopener">salidas.csv</a>.</p>
     </div>
     <div class="card slider">
       <h2>¿Y si cayeran X mm en 2 horas?</h2>
@@ -136,12 +137,12 @@ footer p{max-width:90ch}
     <p><strong>PropHM23</strong> es la fracción de la cuenca quemada con severidad moderada o alta y pendiente de 23° o más (Sentinel-2 y Copernicus DEM). <strong>dNBR</strong> es la severidad media de quema de la cuenca. <strong>KF</strong> es la erodabilidad del suelo; no existe un mapa para Chile y se usa 0,25, valor típico de suelos coluviales: es un supuesto. <strong>I</strong> es la intensidad de lluvia en mm/h.</p>
     <p>Lluvia prevista: se toma la precipitación acumulada a 6 y 24 h del modelo más lluvioso entre AIFS (ECMWF, IA) y GFS (NOAA) en el punto de grilla de la precordillera, y se supone concentrada en 2 horas (la de 6 h) o en 8 horas (la de 24 h), porque en la precordillera la lluvia convectiva se concentra. Lluvia antecedente: horas con lluvia reportada en los METAR de Tobalaba y Pudahuel en los últimos 7 días, como factor de 1 a 1,4 sobre la intensidad (no está en el modelo del USGS; es un ajuste simple por suelo húmedo).</p>
     <p>Niveles: bajo (P &lt; 0,2), atención (0,2 a 0,5) y aviso de impacto (P ≥ 0,5). Son umbrales de trabajo; el asesor meteorológico del proyecto los revisará. El modelo fue calibrado en el oeste de Estados Unidos: en Chile aún no está validado y por eso esta página también sirve para verificarlo contra lo que ocurra.</p>
-    <p>Capas: laderas quemadas por dNBR Sentinel-2 L2A (diciembre 2025 frente a febrero 2026, umbrales 0,27 y 0,66); pendiente del Copernicus DEM a 30 m; cuencas de HydroBASINS nivel 12 recortadas a la precordillera; cauces de OpenStreetMap; remociones en masa del catastro de SERNAGEOMIN cuando el servicio responde, y un catálogo propio documentado cuando no.</p>
+    <p>Capas: laderas quemadas por dNBR Sentinel-2 L2A (diciembre 2025 frente a febrero 2026, umbrales 0,27 y 0,66); pendiente del Copernicus DEM a 30 m; cuencas delimitadas desde el Copernicus DEM a 30 m (relleno de depresiones, dirección y acumulación de flujo con pysheds) aguas arriba de un punto de salida por quebrada, al pie de la precordillera (cota ~900 m, ~750 m en los cerros de Vitacura), definido a mano en <code>quebradas/salidas.csv</code>; hasta octubre de 2026 se usaban las cuencas HydroBASINS nivel 12, de 14 a 264 km², que diluían la superficie quemada; cauces de OpenStreetMap; remociones en masa del catastro de SERNAGEOMIN cuando el servicio responde, y un catálogo propio documentado cuando no.</p>
   </div>
 </details>
 
 <footer>
-  <p id="pie">Datos: Copernicus DEM (ESA), Sentinel-2 (ESA/Copernicus, vía Earth Search AWS), HydroBASINS (HydroSHEDS, CC-BY 4.0), OpenStreetMap (ODbL), SERNAGEOMIN, ECMWF open data (CC-BY 4.0), NOAA GFS, METAR (DMC/NOAA). Teselas: OpenStreetMap y OpenTopoMap. Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">github.com/PanchoDigevo/earth2-chile-verificacion</a>.</p>
+  <p id="pie">Datos: Copernicus DEM (ESA), Sentinel-2 (ESA/Copernicus, vía Earth Search AWS), OpenStreetMap (ODbL), SERNAGEOMIN, ECMWF open data (CC-BY 4.0), NOAA GFS, METAR (DMC/NOAA). Teselas: OpenStreetMap y OpenTopoMap. Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">github.com/PanchoDigevo/earth2-chile-verificacion</a>.</p>
   <p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p>
 </footer>
 </div>
@@ -194,7 +195,8 @@ footer p{max-width:90ch}
     const fuente = modo === "slider" ? `con ${mmSlider} mm en 2 h (control)` : (indicador ? `con la lluvia prevista: ${num(indicador.mm6, 1)} mm en 6 h, ${num(indicador.mm24, 1)} mm en 24 h` : "sin lluvia prevista cargada");
     box.innerHTML = `
       <h2>${p.nombre}</h2>
-      <p class="muted small">${p.cauces && p.cauces.length ? "Cauces: " + p.cauces.join(", ") : "Sin cauce con nombre en OpenStreetMap"} · HydroBASINS ${p.id}</p>
+      <p class="muted small">${p.comuna ? p.comuna + " · " : ""}${p.cauces && p.cauces.length ? "Cauces: " + p.cauces.join(", ") : "Sin cauce con nombre en OpenStreetMap"} · Cuenca ${p.id}${p.cota_salida ? ", salida a " + p.cota_salida + " m" : ""}</p>
+      ${p.nota ? `<p class="muted small">${p.nota}</p>` : ""}
       <div><span class="chip ${nv}"><i aria-hidden="true"></i>${NIVEL[nv] || "Sin indicador"}</span></div>
       <div class="p">${pSel == null ? "–" : num(100 * pSel, 0) + " %"}</div>
       <p class="small muted">Probabilidad estimada de flujo de detritos ${fuente}.${ind && modo !== "slider" ? ` A 6 h: ${num(100 * ind.p6, 0)} %; a 24 h: ${num(100 * ind.p24, 0)} %.` : ""}</p>

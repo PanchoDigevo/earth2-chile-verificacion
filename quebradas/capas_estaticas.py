@@ -3,15 +3,18 @@ GeoJSON liviano en site/quebradas/. Todas las fuentes son abiertas y sin clave.
 
   pendiente   Copernicus DEM GLO-30 (AWS) -> clases de pendiente >15°, >25°, >35°        pendiente.geojson
   cicatrices  Sentinel-2 L2A (Earth Search STAC, AWS) -> dNBR dic-2025 vs feb-2026      cicatrices.geojson
-  cuencas     HydroBASINS nivel 12 (HydroSHEDS) recortado a la precordillera, con
+  cuencas     Subcuencas delimitadas desde el DEM (pysheds: relleno de depresiones, dirección y
+              acumulación de flujo D8) aguas arriba de los puntos de salida de salidas.csv, con
               estadísticas por cuenca (área, pendiente media, % quemado, prop. HM23)     cuencas.geojson
   cauces      OpenStreetMap (Overpass) waterways con nombre; da nombre a las cuencas     cauces.geojson
   remociones  Catastro de remociones en masa de SERNAGEOMIN (ArcGIS REST), con respaldo
               propio si el servicio no responde                                          remociones.geojson
 
 Uso: python capas_estaticas.py [pendiente|cicatrices|cauces|remociones|cuencas|todo]
-(cuencas necesita pendiente y cicatrices ya calculadas: usa los rásteres intermedios de data/)."""
-import csv, io, json, os, sys, time, urllib.parse, urllib.request, zipfile
+(cuencas necesita cicatrices ya calculada: usa data/dnbr.npz; si no existe, la calcula primero).
+Los puntos de salida (nombre, lat, lon, comuna, nota) se editan a mano en quebradas/salidas.csv: cada punto se
+ajusta al cauce más cercano del DEM y la cuenca es todo lo que drena hacia él."""
+import csv, json, os, sys, time, urllib.parse, urllib.request
 import numpy as np
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
@@ -26,7 +29,6 @@ DEM_URL = ("https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_S3
            "Copernicus_DSM_COG_10_S34_00_W071_00_DEM.tif")
 STAC = "https://earth-search.aws.element84.com/v1/search"
 PRE, POST = ("2025-11-20T00:00:00Z/2026-01-05T23:59:59Z"), ("2026-02-01T00:00:00Z/2026-03-10T23:59:59Z")
-HYBAS_URL = "https://data.hydrosheds.org/file/HydroBASINS/standard/hybas_sa_lev12_v1c.zip"
 OVERPASS = ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter",
             "https://overpass.private.coffee/api/interpreter", "https://z.overpass-api.de/api/interpreter"]
 SERNAGEOMIN = ("https://sdngsig.sernageomin.cl/gissdng/rest/services/Remociones_en_masa_Chile/"
@@ -36,7 +38,12 @@ UA = {"User-Agent": "earth2-chile-verificacion/quebradas (github.com/PanchoDigev
 CLASES_PEND = [(15, 25, "15-25"), (25, 35, "25-35"), (35, 90, ">35")]
 DNBR_MODERADA, DNBR_ALTA = 0.27, 0.66        # Key & Benson (2006), umbrales usados por el USGS
 PEND_HM = 23.0                               # pendiente de referencia del modelo USGS (PropHM23)
-ELEV_MIN_CUENCA = 1000.0                     # una cuenca es "precordillera" si su cota máxima supera esto
+# Hidrología: ventana más amplia del mismo DEM (misma tesela Copernicus S34/W071) para que las cuencas que
+# llegan a Lo Barnechea por el norte no queden cortadas en el borde del AOI de las otras capas.
+AOI_HIDRO = (-70.66, -33.58, -70.33, -33.20)
+SALIDAS_CSV = os.path.join(AQUI, "salidas.csv")
+ACUM_MIN_KM2 = 0.2                           # un punto de salida se ajusta a la celda de cauce (≥ esta área drenada) más cercana
+RADIO_AJUSTE_M = 300.0                       # ... buscando hasta esta distancia
 ENV = dict(GDAL_DISABLE_READDIR_ON_OPEN="EMPTY_DIR", CPL_VSIL_CURL_ALLOWED_EXTENSIONS=".tif,.TIF", GDAL_HTTP_MAX_RETRY="5",
            GDAL_HTTP_RETRY_DELAY="5", AWS_NO_SIGN_REQUEST="YES")
 
@@ -106,7 +113,7 @@ def dem():
 
 
 def pendiente_grados(z, tr):
-    lat0 = (AOI[1] + AOI[3]) / 2
+    lat0 = tr.f + tr.e * z.shape[0] / 2
     dx_m = abs(tr.a) * 111320 * np.cos(np.radians(lat0)); dy_m = abs(tr.e) * 110574
     gy, gx = np.gradient(z, dy_m, dx_m)
     return np.degrees(np.arctan(np.hypot(gx, gy))).astype("float32")
@@ -262,47 +269,99 @@ def capa_remociones():
 
 
 # ---------- 5. cuencas ----------
-def leer_hybas():
-    """HydroBASINS SA nivel 12: polígonos que intersectan el AOI. Devuelve lista de (props, shapely geom)."""
-    import shapefile
-    from shapely.geometry import shape
-    cache = os.path.join(DATA, "hybas_sa_lev12_v1c.zip")
-    if not os.path.exists(cache):
-        print("  bajando HydroBASINS (72 MB)...", flush=True)
-        r = get(HYBAS_URL, timeout=900, intentos=3)
-        if not r:
-            raise SystemExit("no se pudo bajar HydroBASINS")
-        open(cache, "wb").write(r)
-    z = zipfile.ZipFile(cache)
-    nombres = {n.rsplit(".", 1)[1].lower(): n for n in z.namelist() if n.lower().endswith((".shp", ".dbf", ".shx"))}
-    sf = shapefile.Reader(shp=io.BytesIO(z.read(nombres["shp"])), dbf=io.BytesIO(z.read(nombres["dbf"])), shx=io.BytesIO(z.read(nombres["shx"])))
-    campos = [f[0] for f in sf.fields[1:]]
+def dem_hidro():
+    """Ventana amplia del DEM para hidrología (AOI_HIDRO): (z, transform). Cache en data/dem_hidro.npz."""
+    cache = os.path.join(DATA, "dem_hidro.npz")
+    from rasterio.transform import Affine
+    if os.path.exists(cache):
+        d = np.load(cache)
+        return d["z"], Affine(*d["tr"][:6])
+    import rasterio
+    from rasterio.windows import from_bounds
+    with rasterio.Env(**ENV), rasterio.open(DEM_URL) as src:
+        win = from_bounds(*AOI_HIDRO, src.transform)
+        z = src.read(1, window=win).astype("float32"); tr = src.window_transform(win)
+    np.savez(cache, z=z, tr=np.array(tr)[:6])
+    return z, tr
+
+
+def hidrologia(z, tr):
+    """Relleno de pozos y depresiones, resolución de planos, dirección D8 y acumulación con pysheds.
+    Devuelve (grid, fdir, acumulación en celdas, DEM rellenado)."""
+    import pyproj
+    from pysheds.grid import Grid
+    from pysheds.view import Raster, ViewFinder
+    vf = ViewFinder(affine=tr, shape=z.shape, crs=pyproj.Proj("EPSG:4326"), nodata=-9999.0)
+    dem = Raster(z.astype("float64"), viewfinder=vf)
+    grid = Grid.from_raster(dem)
+    relleno = grid.resolve_flats(grid.fill_depressions(grid.fill_pits(dem)))
+    fdir = grid.flowdir(relleno)
+    acc = grid.accumulation(fdir)
+    return grid, fdir, np.asarray(acc), np.asarray(relleno)
+
+
+def celda_km2(tr, nfilas):
+    """Área de cada celda en km², por fila (varía con la latitud)."""
+    lats = tr.f + tr.e * (np.arange(nfilas) + 0.5)
+    return (abs(tr.a) * 111.32 * np.cos(np.radians(lats)) * abs(tr.e) * 110.574).astype("float64")
+
+
+def leer_salidas():
+    if not os.path.exists(SALIDAS_CSV):
+        raise SystemExit(f"falta {SALIDAS_CSV}: nombre,lat,lon,comuna,nota por quebrada")
     out = []
-    for i in range(len(sf)):
-        s = sf.shape(i)
-        bx = s.bbox
-        if bx[2] < AOI[0] or bx[0] > AOI[2] or bx[3] < AOI[1] or bx[1] > AOI[3]:
+    for r in csv.DictReader(open(SALIDAS_CSV, encoding="utf-8")):
+        if not r.get("nombre") or not r.get("lat") or not r.get("lon"):
             continue
-        out.append((dict(zip(campos, sf.record(i))), shape(s.__geo_interface__)))
-    print(f"  HydroBASINS: {len(out)} cuencas tocan el AOI", flush=True)
+        out.append({"nombre": r["nombre"].strip(), "lat": float(r["lat"]), "lon": float(r["lon"]),
+                    "comuna": (r.get("comuna") or "").strip(), "nota": (r.get("nota") or "").strip()})
     return out
+
+
+def ajustar_a_cauce(tr, acc_km2, lon, lat):
+    """Celda de cauce (acumulación ≥ ACUM_MIN_KM2) más cercana al punto, dentro de RADIO_AJUSTE_M.
+    Devuelve (fila, col, distancia_m) o la celda del punto con distancia None si no hay cauce cerca."""
+    c0, r0 = ~tr * (lon, lat)
+    r0, c0 = int(np.floor(r0)), int(np.floor(c0))
+    dy_m = abs(tr.e) * 110574.0; dx_m = abs(tr.a) * 111320.0 * np.cos(np.radians(lat))
+    n = int(np.ceil(RADIO_AJUSTE_M / min(dx_m, dy_m)))
+    r1, r2 = max(0, r0 - n), min(acc_km2.shape[0], r0 + n + 1)
+    c1, c2 = max(0, c0 - n), min(acc_km2.shape[1], c0 + n + 1)
+    rr, cc = np.where(acc_km2[r1:r2, c1:c2] >= ACUM_MIN_KM2)
+    if len(rr) == 0:
+        return r0, c0, None
+    rr += r1; cc += c1
+    xs, ys = tr * (cc + 0.5, rr + 0.5)
+    d = np.hypot((xs - lon) * dx_m / abs(tr.a), (ys - lat) * dy_m / abs(tr.e))
+    k = int(np.argmin(d))
+    if d[k] > RADIO_AJUSTE_M:
+        return r0, c0, None
+    return int(rr[k]), int(cc[k]), float(d[k])
 
 
 def capa_cuencas():
     from rasterio import features
     from rasterio.warp import reproject, Resampling, transform_geom
-    from shapely.geometry import mapping, LineString, Point
-    from shapely.ops import unary_union
-    z, tr = dem()
-    s = pendiente_grados(z, tr)
-    d = np.load(os.path.join(DATA, "dnbr.npz")); dnbr, tr20 = d["dnbr"], d["tr"]
     from rasterio.transform import Affine
-    tr20 = Affine(*tr20[:6])
-    # pendiente reproyectada a la grilla de 20 m del dNBR, para PropHM23
+    from shapely.geometry import mapping, shape, LineString, Point
+    from shapely.ops import unary_union
+    z, tr = dem_hidro()
+    s = pendiente_grados(z, tr)
+    t0 = time.time()
+    grid, fdir, acc, zr = hidrologia(z, tr)
+    cell = celda_km2(tr, z.shape[0])
+    acc_km2 = acc * cell[:, None]
+    print(f"  hidrología sobre {z.shape[0]}x{z.shape[1]} celdas en {time.time() - t0:.0f} s", flush=True)
+    ruta_dnbr = os.path.join(DATA, "dnbr.npz")
+    if not os.path.exists(ruta_dnbr):
+        print("  no hay data/dnbr.npz: se calcula la capa de cicatrices primero", flush=True); capa_cicatrices()
+    d = np.load(ruta_dnbr); dnbr, tr20 = d["dnbr"], Affine(*d["tr"][:6])
+    # pendiente del DEM hidrológico reproyectada a la grilla de 20 m del dNBR, para PropHM23
     s20 = np.zeros(dnbr.shape, dtype="float32")
     reproject(s, s20, src_transform=tr, src_crs="EPSG:4326", dst_transform=tr20, dst_crs=UTM, resampling=Resampling.bilinear)
     quemado = np.nan_to_num(dnbr) >= DNBR_MODERADA
-    # cauces con nombre para bautizar cuencas
+    km2_celda20 = abs(tr20.a * tr20.e) / 1e6
+    # cauces con nombre (OSM) para listar los de cada cuenca
     cauces = []
     try:
         for f in json.load(open(os.path.join(SALIDA, "cauces.geojson"), encoding="utf-8"))["features"]:
@@ -310,37 +369,53 @@ def capa_cuencas():
                 cauces.append((f["properties"]["nombre"], LineString(f["geometry"]["coordinates"])))
     except Exception:
         pass
-    overrides = []
-    try:
-        for r in csv.DictReader(open(os.path.join(AQUI, "nombres_cuencas.csv"), encoding="utf-8")):
-            overrides.append((Point(float(r["lon"]), float(r["lat"])), r["nombre"], r.get("nota", "")))
-    except FileNotFoundError:
-        pass
-    feats = []
-    for props, g in leer_hybas():
-        m30 = features.rasterize([(mapping(g), 1)], out_shape=z.shape, transform=tr, fill=0, dtype="uint8").astype(bool)
-        if m30.sum() < 20:
-            continue
-        zmax = float(z[m30].max())
-        if zmax < ELEV_MIN_CUENCA:
-            continue
+    salidas = leer_salidas()
+    feats = []; geoms = []
+    for i, sal in enumerate(salidas, start=1):
+        r, c, dist = ajustar_a_cauce(tr, acc_km2, sal["lon"], sal["lat"])
+        m = np.asarray(grid.catchment(x=c, y=r, fdir=fdir, xytype="index")).astype(bool)
+        area_km2 = float((m * cell[:, None]).sum())
+        if m.sum() < 5:
+            print(f"  {sal['nombre']}: el punto no cae en un cauce (área {area_km2:.3f} km²); se omite", flush=True); continue
+        borde = bool(m[0, :].any() or m[-1, :].any() or m[:, 0].any() or m[:, -1].any())
+        g = unary_union([shape(gg) for gg, _ in features.shapes(m.astype("uint8"), mask=m, transform=tr)])
         g_utm = transform_geom("EPSG:4326", UTM, mapping(g))
         m20 = features.rasterize([(g_utm, 1)], out_shape=dnbr.shape, transform=tr20, fill=0, dtype="uint8").astype(bool)
-        area_km2 = float(props.get("SUB_AREA", g.area * 111.32 * 110.57 * np.cos(np.radians(AOI[1]))))
-        pct_q = float(quemado[m20].mean() * 100) if m20.any() else 0.0
-        prop_hm23 = float((quemado[m20] & (s20[m20] >= PEND_HM)).mean()) if m20.any() else 0.0
+        quemado_km2 = float(quemado[m20].sum()) * km2_celda20 if m20.any() else 0.0
+        hm23_km2 = float((quemado[m20] & (s20[m20] >= PEND_HM)).sum()) * km2_celda20 if m20.any() else 0.0
         dnbr_medio = float(np.nanmean(np.where(m20, dnbr, np.nan))) if m20.any() and np.isfinite(dnbr[m20]).any() else 0.0
         nombres = sorted({n for n, l in cauces if l.intersects(g)}, key=lambda n: (not n.lower().startswith("quebrada"), n))
-        manual = [(n, nota) for pt, n, nota in overrides if g.contains(pt)]
-        nombre = manual[0][0] if manual else (nombres[0] if nombres else f"Cuenca {int(props['HYBAS_ID']) % 10000}")
+        xs, ys = tr * (c + 0.5, r + 0.5)
+        notas = [sal["nota"]] if sal["nota"] else []
+        if dist is None:
+            notas.append("El punto de salida no está sobre un cauce del DEM; revisar lat/lon en salidas.csv.")
+        elif dist > 150:
+            notas.append(f"Punto de salida ajustado {dist:.0f} m al cauce más cercano.")
+        if borde:
+            notas.append("La cuenca toca el borde del DEM descargado: área subestimada.")
         feats.append({"type": "Feature", "properties": {
-            "id": int(props["HYBAS_ID"]), "nombre": nombre, "nota": manual[0][1] if manual else "",
-            "cauces": nombres[:6], "area_km2": round(area_km2, 2), "elev_min": round(float(z[m30].min())), "elev_max": round(zmax),
-            "pend_media": round(float(s[m30].mean()), 1), "frac_pend23": round(float((s[m30] >= PEND_HM).mean()), 3),
-            "pct_quemado": round(pct_q, 1), "prop_hm23": round(prop_hm23, 4), "dnbr_medio": round(max(dnbr_medio, 0.0), 3)},
+            "id": i, "nombre": sal["nombre"], "comuna": sal["comuna"], "nota": " ".join(notas),
+            "cauces": nombres[:6], "area_km2": round(area_km2, 2), "elev_min": round(float(z[m].min())), "elev_max": round(float(z[m].max())),
+            "pend_media": round(float(s[m].mean()), 1), "frac_pend23": round(float((s[m] >= PEND_HM).mean()), 3),
+            "pct_quemado": round(100 * quemado_km2 / area_km2, 1), "prop_hm23": round(hm23_km2 / area_km2, 4),
+            "dnbr_medio": round(max(dnbr_medio, 0.0), 3),
+            "salida": [round(float(xs), 5), round(float(ys), 5)], "cota_salida": round(float(zr[r, c]))},
             "geometry": mapping(g.simplify(0.0002, preserve_topology=True))})
-    escribir_geojson("cuencas.geojson", feats, {"fuente": "HydroBASINS nivel 12 (HydroSHEDS, CC-BY 4.0) + estadísticas propias sobre Copernicus DEM y dNBR Sentinel-2",
-                                                "regla": "USGS post-incendio (Staley et al. 2017, modelo M1): PropHM23 = fracción quemada (moderada/alta) con pendiente ≥ 23°"})
+        geoms.append(g)
+        print(f"  {i:2d} {sal['nombre']}: {area_km2:.2f} km², salida a {zr[r, c]:.0f} m, quemado {100 * quemado_km2 / area_km2:.1f} %, "
+              f"PropHM23 {hm23_km2 / area_km2:.3f}" + (f", ajuste {dist:.0f} m" if dist else "") + (", BORDE" if borde else ""), flush=True)
+    # cuencas anidadas: si la salida de una cae dentro de otra, se anota (no se resta: el indicador USGS es por cuenca completa)
+    for f, g in zip(feats, geoms):
+        pt = Point(*f["properties"]["salida"])
+        for f2, g2 in zip(feats, geoms):
+            if f2 is not f and g2.contains(pt) and g2.area > g.area:
+                f["properties"]["nota"] = (f["properties"]["nota"] + f" Tributaria de {f2['properties']['nombre']}.").strip()
+    escribir_geojson("cuencas.geojson", feats, {
+        "fuente": "Subcuencas delimitadas desde el Copernicus DEM GLO-30 (ESA, abierto) con pysheds (D8), aguas arriba de los puntos de salida "
+                  "de quebradas/salidas.csv; estadísticas propias sobre el DEM y el dNBR Sentinel-2",
+        "metodo": f"relleno de depresiones, dirección y acumulación de flujo D8 a 30 m; cada punto de salida se ajusta al cauce más cercano "
+                  f"(≥ {ACUM_MIN_KM2} km² drenados, hasta {RADIO_AJUSTE_M:.0f} m); área = celdas × tamaño de celda",
+        "regla": "USGS post-incendio (Staley et al. 2017, modelo M1): PropHM23 = fracción quemada (moderada/alta) con pendiente ≥ 23°"})
 
 
 if __name__ == "__main__":

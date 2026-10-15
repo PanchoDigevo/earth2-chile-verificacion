@@ -1,5 +1,5 @@
 numpy
 rasterio
 shapely
-pyshp
+pysheds
 eccodes

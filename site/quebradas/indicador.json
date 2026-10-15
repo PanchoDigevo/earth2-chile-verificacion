@@ -1,21 +1,21 @@
 {
-"generado": "2026-10-15T14:07Z",
+"generado": "2026-10-15T18:37Z",
 "lluvia_prevista": {
 "AIFS": {
-"corrida": "20261015_06",
-"mm6": 0.0,
+"corrida": "20261015_12",
+"mm6": 0.4,
 "mm24": 1.1,
-"mm48": 1.2
+"mm48": 1.3
 },
 "GFS": {
-"corrida": "20261015_06",
+"corrida": "20261015_12",
 "mm6": 0.0,
-"mm24": 1.4,
-"mm48": 1.6
+"mm24": 0.8,
+"mm48": 0.8
 }
 },
-"mm6": 0.0,
-"mm24": 1.4,
+"mm6": 0.4,
+"mm24": 1.1,
 "horas_lluvia_7d": {},
 "factor_antecedente": 1.0,
 "parametros": {
@@ -36,15 +36,15 @@
 {
 "id": 1,
 "nombre": "Quebrada de Apoquindo (San Carlos de Apoquindo)",
-"p6": 0.026,
-"p24": 0.028,
+"p6": 0.028,
+"p24": 0.027,
 "p": 0.028,
 "nivel": "bajo"
 },
 {
 "id": 2,
 "nombre": "Quebrada Grande (Los Almendros)",
-"p6": 0.026,
+"p6": 0.027,
 "p24": 0.027,
 "p": 0.027,
 "nivel": "bajo"
@@ -52,7 +52,7 @@
 {
 "id": 3,
 "nombre": "Quebrada de Ramón",
-"p6": 0.026,
+"p6": 0.027,
 "p24": 0.027,
 "p": 0.027,
 "nivel": "bajo"
@@ -60,7 +60,7 @@
 {
 "id": 4,
 "nombre": "Quebrada Guayacán",
-"p6": 0.026,
+"p6": 0.027,
 "p24": 0.027,
 "p": 0.027,
 "nivel": "bajo"
@@ -68,7 +68,7 @@
 {
 "id": 5,
 "nombre": "Quebrada sin nombre (Peñalolén norte)",
-"p6": 0.026,
+"p6": 0.027,
 "p24": 0.027,
 "p": 0.027,
 "nivel": "bajo"
@@ -76,7 +76,7 @@
 {
 "id": 6,
 "nombre": "Quebrada Nido del Águila",
-"p6": 0.026,
+"p6": 0.027,
 "p24": 0.027,
 "p": 0.027,
 "nivel": "bajo"
@@ -84,7 +84,7 @@
 {
 "id": 7,
 "nombre": "Quebrada sin nombre (Lo Hermida)",
-"p6": 0.026,
+"p6": 0.027,
 "p24": 0.027,
 "p": 0.027,
 "nivel": "bajo"
@@ -92,7 +92,7 @@
 {
 "id": 8,
 "nombre": "Quebrada de Macul",
-"p6": 0.026,
+"p6": 0.027,
 "p24": 0.027,
 "p": 0.027,
 "nivel": "bajo"
@@ -100,7 +100,7 @@
 {
 "id": 9,
 "nombre": "Quebrada sin nombre (Canal del Monte)",
-"p6": 0.026,
+"p6": 0.027,
 "p24": 0.027,
 "p": 0.027,
 "nivel": "bajo"
@@ -108,23 +108,23 @@
 {
 "id": 10,
 "nombre": "Quebrada de Lo Cañas",
-"p6": 0.026,
-"p24": 0.027,
+"p6": 0.027,
+"p24": 0.026,
 "p": 0.027,
 "nivel": "bajo"
 },
 {
 "id": 11,
 "nombre": "Quebrada de Panul",
-"p6": 0.026,
-"p24": 0.027,
+"p6": 0.027,
+"p24": 0.026,
 "p": 0.027,
 "nivel": "bajo"
 },
 {
 "id": 12,
 "nombre": "Quebrada San Francisco",
-"p6": 0.026,
+"p6": 0.027,
 "p24": 0.027,
 "p": 0.027,
 "nivel": "bajo"
@@ -132,7 +132,7 @@
 {
 "id": 13,
 "nombre": "Quebrada Las Cañitas",
-"p6": 0.026,
+"p6": 0.027,
 "p24": 0.027,
 "p": 0.027,
 "nivel": "bajo"
@@ -140,7 +140,7 @@
 {
 "id": 14,
 "nombre": "Quebrada sin nombre (Pochoco)",
-"p6": 0.026,
+"p6": 0.027,
 "p24": 0.027,
 "p": 0.027,
 "nivel": "bajo"
@@ -148,7 +148,7 @@
 {
 "id": 15,
 "nombre": "Quebrada Agua de Aranda",
-"p6": 0.026,
+"p6": 0.027,
 "p24": 0.027,
 "p": 0.027,
 "nivel": "bajo"
@@ -156,7 +156,7 @@
 {
 "id": 16,
 "nombre": "Quebrada del Garin",
-"p6": 0.026,
+"p6": 0.027,
 "p24": 0.027,
 "p": 0.027,
 "nivel": "bajo"
@@ -164,7 +164,7 @@
 {
 "id": 17,
 "nombre": "Quebrada El Manzano",
-"p6": 0.026,
+"p6": 0.027,
 "p24": 0.027,
 "p": 0.027,
 "nivel": "bajo"
@@ -172,7 +172,7 @@
 {
 "id": 18,
 "nombre": "Quebrada El Quisco",
-"p6": 0.026,
+"p6": 0.027,
 "p24": 0.027,
 "p": 0.027,
 "nivel": "bajo"
@@ -180,7 +180,7 @@
 {
 "id": 19,
 "nombre": "Quebrada El Quisco (ramal poniente)",
-"p6": 0.026,
+"p6": 0.027,
 "p24": 0.027,
 "p": 0.027,
 "nivel": "bajo"
@@ -188,7 +188,7 @@
 {
 "id": 20,
 "nombre": "Quebrada El Culén",
-"p6": 0.026,
+"p6": 0.027,
 "p24": 0.027,
 "p": 0.027,
 "nivel": "bajo"
@@ -196,7 +196,7 @@
 {
 "id": 21,
 "nombre": "Estero Las Hualtatas",
-"p6": 0.026,
+"p6": 0.027,
 "p24": 0.027,
 "p": 0.027,
 "nivel": "bajo"
@@ -204,15 +204,15 @@
 {
 "id": 22,
 "nombre": "Quebrada Oscura",
-"p6": 0.026,
-"p24": 0.027,
+"p6": 0.027,
+"p24": 0.026,
 "p": 0.027,
 "nivel": "bajo"
 },
 {
 "id": 23,
 "nombre": "Quebrada El Carrizo",
-"p6": 0.026,
+"p6": 0.027,
 "p24": 0.027,
 "p": 0.027,
 "nivel": "bajo"
@@ -220,7 +220,7 @@
 {
 "id": 24,
 "nombre": "Quebrada Los Carboneros",
-"p6": 0.026,
+"p6": 0.027,
 "p24": 0.027,
 "p": 0.027,
 "nivel": "bajo"
@@ -228,7 +228,7 @@
 {
 "id": 25,
 "nombre": "Quebrada Los Chanchos",
-"p6": 0.026,
+"p6": 0.027,
 "p24": 0.027,
 "p": 0.027,
 "nivel": "bajo"
@@ -236,7 +236,7 @@
 {
 "id": 26,
 "nombre": "Quebrada La Ermita",
-"p6": 0.026,
+"p6": 0.027,
 "p24": 0.027,
 "p": 0.027,
 "nivel": "bajo"
@@ -244,7 +244,7 @@
 {
 "id": 27,
 "nombre": "Quebrada Onda (Las Ondas)",
-"p6": 0.026,
+"p6": 0.027,
 "p24": 0.027,
 "p": 0.027,
 "nivel": "bajo"
@@ -252,7 +252,7 @@
 {
 "id": 28,
 "nombre": "Quebrada Agua del Palo",
-"p6": 0.026,
+"p6": 0.027,
 "p24": 0.027,
 "p": 0.027,
 "nivel": "bajo"

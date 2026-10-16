@@ -2,7 +2,7 @@
 
 Leer antes `CLAUDE.md` (sección "Capas estándar"). Al terminar cada tarea, marcarla [x], hacer commit y explicarle a Pancho en simple qué se encontró antes de publicar.
 
-## 1. [ ] Monitor de océano y deriva (capa estándar)
+## 1. [x] Monitor de océano y deriva (capa estándar)
 Detectar cambios de régimen (El Niño, olas de calor marinas) desde datos primarios, nunca desde noticias.
 - Diario en GitHub Actions: NOAA OISST v2.1 (0,25°, dominio público, AWS o NCEI) y su climatología 1991–2020. Anomalía de temperatura del mar en cajas costeras frente a cada aeródromo de la costa (Arica, Iquique, Antofagasta, Caldera, La Serena, Santo Domingo, Concepción, Puerto Montt) y en la región Niño 1+2.
 - Índices semanales Niño 1+2 y Niño 3.4 de NOAA CPC, guardados como serie.

@@ -112,6 +112,8 @@ def cruce_mar(serie):
     s = pd.read_csv(ruta, parse_dates=["fecha"])
     s = s[s.caja.isin(CAJA.values())].pivot_table(index="fecha", columns="caja", values="anom").sort_index().asfreq("D")
     s30 = s.rolling("30D", min_periods=15).mean()
+    # el satélite llega con 1 a 2 días de retraso: se arrastra el último valor hasta 5 días para cruzar con la deriva de hoy
+    s30 = s30.reindex(pd.date_range(s30.index.min(), max(s30.index.max(), serie.fecha.max()), freq="D")).ffill(limit=5)
     out = serie.copy(); out["sst_anom30"] = np.nan
     corr = {}
     for icao, caja in CAJA.items():

@@ -165,7 +165,7 @@ def pagina_eventos(r, ahora):
             f0, f1 = info.inicio, info.fin
             cuando = (f"{f0.day} de {MESES_LARGO[f0.month - 1]} de {f0.year}" if f0 == f1 else
                       f"del {f0.day} de {MESES_LARGO[f0.month - 1]} al {f1.day} de {MESES_LARGO[f1.month - 1]} de {f1.year}")
-            impacto = str(info.descripcion).replace(";", ".") if pd.notna(info.descripcion) else ""
+            impacto = ". ".join(x.strip()[:1].upper() + x.strip()[1:] for x in str(info.descripcion).split(";") if x.strip()) if pd.notna(info.descripcion) else ""
             lectura = str(info.lectura) if "lectura" in cat.columns and pd.notna(info.lectura) else ""
             fuente = f' <a href="{info.fuente}" rel="noopener">Fuente</a>.' if pd.notna(info.fuente) else ""
         else:

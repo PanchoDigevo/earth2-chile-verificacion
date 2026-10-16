@@ -211,7 +211,7 @@ def quebradas_hoy():
 K = 20.0            # px por grado de latitud
 LAT_TOP = -17.0
 CX = 0.80           # cos(37°): compresión de la longitud a la latitud media de Chile
-FRANJAS = [("Norte", -17.3, -30.6, -71.9, -66.9), ("Centro", -30.6, -43.9, -75.0, -70.0), ("Sur", -43.9, -56.2, -76.0, -66.0)]
+FRANJAS = [("Norte", -17.3, -30.6, -71.9, -66.9), ("Centro", -30.6, -43.9, -75.0, -68.6), ("Sur", -43.9, -56.2, -76.0, -66.0)]
 
 
 def proj(lon, lat):
@@ -427,7 +427,7 @@ select{font:inherit;font-size:16px;padding:7px 10px;border-radius:8px;border:1px
 /* mapa */
 .mapa{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:flex-start;justify-content:center}
 .franja{margin:0;display:grid;gap:4px;justify-items:center}
-.franja svg{max-width:100%;height:auto;display:block;overflow:visible}
+.franja svg{max-width:100%;height:auto;display:block;overflow:hidden}
 .franja figcaption{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
 .tierra{fill:var(--tierra);stroke:var(--costa);stroke-width:.6;vector-effect:non-scaling-stroke}
 .est{cursor:pointer;outline:none}

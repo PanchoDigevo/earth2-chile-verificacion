@@ -37,12 +37,12 @@ jobs:
         working-directory: verificacion
         continue-on-error: true
         run: python fetch_gfs.py
-      - name: Verificar y generar sitio
-        working-directory: verificacion
-        run: python verify.py
       - name: Indicador de quebradas (lluvia prevista y observada)
         run: python quebradas/indicador.py
         continue-on-error: true
+      - name: Verificar y generar sitio
+        working-directory: verificacion
+        run: python verify.py
       - name: Guardar observaciones y resultados
         run: |
           git config user.name "earth2-bot"

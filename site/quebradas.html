@@ -216,7 +216,7 @@ footer p{max-width:90ch}
   const corto = n => n.split(" (")[0];
   const NIVEL = { bajo: "Bajo", atencion: "Atención", aviso: "Aviso de impacto", sin: "Sin quema relevante" };
   const chip = n => `<span class="chip ${n}"><i aria-hidden="true"></i>${NIVEL[n]}</span>`;
-  const horaChile = iso => { try { return new Date(iso).toLocaleString("es-CL", { timeZone: "America/Santiago", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) + " (hora de Chile)"; } catch (e) { return iso; } };
+  const horaChile = iso => { try { return new Date(iso).toLocaleString("es-CL", { timeZone: "America/Santiago", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }) + " (hora de Chile)"; } catch (e) { return iso; } };
 
   // Regla USGS M1, la misma que en quebradas/indicador.py
   let PAR = { KF: 0.25, beta: [-3.63, 0.41, 0.67, 0.70], horas_concentracion: 2, umbrales: [0.2, 0.5], prop_min: 0.01 };

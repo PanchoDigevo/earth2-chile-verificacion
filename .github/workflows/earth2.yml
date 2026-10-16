@@ -1,0 +1,41 @@
+name: earth2studio
+# Prueba de Earth2Studio 0.19.0 (sin GPU): compara la extracción por estación con la nuestra y prueba GOES y GLM del 13-oct-2026.
+# En Actions porque en el Mac solo hay Python 3.9 y Earth2Studio pide 3.11 o más.
+on:
+  workflow_dispatch:
+  push:
+    branches: [capas-estandar]
+    paths: ["earth2/**", ".github/workflows/earth2.yml"]
+permissions:
+  contents: write
+concurrency:
+  group: earth2
+  cancel-in-progress: false
+jobs:
+  probar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Instalar (torch solo CPU)
+        run: |
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install -r earth2/requirements.txt
+          python -c "import earth2studio; print('earth2studio', earth2studio.__version__)"
+      - name: Comparar extracción por estación (AIFS)
+        run: python earth2/comparar.py
+      - name: GOES y rayos del 13 de octubre
+        run: python earth2/goes_13oct.py
+        continue-on-error: true
+      - name: Guardar
+        if: always()
+        run: |
+          git config user.name "earth2-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add earth2/data || true
+          git diff --cached --quiet || git commit -m "earth2studio: prueba $(date -u +%Y-%m-%dT%H:%MZ)"
+          git pull --rebase -X theirs origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

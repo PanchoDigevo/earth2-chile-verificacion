@@ -34,6 +34,7 @@ EVENTOS = {
     "lascondes-oct": ("Las Condes, aluvión del 8 de octubre", "el aluvión de Las Condes"),
     "centrosur-ago": ("Centro-sur, frontal del 30 de julio al 2 de agosto", "el frontal del centro-sur"),
     "coquimbo-jul": ("Coquimbo y Huasco, frontal del 14 al 24 de julio", "el frontal de Coquimbo"),
+    "incendios-ene": ("Ñuble y Biobío, incendios del 17 al 21 de enero", "los incendios de enero en Ñuble y Biobío"),
 }
 
 MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]

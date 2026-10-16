@@ -26,7 +26,8 @@ El texto público de la portada está en `docs/narrativa_sitio.md`. Es la fuente
 1. Atmósfera: AIFS/IFS/GFS y AIFS-ENS (escenarios), luego CorrDiff-Chile a 4 km.
 2. Superficie: cicatrices de incendio (Sentinel-2), pendiente (DEM 30 m), cauces, humedad del suelo, catálogo SERNAGEOMIN.
 3. **Océano y costa**: Chile tiene más de 4.000 km de costa; el mar define camanchaca, lluvias de El Niño, marejadas, salmón y pesca. Diario: anomalía de temperatura del mar (NOAA OISST v2.1, 0,25°, contra climatología 1991–2020) en cajas costeras frente a cada aeródromo de la costa y en Niño 1+2; índices semanales Niño 1+2 y 3.4 de NOAA CPC. Oleaje/marejadas cuando se sume un modelo de olas.
-4. Deriva: sesgo móvil de 30 días por estación contra el aprendido; la corrección se evalúa fija (2025) y móvil (45 días) sin mirar el futuro.
+4. **Viento**: velocidad, dirección y rachas a 10 m, verificados igual que la temperatura (diario e histórico). Las rachas importan más que el promedio (incendios, líneas eléctricas, salmoneras, puertos, faenas). Vientos locales que el global a 25 km no resuelve: puelche, raco, terral, viento blanco; es donde más rinde el downscaling por terreno.
+5. Deriva: sesgo móvil de 30 días por estación contra el aprendido; la corrección se evalúa fija (2025) y móvil (45 días) sin mirar el futuro.
 
 Regla: los cambios de régimen (El Niño, olas de calor marinas) se detectan desde datos primarios, nunca desde noticias. Si un dato no lo muestra, el sitio no lo dice.
 

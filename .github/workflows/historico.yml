@@ -115,7 +115,7 @@ jobs:
         run: |
           git config user.name "earth2-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add historico/data/pronosticos.csv.gz historico/data/metar_*.csv.gz historico/data/resultados site/historico.html
+          git add historico/data/pronosticos.csv.gz historico/data/metar_*.csv.gz historico/data/resultados site/eventos.html site/metodo.html site/historico.html
           git diff --cached --quiet || git commit -m "histórico: $(date -u +%Y-%m-%dT%H:%MZ)"
           git pull --rebase -X theirs origin main
           git push

@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Eventos 2026 · Earth-2 Chile</title>
+<meta name="description" content="Qué lluvia anunciaban los modelos AIFS, IFS y GFS 72, 48 y 24 horas antes de los eventos de 2026 en Chile, y si de verdad llovió.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Una columna de 1080 px; lo consolidado antes que lo preliminar; cada número con su explicación al lado.
+   Neutros fríos con leve sesgo azul (cielo y hielo), acento verde glaciar; semáforo fijo y siempre con texto. */
+:root{
+  --bg:#f4f6f8; --surface:#ffffff; --fg:#17212b; --muted:#5a6977; --line:#d8dfe6; --line-soft:#e9eef2;
+  --accent:#0e7c86; --accent-soft:#d7eef0; --tierra:#e3e9ee; --costa:#9fb0bd;
+  --bueno:#0ca30c; --medio:#c98500; --alto:#d03b3b; --sin:#8a99a6;
+  --font-display:"Sora",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-body:"Source Sans 3","Source Sans Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-data:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --radius:10px; color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111821; --surface:#19222c; --fg:#e7ecf1; --muted:#9fadba; --line:#2c3845; --line-soft:#232e3a;
+  --accent:#44bcc6; --accent-soft:#163b40; --tierra:#243040; --costa:#4f6071;
+  --bueno:#2fbf2f; --medio:#e0a428; --alto:#ee6a6a; --sin:#7d8c99; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111821; --surface:#19222c; --fg:#e7ecf1; --muted:#9fadba; --line:#2c3845; --line-soft:#232e3a;
+  --accent:#44bcc6; --accent-soft:#163b40; --tierra:#243040; --costa:#4f6071;
+  --bueno:#2fbf2f; --medio:#e0a428; --alto:#ee6a6a; --sin:#7d8c99; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
+a:focus-visible,button:focus-visible,summary:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:16px;padding-block:24px 56px;display:grid;gap:32px}
+@media (min-width:720px){.wrap{padding-inline:28px;padding-block:40px 72px;gap:44px}}
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(26px,3.8vw,40px);line-height:1.15;font-weight:600;max-width:26ch}
+h2{font-size:22px;font-weight:600}
+h3{font-size:17px;font-weight:600}
+p{margin:0;max-width:65ch}
+.eyebrow{font-family:var(--font-display);font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.muted{color:var(--muted)}
+.small{font-size:14.5px}
+header{display:grid;gap:12px}
+header .lead{font-size:19px;color:var(--muted);max-width:60ch}
+.aviso{border-left:3px solid var(--accent);padding:10px 14px;background:var(--accent-soft);border-radius:0 var(--radius) var(--radius) 0;max-width:72ch}
+.aviso p{max-width:none}
+section{display:grid;gap:14px}
+.sec-head{display:grid;gap:6px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;display:grid;gap:12px;min-width:0}
+/* cifras de la portada */
+.cifras{display:grid;gap:12px;grid-template-columns:1fr}
+@media (min-width:760px){.cifras{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.cifra{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;display:grid;gap:6px;align-content:start}
+.cifra .v{font-family:var(--font-display);font-size:42px;font-weight:600;line-height:1.05;letter-spacing:-.02em}
+.cifra .v small{font-size:18px;font-weight:500;color:var(--muted);margin-left:3px}
+.cifra .v .flecha{color:var(--muted);font-weight:400;margin:0 6px}
+.cifra p{font-size:15.5px}
+.cifra.principal{border-color:var(--accent)}
+/* puertas de entrada */
+.puertas{display:grid;gap:12px;grid-template-columns:1fr}
+@media (min-width:760px){.puertas{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.puerta{display:grid;gap:6px;align-content:start;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;color:var(--fg);text-decoration:none}
+.puerta:hover{border-color:var(--accent)}
+.puerta .q{font-family:var(--font-display);font-weight:600;font-size:18px}
+.puerta .ir{color:var(--accent);font-weight:600;font-size:15px}
+.puerta p{font-size:15.5px;color:var(--muted)}
+.confianza{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:14.5px;color:var(--muted)}
+/* controles */
+.controles{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center}
+.selector{display:flex;flex-wrap:wrap;gap:6px;border:0;padding:0;margin:0;align-items:center}
+.selector legend{float:left;margin-right:6px;padding:0}
+.selector label{position:relative;cursor:pointer;border:1px solid var(--line);border-radius:999px;padding:5px 13px;font-size:14.5px;font-weight:600;background:var(--bg)}
+.selector label .muted{font-weight:400;font-size:13px}
+.selector input{position:absolute;opacity:0;width:0;height:0;margin:0}
+.selector label:has(input:checked){background:var(--accent-soft);border-color:var(--accent)}
+.selector label:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+select{font:inherit;font-size:16px;padding:7px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg);max-width:100%}
+/* mapa */
+.mapa{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:flex-start;justify-content:center}
+.franja{margin:0;display:grid;gap:4px;justify-items:center}
+.franja svg{max-width:100%;height:auto;display:block;overflow:visible}
+.franja figcaption{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.tierra{fill:var(--tierra);stroke:var(--costa);stroke-width:.6;vector-effect:non-scaling-stroke}
+.est{cursor:pointer;outline:none}
+.est .hit{fill:transparent}
+.est .pt{stroke:var(--surface);stroke-width:2;fill:var(--sin)}
+.est.bueno .pt{fill:var(--bueno)} .est.medio .pt{fill:var(--medio)} .est.alto .pt{fill:var(--alto)}
+.est .etq{display:none;font:600 10px var(--font-body);fill:var(--fg);paint-order:stroke;stroke:var(--surface);stroke-width:3px;stroke-linejoin:round}
+.est.con-etq .etq{display:block}
+.est.sel .pt{stroke:var(--fg);stroke-width:2.5;r:7}
+.est:focus-visible .pt{stroke:var(--accent);stroke-width:3}
+.est:hover .pt{r:7}
+.leyenda{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:14px;color:var(--muted);align-items:center}
+.leyenda span.item{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:2px 9px 2px 7px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--fg);white-space:nowrap}
+.chip i{width:8px;height:8px;border-radius:50%;background:var(--sin)}
+.chip.bueno i{background:var(--bueno)} .chip.medio i{background:var(--medio)} .chip.alto i{background:var(--alto)}
+.chip.sin{color:var(--muted)} .chip.prelim{color:var(--muted);border-style:dashed}
+/* tu zona */
+.zona{display:grid;gap:20px}
+@media (min-width:900px){.zona{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);align-items:start}}
+.ficha{position:relative}
+@media (min-width:900px){.ficha{position:sticky;top:72px}}
+.ficha-cab{display:grid;gap:2px}
+.antes-despues{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.antes-despues > div{display:grid;gap:2px;justify-items:start}
+.antes-despues .lbl{font-size:13px;color:var(--muted)}
+.antes-despues .v{font-family:var(--font-display);font-size:34px;font-weight:600;line-height:1.1}
+.antes-despues .v small{font-size:16px;font-weight:500;color:var(--muted);margin-left:2px}
+.antes-despues .flecha{font-size:24px;color:var(--muted)}
+/* tablas */
+.tabla{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line-soft);text-align:right;vertical-align:middle;white-space:nowrap}
+th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line)}
+th.l,td.l{text-align:left}
+td.num{font-family:var(--font-data);font-size:14px;font-variant-numeric:tabular-nums}
+td .region{display:block;font-size:13px;color:var(--muted)}
+tr.actual td{background:var(--accent-soft)}
+#tabla-est tbody tr{cursor:pointer}
+#tabla-est tbody tr:hover td{background:color-mix(in srgb,var(--accent) 8%,transparent)}
+table.mini{font-size:14.5px} table.mini th,table.mini td{padding:6px 8px}
+td.medida{min-width:9.5em}
+.medida-in{display:inline-grid;grid-template-columns:72px auto;gap:8px;align-items:center;justify-items:end}
+.bar{display:block;width:72px;height:8px;border-radius:4px;background:var(--line-soft);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:4px;background:var(--sin)}
+.bar.bueno i{background:var(--bueno)} .bar.medio i{background:var(--medio)} .bar.alto i{background:var(--alto)}
+td.plazo{font-weight:600;vertical-align:top} tr.sep td{border-top:1px solid var(--line)}
+td.modelo-nombre{font-weight:600} td.modelo-nombre .tipo{display:block;font-size:12px;color:var(--muted);font-weight:400}
+td.num.mejor{font-weight:700;color:var(--accent)}
+/* bloque preliminar */
+.prelim-bloque{border:1px dashed var(--line);border-radius:var(--radius);padding:16px;display:grid;gap:12px;background:var(--surface)}
+.modelos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.modelos{grid-template-columns:1fr}}
+.modelo{border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;display:grid;gap:2px;align-content:start;background:var(--bg)}
+.modelo .tipo{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.modelo .nombre{font-family:var(--font-display);font-size:18px;font-weight:600}
+.modelo .value{font-family:var(--font-display);font-size:28px;font-weight:600;line-height:1.1}
+.modelo .value small{font-size:15px;font-weight:500;color:var(--muted);margin-left:2px}
+.modelo .foot{font-size:13px;color:var(--muted)}
+/* narrativa y desplegables */
+.narrativa{display:grid;gap:12px;max-width:68ch}
+.narrativa p{max-width:none}
+.narrativa ol{margin:0;padding-left:1.25em;display:grid;gap:8px}
+details{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);padding:0}
+summary{cursor:pointer;padding:12px 16px;font-weight:600;font-family:var(--font-display);font-size:15.5px;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--muted);font-weight:400}
+details[open] summary::after{content:"–"}
+details .body{padding:0 16px 16px;display:grid;gap:12px}
+details .body p{max-width:72ch}
+footer{border-top:1px solid var(--line);padding-top:20px;display:grid;gap:8px;font-size:14px;color:var(--muted)}
+footer p{max-width:85ch}
+@media (max-width:600px){.cifra .v{font-size:36px}}
+@media (prefers-reduced-motion:no-preference){.est .pt{transition:r .15s ease}}
+
+.topnav{position:sticky;top:0;z-index:1100;background:var(--surface);border-bottom:1px solid var(--line)}
+.topnav .in{max-width:1400px;margin:0 auto;padding-inline:16px;display:flex;align-items:center;gap:16px;min-height:52px}
+.topnav .marca{font-family:var(--font-display);font-weight:600;font-size:15px;color:var(--fg);text-decoration:none;white-space:nowrap;letter-spacing:-.01em}
+.topnav .marca small{color:var(--muted);font-weight:500;font-size:13px;margin-left:8px}
+.topnav .tabs{display:flex;gap:2px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.topnav .tabs::-webkit-scrollbar{display:none}
+.topnav .tabs a{display:inline-flex;align-items:center;height:52px;padding:0 12px;color:var(--muted);text-decoration:none;font-weight:600;font-size:14.5px;border-bottom:3px solid transparent;white-space:nowrap}
+.topnav .tabs a:hover{color:var(--fg)}
+.topnav .tabs a.activa{color:var(--fg);border-bottom-color:var(--accent)}
+.topnav .tabs a:focus-visible{outline:2px solid var(--accent);outline-offset:-4px;border-radius:4px}
+@media (max-width:760px){
+  .topnav .in{flex-wrap:wrap;gap:0;padding-inline:0}
+  .topnav .marca{padding:10px 16px 2px;font-size:14px}
+  .topnav .marca small{display:none}
+  .topnav .tabs{margin-left:0;width:100%;padding-inline:6px}
+  .topnav .tabs a{height:42px;padding:0 10px;font-size:14px}
+  .topnav .largo{display:none}
+}
+
+.def{all:unset;cursor:help;border-bottom:1.5px dotted currentColor;text-underline-offset:2px}
+.def:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+.def-pop{position:absolute;z-index:2000;max-width:min(320px,calc(100vw - 32px));background:var(--fg);color:var(--bg);
+  font:400 14.5px/1.45 var(--font-body);padding:10px 12px;border-radius:8px;box-shadow:0 6px 24px rgba(0,0,0,.18)}
+
+:root{--serie-global:#7a8896;--serie-corr:#0e7c86}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--serie-global:#8d9bab;--serie-corr:#44bcc6}}
+:root[data-theme="dark"]{--serie-global:#8d9bab;--serie-corr:#44bcc6}
+.indice{display:flex;flex-wrap:wrap;gap:8px}
+.indice a{display:inline-flex;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:var(--surface);text-decoration:none;font-weight:600;font-size:14.5px;color:var(--fg)}
+.indice a:hover{border-color:var(--accent)}
+.evento{scroll-margin-top:96px}
+.evento .imp{color:var(--muted);font-size:15.5px;max-width:75ch}
+.lectura{border-left:3px solid var(--accent);padding:10px 14px;background:var(--accent-soft);border-radius:0 var(--radius) var(--radius) 0;max-width:80ch}
+.lectura p{max-width:none}
+table.matriz{max-width:560px}
+table.matriz td.celda{text-align:center;font-weight:600}
+table.matriz td.celda small{display:block;font-weight:400;font-size:12.5px;color:var(--muted)}
+td.celda.bueno{background:color-mix(in srgb,var(--bueno) 16%,transparent)}
+td.celda.medio{background:color-mix(in srgb,var(--medio) 18%,transparent)}
+td.celda.alto{background:color-mix(in srgb,var(--alto) 16%,transparent)}
+.ev-tabla table{font-size:13.5px} .ev-tabla th,.ev-tabla td{padding:6px 7px}
+.ev-tabla th.grupo{text-align:center;border-bottom:1px solid var(--line-soft);color:var(--fg);letter-spacing:.04em}
+.ev-tabla th.sub{font-size:11px}
+td.mm{font-family:var(--font-data);font-size:13.5px;font-variant-numeric:tabular-nums}
+td.mm.fuerte{font-weight:700}
+.si{font-weight:600} .no{color:var(--muted)}
+.mancuerna{width:100%;max-width:720px;height:auto;display:block}
+.mancuerna .eje{font:12px var(--font-data);fill:var(--muted)}
+.mancuerna .grid-l{stroke:var(--line-soft);stroke-width:1}
+.mancuerna .mod{font:600 15px var(--font-display);fill:var(--fg)}
+.mancuerna .tipo{font:12px var(--font-body);fill:var(--muted)}
+.mancuerna .val{font:600 13px var(--font-data);fill:var(--fg)}
+.mancuerna .cambio{font:700 14px var(--font-data);fill:var(--serie-corr)}
+.mancuerna .tramo{stroke:var(--line);stroke-width:4;stroke-linecap:round}
+.mancuerna .g{fill:var(--serie-global);stroke:var(--surface);stroke-width:2}
+.mancuerna .c{fill:var(--serie-corr);stroke:var(--surface);stroke-width:2}
+.ley{display:flex;gap:16px;flex-wrap:wrap;font-size:14px;color:var(--muted)}
+.ley i{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:-1px;margin-right:6px}
+.ley .g i{background:var(--serie-global)} .ley .c i{background:var(--serie-corr)}
+dl.glosario{display:grid;gap:10px;margin:0}
+dl.glosario dt{font-weight:600} dl.glosario dd{margin:0;color:var(--muted);max-width:72ch}
+ul.limites{margin:0;padding-left:1.2em;display:grid;gap:6px;max-width:75ch}
+</style>
+</head>
+<body>
+<nav class="topnav" aria-label="Secciones del sitio"><div class="in"><a class="marca" href="./">Earth-2 Chile<small>verificación pública del pronóstico</small></a><div class="tabs"><a href="./">Resumen</a><a href="zona.html">Tu zona</a><a href="eventos.html" class="activa" aria-current="page">Eventos<span class="largo"> 2026</span></a><a href="quebradas.html">Quebradas</a><a href="metodo.html">Método</a></div></div></nav>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Eventos 2026</div>
+  <h1>¿Lo vieron venir?</h1>
+  <p class="lead">Para cada evento de 2026: qué lluvia anunciaban los modelos 72, 48 y 24 horas antes en los aeródromos de la zona, y si de verdad llovió. Un modelo "marca lluvia" cuando pronostica 1 mm o más para ese día.</p>
+  <nav class="indice" aria-label="Eventos"><a href="#santiago-13oct">Santiago</a><a href="#lascondes-oct">Las Condes</a><a href="#centrosur-ago">Centro-sur</a><a href="#coquimbo-jul">Coquimbo y Huasco</a></nav>
+</header>
+<article class="card evento" id="santiago-13oct">
+  <div class="sec-head"><div class="eyebrow">13 de octubre de 2026</div><h2>Santiago, tormenta del 13 de octubre</h2>
+  <p class="imp">Tormenta convectiva con granizo y tornado EF0 en Estación Central. ~18-20 mm en 2,5 h (Providencia e Independencia). alerta roja RM. 22-40 mil hogares sin luz. clases suspendidas. Pudahuel bajó de 18 a 11 °C en una hora (TS 16:00 / TSRA 17:00). Tobalaba +TSRA 17:00. <a href="https://www.infobae.com/america/america-latina/2026/10/14/videos-tormenta-electrica-granizo-y-hasta-un-tornado-causaron-estragos-nuevamente-en-santiago-de-chile/" rel="noopener">Fuente</a>.</p></div>
+  <div class="lectura"><p><strong>Lectura.</strong> Caso de convección: el global a 25 km puede ver "ambiente de tormenta" en la zona central; no puede decir dónde ni a qué hora caen 20 mm en dos horas. Es el hueco del nowcasting (satélite cada 10 min + rayos). Contraste con el 8-oct: lluvia anunciada sobre laderas quemadas.</p></div>
+  <h3>¿Marcaron lluvia antes?</h3>
+  <p class="small muted">En los aeródromos de la zona (Tobalaba (Las Condes), Santiago (Pudahuel), Santo Domingo) hubo 2 casos con lluvia, contando cada día en cada aeródromo. Cada celda dice en cuántos de esos casos el modelo había anunciado lluvia con esa anticipación.</p>
+  <div class='tabla'><table class='matriz'><thead><tr><th class='l'>Modelo</th><th>72 h antes</th><th>48 h antes</th><th>24 h antes</th></tr></thead><tbody><tr><td class='l modelo-nombre'>AIFS<span class='tipo'>IA · ECMWF</span></td><td class='celda bueno'>2 de 2</td><td class='celda bueno'>2 de 2</td><td class='celda bueno'>2 de 2</td></tr><tr><td class='l modelo-nombre'>IFS<span class='tipo'>físico · ECMWF</span></td><td class='celda bueno'>2 de 2</td><td class='celda bueno'>2 de 2</td><td class='celda bueno'>2 de 2</td></tr><tr><td class='l modelo-nombre'>GFS<span class='tipo'>físico · NOAA</span></td><td class='celda bueno'>2 de 2</td><td class='celda bueno'>2 de 2</td><td class='celda bueno'>2 de 2</td></tr></tbody></table></div>
+  <p><a href="quebradas.html">Ver las laderas quemadas y el indicador por quebrada de Santiago oriente →</a></p>
+  <details><summary>Ver día por día, aeródromo por aeródromo</summary><div class="body"><p class="small muted">Lluvia pronosticada para las 24 horas de cada día (de 8 o 9 de la mañana a la misma hora del día siguiente), según la corrida emitida 72, 48 y 24 horas antes. En negrita, 10 mm o más. La columna Satélite es la lluvia estimada por PERSIANN-CCS (CHRS) en el punto del aeródromo, para el día calendario.</p><div class="tabla ev-tabla"><table><thead><tr><th class='l' rowspan='2'>Día</th><th class='l' rowspan='2'>Aeródromo</th><th class='l' rowspan='2'>¿Llovió?</th><th rowspan='2'>Satélite<br>mm</th><th class='grupo' colspan='3'>Pronóstico 72 h antes (mm)</th><th class='grupo' colspan='3'>Pronóstico 48 h antes (mm)</th><th class='grupo' colspan='3'>Pronóstico 24 h antes (mm)</th></tr><tr><th class='sub'>AIFS</th><th class='sub'>IFS</th><th class='sub'>GFS</th><th class='sub'>AIFS</th><th class='sub'>IFS</th><th class='sub'>GFS</th><th class='sub'>AIFS</th><th class='sub'>IFS</th><th class='sub'>GFS</th></tr></thead><tbody><tr><td class='l'>13 oct</td><td class='l'>Santiago (Pudahuel)</td><td class='l'><span class='si'>Llovió</span> <span class='muted small'>(4 h con lluvia)</span></td><td class='mm'>2,7</td><td class='mm'>6,0</td><td class='mm'>6,1</td><td class='mm'>7,6</td><td class='mm'>6,6</td><td class='mm'>6,9</td><td class='mm'>5,5</td><td class='mm'>6,7</td><td class='mm'>6,8</td><td class='mm fuerte'>11,3</td></tr><tr><td class='l'>13 oct</td><td class='l'>Santo Domingo</td><td class='l'><span class='si'>Llovió</span> <span class='muted small'>(1 h con lluvia)</span></td><td class='mm'>0,0</td><td class='mm'>3,6</td><td class='mm'>4,8</td><td class='mm'>1,5</td><td class='mm'>3,9</td><td class='mm'>3,7</td><td class='mm'>1,1</td><td class='mm'>3,7</td><td class='mm'>3,7</td><td class='mm'>1,8</td></tr><tr><td class='l'>13 oct</td><td class='l'>Tobalaba (Las Condes)</td><td class='l'><span class='no'>sin datos</span></td><td class='mm'>16,5</td><td class='mm'>5,1</td><td class='mm fuerte'>11,7</td><td class='mm fuerte'>11,2</td><td class='mm'>5,8</td><td class='mm'>9,2</td><td class='mm'>8,2</td><td class='mm'>5,8</td><td class='mm fuerte'>11,9</td><td class='mm fuerte'>17,2</td></tr></tbody></table></div></div></details>
+</article><article class="card evento" id="lascondes-oct">
+  <div class="sec-head"><div class="eyebrow">8 de octubre de 2026</div><h2>Las Condes, aluvión del 8 de octubre</h2>
+  <p class="imp">Aluvión. 384 damnificados. zona de catástrofe. DMC había avisado 20-25 mm. <a href="https://www.emol.com/noticias/Nacional/2026/10/09/1213692/aluvion-las-condes.html" rel="noopener">Fuente</a>.</p></div>
+  <div class="lectura"><p><strong>Lectura.</strong> Con un día de anticipación, los tres modelos anunciaban entre 10 y 26 mm para esas 24 horas en Tobalaba y Pudahuel: la cantidad se vio. Lo que no se vio fue dónde se iba a concentrar la lluvia ni el estado de las laderas quemadas sobre San Carlos de Apoquindo. Esa es la capa que falta: el zoom a 4 km y la superficie.</p></div>
+  <h3>¿Marcaron lluvia antes?</h3>
+  <p class="small muted">En los aeródromos de la zona (Tobalaba (Las Condes), Santiago (Pudahuel), Santo Domingo) hubo 2 casos con lluvia, contando cada día en cada aeródromo, de 3 con observación. Cada celda dice en cuántos de esos casos el modelo había anunciado lluvia con esa anticipación.</p>
+  <div class='tabla'><table class='matriz'><thead><tr><th class='l'>Modelo</th><th>72 h antes</th><th>48 h antes</th><th>24 h antes</th></tr></thead><tbody><tr><td class='l modelo-nombre'>AIFS<span class='tipo'>IA · ECMWF</span></td><td class='celda bueno'>2 de 2<small>1 aviso en falso</small></td><td class='celda bueno'>2 de 2<small>1 aviso en falso</small></td><td class='celda bueno'>2 de 2<small>1 aviso en falso</small></td></tr><tr><td class='l modelo-nombre'>IFS<span class='tipo'>físico · ECMWF</span></td><td class='celda bueno'>2 de 2</td><td class='celda bueno'>2 de 2<small>1 aviso en falso</small></td><td class='celda bueno'>2 de 2<small>1 aviso en falso</small></td></tr><tr><td class='l modelo-nombre'>GFS<span class='tipo'>físico · NOAA</span></td><td class='celda bueno'>2 de 2<small>1 aviso en falso</small></td><td class='celda bueno'>2 de 2<small>1 aviso en falso</small></td><td class='celda bueno'>2 de 2</td></tr></tbody></table></div>
+  <p><a href="quebradas.html">Ver las laderas quemadas y el indicador por quebrada de Santiago oriente →</a></p>
+  <details><summary>Ver día por día, aeródromo por aeródromo</summary><div class="body"><p class="small muted">Lluvia pronosticada para las 24 horas de cada día (de 8 o 9 de la mañana a la misma hora del día siguiente), según la corrida emitida 72, 48 y 24 horas antes. En negrita, 10 mm o más. La columna Satélite es la lluvia estimada por PERSIANN-CCS (CHRS) en el punto del aeródromo, para el día calendario.</p><div class="tabla ev-tabla"><table><thead><tr><th class='l' rowspan='2'>Día</th><th class='l' rowspan='2'>Aeródromo</th><th class='l' rowspan='2'>¿Llovió?</th><th rowspan='2'>Satélite<br>mm</th><th class='grupo' colspan='3'>Pronóstico 72 h antes (mm)</th><th class='grupo' colspan='3'>Pronóstico 48 h antes (mm)</th><th class='grupo' colspan='3'>Pronóstico 24 h antes (mm)</th></tr><tr><th class='sub'>AIFS</th><th class='sub'>IFS</th><th class='sub'>GFS</th><th class='sub'>AIFS</th><th class='sub'>IFS</th><th class='sub'>GFS</th><th class='sub'>AIFS</th><th class='sub'>IFS</th><th class='sub'>GFS</th></tr></thead><tbody><tr><td class='l'>8 oct</td><td class='l'>Santiago (Pudahuel)</td><td class='l'><span class='si'>Llovió</span> <span class='muted small'>(11 h con lluvia)</span></td><td class='mm'>0,0</td><td class='mm fuerte'>12,8</td><td class='mm'>8,5</td><td class='mm'>8,1</td><td class='mm fuerte'>16,3</td><td class='mm fuerte'>23,1</td><td class='mm fuerte'>12,8</td><td class='mm fuerte'>19,7</td><td class='mm fuerte'>25,2</td><td class='mm fuerte'>10,1</td></tr><tr><td class='l'>8 oct</td><td class='l'>Santo Domingo</td><td class='l'><span class='no'>No llovió</span></td><td class='mm'>0,0</td><td class='mm'>3,2</td><td class='mm'>0,8</td><td class='mm'>1,7</td><td class='mm'>4,3</td><td class='mm'>2,1</td><td class='mm'>1,4</td><td class='mm'>5,5</td><td class='mm'>2,5</td><td class='mm'>0,8</td></tr><tr><td class='l'>8 oct</td><td class='l'>Tobalaba (Las Condes)</td><td class='l'><span class='si'>Llovió</span> <span class='muted small'>(5 h con lluvia)</span></td><td class='mm'>0,9</td><td class='mm fuerte'>13,4</td><td class='mm'>9,8</td><td class='mm fuerte'>20,9</td><td class='mm fuerte'>16,9</td><td class='mm fuerte'>16,1</td><td class='mm fuerte'>26,3</td><td class='mm fuerte'>18,4</td><td class='mm fuerte'>24,3</td><td class='mm fuerte'>26,2</td></tr></tbody></table></div></div></details>
+</article><article class="card evento" id="centrosur-ago">
+  <div class="sec-head"><div class="eyebrow">del 30 de julio al 2 de agosto de 2026</div><h2>Centro-sur, frontal del 30 de julio al 2 de agosto</h2>
+  <p class="imp">Sistema frontal. 2 muertos. 6.183 damnificados. <a href="https://www.biobiochile.cl/noticias/nacional/chile/2026/08/02/balance-de-senapred-por-sistema-frontal-2-fallecidos-desbordes-de-rios-y-mas-de-6-mil-aislados.shtml" rel="noopener">Fuente</a>.</p></div>
+  
+  <h3>¿Marcaron lluvia antes?</h3>
+  <p class="small muted">En los aeródromos de la zona (Temuco (La Araucanía), Temuco (Maquehue), Los Ángeles, Chillán, Concepción) hubo 8 casos con lluvia, contando cada día en cada aeródromo. Cada celda dice en cuántos de esos casos el modelo había anunciado lluvia con esa anticipación.</p>
+  <div class='tabla'><table class='matriz'><thead><tr><th class='l'>Modelo</th><th>72 h antes</th><th>48 h antes</th><th>24 h antes</th></tr></thead><tbody><tr><td class='l modelo-nombre'>AIFS<span class='tipo'>IA · ECMWF</span></td><td class='celda bueno'>8 de 8</td><td class='celda bueno'>8 de 8</td><td class='celda bueno'>8 de 8</td></tr><tr><td class='l modelo-nombre'>IFS<span class='tipo'>físico · ECMWF</span></td><td class='celda bueno'>8 de 8</td><td class='celda bueno'>8 de 8</td><td class='celda bueno'>8 de 8</td></tr><tr><td class='l modelo-nombre'>GFS<span class='tipo'>físico · NOAA</span></td><td class='celda bueno'>8 de 8</td><td class='celda bueno'>8 de 8</td><td class='celda bueno'>8 de 8</td></tr></tbody></table></div>
+  
+  <details><summary>Ver día por día, aeródromo por aeródromo</summary><div class="body"><p class="small muted">Lluvia pronosticada para las 24 horas de cada día (de 8 o 9 de la mañana a la misma hora del día siguiente), según la corrida emitida 72, 48 y 24 horas antes. En negrita, 10 mm o más. La columna Satélite es la lluvia estimada por PERSIANN-CCS (CHRS) en el punto del aeródromo, para el día calendario.</p><div class="tabla ev-tabla"><table><thead><tr><th class='l' rowspan='2'>Día</th><th class='l' rowspan='2'>Aeródromo</th><th class='l' rowspan='2'>¿Llovió?</th><th rowspan='2'>Satélite<br>mm</th><th class='grupo' colspan='3'>Pronóstico 72 h antes (mm)</th><th class='grupo' colspan='3'>Pronóstico 48 h antes (mm)</th><th class='grupo' colspan='3'>Pronóstico 24 h antes (mm)</th></tr><tr><th class='sub'>AIFS</th><th class='sub'>IFS</th><th class='sub'>GFS</th><th class='sub'>AIFS</th><th class='sub'>IFS</th><th class='sub'>GFS</th><th class='sub'>AIFS</th><th class='sub'>IFS</th><th class='sub'>GFS</th></tr></thead><tbody><tr><td class='l'>30 jul</td><td class='l'>Chillán</td><td class='l'><span class='no'>sin datos</span></td><td class='mm'>8,1</td><td class='mm fuerte'>46,1</td><td class='mm fuerte'>83,6</td><td class='mm fuerte'>57,2</td><td class='mm fuerte'>39,1</td><td class='mm fuerte'>69,2</td><td class='mm fuerte'>37,4</td><td class='mm fuerte'>40,7</td><td class='mm fuerte'>29,9</td><td class='mm fuerte'>33,6</td></tr><tr><td class='l'>30 jul</td><td class='l'>Los Ángeles</td><td class='l'><span class='no'>sin datos</span></td><td class='mm'>8,9</td><td class='mm fuerte'>43,9</td><td class='mm fuerte'>50,4</td><td class='mm fuerte'>49,7</td><td class='mm fuerte'>59,2</td><td class='mm fuerte'>51,6</td><td class='mm fuerte'>90,4</td><td class='mm fuerte'>63,6</td><td class='mm fuerte'>69,8</td><td class='mm fuerte'>63,2</td></tr><tr><td class='l'>30 jul</td><td class='l'>Concepción</td><td class='l'><span class='si'>Llovió</span> <span class='muted small'>(19 h con lluvia)</span></td><td class='mm'>7,6</td><td class='mm fuerte'>35,1</td><td class='mm fuerte'>45,2</td><td class='mm fuerte'>45,4</td><td class='mm fuerte'>50,7</td><td class='mm fuerte'>42,0</td><td class='mm fuerte'>97,8</td><td class='mm fuerte'>59,9</td><td class='mm fuerte'>71,7</td><td class='mm fuerte'>61,6</td></tr><tr><td class='l'>30 jul</td><td class='l'>Temuco (La Araucanía)</td><td class='l'><span class='si'>Llovió</span> <span class='muted small'>(16 h con lluvia)</span></td><td class='mm'>16,4</td><td class='mm fuerte'>57,1</td><td class='mm fuerte'>26,6</td><td class='mm fuerte'>38,6</td><td class='mm fuerte'>64,9</td><td class='mm fuerte'>35,4</td><td class='mm fuerte'>71,6</td><td class='mm fuerte'>72,6</td><td class='mm fuerte'>65,2</td><td class='mm fuerte'>58,6</td></tr><tr><td class='l'>30 jul</td><td class='l'>Temuco (Maquehue)</td><td class='l'><span class='no'>sin datos</span></td><td class='mm'>29,4</td><td class='mm fuerte'>50,9</td><td class='mm fuerte'>25,6</td><td class='mm fuerte'>38,6</td><td class='mm fuerte'>60,7</td><td class='mm fuerte'>35,7</td><td class='mm fuerte'>60,3</td><td class='mm fuerte'>67,7</td><td class='mm fuerte'>52,8</td><td class='mm fuerte'>62,8</td></tr><tr><td class='l'>31 jul</td><td class='l'>Chillán</td><td class='l'><span class='no'>sin datos</span></td><td class='mm'>13,8</td><td class='mm fuerte'>32,3</td><td class='mm fuerte'>21,7</td><td class='mm'>9,9</td><td class='mm fuerte'>32,2</td><td class='mm fuerte'>31,1</td><td class='mm'>7,1</td><td class='mm fuerte'>31,4</td><td class='mm fuerte'>28,8</td><td class='mm fuerte'>13,6</td></tr><tr><td class='l'>31 jul</td><td class='l'>Los Ángeles</td><td class='l'><span class='no'>sin datos</span></td><td class='mm'>29,3</td><td class='mm fuerte'>16,4</td><td class='mm'>8,2</td><td class='mm fuerte'>11,8</td><td class='mm fuerte'>16,1</td><td class='mm fuerte'>10,5</td><td class='mm'>5,0</td><td class='mm fuerte'>14,0</td><td class='mm fuerte'>16,0</td><td class='mm'>8,8</td></tr><tr><td class='l'>31 jul</td><td class='l'>Concepción</td><td class='l'><span class='si'>Llovió</span> <span class='muted small'>(8 h con lluvia)</span></td><td class='mm'>13,2</td><td class='mm fuerte'>15,8</td><td class='mm fuerte'>10,3</td><td class='mm'>8,7</td><td class='mm fuerte'>15,2</td><td class='mm fuerte'>13,1</td><td class='mm'>7,0</td><td class='mm fuerte'>12,5</td><td class='mm fuerte'>14,7</td><td class='mm fuerte'>10,6</td></tr><tr><td class='l'>31 jul</td><td class='l'>Temuco (La Araucanía)</td><td class='l'><span class='si'>Llovió</span> <span class='muted small'>(9 h con lluvia)</span></td><td class='mm'>23,7</td><td class='mm fuerte'>11,7</td><td class='mm'>5,0</td><td class='mm fuerte'>10,8</td><td class='mm fuerte'>11,9</td><td class='mm fuerte'>15,4</td><td class='mm'>8,2</td><td class='mm fuerte'>11,9</td><td class='mm'>7,6</td><td class='mm'>7,2</td></tr><tr><td class='l'>31 jul</td><td class='l'>Temuco (Maquehue)</td><td class='l'><span class='no'>sin datos</span></td><td class='mm'>24,4</td><td class='mm'>9,8</td><td class='mm'>3,7</td><td class='mm'>7,4</td><td class='mm fuerte'>10,2</td><td class='mm'>8,0</td><td class='mm'>6,2</td><td class='mm fuerte'>10,3</td><td class='mm'>9,1</td><td class='mm'>7,1</td></tr><tr><td class='l'>1 ago</td><td class='l'>Chillán</td><td class='l'><span class='no'>sin datos</span></td><td class='mm'>24,1</td><td class='mm fuerte'>60,4</td><td class='mm fuerte'>54,1</td><td class='mm fuerte'>26,9</td><td class='mm fuerte'>60,0</td><td class='mm fuerte'>70,5</td><td class='mm fuerte'>50,6</td><td class='mm fuerte'>60,0</td><td class='mm fuerte'>65,1</td><td class='mm fuerte'>62,6</td></tr><tr><td class='l'>1 ago</td><td class='l'>Los Ángeles</td><td class='l'><span class='no'>sin datos</span></td><td class='mm'>16,5</td><td class='mm fuerte'>57,0</td><td class='mm fuerte'>77,4</td><td class='mm fuerte'>75,2</td><td class='mm fuerte'>57,4</td><td class='mm fuerte'>71,8</td><td class='mm fuerte'>95,6</td><td class='mm fuerte'>58,0</td><td class='mm fuerte'>64,9</td><td class='mm fuerte'>88,3</td></tr><tr><td class='l'>1 ago</td><td class='l'>Concepción</td><td class='l'><span class='si'>Llovió</span> <span class='muted small'>(15 h con lluvia)</span></td><td class='mm'>14,6</td><td class='mm fuerte'>52,4</td><td class='mm fuerte'>53,4</td><td class='mm fuerte'>45,5</td><td class='mm fuerte'>51,9</td><td class='mm fuerte'>61,0</td><td class='mm fuerte'>67,0</td><td class='mm fuerte'>49,0</td><td class='mm fuerte'>55,4</td><td class='mm fuerte'>79,4</td></tr><tr><td class='l'>1 ago</td><td class='l'>Temuco (La Araucanía)</td><td class='l'><span class='si'>Llovió</span> <span class='muted small'>(20 h con lluvia)</span></td><td class='mm'>10,9</td><td class='mm fuerte'>49,9</td><td class='mm fuerte'>52,0</td><td class='mm fuerte'>52,8</td><td class='mm fuerte'>53,8</td><td class='mm fuerte'>57,8</td><td class='mm fuerte'>42,1</td><td class='mm fuerte'>48,8</td><td class='mm fuerte'>50,9</td><td class='mm fuerte'>57,8</td></tr><tr><td class='l'>1 ago</td><td class='l'>Temuco (Maquehue)</td><td class='l'><span class='no'>sin datos</span></td><td class='mm'>14,3</td><td class='mm fuerte'>45,8</td><td class='mm fuerte'>58,7</td><td class='mm fuerte'>55,3</td><td class='mm fuerte'>48,7</td><td class='mm fuerte'>61,1</td><td class='mm fuerte'>44,4</td><td class='mm fuerte'>45,5</td><td class='mm fuerte'>55,1</td><td class='mm fuerte'>63,1</td></tr><tr><td class='l'>2 ago</td><td class='l'>Chillán</td><td class='l'><span class='no'>sin datos</span></td><td class='mm'>4,7</td><td class='mm fuerte'>17,4</td><td class='mm fuerte'>24,0</td><td class='mm'>7,4</td><td class='mm fuerte'>14,6</td><td class='mm'>8,0</td><td class='mm fuerte'>18,5</td><td class='mm fuerte'>13,5</td><td class='mm'>7,3</td><td class='mm fuerte'>18,3</td></tr><tr><td class='l'>2 ago</td><td class='l'>Los Ángeles</td><td class='l'><span class='no'>sin datos</span></td><td class='mm'>0,0</td><td class='mm fuerte'>15,4</td><td class='mm'>8,4</td><td class='mm'>4,4</td><td class='mm fuerte'>13,3</td><td class='mm fuerte'>17,7</td><td class='mm'>7,8</td><td class='mm fuerte'>12,9</td><td class='mm fuerte'>20,0</td><td class='mm'>8,1</td></tr><tr><td class='l'>2 ago</td><td class='l'>Concepción</td><td class='l'><span class='si'>Llovió</span> <span class='muted small'>(8 h con lluvia)</span></td><td class='mm'>2,8</td><td class='mm fuerte'>11,6</td><td class='mm'>9,3</td><td class='mm'>2,6</td><td class='mm'>9,9</td><td class='mm fuerte'>18,1</td><td class='mm fuerte'>15,5</td><td class='mm'>9,0</td><td class='mm fuerte'>11,7</td><td class='mm fuerte'>10,4</td></tr><tr><td class='l'>2 ago</td><td class='l'>Temuco (La Araucanía)</td><td class='l'><span class='si'>Llovió</span> <span class='muted small'>(13 h con lluvia)</span></td><td class='mm'>12,5</td><td class='mm fuerte'>20,9</td><td class='mm fuerte'>17,7</td><td class='mm'>4,9</td><td class='mm fuerte'>21,9</td><td class='mm fuerte'>21,4</td><td class='mm fuerte'>22,1</td><td class='mm fuerte'>27,7</td><td class='mm fuerte'>29,7</td><td class='mm fuerte'>19,9</td></tr><tr><td class='l'>2 ago</td><td class='l'>Temuco (Maquehue)</td><td class='l'><span class='no'>sin datos</span></td><td class='mm'>4,8</td><td class='mm fuerte'>15,2</td><td class='mm fuerte'>26,7</td><td class='mm'>3,0</td><td class='mm fuerte'>17,1</td><td class='mm fuerte'>17,4</td><td class='mm'>8,9</td><td class='mm fuerte'>22,5</td><td class='mm fuerte'>18,9</td><td class='mm'>7,8</td></tr></tbody></table></div></div></details>
+</article><article class="card evento" id="coquimbo-jul">
+  <div class="sec-head"><div class="eyebrow">del 14 de julio al 24 de julio de 2026</div><h2>Coquimbo y Huasco, frontal del 14 al 24 de julio</h2>
+  <p class="imp">Sistema frontal. 13 muertos. 3.500+ damnificados. estado de catástrofe. 287 mm en El Tololo. <a href="https://www.emol.com/noticias/Nacional/2026/07/20/1206114/coquimbo-compleja-afectacion-sistema-frontal.html" rel="noopener">Fuente</a>.</p></div>
+  
+  <h3>¿Marcaron lluvia antes?</h3>
+  <p class="small muted">En los aeródromos de la zona (La Serena, Caldera) hubo 12 casos con lluvia, contando cada día en cada aeródromo, de 22 con observación. Cada celda dice en cuántos de esos casos el modelo había anunciado lluvia con esa anticipación.</p>
+  <div class='tabla'><table class='matriz'><thead><tr><th class='l'>Modelo</th><th>72 h antes</th><th>48 h antes</th><th>24 h antes</th></tr></thead><tbody><tr><td class='l modelo-nombre'>AIFS<span class='tipo'>IA · ECMWF</span></td><td class='celda bueno'>11 de 12<small>1 aviso en falso</small></td><td class='celda medio'>10 de 12</td><td class='celda bueno'>11 de 12<small>1 aviso en falso</small></td></tr><tr><td class='l modelo-nombre'>IFS<span class='tipo'>físico · ECMWF</span></td><td class='celda medio'>10 de 12</td><td class='celda medio'>10 de 12<small>1 aviso en falso</small></td><td class='celda medio'>10 de 12<small>1 aviso en falso</small></td></tr><tr><td class='l modelo-nombre'>GFS<span class='tipo'>físico · NOAA</span></td><td class='celda medio'>8 de 12<small>1 aviso en falso</small></td><td class='celda medio'>10 de 12<small>1 aviso en falso</small></td><td class='celda medio'>10 de 12</td></tr></tbody></table></div>
+  
+  <details><summary>Ver día por día, aeródromo por aeródromo</summary><div class="body"><p class="small muted">Lluvia pronosticada para las 24 horas de cada día (de 8 o 9 de la mañana a la misma hora del día siguiente), según la corrida emitida 72, 48 y 24 horas antes. En negrita, 10 mm o más. La columna Satélite es la lluvia estimada por PERSIANN-CCS (CHRS) en el punto del aeródromo, para el día calendario.</p><div class="tabla ev-tabla"><table><thead><tr><th class='l' rowspan='2'>Día</th><th class='l' rowspan='2'>Aeródromo</th><th class='l' rowspan='2'>¿Llovió?</th><th rowspan='2'>Satélite<br>mm</th><th class='grupo' colspan='3'>Pronóstico 72 h antes (mm)</th><th class='grupo' colspan='3'>Pronóstico 48 h antes (mm)</th><th class='grupo' colspan='3'>Pronóstico 24 h antes (mm)</th></tr><tr><th class='sub'>AIFS</th><th class='sub'>IFS</th><th class='sub'>GFS</th><th class='sub'>AIFS</th><th class='sub'>IFS</th><th class='sub'>GFS</th><th class='sub'>AIFS</th><th class='sub'>IFS</th><th class='sub'>GFS</th></tr></thead><tbody><tr><td class='l'>14 jul</td><td class='l'>Caldera</td><td class='l'><span class='no'>No llovió</span></td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td></tr><tr><td class='l'>14 jul</td><td class='l'>La Serena</td><td class='l'><span class='no'>No llovió</span></td><td class='mm'>4,1</td><td class='mm'>0,2</td><td class='mm'>0,1</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,1</td><td class='mm'>0,0</td><td class='mm'>0,1</td><td class='mm'>0,1</td><td class='mm'>0,1</td></tr><tr><td class='l'>15 jul</td><td class='l'>Caldera</td><td class='l'><span class='no'>No llovió</span></td><td class='mm'>4,6</td><td class='mm'>0,1</td><td class='mm'>0,1</td><td class='mm'>0,0</td><td class='mm'>0,1</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td></tr><tr><td class='l'>15 jul</td><td class='l'>La Serena</td><td class='l'><span class='si'>Llovió</span> <span class='muted small'>(2 h con lluvia)</span></td><td class='mm'>18,9</td><td class='mm'>1,3</td><td class='mm'>1,3</td><td class='mm'>0,0</td><td class='mm'>0,8</td><td class='mm'>0,8</td><td class='mm'>0,0</td><td class='mm'>1,2</td><td class='mm'>1,9</td><td class='mm'>0,0</td></tr><tr><td class='l'>16 jul</td><td class='l'>Caldera</td><td class='l'><span class='no'>No llovió</span></td><td class='mm'>0,0</td><td class='mm'>0,2</td><td class='mm'>0,7</td><td class='mm'>0,0</td><td class='mm'>0,1</td><td class='mm'>0,1</td><td class='mm'>0,6</td><td class='mm'>0,0</td><td class='mm'>0,3</td><td class='mm'>0,4</td></tr><tr><td class='l'>16 jul</td><td class='l'>La Serena</td><td class='l'><span class='si'>Llovió</span> <span class='muted small'>(11 h con lluvia)</span></td><td class='mm'>0,1</td><td class='mm fuerte'>40,6</td><td class='mm fuerte'>50,8</td><td class='mm fuerte'>49,4</td><td class='mm fuerte'>41,9</td><td class='mm fuerte'>61,0</td><td class='mm fuerte'>51,8</td><td class='mm fuerte'>41,3</td><td class='mm fuerte'>58,5</td><td class='mm fuerte'>30,7</td></tr><tr><td class='l'>17 jul</td><td class='l'>Caldera</td><td class='l'><span class='no'>No llovió</span></td><td class='mm'>0,0</td><td class='mm'>1,1</td><td class='mm'>0,3</td><td class='mm'>6,6</td><td class='mm'>0,6</td><td class='mm'>1,1</td><td class='mm'>1,0</td><td class='mm'>2,8</td><td class='mm'>5,7</td><td class='mm'>0,4</td></tr><tr><td class='l'>17 jul</td><td class='l'>La Serena</td><td class='l'><span class='si'>Llovió</span> <span class='muted small'>(14 h con lluvia)</span></td><td class='mm'>0,2</td><td class='mm fuerte'>67,1</td><td class='mm fuerte'>94,8</td><td class='mm fuerte'>35,8</td><td class='mm fuerte'>69,7</td><td class='mm fuerte'>93,6</td><td class='mm fuerte'>62,9</td><td class='mm fuerte'>62,4</td><td class='mm fuerte'>82,3</td><td class='mm fuerte'>33,3</td></tr><tr><td class='l'>18 jul</td><td class='l'>Caldera</td><td class='l'><span class='si'>Llovió</span> <span class='muted small'>(19 h con lluvia)</span></td><td class='mm'>0,0</td><td class='mm'>7,9</td><td class='mm'>5,7</td><td class='mm'>0,0</td><td class='mm fuerte'>16,8</td><td class='mm'>8,6</td><td class='mm fuerte'>16,7</td><td class='mm fuerte'>29,1</td><td class='mm fuerte'>23,3</td><td class='mm fuerte'>28,6</td></tr><tr><td class='l'>18 jul</td><td class='l'>La Serena</td><td class='l'><span class='si'>Llovió</span> <span class='muted small'>(10 h con lluvia)</span></td><td class='mm'>30,3</td><td class='mm fuerte'>43,6</td><td class='mm fuerte'>55,6</td><td class='mm fuerte'>41,7</td><td class='mm fuerte'>50,0</td><td class='mm fuerte'>40,7</td><td class='mm fuerte'>21,4</td><td class='mm fuerte'>58,9</td><td class='mm fuerte'>61,3</td><td class='mm fuerte'>38,2</td></tr><tr><td class='l'>19 jul</td><td class='l'>Caldera</td><td class='l'><span class='si'>Llovió</span> <span class='muted small'>(5 h con lluvia)</span></td><td class='mm'>0,2</td><td class='mm fuerte'>27,2</td><td class='mm fuerte'>18,8</td><td class='mm fuerte'>13,0</td><td class='mm fuerte'>13,6</td><td class='mm'>7,2</td><td class='mm fuerte'>14,1</td><td class='mm fuerte'>11,9</td><td class='mm'>9,9</td><td class='mm fuerte'>13,9</td></tr><tr><td class='l'>19 jul</td><td class='l'>La Serena</td><td class='l'><span class='si'>Llovió</span> <span class='muted small'>(20 h con lluvia)</span></td><td class='mm'>17,5</td><td class='mm fuerte'>59,3</td><td class='mm fuerte'>73,8</td><td class='mm fuerte'>27,9</td><td class='mm fuerte'>56,2</td><td class='mm fuerte'>81,1</td><td class='mm fuerte'>29,3</td><td class='mm fuerte'>55,5</td><td class='mm fuerte'>44,8</td><td class='mm fuerte'>37,8</td></tr><tr><td class='l'>20 jul</td><td class='l'>Caldera</td><td class='l'><span class='si'>Llovió</span> <span class='muted small'>(1 h con lluvia)</span></td><td class='mm'>0,0</td><td class='mm'>4,8</td><td class='mm'>1,8</td><td class='mm'>2,8</td><td class='mm'>3,5</td><td class='mm'>5,9</td><td class='mm'>1,9</td><td class='mm'>3,1</td><td class='mm'>0,5</td><td class='mm'>2,9</td></tr><tr><td class='l'>20 jul</td><td class='l'>La Serena</td><td class='l'><span class='si'>Llovió</span> <span class='muted small'>(9 h con lluvia)</span></td><td class='mm'>0,0</td><td class='mm fuerte'>23,5</td><td class='mm fuerte'>56,8</td><td class='mm fuerte'>22,2</td><td class='mm fuerte'>26,7</td><td class='mm fuerte'>45,0</td><td class='mm fuerte'>22,6</td><td class='mm fuerte'>27,9</td><td class='mm fuerte'>49,9</td><td class='mm fuerte'>31,2</td></tr><tr><td class='l'>21 jul</td><td class='l'>Caldera</td><td class='l'><span class='si'>Llovió</span> <span class='muted small'>(1 h con lluvia)</span></td><td class='mm'>0,0</td><td class='mm'>1,2</td><td class='mm'>0,8</td><td class='mm'>0,7</td><td class='mm'>1,6</td><td class='mm'>1,2</td><td class='mm'>3,4</td><td class='mm'>3,6</td><td class='mm'>1,8</td><td class='mm'>2,2</td></tr><tr><td class='l'>21 jul</td><td class='l'>La Serena</td><td class='l'><span class='si'>Llovió</span> <span class='muted small'>(1 h con lluvia)</span></td><td class='mm'>5,2</td><td class='mm fuerte'>14,8</td><td class='mm fuerte'>16,9</td><td class='mm'>3,6</td><td class='mm fuerte'>11,1</td><td class='mm'>9,6</td><td class='mm'>4,3</td><td class='mm'>6,4</td><td class='mm fuerte'>15,7</td><td class='mm'>1,6</td></tr><tr><td class='l'>22 jul</td><td class='l'>Caldera</td><td class='l'><span class='no'>No llovió</span></td><td class='mm'>5,2</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td></tr><tr><td class='l'>22 jul</td><td class='l'>La Serena</td><td class='l'><span class='no'>No llovió</span></td><td class='mm'>9,2</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,5</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td></tr><tr><td class='l'>23 jul</td><td class='l'>Caldera</td><td class='l'><span class='no'>No llovió</span></td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td></tr><tr><td class='l'>23 jul</td><td class='l'>La Serena</td><td class='l'><span class='si'>Llovió</span> <span class='muted small'>(1 h con lluvia)</span></td><td class='mm'>9,7</td><td class='mm'>0,0</td><td class='mm'>0,7</td><td class='mm'>0,0</td><td class='mm'>0,3</td><td class='mm'>0,0</td><td class='mm'>0,2</td><td class='mm'>0,1</td><td class='mm'>0,1</td><td class='mm'>0,0</td></tr><tr><td class='l'>24 jul</td><td class='l'>Caldera</td><td class='l'><span class='no'>No llovió</span></td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td></tr><tr><td class='l'>24 jul</td><td class='l'>La Serena</td><td class='l'><span class='no'>No llovió</span></td><td class='mm'>0,1</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td><td class='mm'>0,0</td></tr></tbody></table></div></div></details>
+</article>
+<section>
+  <div class="sec-head"><h2>Y en todo 2025–2026: ¿cuándo avisaron la lluvia?</h2>
+  <p class="muted">Todos los días de los dos años, en todos los aeródromos. "Acertó cuando llovió": de los días con lluvia, en cuántos el modelo la había anunciado. "Avisó en falso": de los avisos de lluvia del modelo, cuántos no se cumplieron.</p></div>
+  <div class="card tabla "><table><thead><tr><th class='l'>Modelo</th><th>Anticipación</th><th>Días comparados</th><th>Días con lluvia</th><th>Acertó cuando llovió</th><th>Avisó en falso</th></tr></thead><tbody><tr><td class='l'>AIFS</td><td class='num'>24 h</td><td class='num'>18.804</td><td class='num'>30 %</td><td class='num'>76 %</td><td class='num'>17 %</td></tr><tr><td class='l'>AIFS</td><td class='num'>48 h</td><td class='num'>18.767</td><td class='num'>30 %</td><td class='num'>75 %</td><td class='num'>19 %</td></tr><tr><td class='l'>AIFS</td><td class='num'>72 h</td><td class='num'>18.728</td><td class='num'>30 %</td><td class='num'>76 %</td><td class='num'>20 %</td></tr><tr><td class='l'>IFS</td><td class='num'>24 h</td><td class='num'>21.046</td><td class='num'>28 %</td><td class='num'>73 %</td><td class='num'>19 %</td></tr><tr><td class='l'>IFS</td><td class='num'>48 h</td><td class='num'>21.006</td><td class='num'>28 %</td><td class='num'>71 %</td><td class='num'>19 %</td></tr><tr><td class='l'>IFS</td><td class='num'>72 h</td><td class='num'>20.967</td><td class='num'>28 %</td><td class='num'>70 %</td><td class='num'>20 %</td></tr><tr><td class='l'>GFS</td><td class='num'>24 h</td><td class='num'>21.046</td><td class='num'>28 %</td><td class='num'>63 %</td><td class='num'>12 %</td></tr><tr><td class='l'>GFS</td><td class='num'>48 h</td><td class='num'>21.006</td><td class='num'>28 %</td><td class='num'>61 %</td><td class='num'>13 %</td></tr><tr><td class='l'>GFS</td><td class='num'>72 h</td><td class='num'>20.967</td><td class='num'>28 %</td><td class='num'>60 %</td><td class='num'>14 %</td></tr></tbody></table></div>
+</section>
+<div class="aviso"><p class="small">Apoyo a la decisión, no una alerta. Las alertas oficiales son de la <a href="https://www.meteochile.gob.cl/" rel="noopener">Dirección Meteorológica de Chile</a> y de <a href="https://www.senapred.cl/" rel="noopener">SENAPRED</a>.</p></div>
+<footer><p>Actualizado el 16 oct, 12:17 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
+</div>
+
+<script>
+(function(){
+  let pop=null, dueno=null;
+  function cerrar(){ if(pop){pop.remove();pop=null;} if(dueno){dueno.setAttribute('aria-expanded','false');dueno=null;} }
+  document.addEventListener('click',function(e){
+    const b=e.target.closest('.def');
+    if(!b){ if(pop && !e.target.closest('.def-pop')) cerrar(); return; }
+    e.preventDefault();
+    if(dueno===b){cerrar();return;}
+    cerrar(); dueno=b; b.setAttribute('aria-expanded','true');
+    pop=document.createElement('div'); pop.className='def-pop'; pop.setAttribute('role','tooltip'); pop.textContent=b.dataset.def;
+    document.body.appendChild(pop);
+    const r=b.getBoundingClientRect(), w=pop.offsetWidth;
+    let x=r.left+window.scrollX; x=Math.min(x, window.scrollX+document.documentElement.clientWidth-w-16); x=Math.max(16+window.scrollX,x);
+    pop.style.left=x+'px'; pop.style.top=(r.bottom+window.scrollY+6)+'px';
+  });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') cerrar(); });
+  window.addEventListener('resize',cerrar);
+})();
+</script>
+
+</body>
+</html>

@@ -3,13 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Quebradas de Santiago oriente</title>
-<meta name="description" content="Visor de las quebradas de Las Condes, Lo Barnechea, La Reina y Peñalolén: laderas quemadas en el verano de 2026, pendiente, cuencas delimitadas desde el DEM y un indicador de flujo de detritos con la lluvia prevista. Apoyo a la decisión; las alertas son de la DMC y SENAPRED.">
+<title>Quebradas · Earth-2 Chile</title>
+<meta name="description" content="Las quebradas quemadas de Santiago oriente (Las Condes, Lo Barnechea, La Reina, Peñalolén) y cuánta lluvia en dos horas las acercaría a un flujo de detritos, comparada con la lluvia prevista. Apoyo a la decisión; las alertas son de la DMC y SENAPRED.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" crossorigin="">
 <style>
-/* Mismo sistema de tokens que el sitio de verificación; el mapa ocupa el ancho completo y la ficha va al costado. */
+/* Mapa grande a la izquierda y panel de decisión a la derecha; en teléfono: modo, mapa, ficha y lista, en ese orden.
+   Mismos tokens que el resto del sitio (verificacion/render_site.py). */
 :root{
   --bg:#f4f6f8; --surface:#ffffff; --fg:#17212b; --muted:#5a6977; --line:#d8dfe6; --line-soft:#e9eef2;
   --accent:#0e7c86; --accent-soft:#d7eef0;
@@ -29,113 +30,160 @@
   --accent:#44bcc6; --accent-soft:#163b40; --bajo:#2fbf2f; --atencion:#e0a428; --aviso:#ee6a6a; --sin:#7d8c99;
   --quema-mod:#f08a4b; --quema-alta:#c94a4a; --pend1:#8a6d3b; --pend2:#b8803f; --pend3:#e0a86a; --cauce:#5aa0f0; --remocion:#9d8cf0; color-scheme:dark}
 *{box-sizing:border-box} html,body{margin:0}
-body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16.5px;line-height:1.45;-webkit-font-smoothing:antialiased}
 a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
-a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
-.wrap{max-width:1400px;margin:0 auto;padding-inline:16px;padding-block:20px 48px;display:grid;gap:18px}
+a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1400px;margin:0 auto;padding-inline:16px;padding-block:22px 48px;display:grid;gap:20px}
 @media (min-width:720px){.wrap{padding-inline:24px}}
 h1,h2,h3{font-family:var(--font-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
-h1{font-size:clamp(22px,3vw,30px);line-height:1.15;font-weight:600}
-h2{font-size:18px;font-weight:600} h3{font-size:15px;font-weight:600}
+h1{font-size:clamp(24px,3.2vw,34px);line-height:1.15;font-weight:600;max-width:30ch}
+h2{font-size:17px;font-weight:600} h3{font-size:15px;font-weight:600}
 p{margin:0;max-width:70ch}
 .eyebrow{font-family:var(--font-display);font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600}
-.muted{color:var(--muted)} .small{font-size:14px}
-header{display:grid;gap:8px}
-.nav{font-size:14px}
+.muted{color:var(--muted)} .small{font-size:14.5px}
+header{display:grid;gap:10px}
+header .lead{font-size:18px;color:var(--muted);max-width:68ch}
 .aviso{border-left:3px solid var(--accent);padding:8px 12px;background:var(--accent-soft);border-radius:0 var(--radius) var(--radius) 0;max-width:80ch}
 .aviso p{max-width:none}
-.resumen{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;font-size:15px}
-.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:2px 9px 2px 7px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--fg);white-space:nowrap}
-.chip i{width:8px;height:8px;border-radius:50%;background:var(--sin)}
+.hoy{display:grid;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px}
+.hoy .chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:600;padding:2px 10px 2px 8px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--fg);white-space:nowrap}
+.chip i{width:9px;height:9px;border-radius:50%;background:var(--sin)}
 .chip.bajo i{background:var(--bajo)} .chip.atencion i{background:var(--atencion)} .chip.aviso i{background:var(--aviso)}
-.layout{display:grid;gap:16px}
-@media (min-width:960px){.layout{grid-template-columns:minmax(0,1fr) 360px;align-items:start}}
-#mapa{height:72vh;min-height:420px;border:1px solid var(--line);border-radius:var(--radius);background:var(--line-soft)}
+.chip.sin{color:var(--muted)}
+/* disposición */
+.layout{display:grid;gap:14px;grid-template-areas:"modo" "mapa" "panel"}
+@media (min-width:980px){.layout{grid-template-columns:minmax(0,1fr) 390px;grid-template-areas:"mapa modo" "mapa panel";grid-template-rows:auto 1fr;align-items:start}}
+.modo{grid-area:modo} #mapa{grid-area:mapa} .panel{grid-area:panel}
+#mapa{height:52vh;min-height:340px;border:1px solid var(--line);border-radius:var(--radius);background:var(--line-soft)}
+@media (min-width:980px){#mapa{height:78vh;position:sticky;top:68px}}
 .panel{display:grid;gap:12px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px;display:grid;gap:10px;min-width:0}
-.card h2{font-size:16px}
-.ficha dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0;font-size:14.5px}
-.ficha dt{color:var(--muted)} .ficha dd{margin:0;font-family:var(--font-data);font-size:13.5px;font-variant-numeric:tabular-nums}
-.ficha .p{font-family:var(--font-display);font-size:30px;font-weight:600;line-height:1.1}
-.slider{display:grid;gap:6px}
-.slider input[type=range]{width:100%;accent-color:var(--accent)}
-.slider .val{font-family:var(--font-data);font-variant-numeric:tabular-nums}
-.leyenda{display:grid;gap:6px;font-size:13.5px}
-.leyenda .fila{display:flex;align-items:center;gap:8px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;display:grid;gap:10px;min-width:0}
+/* modo */
+.seg{display:flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--bg);width:max-content;max-width:100%}
+.seg label{position:relative;cursor:pointer;padding:6px 14px;border-radius:999px;font-weight:600;font-size:14.5px;white-space:nowrap}
+.seg input{position:absolute;opacity:0;width:0;height:0;margin:0}
+.seg label:has(input:checked){background:var(--surface);box-shadow:0 1px 3px rgba(0,0,0,.12);color:var(--fg)}
+.seg label:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.escenario{display:grid;gap:4px}
+.escenario input[type=range]{width:100%;accent-color:var(--accent)}
+.escenario .val{font-family:var(--font-display);font-weight:600;font-size:22px}
+.marcas{display:flex;justify-content:space-between;font:12px var(--font-data);color:var(--muted)}
+/* ficha */
+.ficha .cab{display:grid;gap:2px}
+.ficha .prob{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.ficha .prob .v{font-family:var(--font-display);font-size:30px;font-weight:600;line-height:1.1}
+.ficha .umbral{background:var(--bg);border-radius:8px;padding:10px 12px;font-size:15.5px}
+.ficha dl{display:grid;grid-template-columns:auto 1fr;gap:5px 14px;margin:0;font-size:15px}
+.ficha dt{color:var(--muted)} .ficha dd{margin:0;font-weight:600}
+.ficha details{border:0;background:none} .ficha summary{padding:4px 0;font-size:14px}
+.ficha details .body{padding:6px 0 0;font-size:14px}
+/* lista */
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{padding:7px 6px;border-bottom:1px solid var(--line-soft);text-align:right;vertical-align:middle}
+th{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line)}
+th.l,td.l{text-align:left}
+td.num{font-family:var(--font-data);font-variant-numeric:tabular-nums;white-space:nowrap}
+#lista tbody tr{cursor:pointer} #lista tbody tr:hover td{background:color-mix(in srgb,var(--accent) 8%,transparent)}
+#lista tr.actual td{background:var(--accent-soft)}
+/* capas y leyenda */
+.leyenda{display:grid;gap:6px;font-size:14px}
+.leyenda .fila{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .sw{width:16px;height:12px;border-radius:3px;border:1px solid var(--line);display:inline-block;flex:none}
-.sw.linea{height:3px;border:none;border-radius:2px}
-.sw.punto{width:10px;height:10px;border-radius:50%}
-.capas label{display:flex;align-items:center;gap:8px;font-size:14px;padding:3px 0}
+.sw.linea{height:3px;border:none;border-radius:2px} .sw.punto{width:10px;height:10px;border-radius:50%}
+.capas label{display:flex;align-items:center;gap:8px;font-size:14.5px;padding:2px 0}
 .capas input{accent-color:var(--accent)}
 details{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)}
-summary{cursor:pointer;padding:10px 14px;font-weight:600;font-family:var(--font-display);font-size:14.5px;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary{cursor:pointer;padding:10px 14px;font-weight:600;font-family:var(--font-display);font-size:15px;list-style:none;display:flex;justify-content:space-between;gap:12px}
 summary::-webkit-details-marker{display:none} summary::after{content:"+";color:var(--muted);font-weight:400} details[open] summary::after{content:"–"}
-details .body{padding:0 14px 14px;display:grid;gap:8px;font-size:14.5px}
+details .body{padding:0 14px 14px;display:grid;gap:8px;font-size:15px}
 details .body p{max-width:none}
 code{font-family:var(--font-data);font-size:13px}
 footer{border-top:1px solid var(--line);padding-top:16px;font-size:14px;color:var(--muted);display:grid;gap:6px}
 footer p{max-width:90ch}
-/* Leaflet en tema oscuro: mantener legible el fondo y los controles */
 .leaflet-container{font-family:var(--font-body)}
-.leaflet-popup-content-wrapper,.leaflet-popup-tip,.leaflet-control-layers,.leaflet-bar a{background:var(--surface);color:var(--fg)}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip,.leaflet-control-layers,.leaflet-bar a,.leaflet-tooltip{background:var(--surface);color:var(--fg)}
 .leaflet-bar a{border-bottom-color:var(--line)}
 .leaflet-control-attribution{font-size:10px}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .leaflet-tile{filter:brightness(.78) contrast(1.05)}}
 :root[data-theme="dark"] .leaflet-tile{filter:brightness(.78) contrast(1.05)}
-
+/* comun:css */
 .topnav{position:sticky;top:0;z-index:1100;background:var(--surface);border-bottom:1px solid var(--line)}
-.topnav .in{max-width:1400px;margin:0 auto;padding-inline:16px;display:flex;align-items:center;gap:16px;min-height:52px;overflow-x:auto;scrollbar-width:none}
-.topnav .in::-webkit-scrollbar{display:none}
+.topnav .in{max-width:1400px;margin:0 auto;padding-inline:16px;display:flex;align-items:center;gap:16px;min-height:52px}
 .topnav .marca{font-family:var(--font-display);font-weight:600;font-size:15px;color:var(--fg);text-decoration:none;white-space:nowrap;letter-spacing:-.01em}
 .topnav .marca small{color:var(--muted);font-weight:500;font-size:13px;margin-left:8px}
-.topnav .tabs{display:flex;gap:2px;margin-left:auto}
+.topnav .tabs{display:flex;gap:2px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.topnav .tabs::-webkit-scrollbar{display:none}
 .topnav .tabs a{display:inline-flex;align-items:center;height:52px;padding:0 12px;color:var(--muted);text-decoration:none;font-weight:600;font-size:14.5px;border-bottom:3px solid transparent;white-space:nowrap}
 .topnav .tabs a:hover{color:var(--fg)}
 .topnav .tabs a.activa{color:var(--fg);border-bottom-color:var(--accent)}
 .topnav .tabs a:focus-visible{outline:2px solid var(--accent);outline-offset:-4px;border-radius:4px}
-@media (max-width:520px){.topnav .marca small{display:none}.topnav .largo{display:none}.topnav .tabs a{padding:0 9px;font-size:14px}}
+@media (max-width:760px){
+  .topnav .in{flex-wrap:wrap;gap:0;padding-inline:0}
+  .topnav .marca{padding:10px 16px 2px;font-size:14px}
+  .topnav .marca small{display:none}
+  .topnav .tabs{margin-left:0;width:100%;padding-inline:6px}
+  .topnav .tabs a{height:42px;padding:0 10px;font-size:14px}
+  .topnav .largo{display:none}
+}
+
+.def{all:unset;cursor:help;border-bottom:1.5px dotted currentColor;text-underline-offset:2px}
+.def:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+.def-pop{position:absolute;z-index:2000;max-width:min(320px,calc(100vw - 32px));background:var(--fg);color:var(--bg);
+  font:400 14.5px/1.45 var(--font-body);padding:10px 12px;border-radius:8px;box-shadow:0 6px 24px rgba(0,0,0,.18)}
+/* /comun:css */
 </style>
 </head>
 <body>
-<nav class="topnav" aria-label="Secciones del sitio"><div class="in"><a class="marca" href="./">Earth-2 Chile<small>verificación pública</small></a><div class="tabs"><a href="./">Hoy</a><a href="historico.html">Histórico <span class="largo">2025–26</span></a><a href="quebradas.html" class="activa" aria-current="page">Quebradas</a></div></div></nav>
+<nav class="topnav" aria-label="Secciones del sitio"><div class="in"><a class="marca" href="./">Earth-2 Chile<small>verificación pública del pronóstico</small></a><div class="tabs"><a href="./">Resumen</a><a href="zona.html">Tu zona</a><a href="eventos.html">Eventos<span class="largo"> 2026</span></a><a href="quebradas.html" class="activa" aria-current="page">Quebradas</a><a href="metodo.html">Método</a></div></div></nav>
 <div class="wrap">
 <header>
-  <div class="eyebrow">Earth-2 Chile · quebradas de Santiago oriente</div>
-  <h1>Qué laderas se quemaron, qué pendiente tienen y cuánta lluvia viene</h1>
-  <p class="muted">Las Condes, Lo Barnechea, La Reina y Peñalolén. Cada cuenca de quebrada lleva un indicador de flujo de detritos calculado con la regla del USGS para zonas quemadas: lluvia prevista por los modelos globales, superficie quemada, pendiente y lluvia de los últimos días. Se recalcula cuatro veces al día.</p>
-  <div class="aviso"><p class="small">Es un indicador de apoyo a la decisión, no una alerta. Las alertas oficiales son de la <a href="https://www.meteochile.gob.cl/" rel="noopener">Dirección Meteorológica de Chile</a> y de <a href="https://www.senapred.cl/" rel="noopener">SENAPRED</a>.</p></div>
-  <div class="resumen" id="resumen"><span class="muted">Cargando el indicador…</span></div>
+  <div class="eyebrow">Quebradas de Santiago oriente</div>
+  <h1>Las quebradas que se quemaron, y cuánta lluvia haría falta para que bajen</h1>
+  <p class="lead">Las Condes, Lo Barnechea, La Reina y Peñalolén. Para cada quebrada con laderas quemadas en el verano de 2026, calculamos cuánta lluvia en dos horas la acercaría a un flujo de detritos, y la comparamos con la lluvia prevista. Se actualiza cuatro veces al día.</p>
+  <div class="hoy" id="hoy" aria-live="polite"><span class="muted">Cargando el estado de hoy…</span></div>
+  <div class="aviso"><p class="small">Es un <button type="button" class="def" data-def="Probabilidad estimada de que una quebrada quemada produzca un flujo de detritos con cierta lluvia, según una regla publicada. Es apoyo a la decisión, no una alerta.">indicador</button> de apoyo a la decisión, no una alerta. Las alertas oficiales son de la <a href="https://www.meteochile.gob.cl/" rel="noopener">Dirección Meteorológica de Chile</a> y de <a href="https://www.senapred.cl/" rel="noopener">SENAPRED</a>.</p></div>
 </header>
 
 <div class="layout">
-  <div id="mapa" role="application" aria-label="Mapa de las quebradas de Santiago oriente"></div>
+  <div class="card modo">
+    <div class="seg" role="radiogroup" aria-label="Qué lluvia usar">
+      <label><input type="radio" name="modo" value="previsto" checked>Lluvia prevista</label>
+      <label><input type="radio" name="modo" value="escenario">Probar escenario</label>
+    </div>
+    <div class="escenario">
+      <label for="mm" class="small">¿Y si cayeran <span class="val" id="mm-val">20 mm</span> en 2 horas?</label>
+      <input type="range" id="mm" min="0" max="50" step="1" value="20" list="marcas-mm" aria-describedby="mm-ayuda">
+      <datalist id="marcas-mm"><option value="10"></option><option value="20"></option><option value="30"></option><option value="40"></option></datalist>
+      <div class="marcas" aria-hidden="true"><span>0</span><span>10</span><span>20</span><span>30</span><span>40</span><span>50 mm</span></div>
+      <p class="muted small" id="mm-ayuda">Mueve el control para ver qué quebradas cambiarían de nivel con esa lluvia. Como referencia, el 13 de octubre cayeron unos 20 mm en dos horas y media en Providencia.</p>
+    </div>
+  </div>
+
+  <div id="mapa" role="application" aria-label="Mapa de las quebradas de Santiago oriente; la lista de quebradas al costado tiene la misma información"></div>
+
   <aside class="panel">
-    <div class="card ficha" id="ficha">
-      <h2>Elige una cuenca en el mapa</h2>
-      <p class="muted small">Haz clic en una cuenca para ver su ficha: área, superficie quemada, pendiente y el indicador con la lluvia prevista.</p>
-      <p class="muted small"><strong>Nuevo:</strong> las cuencas ya no son las de HydroBASINS (demasiado grandes para estas quebradas): se delimitan desde el modelo de elevación Copernicus a 30 m, aguas arriba del punto donde cada quebrada entra a la ciudad. Los puntos de salida se pueden corregir en <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion/blob/main/quebradas/salidas.csv" rel="noopener">salidas.csv</a>.</p>
+    <div class="card ficha" id="ficha" aria-live="polite"><p class="muted">Cargando la ficha…</p></div>
+
+    <div class="card">
+      <h2>Quebradas con laderas quemadas</h2>
+      <p class="small muted">De la más cercana a la más lejana de un umbral. Lluvia en 2 horas que la llevaría a cada nivel.</p>
+      <div style="overflow-x:auto"><table id="lista"><thead><tr><th class="l">Quebrada</th><th>Atención</th><th>Aviso</th><th class="l">Ahora</th></tr></thead><tbody></tbody></table></div>
+      <details id="sin-quema"><summary>Quebradas sin quema relevante</summary><div class="body"><p class="small muted">La regla que usamos es para laderas quemadas: en estas quebradas casi no hubo incendio, así que no calculamos el indicador.</p><p class="small" id="lista-sin"></p></div></details>
     </div>
-    <div class="card slider">
-      <h2>¿Y si cayeran X mm en 2 horas?</h2>
-      <label for="mm">Lluvia en 2 horas: <span class="val" id="mm-val">20 mm</span></label>
-      <input type="range" id="mm" min="0" max="80" step="1" value="20">
-      <p class="muted small">Mueve el control y el mapa recalcula el indicador de todas las cuencas con esa lluvia, usando la misma regla. Vuelve a la lluvia prevista con el botón.</p>
-      <button type="button" id="volver" style="justify-self:start;font:inherit;padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--fg);cursor:pointer">Usar la lluvia prevista</button>
-    </div>
+
     <div class="card capas">
-      <h2>Capas</h2>
-      <label><input type="checkbox" id="c-cuencas" checked> Cuencas e indicador</label>
+      <h2>Capas del mapa</h2>
+      <label><input type="checkbox" id="c-cuencas" checked> Quebradas e indicador</label>
       <label><input type="checkbox" id="c-cicatrices" checked> Laderas quemadas, verano 2026</label>
-      <label><input type="checkbox" id="c-pendiente"> Pendiente</label>
-      <label><input type="checkbox" id="c-cauces" checked> Cauces (OpenStreetMap)</label>
-      <label><input type="checkbox" id="c-remociones" checked> Remociones en masa registradas</label>
-      <div class="leyenda" id="leyenda">
-        <div class="fila"><span class="sw" style="background:color-mix(in srgb,var(--bajo) 35%,transparent);border-color:var(--bajo)"></span> Indicador bajo</div>
-        <div class="fila"><span class="sw" style="background:color-mix(in srgb,var(--atencion) 45%,transparent);border-color:var(--atencion)"></span> Atención</div>
-        <div class="fila"><span class="sw" style="background:color-mix(in srgb,var(--aviso) 45%,transparent);border-color:var(--aviso)"></span> Aviso de impacto</div>
-        <div class="fila"><span class="sw" style="background:var(--quema-mod)"></span> Quema moderada &nbsp;<span class="sw" style="background:var(--quema-alta)"></span> Quema alta</div>
-        <div class="fila"><span class="sw" style="background:var(--pend1)"></span> 15–25° &nbsp;<span class="sw" style="background:var(--pend2)"></span> 25–35° &nbsp;<span class="sw" style="background:var(--pend3)"></span> &gt;35°</div>
-        <div class="fila"><span class="sw linea" style="background:var(--cauce)"></span> Cauce &nbsp;<span class="sw punto" style="background:var(--remocion)"></span> Remoción en masa</div>
+      <label><input type="checkbox" id="c-pendiente"> Pendiente del terreno</label>
+      <label><input type="checkbox" id="c-cauces" checked> Cauces</label>
+      <label><input type="checkbox" id="c-remociones" checked> Aluviones y deslizamientos registrados</label>
+      <div class="leyenda">
+        <div class="fila"><span class="chip bajo"><i></i>Bajo</span><span class="chip atencion"><i></i>Atención</span><span class="chip aviso"><i></i>Aviso de impacto</span><span class="chip sin"><i></i>Sin quema relevante</span></div>
+        <div class="fila"><span class="sw" style="background:var(--quema-mod)"></span> Quema moderada <span class="sw" style="background:var(--quema-alta)"></span> Quema alta</div>
+        <div class="fila"><span class="sw" style="background:var(--pend1)"></span> 15–25° <span class="sw" style="background:var(--pend2)"></span> 25–35° <span class="sw" style="background:var(--pend3)"></span> más de 35°</div>
+        <div class="fila"><span class="sw linea" style="background:var(--cauce)"></span> Cauce <span class="sw punto" style="background:var(--remocion)"></span> Aluvión o deslizamiento</div>
       </div>
     </div>
   </aside>
@@ -144,17 +192,17 @@ footer p{max-width:90ch}
 <details>
   <summary>Cómo se calcula el indicador</summary>
   <div class="body">
-    <p>Se usa el modelo del USGS para flujos de detritos después de incendios (Staley y otros, 2017, modelo M1), que estima la probabilidad de que una cuenca quemada produzca un flujo de detritos ante una lluvia de cierta intensidad:</p>
+    <p>Usamos la regla del Servicio Geológico de Estados Unidos (USGS) para flujos de detritos después de incendios (Staley y otros, 2017, modelo M1). Estima la probabilidad de que una cuenca quemada produzca un flujo de detritos ante una lluvia de cierta intensidad:</p>
     <p><code>P = 1 / (1 + e<sup>−X</sup>)</code>, con <code>X = −3,63 + 0,41·(PropHM23·I) + 0,67·(dNBR·I) + 0,70·(KF·I)</code>.</p>
-    <p><strong>PropHM23</strong> es la fracción de la cuenca quemada con severidad moderada o alta y pendiente de 23° o más (Sentinel-2 y Copernicus DEM). <strong>dNBR</strong> es la severidad media de quema de la cuenca. <strong>KF</strong> es la erodabilidad del suelo; no existe un mapa para Chile y se usa 0,25, valor típico de suelos coluviales: es un supuesto. <strong>I</strong> es la intensidad de lluvia en mm/h.</p>
-    <p>Lluvia prevista: se toma la precipitación acumulada a 6 y 24 h del modelo más lluvioso entre AIFS (ECMWF, IA) y GFS (NOAA) en el punto de grilla de la precordillera, y se supone concentrada en 2 horas (la de 6 h) o en 8 horas (la de 24 h), porque en la precordillera la lluvia convectiva se concentra. Lluvia antecedente: horas con lluvia reportada en los METAR de Tobalaba y Pudahuel en los últimos 7 días, como factor de 1 a 1,4 sobre la intensidad (no está en el modelo del USGS; es un ajuste simple por suelo húmedo).</p>
-    <p>Niveles: bajo (P &lt; 0,2), atención (0,2 a 0,5) y aviso de impacto (P ≥ 0,5). Son umbrales de trabajo; el asesor meteorológico del proyecto los revisará. El modelo fue calibrado en el oeste de Estados Unidos: en Chile aún no está validado y por eso esta página también sirve para verificarlo contra lo que ocurra.</p>
-    <p>Capas: laderas quemadas por dNBR Sentinel-2 L2A (diciembre 2025 frente a febrero 2026, umbrales 0,27 y 0,66); pendiente del Copernicus DEM a 30 m; cuencas delimitadas desde el Copernicus DEM a 30 m (relleno de depresiones, dirección y acumulación de flujo con pysheds) aguas arriba de un punto de salida por quebrada, al pie de la precordillera (cota ~900 m, ~750 m en los cerros de Vitacura), definido a mano en <code>quebradas/salidas.csv</code>; hasta octubre de 2026 se usaban las cuencas HydroBASINS nivel 12, de 14 a 264 km², que diluían la superficie quemada; cauces de OpenStreetMap; remociones en masa del catastro de SERNAGEOMIN cuando el servicio responde, y un catálogo propio documentado cuando no.</p>
+    <p><strong>PropHM23</strong> es la parte de la cuenca quemada con severidad moderada o alta y con pendiente de 23° o más (satélite Sentinel-2 y modelo de elevación Copernicus a 30 m). <strong>dNBR</strong> es la severidad media de la quema en la cuenca. <strong>KF</strong> es la erodabilidad del suelo: no existe un mapa para Chile y usamos 0,25, un valor típico de suelos de ladera; es un supuesto. <strong>I</strong> es la intensidad de la lluvia en mm por hora.</p>
+    <p>Lluvia prevista: la mayor entre AIFS (ECMWF) y GFS (NOAA) en la precordillera, para las próximas 6 y 24 horas, suponiendo que la de 6 horas cae en 2 y la de 24 horas en 8, porque en la precordillera la lluvia se concentra. Si en los últimos 7 días llovió en Tobalaba o Pudahuel, la intensidad se aumenta hasta un 40 % por suelo húmedo; ese ajuste no está en la regla del USGS.</p>
+    <p>Niveles: bajo (menos de 20 %), atención (20 a 50 %) y aviso de impacto (50 % o más). Son umbrales de trabajo, en revisión con un meteorólogo. Las quebradas con menos de 1 % de su superficie quemada y empinada no llevan indicador. La regla fue calibrada en el oeste de Estados Unidos y no está validada en Chile: esta página también sirve para verificarla contra lo que ocurra.</p>
+    <p>Capas: laderas quemadas por dNBR de Sentinel-2 (diciembre de 2025 frente a febrero de 2026, umbrales 0,27 y 0,66); pendiente del modelo de elevación Copernicus a 30 m; cuencas delimitadas desde ese mismo modelo, aguas arriba del punto donde cada quebrada entra a la ciudad (cota de unos 900 m), definido en <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion/blob/main/quebradas/salidas.csv" rel="noopener">salidas.csv</a>; cauces de OpenStreetMap; aluviones y deslizamientos del catastro de SERNAGEOMIN, o de un catálogo propio documentado cuando ese servicio no responde.</p>
   </div>
 </details>
 
 <footer>
-  <p id="pie">Datos: Copernicus DEM (ESA), Sentinel-2 (ESA/Copernicus, vía Earth Search AWS), OpenStreetMap (ODbL), SERNAGEOMIN, ECMWF open data (CC-BY 4.0), NOAA GFS, METAR (DMC/NOAA). Teselas: OpenStreetMap y OpenTopoMap. Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">github.com/PanchoDigevo/earth2-chile-verificacion</a>.</p>
+  <p id="pie">Datos abiertos: Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN, ECMWF (AIFS, CC-BY 4.0), NOAA (GFS y METAR). Teselas: OpenStreetMap y OpenTopoMap. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p>
   <p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p>
 </footer>
 </div>
@@ -162,123 +210,163 @@ footer p{max-width:90ch}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" crossorigin=""></script>
 <script>
 (function () {
-  const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
   const num = (v, d = 1) => (v == null || isNaN(v)) ? "–" : Number(v).toLocaleString("es-CL", { minimumFractionDigits: d, maximumFractionDigits: d });
-  const NIVEL = { bajo: "Indicador bajo", atencion: "Atención", aviso: "Aviso de impacto" };
+  const pct = p => p == null ? "–" : p < 0.05 ? "menos de 5 %" : p > 0.95 ? "más de 95 %" : num(100 * p, 0) + " %";
+  const corto = n => n.split(" (")[0];
+  const NIVEL = { bajo: "Bajo", atencion: "Atención", aviso: "Aviso de impacto", sin: "Sin quema relevante" };
+  const chip = n => `<span class="chip ${n}"><i aria-hidden="true"></i>${NIVEL[n]}</span>`;
+  const horaChile = iso => { try { return new Date(iso).toLocaleString("es-CL", { timeZone: "America/Santiago", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) + " (hora de Chile)"; } catch (e) { return iso; } };
 
-  // --- regla USGS M1, la misma que en quebradas/indicador.py ---
-  let PAR = { KF: 0.25, beta: [-3.63, 0.41, 0.67, 0.70], horas_concentracion: 2, umbrales: [0.2, 0.5] };
-  function prob(mm, horas, p, factor) {
-    const i = (mm / horas) * (factor || 1);
-    const b = PAR.beta;
-    const x = b[0] + b[1] * p.prop_hm23 * i + b[2] * p.dnbr_medio * i + b[3] * PAR.KF * i;
-    return 1 / (1 + Math.exp(-x));
-  }
-  const nivel = (p) => p < PAR.umbrales[0] ? "bajo" : p < PAR.umbrales[1] ? "atencion" : "aviso";
+  // Regla USGS M1, la misma que en quebradas/indicador.py
+  let PAR = { KF: 0.25, beta: [-3.63, 0.41, 0.67, 0.70], horas_concentracion: 2, umbrales: [0.2, 0.5], prop_min: 0.01 };
+  const coef = p => PAR.beta[1] * (p.prop_hm23 || 0) + PAR.beta[2] * (p.dnbr_medio || 0) + PAR.beta[3] * PAR.KF;
+  const prob = (mm, horas, p, f) => 1 / (1 + Math.exp(-(PAR.beta[0] + coef(p) * (mm / horas) * (f || 1))));
+  const umbralMm = (pObj, p, f) => Math.max(0, (Math.log(pObj / (1 - pObj)) - PAR.beta[0]) / coef(p) * PAR.horas_concentracion / (f || 1));
+  const nivel = p => p < PAR.umbrales[0] ? "bajo" : p < PAR.umbrales[1] ? "atencion" : "aviso";
+  const quemada = p => (p.prop_hm23 || 0) >= PAR.prop_min;
 
-  // La rueda del ratón no hace zoom hasta que el mapa tiene el foco (clic), para no secuestrar el scroll de la página.
-  const mapa = L.map("mapa", { zoomControl: true, scrollWheelZoom: false }).setView([-33.43, -70.52], 12);
+  const mapa = L.map("mapa", { zoomControl: true, scrollWheelZoom: false }).setView([-33.42, -70.52], 12);
   mapa.on("focus", () => mapa.scrollWheelZoom.enable()); mapa.on("blur", () => mapa.scrollWheelZoom.disable());
-  const encima = () => { ["cicatrices", "cauces", "remociones"].forEach(k => { if (capas[k] && mapa.hasLayer(capas[k])) capas[k].bringToFront(); }); };
   const osm = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 18, attribution: "© OpenStreetMap" }).addTo(mapa);
   const topo = L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", { maxZoom: 16, attribution: "© OpenStreetMap, SRTM · OpenTopoMap (CC-BY-SA)" });
   L.control.layers({ "Mapa": osm, "Relieve": topo }, null, { position: "topleft", collapsed: true }).addTo(mapa);
   L.control.scale({ imperial: false }).addTo(mapa);
 
-  const capas = {};
-  let indicador = null, modo = "previsto", mmSlider = 20, seleccion = null;
+  const capas = {}, porId = {}, capaPorId = {};
+  let ind = null, modo = "previsto", mm = 20, sel = null;
+  const factor = () => (ind && ind.factor_antecedente) || 1;
 
-  function estiloCuenca(f) {
-    const p = f.properties;
-    let pr;
-    if (modo === "slider") pr = prob(mmSlider, PAR.horas_concentracion, p, indicador ? indicador.factor_antecedente : 1);
-    else pr = (indicador && indicador.porId[p.id]) ? indicador.porId[p.id].p : null;
-    const nv = pr == null ? "sin" : nivel(pr);
-    p._p = pr; p._nivel = nv;
-    const col = nv === "sin" ? css("--sin") : css("--" + nv);
-    const sel = seleccion === p.id;
-    return { color: sel ? css("--fg") : col, weight: sel ? 3 : 1.5, fillColor: col, fillOpacity: nv === "sin" ? 0.1 : (nv === "bajo" ? 0.22 : 0.4) };
+  function estado(p) {
+    if (!quemada(p)) return { pr: null, nv: "sin" };
+    const pr = modo === "escenario" ? prob(mm, PAR.horas_concentracion, p, factor()) : (ind && ind.porId[p.id] ? ind.porId[p.id].p : null);
+    return { pr, nv: pr == null ? "sin" : nivel(pr) };
   }
 
-  function ficha(f) {
-    const p = f.properties, box = document.getElementById("ficha");
-    const ind = indicador && indicador.porId[p.id];
-    const pSel = p._p, nv = p._nivel || "sin";
-    const fuente = modo === "slider" ? `con ${mmSlider} mm en 2 h (control)` : (indicador ? `con la lluvia prevista: ${num(indicador.mm6, 1)} mm en 6 h, ${num(indicador.mm24, 1)} mm en 24 h` : "sin lluvia prevista cargada");
-    box.innerHTML = `
-      <h2>${p.nombre}</h2>
-      <p class="muted small">${p.comuna ? p.comuna + " · " : ""}${p.cauces && p.cauces.length ? "Cauces: " + p.cauces.join(", ") : "Sin cauce con nombre en OpenStreetMap"} · Cuenca ${p.id}${p.cota_salida ? ", salida a " + p.cota_salida + " m" : ""}</p>
-      ${p.nota ? `<p class="muted small">${p.nota}</p>` : ""}
-      <div><span class="chip ${nv}"><i aria-hidden="true"></i>${NIVEL[nv] || "Sin indicador"}</span></div>
-      <div class="p">${pSel == null ? "–" : num(100 * pSel, 0) + " %"}</div>
-      <p class="small muted">Probabilidad estimada de flujo de detritos ${fuente}.${ind && modo !== "slider" ? ` A 6 h: ${num(100 * ind.p6, 0)} %; a 24 h: ${num(100 * ind.p24, 0)} %.` : ""}</p>
+  function estilo(f) {
+    const p = f.properties, { nv } = estado(p), s = sel === p.id;
+    if (nv === "sin") return { color: s ? css("--fg") : css("--sin"), weight: s ? 3 : 1, dashArray: "4 4", fillColor: css("--sin"), fillOpacity: 0.06 };
+    const col = css("--" + nv);
+    return { color: s ? css("--fg") : col, weight: s ? 3.5 : 2, dashArray: null, fillColor: col, fillOpacity: nv === "bajo" ? 0.25 : 0.42 };
+  }
+
+  function ficha() {
+    const box = document.getElementById("ficha"), p = porId[sel]; if (!p) return;
+    const { pr, nv } = estado(p);
+    const cuando = modo === "escenario" ? `con ${mm} mm en 2 horas` : "con la lluvia prevista";
+    let medio;
+    if (!quemada(p)) medio = `<div>${chip("sin")}</div><p class="small">En esta quebrada casi no hubo incendio (${num(p.pct_quemado, 1)} % de su superficie quemada). La regla que usamos es para laderas quemadas, así que no calculamos el indicador.</p>`;
+    else medio = `<div class="prob">${chip(nv)}<span class="v">${pct(pr)}</span></div>
+      <p class="small muted">Probabilidad estimada de flujo de detritos ${cuando}.</p>
+      <p class="umbral">Pasa a <strong>atención</strong> con unos <strong>${num(umbralMm(PAR.umbrales[0], p, factor()), 0)} mm</strong> en 2 horas y a <strong>aviso de impacto</strong> con unos <strong>${num(umbralMm(PAR.umbrales[1], p, factor()), 0)} mm</strong>.</p>`;
+    box.innerHTML = `<div class="cab"><h2>${p.nombre}</h2><p class="small muted">${p.comuna ? p.comuna + " · " : ""}${num(p.area_km2, 1)} km²</p></div>
+      ${medio}
       <dl>
-        <dt>Área</dt><dd>${num(p.area_km2, 1)} km²</dd>
-        <dt>Altitud</dt><dd>${p.elev_min} a ${p.elev_max} m</dd>
-        <dt>Pendiente media</dt><dd>${num(p.pend_media, 1)}°</dd>
-        <dt>Con pendiente ≥ 23°</dt><dd>${num(100 * p.frac_pend23, 0)} %</dd>
         <dt>Superficie quemada</dt><dd>${num(p.pct_quemado, 1)} %</dd>
-        <dt>Quemada y empinada (PropHM23)</dt><dd>${num(100 * p.prop_hm23, 1)} %</dd>
-        <dt>Severidad media (dNBR)</dt><dd>${num(p.dnbr_medio, 2)}</dd>
-      </dl>`;
+        <dt>Quemada y con pendiente fuerte</dt><dd>${num(100 * p.prop_hm23, 1)} %</dd>
+        <dt>Pendiente media</dt><dd>${num(p.pend_media, 0)}°</dd>
+        <dt>Altura</dt><dd>${p.elev_min.toLocaleString("es-CL")} a ${p.elev_max.toLocaleString("es-CL")} m</dd>
+      </dl>
+      ${p.nota ? `<p class="small muted">${p.nota}</p>` : ""}
+      <details><summary>Datos técnicos</summary><div class="body"><p>PropHM23 ${num(p.prop_hm23, 3)} (parte quemada con severidad moderada o alta y pendiente de 23° o más) · dNBR medio ${num(p.dnbr_medio, 2)} · ${p.cauces && p.cauces.length ? "cauces: " + p.cauces.join(", ") : "sin cauce con nombre en OpenStreetMap"}${p.cota_salida ? " · salida a " + p.cota_salida.toLocaleString("es-CL") + " m" : ""}.</p></div></details>`;
+  }
+
+  function lista() {
+    const quem = Object.values(porId).filter(quemada).sort((a, b) => umbralMm(0.2, a, factor()) - umbralMm(0.2, b, factor()));
+    document.querySelector("#lista tbody").innerHTML = quem.map(p => { const { nv } = estado(p);
+      return `<tr data-id="${p.id}" tabindex="0"${p.id === sel ? ' class="actual"' : ""}><td class="l">${corto(p.nombre)}</td><td class="num">${num(umbralMm(0.2, p, factor()), 0)} mm</td><td class="num">${num(umbralMm(0.5, p, factor()), 0)} mm</td><td class="l">${chip(nv)}</td></tr>`; }).join("");
+    const sin = Object.values(porId).filter(p => !quemada(p)).map(p => corto(p.nombre)).sort();
+    document.getElementById("lista-sin").textContent = sin.join(" · ");
+    document.querySelector("#sin-quema summary").textContent = `${sin.length} quebradas sin quema relevante`;
+  }
+
+  function hoy() {
+    const el = document.getElementById("hoy"), quem = Object.values(porId).filter(quemada);
+    const c = { bajo: 0, atencion: 0, aviso: 0 }; quem.forEach(p => c[estado(p).nv]++);
+    const chips = `<div class="chips">${chip("aviso").replace(NIVEL.aviso, c.aviso + " en aviso")}${chip("atencion").replace(NIVEL.atencion, c.atencion + " en atención")}${chip("bajo").replace(NIVEL.bajo, c.bajo + " en nivel bajo")}<span class="small muted">de ${quem.length} quebradas con laderas quemadas</span></div>`;
+    let txt;
+    if (modo === "escenario") txt = `<p><strong>Escenario:</strong> ${mm} mm en 2 horas sobre toda la precordillera.</p>`;
+    else if (!ind) txt = `<p class="muted">El indicador de hoy no está disponible.</p>`;
+    else {
+      const lluvia = ind.mm24 < 1 ? "Sin lluvia relevante prevista para las próximas 24 horas en la precordillera" :
+        `Lluvia prevista en la precordillera: <strong>${num(ind.mm6, 1)} mm en las próximas 6 horas</strong> y ${num(ind.mm24, 1)} mm en 24 horas`;
+      const h7 = Object.values(ind.horas_lluvia_7d || {}); const llovio = h7.length ? Math.max(...h7) : 0;
+      const cerca = quem.length ? quem.reduce((a, b) => umbralMm(0.2, a, factor()) < umbralMm(0.2, b, factor()) ? a : b) : null;
+      txt = `<p>${lluvia} (el mayor entre AIFS y GFS).${llovio ? ` En la última semana llovió ${llovio} horas en Tobalaba o Pudahuel, lo que humedece el suelo.` : ""}${cerca ? ` La más cercana a un umbral, ${corto(cerca.nombre)}, pasa a atención con unos ${num(umbralMm(0.2, cerca, factor()), 0)} mm en 2 horas.` : ""}</p>
+        <p class="small muted">Actualizado el ${horaChile(ind.generado)}.</p>`;
+    }
+    el.innerHTML = chips + txt;
   }
 
   function repintar() {
-    if (capas.cuencas) capas.cuencas.setStyle(estiloCuenca);
-    if (seleccion != null && capas.cuencas) capas.cuencas.eachLayer(l => { if (l.feature.properties.id === seleccion) ficha(l.feature); });
-    resumen();
+    if (capas.cuencas) capas.cuencas.setStyle(estilo);
+    ficha(); lista(); hoy();
+    document.querySelector(".escenario").style.opacity = modo === "escenario" ? "1" : ".75";
   }
 
-  function resumen() {
-    const el = document.getElementById("resumen");
-    if (!capas.cuencas) return;
-    const cuenta = { bajo: 0, atencion: 0, aviso: 0, sin: 0 };
-    capas.cuencas.eachLayer(l => { cuenta[l.feature.properties._nivel || "sin"]++; });
-    const lluvia = indicador ? `Lluvia prevista en la precordillera: <strong>${num(indicador.mm6, 1)} mm en 6 h</strong>, ${num(indicador.mm24, 1)} mm en 24 h (${Object.keys(indicador.lluvia_prevista || {}).join(" y ") || "sin modelo"}). Horas con lluvia en 7 días: ${Object.entries(indicador.horas_lluvia_7d || {}).map(([k, v]) => k + " " + v).join(", ") || "0"}. Actualizado ${indicador.generado}.` : "Indicador no disponible todavía.";
-    el.innerHTML = `<span class="chip aviso"><i aria-hidden="true"></i>${cuenta.aviso} aviso</span><span class="chip atencion"><i aria-hidden="true"></i>${cuenta.atencion} atención</span><span class="chip bajo"><i aria-hidden="true"></i>${cuenta.bajo} bajo</span><span class="small">${modo === "slider" ? `<strong>Escenario:</strong> ${mmSlider} mm en 2 horas en todas las cuencas.` : lluvia}</span>`;
+  function elegir(id, acercar) {
+    if (!porId[id]) return; sel = id; repintar();
+    if (acercar && capaPorId[id]) mapa.fitBounds(capaPorId[id].getBounds(), { padding: [30, 30], maxZoom: 14 });
   }
 
-  async function geo(nombre) {
-    try { const r = await fetch("quebradas/" + nombre, { cache: "no-cache" }); if (!r.ok) throw new Error(r.status); return await r.json(); }
-    catch (e) { console.warn("capa no disponible:", nombre, e); return null; }
-  }
+  async function geo(n) { try { const r = await fetch("quebradas/" + n, { cache: "no-cache" }); if (!r.ok) throw 0; return await r.json(); } catch (e) { return null; } }
 
   (async function init() {
-    const [cuencas, cic, pend, cauces, rem, ind] = await Promise.all([geo("cuencas.geojson"), geo("cicatrices.geojson"), geo("pendiente.geojson"), geo("cauces.geojson"), geo("remociones.geojson"), geo("indicador.json")]);
-    if (ind) { indicador = ind; indicador.porId = {}; (ind.cuencas || []).forEach(c => indicador.porId[c.id] = c); if (ind.parametros) PAR = { ...PAR, ...ind.parametros }; }
+    const [cuencas, cic, pend, cauces, rem, indj] = await Promise.all(["cuencas.geojson", "cicatrices.geojson", "pendiente.geojson", "cauces.geojson", "remociones.geojson", "indicador.json"].map(geo));
+    if (indj) { ind = indj; ind.porId = {}; (ind.cuencas || []).forEach(c => ind.porId[c.id] = c); if (ind.parametros) PAR = { ...PAR, ...ind.parametros }; }
     if (pend) capas.pendiente = L.geoJSON(pend, { style: f => ({ stroke: false, fillColor: css(f.properties.clase === "15-25" ? "--pend1" : f.properties.clase === "25-35" ? "--pend2" : "--pend3"), fillOpacity: 0.55 }), interactive: false });
-    if (cic) capas.cicatrices = L.geoJSON(cic, { style: f => ({ stroke: false, fillColor: css(f.properties.severidad === "alta" ? "--quema-alta" : "--quema-mod"), fillOpacity: 0.6 }), interactive: false }).addTo(mapa);
-    if (cauces) capas.cauces = L.geoJSON(cauces, { style: f => ({ color: css("--cauce"), weight: f.properties.nombre ? 2 : 1, opacity: 0.8 }), onEachFeature: (f, l) => { if (f.properties.nombre) l.bindTooltip(f.properties.nombre, { sticky: true }); } }).addTo(mapa);
-    if (rem) capas.remociones = L.geoJSON(rem, { pointToLayer: (f, ll) => L.circleMarker(ll, { radius: 7, color: css("--surface"), weight: 2, fillColor: css("--remocion"), fillOpacity: 0.95 }),
-      onEachFeature: (f, l) => { const p = f.properties; l.bindPopup(`<strong>${p.lugar || p.NOMBRE || p.nombre || "Remoción en masa"}</strong><br>${p.fecha || p.FECHA || ""} ${p.tipo || p.TIPO || ""}<br><span style="color:var(--muted)">${p.nota || ""} Fuente: ${p.fuente || "SERNAGEOMIN"}</span>`); } }).addTo(mapa);
     if (cuencas) {
-      capas.cuencas = L.geoJSON(cuencas, { style: estiloCuenca, onEachFeature: (f, l) => {
-        l.bindTooltip(() => `${f.properties.nombre}: ${f.properties._p == null ? "sin indicador" : num(100 * f.properties._p, 0) + " %"}`, { sticky: true });
-        l.on("click", () => { seleccion = f.properties.id; repintar(); ficha(f);
-          if (window.innerWidth < 960) document.getElementById("ficha").scrollIntoView({ behavior: "smooth", block: "nearest" }); });
+      cuencas.features.forEach(f => porId[f.properties.id] = f.properties);
+      capas.cuencas = L.geoJSON(cuencas, { style: estilo, onEachFeature: (f, l) => {
+        capaPorId[f.properties.id] = l;
+        l.bindTooltip(() => { const { pr, nv } = estado(f.properties); return `${corto(f.properties.nombre)}: ${nv === "sin" ? "sin quema relevante" : NIVEL[nv] + ", " + pct(pr)}`; }, { sticky: true });
+        l.on("click", () => { elegir(f.properties.id, false); if (window.innerWidth < 980) document.getElementById("ficha").scrollIntoView({ behavior: "smooth", block: "nearest" }); });
       } }).addTo(mapa);
     }
-    // vista inicial: la precordillera habitada (San Carlos de Apoquindo, Peñalolén), no toda la cordillera
-    mapa.setView([-33.43, -70.52], 12);
-    repintar(); encima();
-    const pie = document.getElementById("pie");
-    if (cic && cic.pre) pie.insertAdjacentHTML("afterbegin", `Cicatrices: Sentinel-2 ${cic.pre.slice(0, 10)} a ${cic.post.slice(0, 10)}. `);
-    if (rem && rem.fuente) pie.insertAdjacentHTML("afterbegin", `Remociones: ${rem.fuente}. `);
+    if (cic) capas.cicatrices = L.geoJSON(cic, { style: f => ({ stroke: false, fillColor: css(f.properties.severidad === "alta" ? "--quema-alta" : "--quema-mod"), fillOpacity: 0.6 }), interactive: false }).addTo(mapa);
+    if (cauces) capas.cauces = L.geoJSON(cauces, { style: f => ({ color: css("--cauce"), weight: f.properties.nombre ? 2 : 1, opacity: 0.8 }), interactive: false }).addTo(mapa);
+    if (rem) capas.remociones = L.geoJSON(rem, { pointToLayer: (f, ll) => L.circleMarker(ll, { radius: 7, color: css("--surface"), weight: 2, fillColor: css("--remocion"), fillOpacity: 0.95 }),
+      onEachFeature: (f, l) => { const p = f.properties; l.bindPopup(`<strong>${p.lugar || p.NOMBRE || p.nombre || "Aluvión o deslizamiento"}</strong><br>${p.fecha || p.FECHA || ""} ${p.tipo || p.TIPO || ""}<br><span style="color:var(--muted)">${p.nota || ""} Fuente: ${p.fuente || "SERNAGEOMIN"}</span>`); } }).addTo(mapa);
+    // la quebrada con más ladera quemada y empinada queda elegida al entrar
+    const ini = Object.values(porId).sort((a, b) => (b.prop_hm23 || 0) - (a.prop_hm23 || 0))[0];
+    sel = ini ? ini.id : null;
+    repintar();
   })();
 
-  // --- controles ---
+  document.querySelectorAll('input[name="modo"]').forEach(i => i.addEventListener("change", () => { modo = i.value; repintar(); }));
   const sl = document.getElementById("mm"), val = document.getElementById("mm-val");
-  sl.addEventListener("input", () => { mmSlider = Number(sl.value); val.textContent = mmSlider + " mm"; modo = "slider"; repintar(); });
-  document.getElementById("volver").addEventListener("click", () => { modo = "previsto"; repintar(); });
+  sl.addEventListener("input", () => { mm = Number(sl.value); val.textContent = mm + " mm"; sl.setAttribute("aria-valuetext", mm + " milímetros en dos horas");
+    if (modo !== "escenario") { modo = "escenario"; document.querySelector('input[name="modo"][value="escenario"]').checked = true; } repintar(); });
+  document.addEventListener("click", e => { const tr = e.target.closest("#lista tr[data-id]"); if (tr) elegir(Number(tr.dataset.id), true); });
+  document.addEventListener("keydown", e => { if (e.key !== "Enter") return; const tr = e.target.closest && e.target.closest("#lista tr[data-id]"); if (tr) elegir(Number(tr.dataset.id), true); });
   const toggles = { "c-cuencas": "cuencas", "c-cicatrices": "cicatrices", "c-pendiente": "pendiente", "c-cauces": "cauces", "c-remociones": "remociones" };
-  Object.entries(toggles).forEach(([id, k]) => document.getElementById(id).addEventListener("change", (e) => {
-    if (!capas[k]) return;
-    if (e.target.checked) capas[k].addTo(mapa); else mapa.removeLayer(capas[k]);
-    encima();
+  Object.entries(toggles).forEach(([id, k]) => document.getElementById(id).addEventListener("change", e => {
+    if (!capas[k]) return; if (e.target.checked) capas[k].addTo(mapa); else mapa.removeLayer(capas[k]);
+    ["cicatrices", "cauces", "remociones"].forEach(c => { if (capas[c] && mapa.hasLayer(capas[c])) capas[c].bringToFront(); });
   }));
-  try { const t = localStorage.getItem("q-mm"); if (t) { sl.value = t; val.textContent = t + " mm"; } } catch (e) {}
-  sl.addEventListener("change", () => { try { localStorage.setItem("q-mm", sl.value); } catch (e) {} });
 })();
 </script>
+<!-- comun:js -->
+<script>
+(function(){
+  let pop=null, dueno=null;
+  function cerrar(){ if(pop){pop.remove();pop=null;} if(dueno){dueno.setAttribute('aria-expanded','false');dueno=null;} }
+  document.addEventListener('click',function(e){
+    const b=e.target.closest('.def');
+    if(!b){ if(pop && !e.target.closest('.def-pop')) cerrar(); return; }
+    e.preventDefault();
+    if(dueno===b){cerrar();return;}
+    cerrar(); dueno=b; b.setAttribute('aria-expanded','true');
+    pop=document.createElement('div'); pop.className='def-pop'; pop.setAttribute('role','tooltip'); pop.textContent=b.dataset.def;
+    document.body.appendChild(pop);
+    const r=b.getBoundingClientRect(), w=pop.offsetWidth;
+    let x=r.left+window.scrollX; x=Math.min(x, window.scrollX+document.documentElement.clientWidth-w-16); x=Math.max(16+window.scrollX,x);
+    pop.style.left=x+'px'; pop.style.top=(r.bottom+window.scrollY+6)+'px';
+  });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') cerrar(); });
+  window.addEventListener('resize',cerrar);
+})();
+</script>
+<!-- /comun:js -->
 </body>
 </html>

@@ -12,7 +12,10 @@ Regla (documentada en la página): modelo USGS post-incendio M1 (Staley et al. 2
   que la lluvia de 6 h cae concentrada en 2 h (supuesto conservador para convección de precordillera).
   KF (erodabilidad del suelo) no existe para Chile: se usa 0,25, valor típico de suelos coluviales; es un supuesto.
   Humedad antecedente: no está en el modelo USGS; se agrega un factor 1 + 0,02·(horas con lluvia en 7 días), tope 1,4.
-Niveles del indicador: bajo (P < 0,2), atención (0,2 a 0,5), aviso de impacto (P ≥ 0,5). Nunca "alerta": eso es de la DMC y SENAPRED."""
+Niveles del indicador: bajo (P < 0,2), atención (0,2 a 0,5), aviso de impacto (P ≥ 0,5). Nunca "alerta": eso es de la DMC y SENAPRED.
+Cuencas con menos de 1 % de su superficie quemada y empinada (PropHM23 < 0,01) quedan como "sin_quema": la regla es para
+laderas quemadas y en ellas el resultado lo dominaría el supuesto de suelo (KF), no la quema.
+Para cada cuenca quemada se publica además la lluvia en 2 h que la llevaría a atención y a aviso (inversa de la regla)."""
 import csv, datetime as dt, glob, json, os, re
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
@@ -23,6 +26,7 @@ KF = 0.25
 B0, B1, B2, B3 = -3.63, 0.41, 0.67, 0.70
 HORAS_CONCENTRACION = 2.0
 UMBRALES = (0.2, 0.5)
+PROP_MIN = 0.01
 RE_LLUVIA = re.compile(r"(?<![A-Z])(?:[-+]?)(?:SH|TS|FZ)?(?:RA|DZ|SN|GR|GS|PL|UP)(?![A-Z])")
 
 
@@ -34,6 +38,14 @@ def probabilidad(mm, horas, prop_hm23, dnbr, factor_ant=1.0):
     if math.isnan(x):
         return 0.0
     return 1.0 / (1.0 + math.exp(-x))
+
+
+def lluvia_umbral(p_obj, prop_hm23, dnbr, factor_ant=1.0, horas=HORAS_CONCENTRACION):
+    """mm en 'horas' que llevan la probabilidad a p_obj (inversa del modelo M1)."""
+    import math
+    coef = B1 * (prop_hm23 or 0.0) + B2 * (dnbr or 0.0) + B3 * KF
+    i = (math.log(p_obj / (1 - p_obj)) - B0) / coef
+    return max(0.0, i * horas / factor_ant)
 
 
 def nivel(p):
@@ -105,7 +117,11 @@ def main():
     pron = lluvia_pronosticada()
     ruta_salida = os.path.join(SITE_Q, "indicador.json")
     if not pron and os.path.exists(ruta_salida):
-        print("sin GRIB de modelos en este job: se conserva el indicador.json anterior"); return
+        previo = json.load(open(ruta_salida, encoding="utf-8"))
+        pron = previo.get("lluvia_prevista") or {}
+        if not pron:
+            print("sin GRIB de modelos ni lluvia previa: se conserva el indicador.json anterior"); return
+        print("sin GRIB en este job: se recalcula con la lluvia prevista del indicador anterior")
     h7 = horas_lluvia_7d()
     horas7 = max(h7.values()) if h7 else 0
     factor_ant = min(1.4, 1.0 + 0.02 * horas7)
@@ -118,17 +134,21 @@ def main():
         p6 = probabilidad(mm6, HORAS_CONCENTRACION, p["prop_hm23"], p["dnbr_medio"], factor_ant)
         p24 = probabilidad(mm24, HORAS_CONCENTRACION * 4, p["prop_hm23"], p["dnbr_medio"], factor_ant)
         p_ref = max(p6, p24)
-        filas.append({"id": p["id"], "nombre": p["nombre"], "p6": round(p6, 3), "p24": round(p24, 3), "p": round(p_ref, 3), "nivel": nivel(p_ref)})
+        quemada = (p.get("prop_hm23") or 0.0) >= PROP_MIN
+        filas.append({"id": p["id"], "nombre": p["nombre"], "p6": round(p6, 3), "p24": round(p24, 3), "p": round(p_ref, 3),
+                      "nivel": nivel(p_ref) if quemada else "sin_quema",
+                      "mm_atencion": round(lluvia_umbral(UMBRALES[0], p["prop_hm23"], p["dnbr_medio"], factor_ant), 1) if quemada else None,
+                      "mm_aviso": round(lluvia_umbral(UMBRALES[1], p["prop_hm23"], p["dnbr_medio"], factor_ant), 1) if quemada else None})
     salida = {
         "generado": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ"),
         "lluvia_prevista": pron, "mm6": mm6, "mm24": mm24, "horas_lluvia_7d": h7, "factor_antecedente": round(factor_ant, 2),
-        "parametros": {"KF": KF, "beta": [B0, B1, B2, B3], "horas_concentracion": HORAS_CONCENTRACION, "umbrales": UMBRALES},
+        "parametros": {"KF": KF, "beta": [B0, B1, B2, B3], "horas_concentracion": HORAS_CONCENTRACION, "umbrales": UMBRALES, "prop_min": PROP_MIN},
         "cuencas": filas,
     }
     os.makedirs(SITE_Q, exist_ok=True)
     with open(os.path.join(SITE_Q, "indicador.json"), "w", encoding="utf-8") as fh:
         json.dump(salida, fh, ensure_ascii=False, indent=0)
-    n = {k: sum(1 for r in filas if r["nivel"] == k) for k in ("bajo", "atencion", "aviso")}
+    n = {k: sum(1 for r in filas if r["nivel"] == k) for k in ("bajo", "atencion", "aviso", "sin_quema")}
     print(f"indicador: lluvia prevista 6 h {mm6} mm, 24 h {mm24} mm ({', '.join(pron) or 'sin modelos'}); horas de lluvia 7 d {h7}; cuencas {n}")
 
 

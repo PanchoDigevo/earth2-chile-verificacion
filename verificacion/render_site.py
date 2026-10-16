@@ -1,22 +1,27 @@
-"""Genera ../site/index.html a partir de data/verif_puntos.csv (pares pronóstico-observación acumulados).
+"""Genera ../site/index.html (Resumen) y ../site/zona.html (Tu zona) en cada corrida del pipeline.
 
-Uso: python render_site.py            -> regenera el sitio con lo que hay en data/
+Uso: python render_site.py            -> regenera con lo que hay en data/ y en historico/data/resultados/
      desde verify.py: render_site(pts)
 
-Compara tres modelos globales contra las mismas estaciones: AIFS (IA, ECMWF), IFS (físico, ECMWF) y GFS (físico, NOAA).
-Diseño: una sola columna, resumen antes del detalle, mapa de Chile en tres franjas (norte, centro, sur) con selector
-de modelo, tablas con barras de error y semáforo de tres niveles con texto (nunca solo color). Modo claro y oscuro.
-Lenguaje: "aviso"/"pronóstico de impacto", nunca "alerta"; las alertas oficiales son de la DMC y SENAPRED."""
+Fuentes de las cifras:
+  - Consolidadas (lo que se presenta como resultado): historico/data/resultados/*.csv, año 2026, pronóstico a 24 h,
+    error sin corregir y corregido por estación (corrección aprendida solo con 2025).
+  - Últimos días (siempre rotulado "preliminar" hasta juntar 30 días): data/verif_puntos.csv de este pipeline.
+  - Quebradas hoy: site/quebradas/indicador.json + cuencas.geojson.
+Diseño: docs/brief_sitio.md. Lenguaje de aviso/indicador, nunca "alerta"."""
 import json, math, os, re
 import pandas as pd
-from comun import CSS_NAV, nav
+from comun import (CSS_NAV, CSS_DEF, JS_DEF, EVENTOS, GLOSARIO, aviso, d, entero, fecha, hora_chile, nav, num, pie, signo)
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 SITE = os.path.join(AQUI, "..", "site")
 CONTORNO = os.path.join(AQUI, "..", "docs", "chile_natural_earth_10m.json")
-REPO = "https://github.com/PanchoDigevo/earth2-chile-verificacion"
+NARRATIVA = os.path.join(AQUI, "..", "docs", "narrativa_sitio.md")
+RES = os.path.join(AQUI, "..", "historico", "data", "resultados")
+HIST_INFO = os.path.join(AQUI, "..", "historico", "estaciones.csv")
+QUEB = os.path.join(SITE, "quebradas")
 
-# Nombre corto y región para cada aeródromo (el METAR trae nombres en inglés y con abreviaturas).
+# Nombre corto y región de cada aeródromo (el METAR trae nombres en inglés y con abreviaturas).
 ESTACIONES = {
     "SCAR": ("Arica", "Arica y Parinacota"), "SCDA": ("Iquique", "Tarapacá"), "SCCF": ("Calama", "Antofagasta"),
     "SCFA": ("Antofagasta", "Antofagasta"), "SCAT": ("Caldera", "Atacama"), "SCSE": ("La Serena", "Coquimbo"),
@@ -33,39 +38,27 @@ ESTACIONES = {
 MODELOS = {"AIFS": ("AIFS", "Inteligencia artificial", "ECMWF"), "IFS": ("IFS", "Modelo físico", "ECMWF"), "GFS": ("GFS", "Modelo físico", "NOAA")}
 ORDEN = list(MODELOS)
 
-# Umbrales del semáforo (error medio absoluto). Temperatura en °C, viento en m/s.
+# Una sola escala para todo el sitio (tarjetas, mapa, tablas y leyenda). Error medio de temperatura en °C.
 UMBRAL_T = (1.5, 3.0)
-UMBRAL_BRECHA = 2.5     # "la brecha": estaciones con error medio de temperatura sobre este valor
-MIN_PARES = 30          # por debajo de esto una estación se muestra como "preliminar", sin cifras
-HIST_EST = os.path.join(AQUI, "..", "historico", "data", "resultados", "estaciones.csv")
 UMBRAL_W = (1.5, 3.0)
+MIN_PARES = 30              # bajo esto, una cifra por estación no se publica
+DIAS_CONSOLIDADO = 30       # el bloque de "últimos días" deja de ser preliminar al cumplir esto
 NIVELES = {"bueno": "Bueno", "medio": "Aceptable", "alto": "Alto"}
 
+# Regla del indicador de quebradas (misma que quebradas/indicador.py), para calcular umbrales aquí.
+B0, B1, B2, B3, KF = -3.63, 0.41, 0.67, 0.70, 0.25
 
-def nivel(v, umbral):
-    if pd.isna(v):
+
+def nivel(v, umbral=UMBRAL_T):
+    if v is None or (isinstance(v, float) and math.isnan(v)):
         return "sin"
     return "bueno" if v < umbral[0] else "medio" if v < umbral[1] else "alto"
 
 
-def num(v, dec=1, unidad=""):
-    """Número con coma decimal (convención chilena) y signo explícito solo si se pide."""
-    if v is None or (isinstance(v, float) and math.isnan(v)):
-        return "–"
-    s = f"{v:,.{dec}f}".replace(",", "X").replace(".", ",").replace("X", ".")
-    return s + unidad
-
-
-def signo(v, dec=1, unidad=""):
-    if v is None or (isinstance(v, float) and math.isnan(v)):
-        return "–"
-    return ("+" if v > 0 else "") + num(v, dec, unidad)
-
-
-def nombre(icao, fallback):
+def nombre(icao, fallback=""):
     if icao in ESTACIONES:
         return ESTACIONES[icao]
-    n = str(fallback).split(",")[0].replace(" Arpt", "").replace(" Intl", "")
+    n = str(fallback or icao).split(",")[0].replace(" Arpt", "").replace(" Intl", "")
     return (n, "")
 
 
@@ -78,16 +71,17 @@ def chip(nv):
 
 
 def barra(v, vmax, nv):
-    pct = 0 if pd.isna(v) else max(2, min(100, 100 * v / vmax))
+    pct = 0 if v is None or (isinstance(v, float) and math.isnan(v)) else max(2, min(100, 100 * v / vmax))
     return f'<span class="bar {nv}" aria-hidden="true"><i style="width:{pct:.0f}%"></i></span>'
 
 
-NARRATIVA = os.path.join(AQUI, "..", "docs", "narrativa_sitio.md")
+def etiqueta_modelo(m):
+    corto, tipo, centro = MODELOS[m]
+    return f"{corto} ({'IA' if m == 'AIFS' else 'físico'}, {centro})"
 
 
 def narrativa():
-    """Lee docs/narrativa_sitio.md (fuente de verdad del mensaje público). Devuelve (html, aviso_final)."""
-    import re
+    """docs/narrativa_sitio.md -> (html, aviso_final). Es la fuente de verdad del mensaje de fondo."""
     try:
         texto = open(NARRATIVA, encoding="utf-8").read()
     except Exception:
@@ -95,7 +89,8 @@ def narrativa():
     if "\n---\n" in texto:
         texto = texto.split("\n---\n", 1)[1]
     inline = lambda t: re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", t.strip())
-    bloques, aviso, lista = [], "", []
+    bloques, aviso_final, lista = [], "", []
+
     def cierra_lista():
         nonlocal lista
         if lista:
@@ -105,56 +100,114 @@ def narrativa():
         if not parrafo:
             continue
         if parrafo.startswith("## "):
-            cierra_lista(); bloques.append(f"<h2>{inline(parrafo[3:])}</h2>")
+            cierra_lista(); bloques.append(f"<h3>{inline(parrafo[3:])}</h3>")
         elif re.match(r"^\d+\.\s", parrafo):
             for linea in re.split(r"\n(?=\d+\.\s)", parrafo):
                 lista.append(re.sub(r"^\d+\.\s+", "", linea.strip()))
         elif parrafo.startswith("*") and parrafo.endswith("*") and not parrafo.startswith("**"):
-            cierra_lista(); aviso = inline(parrafo.strip("*"))
+            cierra_lista(); aviso_final = inline(parrafo.strip("*"))
         else:
             cierra_lista(); bloques.append(f"<p>{inline(' '.join(parrafo.splitlines()))}</p>")
     cierra_lista()
-    return "".join(bloques), aviso
+    return "".join(bloques), aviso_final
 
 
-HIST_INFO = os.path.join(AQUI, "..", "historico", "estaciones.csv")
-
-
-def estaciones_historico():
-    """Por modelo, el error por estación a 24 h del histórico 2025-2026 (solo estaciones con >= MIN_PARES).
-    Devuelve {modelo: DataFrame con las mismas columnas que bye_all} o None si el histórico no existe."""
+# ---------- datos consolidados ----------
+def leer(nombre_csv):
     try:
-        h = pd.read_csv(HIST_EST); est = pd.read_csv(HIST_INFO)
+        return pd.read_csv(os.path.join(RES, nombre_csv))
+    except Exception:
+        return pd.DataFrame()
+
+
+def datos_estaciones():
+    """Por aeródromo y modelo: error medio a 24 h en 2026 sin corregir (g) y corregido (c), comparaciones (n) y sesgo
+    del período 2025-2026 (s). Solo celdas con al menos MIN_PARES comparaciones. Ordenado de norte a sur."""
+    ce, es = leer("correccion_estaciones.csv"), leer("estaciones.csv")
+    try:
+        info = pd.read_csv(HIST_INFO)
+    except Exception:
+        return []
+    if ce.empty:
+        return []
+    ce, es = ce[ce.lead_h == 24], (es[es.lead_h == 24] if not es.empty else es)
+    out = []
+    for r in info.itertuples(index=False):
+        m = {}
+        for mod in ORDEN:
+            x = ce[(ce.modelo == mod) & (ce.icao == r.icao)]
+            if x.empty or int(x.n.iloc[0]) < MIN_PARES:
+                continue
+            s = es[(es.modelo == mod) & (es.icao == r.icao)] if not es.empty else es
+            m[mod] = {"g": round(float(x.mae_global.iloc[0]), 2), "c": round(float(x.mae_corregido.iloc[0]), 2),
+                      "n": int(x.n.iloc[0]), "s": round(float(s.sesgo.iloc[0]), 2) if len(s) else None}
+        if not m:
+            continue
+        corto, region = nombre(r.icao, r.nombre)
+        out.append({"icao": r.icao, "nombre": corto, "region": region, "elev": None if pd.isna(r.elev) else int(float(r.elev)),
+                    "lat": float(r.lat), "lon": float(r.lon), "m": m})
+    return sorted(out, key=lambda e: -e["lat"])
+
+
+def cifras_portada(est):
+    """Las tres cifras del Resumen, todas consolidadas (2026, 24 h)."""
+    cp = leer("correccion_plazos.csv")
+    out = {}
+    if not cp.empty:
+        c24 = cp[cp.lead_h == 24].set_index("modelo")
+        if "AIFS" in c24.index:
+            out["aifs_g"], out["aifs_c"], out["aifs_n"] = float(c24.loc["AIFS", "mae_global"]), float(c24.loc["AIFS", "mae_corregido"]), int(c24.loc["AIFS", "n"])
+        mejoras = {m: 100 * (1 - c24.loc[m, "mae_corregido"] / c24.loc[m, "mae_global"]) for m in ORDEN if m in c24.index}
+        if mejoras:
+            out["mejora_min"], out["mejora_max"] = min(mejoras.values()), max(mejoras.values())
+            out["mejoras"] = mejoras
+            out["g"] = {m: float(c24.loc[m, "mae_global"]) for m in mejoras}
+    # ejemplo: el aeródromo donde la corrección más reduce el error de AIFS
+    cands = [e for e in est if "AIFS" in e["m"]]
+    if cands:
+        ej = max(cands, key=lambda e: e["m"]["AIFS"]["g"] - e["m"]["AIFS"]["c"])
+        out["ejemplo"] = ej
+    return out
+
+
+def eventos_destacado():
+    """La frase de la puerta 'Eventos': el evento con más casos de lluvia y lo que marcó AIFS 72 h antes."""
+    er = leer("eventos_resumen.csv")
+    if er.empty:
+        return None
+    x = er[(er.modelo == "AIFS") & (er.lead_h == 72)].copy()
+    x["con_lluvia"] = x.aciertos + x.fallas
+    x = x[x.con_lluvia > 0]
+    if x.empty:
+        return None
+    r = x.sort_values("con_lluvia", ascending=False).iloc[0]
+    return {"evento": r.evento, "aciertos": int(r.aciertos), "total": int(r.con_lluvia)}
+
+
+def quebradas_hoy():
+    """Resumen del indicador de quebradas: niveles de las cuencas con quema relevante, lluvia prevista y umbrales."""
+    try:
+        ind = json.load(open(os.path.join(QUEB, "indicador.json"), encoding="utf-8"))
+        cu = {f["properties"]["id"]: f["properties"] for f in json.load(open(os.path.join(QUEB, "cuencas.geojson"), encoding="utf-8"))["features"]}
     except Exception:
         return None
-    h = h[(h.lead_h == 24) & (h.n >= MIN_PARES)].merge(est, on="icao", how="left")
-    out = {}
-    for m, g in h.groupby("modelo"):
-        if len(g) < 5:
+    prop_min = (ind.get("parametros") or {}).get("prop_min", 0.01)
+    factor = ind.get("factor_antecedente", 1.0) or 1.0
+    quemadas = []
+    for c in ind.get("cuencas", []):
+        p = cu.get(c["id"], {})
+        if (p.get("prop_hm23") or 0) < prop_min:
             continue
-        out[m] = pd.DataFrame({"modelo": m, "icao": g.icao, "name": g.nombre, "lat": g.lat, "lon": g.lon, "elev": g.elev,
-                               "n": g.n, "t_bias": g.sesgo, "t_mae": g["mae"], "w_mae": float("nan")}).sort_values("t_mae", ascending=False)
-    return out or None
+        coef = B1 * p["prop_hm23"] + B2 * (p.get("dnbr_medio") or 0) + B3 * KF
+        mm_at = (math.log(0.2 / 0.8) - B0) / coef * 2 / factor
+        quemadas.append({"nombre": c["nombre"], "nivel": c["nivel"] if c["nivel"] != "sin_quema" else "bajo", "mm_atencion": mm_at})
+    cuenta = {k: sum(1 for q in quemadas if q["nivel"] == k) for k in ("bajo", "atencion", "aviso")}
+    mas_cerca = min(quemadas, key=lambda q: q["mm_atencion"]) if quemadas else None
+    return {"generado": ind.get("generado"), "mm6": ind.get("mm6", 0), "mm24": ind.get("mm24", 0), "cuenta": cuenta,
+            "n_quemadas": len(quemadas), "n_total": len(ind.get("cuencas", [])), "mas_cerca": mas_cerca}
 
 
-def brecha_fuente(bye):
-    """Estaciones con su error a 24 h para la cifra de portada. Prefiere el histórico 2025-2026 (AIFS, 24 h, >= MIN_PARES);
-    si no existe, usa la verificación diaria. Devuelve (tabla icao/n/t_mae, texto de fuente, preliminar)."""
-    try:
-        h = pd.read_csv(HIST_EST)
-        h = h[(h.modelo == "AIFS") & (h.lead_h == 24) & (h.n >= MIN_PARES)].rename(columns={"mae": "t_mae"})
-        if len(h) >= 5:
-            return h[["icao", "n", "t_mae"]].reset_index(drop=True), "histórico 2025–2026 (AIFS a 24 h)", False
-    except Exception:
-        pass
-    d = bye[["icao", "n", "t_mae"]].reset_index(drop=True)
-    ok = d[d.n >= MIN_PARES]
-    if len(ok) >= 5:
-        return ok, "verificación diaria (AIFS, todos los plazos)", False
-    return d, "verificación diaria (AIFS, todos los plazos)", True
-
-
-# ---------- mapa ----------
+# ---------- mapa de aeródromos (SVG en tres franjas, coloreado con JavaScript) ----------
 K = 20.0            # px por grado de latitud
 LAT_TOP = -17.0
 CX = 0.80           # cos(37°): compresión de la longitud a la latitud media de Chile
@@ -174,64 +227,136 @@ def contorno_path():
     for anillo in anillos:
         if len(anillo) < 5:
             continue
-        pts = [proj(lon, lat) for lon, lat in anillo]
-        partes.append("M" + "L".join(f"{x:.1f} {y:.1f}" for x, y in pts) + "Z")
+        partes.append("M" + "L".join(f"{x:.1f} {y:.1f}" for x, y in (proj(lon, lat) for lon, lat in anillo)) + "Z")
     return "".join(partes)
 
 
-def mapa(bye, modelo):
-    """Tres franjas (norte, centro, sur) con las estaciones coloreadas por el error medio de temperatura de un modelo.
-    El contorno de Chile se define una sola vez en la página (defs_contorno) y aquí se referencia con <use>."""
-    svgs = []
-    corto_m = MODELOS[modelo][0]
-    for titulo, la0, la1, lo0, lo1 in FRANJAS:
-        x0, y0 = proj(lo0, la0)
-        x1, y1 = proj(lo1, la1)
-        w, h = x1 - x0, y1 - y0
-        puntos = []
-        for r in bye.itertuples(index=False):
-            if not (la1 <= r.lat <= la0 and lo0 <= r.lon <= lo1):
-                continue
-            x, y = proj(r.lon, r.lat)
-            prelim = int(r.n) < MIN_PARES
-            nv = "sin" if prelim else nivel(r.t_mae, UMBRAL_T)
-            corto, _ = nombre(r.icao, r.name)
-            etiqueta = f'<text x="{x + 7:.1f}" y="{y + 3.5:.1f}">{r.icao}</text>' if nv == "alto" else ""
-            detalle = (f"preliminar: {int(r.n)} pares, se publica desde {MIN_PARES}" if prelim else
-                       f"error medio de temperatura {num(r.t_mae, 1, ' °C')}, viento {num(r.w_mae, 1, ' m/s')}, {int(r.n)} pares")
-            puntos.append(f'<g class="est {nv}"><title>{corto} ({r.icao}), {corto_m}: {detalle}</title>'
-                          f'<circle cx="{x:.1f}" cy="{y:.1f}" r="4.5"/>{etiqueta}</g>')
-        svgs.append(f'<figure class="franja"><svg viewBox="{x0:.1f} {y0:.1f} {w:.1f} {h:.1f}" width="{w:.0f}" height="{h:.0f}" '
-                    f'role="img" aria-label="Mapa de la zona {titulo.lower()} de Chile con las estaciones, modelo {corto_m}">'
-                    f'<use href="#chile" class="tierra"/>{"".join(puntos)}</svg><figcaption>{titulo}</figcaption></figure>')
-    return f'<div class="mapa mapa-modelo" data-modelo="{modelo}">' + "".join(svgs) + "</div>"
-
-
-def defs_contorno():
+def mapa_svg(est):
+    """Las tres franjas con un punto por aeródromo. Cada punto es un botón (data-icao); el color lo pone el JS."""
     path = contorno_path()
     if not path:
         return ""
-    return f'<svg width="0" height="0" aria-hidden="true" style="position:absolute"><defs><path id="chile" d="{path}"/></defs></svg>'
+    figs = []
+    for titulo, la0, la1, lo0, lo1 in FRANJAS:
+        x0, y0 = proj(lo0, la0); x1, y1 = proj(lo1, la1)
+        w, h = x1 - x0, y1 - y0
+        pts = []
+        for e in est:
+            if not (la1 <= e["lat"] <= la0 and lo0 <= e["lon"] <= lo1):
+                continue
+            x, y = proj(e["lon"], e["lat"])
+            pts.append(f'<g class="est sin" data-icao="{e["icao"]}" tabindex="0" role="button" aria-label="{e["nombre"]}">'
+                       f'<title>{e["nombre"]}</title><circle class="hit" cx="{x:.1f}" cy="{y:.1f}" r="11"/>'
+                       f'<circle class="pt" cx="{x:.1f}" cy="{y:.1f}" r="5"/>'
+                       f'<text class="etq" x="{x + 9:.1f}" y="{y + 4:.1f}">{e["nombre"].split(" (")[0]}</text></g>')
+        figs.append(f'<figure class="franja"><svg viewBox="{x0:.1f} {y0:.1f} {w:.1f} {h:.1f}" width="{w:.0f}" height="{h:.0f}" '
+                    f'role="group" aria-label="Zona {titulo.lower()}"><use href="#chile" class="tierra"/>{"".join(pts)}</svg>'
+                    f'<figcaption>{titulo}</figcaption></figure>')
+    return (f'<svg width="0" height="0" aria-hidden="true" style="position:absolute"><defs><path id="chile" d="{path}"/></defs></svg>'
+            f'<div class="mapa">{"".join(figs)}</div>')
 
 
-def mapas(bye_m):
-    """Selector de modelo (botones de radio, sin JavaScript) y un mapa por modelo; se muestra el elegido."""
-    defs = defs_contorno()
-    if not defs:
-        return ""
-    presentes = [m for m in ORDEN if m in bye_m]
-    botones = "".join(f'<label><input type="radio" name="mapa" id="mapa-{m}" value="{m}"{" checked" if i == 0 else ""}>'
-                      f'{MODELOS[m][0]} <span class="muted">{MODELOS[m][1].split()[0].lower() if m != "AIFS" else "IA"}</span></label>'
-                      for i, m in enumerate(presentes))
-    cuerpo = "".join(mapa(bye_m[m], m) for m in presentes)
-    return (f'<div class="mapas">{defs}<fieldset class="selector"><legend class="eyebrow">Modelo</legend>{botones}</fieldset>'
-            f'{cuerpo}</div>')
+def leyenda():
+    return (f'<div class="leyenda"><span class="item">{chip("bueno")} menos de {num(UMBRAL_T[0])} °C</span>'
+            f'<span class="item">{chip("medio")} {num(UMBRAL_T[0])} a {num(UMBRAL_T[1])} °C</span>'
+            f'<span class="item">{chip("alto")} {num(UMBRAL_T[1])} °C o más</span></div>')
 
 
-# ---------- página ----------
+# JavaScript del mapa y la ficha, común a Resumen y Tu zona. Recibe los datos en window.ZONA.
+JS_MAPA = r"""
+<script>
+(function(){
+  const Z = window.ZONA, E = Z.est, porId = {};
+  E.forEach(e => porId[e.icao] = e);
+  const st = { modelo: Z.modelo || 'AIFS', estado: 'g', sel: null };
+  const fmt = (v, d=1) => v == null ? '–' : Number(v).toLocaleString('es-CL', {minimumFractionDigits:d, maximumFractionDigits:d}).replace('-', '−');
+  const niv = v => v == null ? 'sin' : v < 1.5 ? 'bueno' : v < 3 ? 'medio' : 'alto';
+  const NIV = {bueno:'Bueno', medio:'Aceptable', alto:'Alto', sin:'Sin datos'};
+  const chip = n => `<span class="chip ${n}"><i aria-hidden="true"></i>${NIV[n]}</span>`;
+  const val = (e, est) => { const x = e.m[st.modelo]; return x ? x[est || st.estado] : null; };
+  const MOD = {AIFS:'la IA de ECMWF (AIFS)', IFS:'el modelo físico de ECMWF (IFS)', GFS:'el modelo físico de NOAA (GFS)'};
+
+  function pintar(){
+    const peores = E.filter(e => val(e) != null).sort((a,b) => val(b) - val(a)).slice(0, 3).map(e => e.icao);
+    document.querySelectorAll('.est').forEach(g => {
+      const e = porId[g.dataset.icao]; if (!e) return;
+      const v = val(e), sel = e.icao === st.sel;
+      g.setAttribute('class', 'est ' + niv(v) + (sel ? ' sel' : '') + (sel || peores.includes(e.icao) ? ' con-etq' : ''));
+      g.querySelector('title').textContent = e.nombre + ': ' + (v == null ? 'sin datos suficientes' : fmt(v) + ' °C de error medio');
+      g.setAttribute('aria-label', e.nombre + ', ' + (v == null ? 'sin datos' : fmt(v) + ' grados de error medio'));
+    });
+    if (Z.ficha) { ficha(); tabla(); }
+    document.querySelectorAll('[data-estado-txt]').forEach(el => el.textContent = st.estado === 'g' ? 'sin corregir' : 'corregido por estación');
+  }
+
+  function ficha(){
+    const box = document.getElementById('ficha'); const e = porId[st.sel]; if (!box || !e) return;
+    const x = e.m[st.modelo];
+    let cuerpo;
+    if (!x) cuerpo = `<p class="muted">Sin datos suficientes de ${st.modelo} en este aeródromo.</p>`;
+    else {
+      const mej = 100 * (1 - x.c / x.g);
+      const frase_c = x.c < x.g ? `Con la corrección por estación queda en <strong>${fmt(x.c)} °C</strong>: ${fmt(mej, 0)} % menos.`
+                                : `Aquí la corrección no ayuda: queda en ${fmt(x.c)} °C.`;
+      const sesgo = (x.s != null && Math.abs(x.s) >= 0.5) ? ` Tiende a pronosticar ${fmt(Math.abs(x.s))} °C más ${x.s < 0 ? 'frío' : 'calor'} de lo que ocurre.` : '';
+      cuerpo = `<div class="antes-despues"><div><span class="lbl">Sin corregir</span><span class="v">${fmt(x.g)}<small>°C</small></span>${chip(niv(x.g))}</div>
+        <span class="flecha" aria-hidden="true">→</span>
+        <div><span class="lbl">Corregido</span><span class="v">${fmt(x.c)}<small>°C</small></span>${chip(niv(x.c))}</div></div>
+        <p>En ${e.nombre}, ${MOD[st.modelo]} se equivoca en promedio <strong>${fmt(x.g)} °C</strong> al pronosticar la temperatura de mañana. ${frase_c}${sesgo}</p>`;
+    }
+    const filas = ['AIFS','IFS','GFS'].map(m => { const y = e.m[m]; return `<tr${m === st.modelo ? ' class="actual"' : ''}><td class="l">${m}</td><td class="num">${y ? fmt(y.g) + ' °C' : '–'}</td><td class="num">${y ? fmt(y.c) + ' °C' : '–'}</td></tr>`; }).join('');
+    const n = x ? x.n : 0;
+    box.innerHTML = `<div class="ficha-cab"><h2>${e.nombre}</h2><p class="muted small">${e.region}${e.elev != null ? ' · ' + e.elev.toLocaleString('es-CL') + ' m de altura' : ''}</p></div>
+      ${cuerpo}
+      <table class="mini"><thead><tr><th class="l">Modelo</th><th>Sin corregir</th><th>Corregido</th></tr></thead><tbody>${filas}</tbody></table>
+      <p class="muted small">Error medio de la temperatura pronosticada con 24 h de anticipación, ${n.toLocaleString('es-CL')} comparaciones en 2026. <a href="#${e.icao}">Enlace a esta estación</a></p>`;
+  }
+
+  function tabla(){
+    const tb = document.querySelector('#tabla-est tbody'); if (!tb) return;
+    const filas = E.filter(e => e.m[st.modelo]).sort((a,b) => val(b,'g') - val(a,'g'));
+    tb.innerHTML = filas.map(e => { const x = e.m[st.modelo], mej = 100 * (1 - x.c / x.g);
+      return `<tr data-icao="${e.icao}" tabindex="0"${e.icao === st.sel ? ' class="actual"' : ''}><td class="l">${e.nombre}<span class="region">${e.region}</span></td>
+        <td class="num">${fmt(x.g)} °C</td><td class="num">${fmt(x.c)} °C</td><td class="num">${x.c < x.g ? '−' + fmt(mej, 0) : '+' + fmt(-mej, 0)} %</td><td>${chip(niv(val(e)))}</td></tr>`; }).join('');
+    const cab = document.getElementById('tabla-modelo'); if (cab) cab.textContent = st.modelo;
+  }
+
+  function elegir(icao, desplazar){
+    if (!porId[icao]) return;
+    if (Z.navegar) { location.href = 'zona.html#' + icao; return; }
+    st.sel = icao; pintar();
+    const s = document.getElementById('estacion'); if (s) s.value = icao;
+    if (location.hash.slice(1) !== icao) history.replaceState(null, '', '#' + icao);
+    if (desplazar) document.getElementById('ficha').scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+
+  document.addEventListener('click', ev => {
+    const g = ev.target.closest('.est'); if (g) { elegir(g.dataset.icao, true); return; }
+    const tr = ev.target.closest('#tabla-est tr[data-icao]'); if (tr) elegir(tr.dataset.icao, true);
+  });
+  document.addEventListener('keydown', ev => {
+    if (ev.key !== 'Enter' && ev.key !== ' ') return;
+    const g = ev.target.closest && (ev.target.closest('.est') || ev.target.closest('#tabla-est tr[data-icao]'));
+    if (g) { ev.preventDefault(); elegir(g.dataset.icao, true); }
+  });
+  document.querySelectorAll('input[name="modelo"]').forEach(i => i.addEventListener('change', () => { st.modelo = i.value; pintar(); }));
+  document.querySelectorAll('input[name="estado"]').forEach(i => i.addEventListener('change', () => { st.estado = i.value; pintar(); }));
+  const s = document.getElementById('estacion'); if (s) s.addEventListener('change', () => elegir(s.value, false));
+  window.addEventListener('hashchange', () => elegir(location.hash.slice(1), false));
+
+  const h = location.hash.slice(1);
+  st.sel = porId[h] ? h : (Z.inicial || (E[0] && E[0].icao));
+  if (s) s.value = st.sel;
+  pintar();
+})();
+</script>
+"""
+
+
+# ---------- estilos ----------
 CSS = """
-/* Diseño: columna única de 1080 px, resumen antes del detalle; franjas de mapa + tablas con barras.
-   Neutros fríos con leve sesgo azul (cielo y hielo), acento verde glaciar; semáforo fijo con texto. */
+/* Una columna de 1080 px; lo consolidado antes que lo preliminar; cada número con su explicación al lado.
+   Neutros fríos con leve sesgo azul (cielo y hielo), acento verde glaciar; semáforo fijo y siempre con texto. */
 :root{
   --bg:#f4f6f8; --surface:#ffffff; --fg:#17212b; --muted:#5a6977; --line:#d8dfe6; --line-soft:#e9eef2;
   --accent:#0e7c86; --accent-soft:#d7eef0; --tierra:#e3e9ee; --costa:#9fb0bd;
@@ -251,133 +376,351 @@ CSS = """
   --bueno:#2fbf2f; --medio:#e0a428; --alto:#ee6a6a; --sin:#7d8c99; color-scheme:dark}
 *{box-sizing:border-box}
 html,body{margin:0}
-body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:17px;line-height:1.5;
-  -webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
 a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
-a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
-.wrap{max-width:1080px;margin:0 auto;padding-inline:16px;padding-block:28px 56px;display:grid;gap:28px}
-@media (min-width:720px){.wrap{padding-inline:28px;padding-block:40px 72px;gap:36px}}
+a:focus-visible,button:focus-visible,summary:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:16px;padding-block:24px 56px;display:grid;gap:32px}
+@media (min-width:720px){.wrap{padding-inline:28px;padding-block:40px 72px;gap:44px}}
 h1,h2,h3{font-family:var(--font-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
-h1{font-size:clamp(26px,3.6vw,38px);line-height:1.15;font-weight:600;max-width:24ch}
-h2{font-size:20px;font-weight:600}
-h3{font-size:16px;font-weight:600}
+h1{font-size:clamp(26px,3.8vw,40px);line-height:1.15;font-weight:600;max-width:26ch}
+h2{font-size:22px;font-weight:600}
+h3{font-size:17px;font-weight:600}
 p{margin:0;max-width:65ch}
 .eyebrow{font-family:var(--font-display);font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600}
 .muted{color:var(--muted)}
-.nav{font-size:15px;max-width:none}
 .small{font-size:14.5px}
 header{display:grid;gap:12px}
-header .lead{font-size:18px;color:var(--muted);max-width:62ch}
+header .lead{font-size:19px;color:var(--muted);max-width:60ch}
 .aviso{border-left:3px solid var(--accent);padding:10px 14px;background:var(--accent-soft);border-radius:0 var(--radius) var(--radius) 0;max-width:72ch}
 .aviso p{max-width:none}
-.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-@media (min-width:600px){.tiles{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media (min-width:960px){.tiles{grid-template-columns:repeat(6,minmax(0,1fr))}}
-.tile{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;display:grid;gap:4px;align-content:start}
-.tile .label{font-size:13px;color:var(--muted)}
-.tile .value{font-family:var(--font-display);font-size:30px;font-weight:600;line-height:1.1}
-.tile .value small{font-size:15px;font-weight:500;color:var(--muted);margin-left:2px}
-.tile .value.fecha{font-size:22px;line-height:1.2}
-.tile.hero{grid-column:span 2;border-color:var(--accent)}
-.tile.hero .value{font-size:44px}
-.tile .foot{font-size:13px;color:var(--muted)}
 section{display:grid;gap:14px}
-.sec-head{display:grid;gap:4px}
-.dos{display:grid;gap:24px}
-@media (min-width:860px){.dos{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:start}}
+.sec-head{display:grid;gap:6px}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;display:grid;gap:12px;min-width:0}
-.leyenda{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:14px;color:var(--muted);align-items:center}
-.leyenda span.item{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
-.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:2px 9px 2px 7px;border-radius:999px;
-  border:1px solid var(--line);background:var(--bg);color:var(--fg);white-space:nowrap}
-.chip i{width:8px;height:8px;border-radius:50%;background:var(--sin)}
-.chip.bueno i{background:var(--bueno)} .chip.medio i{background:var(--medio)} .chip.alto i{background:var(--alto)}
-.chip.sin{color:var(--muted)}
-.chip.prelim{color:var(--muted);border-style:dashed}
+/* cifras de la portada */
+.cifras{display:grid;gap:12px;grid-template-columns:1fr}
+@media (min-width:760px){.cifras{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.cifra{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;display:grid;gap:6px;align-content:start}
+.cifra .v{font-family:var(--font-display);font-size:42px;font-weight:600;line-height:1.05;letter-spacing:-.02em}
+.cifra .v small{font-size:18px;font-weight:500;color:var(--muted);margin-left:3px}
+.cifra .v .flecha{color:var(--muted);font-weight:400;margin:0 6px}
+.cifra p{font-size:15.5px}
+.cifra.principal{border-color:var(--accent)}
+/* puertas de entrada */
+.puertas{display:grid;gap:12px;grid-template-columns:1fr}
+@media (min-width:760px){.puertas{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.puerta{display:grid;gap:6px;align-content:start;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;color:var(--fg);text-decoration:none}
+.puerta:hover{border-color:var(--accent)}
+.puerta .q{font-family:var(--font-display);font-weight:600;font-size:18px}
+.puerta .ir{color:var(--accent);font-weight:600;font-size:15px}
+.puerta p{font-size:15.5px;color:var(--muted)}
+.confianza{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:14.5px;color:var(--muted)}
+/* controles */
+.controles{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center}
+.selector{display:flex;flex-wrap:wrap;gap:6px;border:0;padding:0;margin:0;align-items:center}
+.selector legend{float:left;margin-right:6px;padding:0}
+.selector label{position:relative;cursor:pointer;border:1px solid var(--line);border-radius:999px;padding:5px 13px;font-size:14.5px;font-weight:600;background:var(--bg)}
+.selector label .muted{font-weight:400;font-size:13px}
+.selector input{position:absolute;opacity:0;width:0;height:0;margin:0}
+.selector label:has(input:checked){background:var(--accent-soft);border-color:var(--accent)}
+.selector label:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+select{font:inherit;font-size:16px;padding:7px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg);max-width:100%}
+/* mapa */
 .mapa{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:flex-start;justify-content:center}
 .franja{margin:0;display:grid;gap:4px;justify-items:center}
-.franja svg{max-width:100%;height:auto;display:block}
+.franja svg{max-width:100%;height:auto;display:block;overflow:visible}
 .franja figcaption{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
 .tierra{fill:var(--tierra);stroke:var(--costa);stroke-width:.6;vector-effect:non-scaling-stroke}
-.est circle{stroke:var(--surface);stroke-width:2;fill:var(--sin)}
-.est.bueno circle{fill:var(--bueno)} .est.medio circle{fill:var(--medio)} .est.alto circle{fill:var(--alto)}
-.est text{font:600 9px var(--font-data);fill:var(--fg)}
-.est:hover circle{r:6.5}
+.est{cursor:pointer;outline:none}
+.est .hit{fill:transparent}
+.est .pt{stroke:var(--surface);stroke-width:2;fill:var(--sin)}
+.est.bueno .pt{fill:var(--bueno)} .est.medio .pt{fill:var(--medio)} .est.alto .pt{fill:var(--alto)}
+.est .etq{display:none;font:600 10px var(--font-body);fill:var(--fg);paint-order:stroke;stroke:var(--surface);stroke-width:3px;stroke-linejoin:round}
+.est.con-etq .etq{display:block}
+.est.sel .pt{stroke:var(--fg);stroke-width:2.5;r:7}
+.est:focus-visible .pt{stroke:var(--accent);stroke-width:3}
+.est:hover .pt{r:7}
+.leyenda{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:14px;color:var(--muted);align-items:center}
+.leyenda span.item{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:2px 9px 2px 7px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--fg);white-space:nowrap}
+.chip i{width:8px;height:8px;border-radius:50%;background:var(--sin)}
+.chip.bueno i{background:var(--bueno)} .chip.medio i{background:var(--medio)} .chip.alto i{background:var(--alto)}
+.chip.sin{color:var(--muted)} .chip.prelim{color:var(--muted);border-style:dashed}
+/* tu zona */
+.zona{display:grid;gap:20px}
+@media (min-width:900px){.zona{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);align-items:start}}
+.ficha{position:relative}
+@media (min-width:900px){.ficha{position:sticky;top:72px}}
+.ficha-cab{display:grid;gap:2px}
+.antes-despues{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.antes-despues > div{display:grid;gap:2px;justify-items:start}
+.antes-despues .lbl{font-size:13px;color:var(--muted)}
+.antes-despues .v{font-family:var(--font-display);font-size:34px;font-weight:600;line-height:1.1}
+.antes-despues .v small{font-size:16px;font-weight:500;color:var(--muted);margin-left:2px}
+.antes-despues .flecha{font-size:24px;color:var(--muted)}
+/* tablas */
 .tabla{overflow-x:auto;-webkit-overflow-scrolling:touch}
 table{border-collapse:collapse;width:100%;font-size:15px}
 th,td{padding:8px 10px;border-bottom:1px solid var(--line-soft);text-align:right;vertical-align:middle;white-space:nowrap}
 th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line)}
 th.l,td.l{text-align:left}
 td.num{font-family:var(--font-data);font-size:14px;font-variant-numeric:tabular-nums}
-td.est-nombre{white-space:normal;min-width:11em}
-td.est-nombre .icao{font-family:var(--font-data);font-size:12.5px;color:var(--muted);margin-left:6px}
-td.est-nombre .region{display:block;font-size:13px;color:var(--muted)}
+td .region{display:block;font-size:13px;color:var(--muted)}
+tr.actual td{background:var(--accent-soft)}
+#tabla-est tbody tr{cursor:pointer}
+#tabla-est tbody tr:hover td{background:color-mix(in srgb,var(--accent) 8%,transparent)}
+table.mini{font-size:14.5px} table.mini th,table.mini td{padding:6px 8px}
 td.medida{min-width:9.5em}
 .medida-in{display:inline-grid;grid-template-columns:72px auto;gap:8px;align-items:center;justify-items:end}
 .bar{display:block;width:72px;height:8px;border-radius:4px;background:var(--line-soft);overflow:hidden}
 .bar i{display:block;height:100%;border-radius:4px;background:var(--sin)}
 .bar.bueno i{background:var(--bueno)} .bar.medio i{background:var(--medio)} .bar.alto i{background:var(--alto)}
-tbody tr:hover{background:color-mix(in srgb,var(--accent) 6%,transparent)}
+td.plazo{font-weight:600;vertical-align:top} tr.sep td{border-top:1px solid var(--line)}
+td.modelo-nombre{font-weight:600} td.modelo-nombre .tipo{display:block;font-size:12px;color:var(--muted);font-weight:400}
+td.num.mejor{font-weight:700;color:var(--accent)}
+/* bloque preliminar */
+.prelim-bloque{border:1px dashed var(--line);border-radius:var(--radius);padding:16px;display:grid;gap:12px;background:var(--surface)}
+.modelos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.modelos{grid-template-columns:1fr}}
+.modelo{border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;display:grid;gap:2px;align-content:start;background:var(--bg)}
+.modelo .tipo{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.modelo .nombre{font-family:var(--font-display);font-size:18px;font-weight:600}
+.modelo .value{font-family:var(--font-display);font-size:28px;font-weight:600;line-height:1.1}
+.modelo .value small{font-size:15px;font-weight:500;color:var(--muted);margin-left:2px}
+.modelo .foot{font-size:13px;color:var(--muted)}
+/* narrativa y desplegables */
 .narrativa{display:grid;gap:12px;max-width:68ch}
-header .narrativa{font-size:18px}
-header .narrativa p{color:var(--fg)}
-.narrativa h2{font-size:24px}
 .narrativa p{max-width:none}
 .narrativa ol{margin:0;padding-left:1.25em;display:grid;gap:8px}
-.explica{display:grid;gap:10px}
-.explica ol{margin:0;padding-left:1.2em;display:grid;gap:6px;max-width:65ch}
 details{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);padding:0}
-summary{cursor:pointer;padding:12px 16px;font-weight:600;font-family:var(--font-display);font-size:15px;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary{cursor:pointer;padding:12px 16px;font-weight:600;font-family:var(--font-display);font-size:15.5px;list-style:none;display:flex;justify-content:space-between;gap:12px}
 summary::-webkit-details-marker{display:none}
 summary::after{content:"+";color:var(--muted);font-weight:400}
 details[open] summary::after{content:"–"}
-details .body{padding:0 16px 16px;display:grid;gap:10px}
+details .body{padding:0 16px 16px;display:grid;gap:12px}
 details .body p{max-width:72ch}
 footer{border-top:1px solid var(--line);padding-top:20px;display:grid;gap:8px;font-size:14px;color:var(--muted)}
-footer p{max-width:80ch}
-@media (max-width:600px){.tile .value{font-size:26px}.tile.hero .value{font-size:38px}}
-@media (prefers-reduced-motion:no-preference){.est circle{transition:r .15s ease}}
-/* comparación de modelos */
-.modelos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-@media (max-width:640px){.modelos{grid-template-columns:1fr}}
-.modelo{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;display:grid;gap:4px;align-content:start}
-.modelo.ia{border-color:var(--accent)}
-.modelo .tipo{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
-.modelo .nombre{font-family:var(--font-display);font-size:20px;font-weight:600}
-.modelo .nombre small{font-size:14px;font-weight:500;color:var(--muted);margin-left:6px}
-.modelo .value{font-family:var(--font-display);font-size:34px;font-weight:600;line-height:1.1}
-.modelo .value small{font-size:15px;font-weight:500;color:var(--muted);margin-left:2px}
-.modelo .foot{font-size:13px;color:var(--muted)}
-.modelo .mejor{display:inline-block;font-size:12px;font-weight:600;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:1px 8px;margin-left:6px;vertical-align:middle}
-.frase{font-size:18px;max-width:70ch}
-.frase strong{color:var(--accent)}
-/* selector de modelo del mapa */
-.mapas{display:grid;gap:12px;position:relative}
-.selector{display:flex;flex-wrap:wrap;gap:6px 8px;border:0;padding:0;margin:0;align-items:center}
-.selector legend{float:left;margin-right:6px;padding:0}
-.selector label{position:relative;cursor:pointer;border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:14px;font-weight:600;background:var(--bg)}
-.selector label .muted{font-weight:400;font-size:13px}
-.selector input{position:absolute;opacity:0;width:0;height:0;margin:0}
-.selector label:has(input:checked){background:var(--accent-soft);border-color:var(--accent)}
-.selector label:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
-.mapas:has(.selector) .mapa-modelo{display:none}
-.mapas:has(#mapa-AIFS:checked) .mapa-modelo[data-modelo="AIFS"]{display:flex}
-.mapas:has(#mapa-IFS:checked) .mapa-modelo[data-modelo="IFS"]{display:flex}
-.mapas:has(#mapa-GFS:checked) .mapa-modelo[data-modelo="GFS"]{display:flex}
-@supports not selector(:has(a)){.mapas .mapa-modelo{display:flex}.mapa-modelo::before{content:attr(data-modelo);width:100%;text-align:center;font-weight:600}}
-/* tablas con fila por modelo */
-td.plazo{font-weight:600;vertical-align:top}
-tr.sep td{border-top:1px solid var(--line)}
-td.modelo-nombre{font-weight:600}
-td.modelo-nombre .tipo{display:block;font-size:12px;color:var(--muted);font-weight:400}
-td.num.mejor{font-weight:700;color:var(--accent)}
-th.grupo{text-align:center;border-bottom:0;padding-bottom:0}
+footer p{max-width:85ch}
+@media (max-width:600px){.cifra .v{font-size:36px}}
+@media (prefers-reduced-motion:no-preference){.est .pt{transition:r .15s ease}}
 """
 
 
-def etiqueta_modelo(m):
-    corto, tipo, centro = MODELOS[m]
-    return f"{corto} ({'IA' if m == 'AIFS' else 'físico'}, {centro})"
+def head(titulo, descripcion):
+    return f"""<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>{titulo}</title>
+<meta name="description" content="{descripcion}">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>{CSS}{CSS_NAV}{CSS_DEF}</style>
+</head>"""
+
+
+def escribir(nombre_archivo, html):
+    os.makedirs(SITE, exist_ok=True)
+    with open(os.path.join(SITE, nombre_archivo), "w", encoding="utf-8") as f:
+        f.write(html)
+    return len(html) // 1024
+
+
+# ---------- página: Resumen ----------
+def pagina_resumen(est, ahora):
+    c = cifras_portada(est)
+    ev = eventos_destacado()
+    q = quebradas_hoy()
+    narr_html, narr_aviso = narrativa()
+    n_est = len(est)
+
+    tarjetas = []
+    if "aifs_g" in c:
+        tarjetas.append(f'<div class="cifra principal"><div class="v">{num(c["aifs_g"], 2)}<small>°C</small></div>'
+                        f'<p>de {d("error medio")} de la IA de ECMWF ({d("AIFS")}) al pronosticar la temperatura de mañana en '
+                        f'{n_est} aeródromos, durante 2026. Los modelos físicos se equivocan más: '
+                        f'IFS {num(c["g"].get("IFS"), 2)} °C y GFS {num(c["g"].get("GFS"), 2)} °C.</p></div>')
+    if "mejora_min" in c:
+        tarjetas.append(f'<div class="cifra"><div class="v">{num(c["mejora_min"], 0)} a {num(c["mejora_max"], 0)}<small>% menos</small></div>'
+                        f'<p>de error con la {d("corrección por estación")}: cada aeródromo corrige su error típico, aprendido en 2025 '
+                        f'y probado en 2026. Es la primera capa chilena.</p></div>')
+    if "ejemplo" in c:
+        x = c["ejemplo"]["m"]["AIFS"]
+        tarjetas.append(f'<div class="cifra"><div class="v">{num(x["g"], 1)}<span class="flecha">→</span>{num(x["c"], 1)}<small>°C</small></div>'
+                        f'<p>{c["ejemplo"]["nombre"]}: el error de la IA antes y después de corregir. Ahí la grilla de {d("25 km")} '
+                        f'mezcla mar, costa y cerro en un mismo cuadrado.</p></div>')
+
+    puertas = [f'<a class="puerta" href="zona.html"><span class="q">¿Cuánto se equivoca en tu zona?</span>'
+               f'<p>Elige un aeródromo y compara los tres modelos, con y sin corrección.</p><span class="ir">Ver Tu zona →</span></a>']
+    if ev:
+        corto = EVENTOS.get(ev["evento"], (ev["evento"], ev["evento"]))[1]
+        puertas.append(f'<a class="puerta" href="eventos.html#{ev["evento"]}"><span class="q">¿Lo vieron venir?</span>'
+                       f'<p>En {corto}, la IA marcó lluvia 72 horas antes en {ev["aciertos"]} de los {ev["total"]} casos en que llovió.</p>'
+                       f'<span class="ir">Ver los eventos de 2026 →</span></a>')
+    if q:
+        k = q["cuenta"]
+        estado = (f'{k["aviso"]} en aviso y {k["atencion"]} en atención' if (k["aviso"] or k["atencion"])
+                  else "todas en nivel bajo")
+        lluvia = "sin lluvia prevista en las próximas 24 horas" if q["mm24"] < 1 else f"{num(q['mm24'], 1)} mm previstos en 24 horas"
+        cerca = (f' {q["mas_cerca"]["nombre"].split(" (")[0]} pasaría a atención con unos {num(q["mas_cerca"]["mm_atencion"], 0)} mm en 2 horas.'
+                 if q["mas_cerca"] else "")
+        puertas.append(f'<a class="puerta" href="quebradas.html"><span class="q">Quebradas de Santiago oriente hoy</span>'
+                       f'<p>{q["n_quemadas"]} quebradas con laderas quemadas: {estado}, {lluvia}.{cerca}</p>'
+                       f'<span class="ir">Ver el mapa de quebradas →</span></a>')
+
+    datos_js = json.dumps({"est": est, "modelo": "AIFS", "navegar": True, "ficha": False}, ensure_ascii=False)
+    html = f"""{head("Earth-2 Chile", "Medimos en público cuánto se equivoca el pronóstico global en Chile y cómo lo corrige una capa chilena. Datos abiertos, actualizados cuatro veces al día.")}
+<body>
+{nav("resumen")}
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Verificación pública del pronóstico del tiempo en Chile</div>
+  <h1>El pronóstico global ve Chile en cuadrados de 25 km. Medimos cuánto se equivoca y cómo corregirlo.</h1>
+  <p class="lead">Comparamos los tres mejores modelos globales con lo que de verdad marcan {n_est} aeródromos del país, de Arica a Punta Arenas, y publicamos el resultado aquí, todos los días.</p>
+</header>
+
+<section aria-label="Cifras principales">
+  <div class="cifras">{''.join(tarjetas)}</div>
+</section>
+
+<section class="card">
+  <div class="sec-head"><h2>Dónde se equivoca más</h2>
+  <p class="muted small">Error medio de la IA (AIFS) al pronosticar la temperatura de mañana, por aeródromo, en 2026. Cambia a "corregido" para ver la primera capa chilena. Toca un punto para ver su detalle.</p></div>
+  <div class="controles"><fieldset class="selector"><legend class="eyebrow">Mostrar</legend>
+    <label><input type="radio" name="estado" value="g" checked>Sin corregir</label>
+    <label><input type="radio" name="estado" value="c">Corregido por estación</label></fieldset></div>
+  {mapa_svg(est)}
+  {leyenda()}
+</section>
+
+<section aria-label="Explorar">
+  <div class="puertas">{''.join(puertas)}</div>
+  <p class="confianza"><span>Datos al {hora_chile(ahora)}</span><span>Se actualiza cuatro veces al día</span><span><a href="metodo.html">Cómo se calcula</a></span><span><a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">Código y datos abiertos</a></span></p>
+  {aviso()}
+</section>
+
+{f'''<details><summary>Por qué hacemos esto</summary><div class="body narrativa">{narr_html}</div></details>''' if narr_html else ''}
+
+{pie(ahora)}
+</div>
+<script>window.ZONA = {datos_js};</script>
+{JS_MAPA}
+{JS_DEF}
+</body>
+</html>
+"""
+    return escribir("index.html", html)
+
+
+# ---------- página: Tu zona ----------
+def bloque_ultimos_dias(pts):
+    """Comparación de los tres modelos con los datos del pipeline diario. Preliminar hasta cumplir DIAS_CONSOLIDADO."""
+    if pts is None or pts.empty:
+        return "", ""
+    mae = lambda e: e.abs().mean()
+    res = (pts.groupby(["modelo", "lead_h"]).agg(n=("t_err", "size"), t_bias=("t_err", "mean"), t_mae=("t_err", mae),
+                                                 w_bias=("w_err", "mean"), w_mae=("w_err", mae)).reset_index().sort_values(["lead_h", "modelo"]))
+    presentes = [m for m in ORDEN if m in set(pts.modelo)]
+    leads = [set(res[res.modelo == m].lead_h) for m in presentes]
+    comunes = set.intersection(*leads) if leads else set()
+    lead = 24 if 24 in comunes else (max(comunes) if comunes else None)
+    if lead is None:
+        return "", ""
+    dias = max(1, (pts.valid.max() - pts.valid.min()).days + 1)
+    prelim = dias < DIAS_CONSOLIDADO
+    cmp = {r.modelo: r for r in res[res.lead_h == lead].itertuples(index=False)}
+    tarjetas = "".join(
+        f'<div class="modelo"><div class="tipo">{MODELOS[m][1]} · {MODELOS[m][2]}</div><div class="nombre">{m}</div>'
+        f'<div class="value">{num(cmp[m].t_mae, 1)}<small>°C</small></div><div class="foot">{entero(cmp[m].n)} comparaciones</div></div>'
+        for m in ORDEN if m in cmp)
+    rotulo = (f'{chip("prelim")} Se consolida al cumplir {DIAS_CONSOLIDADO} días; mientras tanto, las cifras pueden cambiar bastante.'
+              if prelim else "")
+    bloque = f"""<section>
+  <div class="sec-head"><h2>Últimos {dias} días</h2>
+  <p class="muted">Lo mismo, con los pronósticos que el sistema verifica cada día desde el {fecha(pts.valid.min())}: error medio de la temperatura a {lead} h de {d("plazo")}, todas las estaciones juntas.</p></div>
+  <div class="prelim-bloque"><p class="small">{rotulo}</p><div class="modelos">{tarjetas}</div></div>
+</section>"""
+
+    # tablas técnicas: por plazo y por corrida
+    t_max = max(4.0, math.ceil(res.t_mae.max() + 0.01)); w_max = max(4.0, math.ceil(res.w_mae.max() + 0.01))
+    filas = []
+    for ld, grupo in res.groupby("lead_h", sort=True):
+        grupo = grupo.set_index("modelo").reindex([m for m in ORDEN if m in grupo.modelo.values])
+        mejor = grupo.t_mae.idxmin() if len(grupo) > 1 else None
+        for i, (m, r) in enumerate(grupo.iterrows()):
+            nt = nivel(r.t_mae)
+            celda = f"<td class='l num plazo' rowspan='{len(grupo)}'>{int(ld)} h</td>" if i == 0 else ""
+            filas.append(f"<tr class='{'sep' if i == 0 else ''}'>{celda}<td class='l modelo-nombre'>{m}</td><td class='num'>{entero(r.n)}</td>"
+                         f"<td class='medida'><span class='medida-in'>{barra(r.t_mae, t_max, nt)}<span class='num{' mejor' if m == mejor else ''}'>{num(r.t_mae, 2, ' °C')}</span></span></td>"
+                         f"<td class='num'>{signo(r.t_bias, 2, ' °C')}</td><td class='num'>{num(r.w_mae, 2, ' m/s')}</td></tr>")
+    por_run = pts.pivot_table(index="run", columns="modelo", values="t_err", aggfunc=mae).sort_index().tail(20)
+    filas_r = "".join(f"<tr><td class='l num'>{hora_chile(pd.Timestamp(run))}</td>" +
+                      "".join(f"<td class='num'>{num(fila.get(m), 2, ' °C')}</td>" for m in presentes) + "</tr>"
+                      for run, fila in por_run.iterrows())
+    tecnico = f"""<details><summary>Para técnicos: error por plazo y por corrida</summary><div class="body">
+  <p class="small muted">Datos del pipeline diario ({entero(len(pts))} comparaciones desde el {fecha(pts.valid.min())}). {d("Sesgo")} negativo: el modelo pronostica más frío de lo observado. Viento a 10 m.</p>
+  <div class="tabla"><table><thead><tr><th class="l">Plazo</th><th class="l">Modelo</th><th>Comparaciones</th><th>Error temp.</th><th>Sesgo temp.</th><th>Error viento</th></tr></thead><tbody>{''.join(filas)}</tbody></table></div>
+  <p class="small muted">Últimas corridas: error medio de cada una, todos los plazos y estaciones juntos.</p>
+  <div class="tabla"><table><thead><tr><th class="l">Corrida</th>{''.join(f'<th>{m}</th>' for m in presentes)}</tr></thead><tbody>{filas_r}</tbody></table></div>
+</div></details>"""
+    return bloque, tecnico
+
+
+def pagina_zona(est, pts, ahora):
+    c = cifras_portada(est)
+    inicial = c["ejemplo"]["icao"] if "ejemplo" in c else (est[0]["icao"] if est else "")
+    opciones = "".join(f'<option value="{e["icao"]}">{e["nombre"]} · {e["region"]}</option>' for e in est)
+    ultimos, tecnico = bloque_ultimos_dias(pts)
+    datos_js = json.dumps({"est": est, "modelo": "AIFS", "navegar": False, "ficha": True, "inicial": inicial}, ensure_ascii=False)
+    html = f"""{head("Tu zona · Earth-2 Chile", "Elige un aeródromo de Chile y mira cuánto se equivocan los modelos de pronóstico al predecir la temperatura de mañana, con y sin corrección local.")}
+<body>
+{nav("zona")}
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Tu zona</div>
+  <h1>¿Cuánto se equivoca el pronóstico donde vives?</h1>
+  <p class="lead">Elige un aeródromo en la lista o en el mapa. Las cifras son el {d("error medio")} de la temperatura pronosticada para el día siguiente, durante 2026, sin corregir y con la {d("corrección por estación")}.</p>
+</header>
+
+<section class="card">
+  <div class="controles">
+    <label for="estacion" class="eyebrow">Aeródromo</label> <select id="estacion">{opciones}</select>
+    <fieldset class="selector"><legend class="eyebrow">Modelo</legend>
+      <label><input type="radio" name="modelo" value="AIFS" checked>AIFS <span class="muted">IA</span></label>
+      <label><input type="radio" name="modelo" value="IFS">IFS <span class="muted">físico</span></label>
+      <label><input type="radio" name="modelo" value="GFS">GFS <span class="muted">físico</span></label></fieldset>
+    <fieldset class="selector"><legend class="eyebrow">Mostrar</legend>
+      <label><input type="radio" name="estado" value="g" checked>Sin corregir</label>
+      <label><input type="radio" name="estado" value="c">Corregido</label></fieldset>
+  </div>
+  <div class="zona">
+    <div>{mapa_svg(est)}{leyenda()}</div>
+    <div class="card ficha" id="ficha" aria-live="polite"><p class="muted">Elige un aeródromo.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Todos los aeródromos, de mayor a menor error</h2>
+  <p class="muted">Modelo <strong id="tabla-modelo">AIFS</strong>, error medio a 24 h en 2026. Toca una fila para ver su ficha.</p></div>
+  <div class="card tabla"><table id="tabla-est"><thead><tr><th class="l">Aeródromo</th><th>Sin corregir</th><th>Corregido</th><th>Cambio</th><th class="l">Nivel</th></tr></thead><tbody></tbody></table></div>
+</section>
+
+{ultimos}
+
+{tecnico}
+
+{aviso()}
+{pie(ahora)}
+</div>
+<script>window.ZONA = {datos_js};</script>
+{JS_MAPA}
+{JS_DEF}
+</body>
+</html>
+"""
+    return escribir("zona.html", html)
 
 
 def render_site(pts):
@@ -387,299 +730,12 @@ def render_site(pts):
     pts["modelo"] = pts["modelo"].fillna("AIFS")
     pts["run"] = pd.to_datetime(pts["run"])
     pts["valid"] = pd.to_datetime(pts["valid"])
-    mae = lambda e: e.abs().mean()
-    presentes = [m for m in ORDEN if m in set(pts.modelo)]
-    ausentes = [m for m in ORDEN if m not in presentes]
-
-    res = (pts.groupby(["modelo", "lead_h"]).agg(n=("t_err", "size"), t_bias=("t_err", "mean"), t_mae=("t_err", mae),
-                                                 w_bias=("w_err", "mean"), w_mae=("w_err", mae)).reset_index().sort_values(["lead_h", "modelo"]))
-    bye_all = (pts.groupby(["modelo", "icao"]).agg(name=("name", "first"), lat=("lat", "first"), lon=("lon", "first"), elev=("elev", "first"),
-                                                   n=("t_err", "size"), t_bias=("t_err", "mean"), t_mae=("t_err", mae), w_mae=("w_err", mae))
-               .reset_index())
-    bye_m = {m: bye_all[bye_all.modelo == m].sort_values("t_mae", ascending=False) for m in presentes}
-    hist_m = estaciones_historico()
-    if hist_m:
-        bye_m = hist_m                      # cifras por estación desde el histórico 2025-2026 (24 h, >= MIN_PARES)
-        bye_all = pd.concat(hist_m.values(), ignore_index=True)
-        fuente_est = "histórico 2025–2026, pronósticos a 24 h"
-    else:
-        fuente_est = "verificación diaria, todos los plazos"
-    modelos_est = [m for m in ORDEN if m in bye_m]
-    base = "AIFS" if "AIFS" in bye_m else modelos_est[0]
-    bye = bye_m[base]
-    estaciones = sorted(set(bye_all.icao))
-    por_run = pts.pivot_table(index="run", columns="modelo", values="t_err", aggfunc=mae).sort_index()
-    por_run_n = pts.groupby("run").size()
-
-    runs = sorted(pts.run.unique())
-    ultima = pd.Timestamp(runs[-1])
-    n_runs = len(runs)
     ahora = pd.Timestamp.now("UTC")
-
-    # Cifra principal (AIFS): error a 24 h si existe; si no, el plazo más largo disponible.
-    res_base = res[res.modelo == base]
-    fila_hero = res_base[res_base.lead_h == 24]
-    if fila_hero.empty:
-        fila_hero = res_base.iloc[[-1]]
-    hero_lead = int(fila_hero.lead_h.iloc[0]); hero_mae = float(fila_hero.t_mae.iloc[0]); hero_n = int(fila_hero.n.iloc[0])
-    hero_nv = nivel(hero_mae, UMBRAL_T)
-    hero_txt = {"bueno": "Dentro de lo que un buen pronóstico puede ofrecer a esta escala.",
-                "medio": "Aceptable para una grilla de 25 km; mejora con el downscaling.",
-                "alto": "La grilla de 25 km no resuelve bien estos lugares."}[hero_nv]
-
-    t_max = max(4.0, math.ceil(max(res.t_mae.max(), bye_all.t_mae.max()) + 0.01))
-    w_max = max(4.0, math.ceil(max(res.w_mae.max(), bye_all.w_mae.max()) + 0.01))
-
-    # --- comparación: plazo común a todos los modelos presentes (24 h si se puede) ---
-    leads_por_modelo = [set(res[res.modelo == m].lead_h) for m in presentes]
-    comunes = set.intersection(*leads_por_modelo) if leads_por_modelo else set()
-    lead_cmp = 24 if 24 in comunes else (max(comunes) if comunes else hero_lead)
-    cmp = {r.modelo: r for r in res[res.lead_h == lead_cmp].itertuples(index=False)}
-    mejor = min((m for m in presentes if m in cmp), key=lambda m: cmp[m].t_mae, default=None)
-
-    tarjetas = []
-    for m in ORDEN:
-        corto, tipo, centro = MODELOS[m]
-        clase = "modelo ia" if m == "AIFS" else "modelo"
-        if m in cmp:
-            r = cmp[m]
-            sello = '<span class="mejor">menor error</span>' if m == mejor and len(cmp) > 1 else ""
-            tarjetas.append(f'<div class="{clase}"><div class="tipo">{tipo} · {centro}</div><div class="nombre">{corto}{sello}</div>'
-                            f'<div class="value">{num(r.t_mae, 1)}<small>°C</small></div>'
-                            f'<div class="foot">{chip(nivel(r.t_mae, UMBRAL_T))} &nbsp;Error medio de temperatura a {lead_cmp} h, {int(r.n)} pares. '
-                            f'Viento {num(r.w_mae, 1, " m/s")}.</div></div>')
-        else:
-            motivo = "Todavía sin pares a este plazo." if m in presentes else "Entra en la próxima corrida del pipeline."
-            tarjetas.append(f'<div class="{clase}"><div class="tipo">{tipo} · {centro}</div><div class="nombre">{corto}</div>'
-                            f'<div class="value muted">–</div><div class="foot">{chip("sin")} &nbsp;{motivo}</div></div>')
-
-    if len(cmp) >= 2 and "AIFS" in cmp:
-        fisicos = [m for m in ("IFS", "GFS") if m in cmp]
-        mejor_fis = min(fisicos, key=lambda m: cmp[m].t_mae)
-        d = cmp["AIFS"].t_mae - cmp[mejor_fis].t_mae
-        veredicto = (f"Hoy la IA va <strong>por delante</strong> del mejor modelo físico ({MODELOS[mejor_fis][0]}) por {num(abs(d), 1, ' °C')}." if d < -0.1 else
-                     f"Hoy la IA va <strong>por detrás</strong> del mejor modelo físico ({MODELOS[mejor_fis][0]}) por {num(abs(d), 1, ' °C')}." if d > 0.1 else
-                     f"Hoy la IA y el mejor modelo físico ({MODELOS[mejor_fis][0]}) están <strong>empatados</strong>.")
-        partes = [f"la IA ({MODELOS['AIFS'][0]}) se equivoca en promedio <strong>{num(cmp['AIFS'].t_mae, 1, ' °C')}</strong> en la temperatura"]
-        partes += [f"el modelo físico de {MODELOS[m][2]} ({MODELOS[m][0]}) {num(cmp[m].t_mae, 1, ' °C')}" for m in fisicos]
-        frase = f"A {lead_cmp} h de anticipación, " + "; ".join(partes) + f". {veredicto}"
-    elif "AIFS" in cmp:
-        frase = (f"A {lead_cmp} h de anticipación, la IA ({MODELOS['AIFS'][0]}) se equivoca en promedio <strong>{num(cmp['AIFS'].t_mae, 1, ' °C')}</strong> "
-                 f"en la temperatura. Los modelos físicos (IFS y GFS) aparecerán aquí en cuanto tengan pares al mismo plazo.")
-    else:
-        frase = "La comparación aparecerá cuando los tres modelos tengan pares al mismo plazo."
-    nota_cmp = (f"Se compara al plazo de {lead_cmp} h porque es el más largo que ya tienen los tres modelos; a medida que lleguen las observaciones, pasa a 24 h."
-                if lead_cmp != 24 and len(cmp) > 1 else "")
-
-    # --- tabla por plazo: una fila por plazo y modelo ---
-    filas_plazo = []
-    for lead, grupo in res.groupby("lead_h", sort=True):
-        grupo = grupo.set_index("modelo").reindex([m for m in ORDEN if m in grupo.modelo.values])
-        mejor_lead = grupo.t_mae.idxmin() if len(grupo) > 1 else None
-        for i, (m, r) in enumerate(grupo.iterrows()):
-            nt, nw = nivel(r.t_mae, UMBRAL_T), nivel(r.w_mae, UMBRAL_W)
-            celda_plazo = f"<td class='l num plazo' rowspan='{len(grupo)}'>{int(lead)} h</td>" if i == 0 else ""
-            filas_plazo.append(
-                f"<tr class='{'sep' if i == 0 else ''}'>{celda_plazo}"
-                f"<td class='l modelo-nombre'>{MODELOS[m][0]}<span class='tipo'>{'IA' if m == 'AIFS' else 'físico'} · {MODELOS[m][2]}</span></td>"
-                f"<td class='num'>{int(r.n)}</td>"
-                f"<td class='medida'><span class='medida-in'>{barra(r.t_mae, t_max, nt)}<span class='num{' mejor' if m == mejor_lead else ''}'>{num(r.t_mae, 2, ' °C')}</span></span></td>"
-                f"<td class='num'>{signo(r.t_bias, 2, ' °C')}</td>"
-                f"<td class='medida'><span class='medida-in'>{barra(r.w_mae, w_max, nw)}<span class='num'>{num(r.w_mae, 2, ' m/s')}</span></span></td>"
-                f"<td class='num'>{signo(r.w_bias, 2, ' m/s')}</td><td>{chip(nt)}</td></tr>")
-    plazos_pend = [h for h in (0, 6, 12, 18, 24, 36, 48) if h not in set(res.lead_h)]
-    nota_plazos = (f"Los plazos de {', '.join(str(h) for h in plazos_pend)} h aparecerán a medida que las observaciones alcancen "
-                   f"las horas pronosticadas." if plazos_pend else "")
-
-    # --- tabla por estación: base AIFS, columnas de error de temperatura por modelo ---
-    tmae_m = {m: bye_m[m].set_index("icao").t_mae for m in modelos_est}
-    n_m = {m: bye_m[m].set_index("icao").n for m in modelos_est}
-    filas_est = []
-    orden_est = list(bye.icao) + [i for i in estaciones if i not in set(bye.icao)]
-    info = bye_all.drop_duplicates("icao").set_index("icao")
-    for icao in orden_est:
-        r = bye.set_index("icao").loc[icao] if icao in set(bye.icao) else None
-        corto, region = nombre(icao, info.loc[icao, "name"])
-        elev_v = info.loc[icao, "elev"]
-        elev = "" if pd.isna(elev_v) else f"{int(float(elev_v))} m"
-        vals = {m: (float(tmae_m[m].get(icao, float("nan"))) if int(n_m[m].get(icao, 0)) >= MIN_PARES else float("nan")) for m in modelos_est}
-        validos = {m: v for m, v in vals.items() if not math.isnan(v)}
-        mejor_est = min(validos, key=validos.get) if len(validos) > 1 else None
-        celdas = ""
-        for m in ORDEN:
-            v = vals.get(m, float("nan"))
-            if math.isnan(v):
-                celdas += "<td class='num muted'>–</td>"
-            else:
-                celdas += (f"<td class='medida'><span class='medida-in'>{barra(v, t_max, nivel(v, UMBRAL_T))}"
-                           f"<span class='num{' mejor' if m == mejor_est else ''}'>{num(v, 1, ' °C')}</span></span></td>")
-        prelim = r is None or int(r.n) < MIN_PARES
-        nt = "prelim" if prelim else nivel(r.t_mae, UMBRAL_T)
-        if prelim and r is not None:
-            r = r.copy(); r[["t_bias", "w_mae"]] = float("nan")
-        filas_est.append(
-            f"<tr><td class='l est-nombre'>{corto}<span class='icao'>{icao}</span>"
-            f"<span class='region'>{region}{' · ' if region and elev else ''}{elev}</span></td>"
-            f"<td class='num'>{int(r.n) if r is not None else 0}</td>{celdas}"
-            f"<td class='num'>{signo(r.t_bias, 1, ' °C') if r is not None else '–'}</td>"
-            f"<td class='medida'><span class='medida-in'>{barra(r.w_mae, w_max, nivel(r.w_mae, UMBRAL_W)) if r is not None else ''}<span class='num'>{num(r.w_mae, 1, ' m/s') if r is not None else '–'}</span></span></td>"
-            f"<td>{chip(nt)}</td></tr>")
-    cab_modelos = "".join(f"<th>Error temp. {MODELOS[m][0]}</th>" for m in ORDEN)
-
-    bye_ok = bye[bye.n >= MIN_PARES]
-    n_alto = int((bye_ok.t_mae >= UMBRAL_T[1]).sum()); n_bueno = int((bye_ok.t_mae < UMBRAL_T[0]).sum())
-    brecha, brecha_fuente_txt, brecha_prelim = brecha_fuente(bye)
-    brecha_est = brecha[brecha.t_mae >= UMBRAL_BRECHA].sort_values("t_mae", ascending=False)
-    brecha_nombres = ", ".join(f"{nombre(i, i)[0]} ({num(v, 1)} °C)" for i, v in zip(brecha_est.icao, brecha_est.t_mae))
-    sesgo_global = float(pts[pts.modelo == base].t_err.mean())
-    frio_calor = "frío (el modelo pronostica más frío de lo observado)" if sesgo_global < -0.3 else \
-                 "cálido (el modelo pronostica más calor de lo observado)" if sesgo_global > 0.3 else "casi nulo"
-
-    # --- serie por corrida (cuando haya más de una): una columna por modelo ---
-    serie = ""
-    if n_runs >= 2:
-        cab = "".join(f"<th>{MODELOS[m][0]}</th>" for m in presentes)
-        filas = []
-        for run, fila in por_run.tail(30).iterrows():
-            celdas = ""
-            for m in presentes:
-                v = fila.get(m, float("nan"))
-                celdas += ("<td class='num muted'>–</td>" if pd.isna(v) else
-                           f"<td class='medida'><span class='medida-in'>{barra(v, t_max, nivel(v, UMBRAL_T))}<span class='num'>{num(v, 2, ' °C')}</span></span></td>")
-            filas.append(f"<tr><td class='l num'>{pd.Timestamp(run):%d-%m %H}z</td><td class='num'>{int(por_run_n[run])}</td>{celdas}</tr>")
-        serie = f"""<section>
-  <div class="sec-head"><h2>Corrida por corrida</h2>
-  <p class="muted">Error medio de temperatura de cada corrida, por modelo, con todos los plazos y estaciones juntos. Últimas {min(30, n_runs)} corridas.</p></div>
-  <div class="card tabla"><table><thead><tr><th class="l">Corrida (UTC)</th><th>Pares</th>{cab}</tr></thead><tbody>{''.join(filas)}</tbody></table></div>
-</section>"""
-
-    narr_html, narr_aviso = narrativa()
-    m_narr = re.match(r"\s*<h2>(.*?)</h2>(.*)$", narr_html, flags=re.S) if narr_html else None
-    narr_titulo = m_narr.group(1) if m_narr else "¿Qué tan bien acierta el pronóstico de IA en Chile?"
-    narr_cuerpo = m_narr.group(2) if m_narr else ""
-    MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
-    fecha_ultima = f"{ultima.day} {MESES[ultima.month - 1]} · {ultima:%H} UTC"
-    generado = f"{ahora.day} {MESES[ahora.month - 1]} {ahora.year}, {ahora:%H:%M} UTC"
-    n_est = len(estaciones)
-    lista_modelos = ", ".join(etiqueta_modelo(m) for m in presentes)
-
-    html = f"""<!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Verificación Earth-2 Chile</title>
-<meta name="description" content="Cada día comparamos el pronóstico de inteligencia artificial de ECMWF (AIFS) y los modelos físicos IFS (ECMWF) y GFS (NOAA) con lo que midieron los aeródromos de Chile. Error por plazo y por estación, en lenguaje simple.">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
-<style>{CSS}{CSS_NAV}</style>
-</head>
-<body>
-{nav("hoy")}
-<div class="wrap">
-
-<header>
-  <div class="eyebrow">Earth-2 Chile · verificación diaria</div>
-  <h1>{narr_titulo}</h1>
-  {f'<div class="narrativa">{narr_cuerpo}</div>' if narr_cuerpo else f'<p class="lead">Cada día comparamos AIFS (IA, ECMWF), IFS (ECMWF) y GFS (NOAA) con lo que midieron {n_est} aeródromos del país.</p>'}
-  <div class="aviso"><p class="small">Esta página es apoyo a la decisión y verificación pública de modelos. Las alertas oficiales son de la
-  <a href="https://www.meteochile.gob.cl/" rel="noopener">Dirección Meteorológica de Chile</a> y de
-  <a href="https://www.senapred.cl/" rel="noopener">SENAPRED</a>.</p></div>
-</header>
-
-<section>
-  <div class="tiles">
-    <div class="tile hero">
-      <div class="label">La brecha: estaciones donde el pronóstico global se equivoca más de {num(UMBRAL_BRECHA)} °C</div>
-      <div class="value">{len(brecha_est)}<small>de {len(brecha)}</small></div>
-      <div class="foot">{chip("prelim") if brecha_prelim else (chip("alto") if len(brecha_est) else chip("bueno"))} &nbsp;{brecha_nombres if len(brecha_est) else "Ninguna por ahora."}
-      Fuente: {brecha_fuente_txt}{f"; preliminar, aún con menos de {MIN_PARES} pares por estación" if brecha_prelim else ""}.</div>
-    </div>
-    <div class="tile"><div class="label">Última corrida verificada</div><div class="value fecha">{fecha_ultima}</div><div class="foot">{ultima.year}. Los modelos corren 4 veces al día.</div></div>
-    <div class="tile"><div class="label">Corridas acumuladas</div><div class="value">{n_runs}</div><div class="foot">Desde el {pd.Timestamp(runs[0]).day} {MESES[pd.Timestamp(runs[0]).month - 1]} {pd.Timestamp(runs[0]).year}</div></div>
-    <div class="tile"><div class="label">Pares pronóstico–observación</div><div class="value">{len(pts)}</div><div class="foot">{n_est} estaciones · {len(presentes)} modelo{'s' if len(presentes) != 1 else ''}</div></div>
-    <div class="tile"><div class="label">Error medio de {MODELOS[base][0]} a {hero_lead} h</div><div class="value">{num(hero_mae, 1)}<small>°C</small></div><div class="foot">{chip("prelim") if hero_n < MIN_PARES else chip(hero_nv)} {hero_n} pares, todas las estaciones.</div></div>
-  </div>
-</section>
-
-<section class="dos">
-  <div class="card">
-    <div class="sec-head"><h2>Dónde acierta y dónde no</h2>
-    <p class="muted small">Error medio de temperatura por estación ({fuente_est}). Elige el modelo y pasa el cursor sobre un punto para ver el detalle.</p></div>
-    {mapas(bye_m)}
-    <div class="leyenda"><span class="item">{chip("bueno")} menos de {num(UMBRAL_T[0])} °C</span><span class="item">{chip("medio")} {num(UMBRAL_T[0])} a {num(UMBRAL_T[1])} °C</span><span class="item">{chip("alto")} {num(UMBRAL_T[1])} °C o más</span></div>
-  </div>
-  <div class="explica">
-    <h2>Cómo leer esta página</h2>
-    <ol>
-      <li><strong>Error medio</strong> es cuánto se equivocó el modelo en promedio, sin importar el signo. Si dice 1,5 °C, el pronóstico estuvo típicamente un grado y medio arriba o abajo de lo medido.</li>
-      <li><strong>Sesgo</strong> es la dirección del error. Negativo: el modelo pronostica más frío de lo que ocurre. Hoy el sesgo global de {MODELOS[base][0]} es {signo(sesgo_global, 1, " °C")}, {frio_calor}.</li>
-      <li><strong>Plazo</strong> es cuántas horas antes se hizo el pronóstico. A 0 h es casi una foto del presente; a 48 h ya es un pronóstico de dos días.</li>
-      <li><strong>IA frente a físico.</strong> AIFS aprende de décadas de datos; IFS y GFS resuelven las ecuaciones de la atmósfera. Si la IA empata o gana a 25 km, el siguiente paso es bajarla a 4 km con Chile adentro.</li>
-      <li>Los tres modelos trabajan con una grilla de 25 km. Donde el error es alto suele haber mar y cordillera en una misma celda (costa del norte, Patagonia). Esa es la brecha que el downscaling a 2 a 4 km debe cerrar.</li>
-    </ol>
-    <p class="muted small">Umbrales: menos de {num(UMBRAL_T[0])} °C es bueno, hasta {num(UMBRAL_T[1])} °C aceptable, y más de eso alto. Son umbrales de trabajo; el asesor meteorológico del proyecto los revisará.</p>
-  </div>
-</section>
-
-<section>
-  <div class="sec-head"><h2>La IA frente al modelo físico</h2>
-  <p class="frase">{frase}</p>
-  {f'<p class="muted small">{nota_cmp}</p>' if nota_cmp else ''}</div>
-  <div class="modelos">{''.join(tarjetas)}</div>
-  <p class="muted small">Los tres modelos usan la misma grilla de 25 km y se miden contra las mismas estaciones y observaciones. AIFS es la versión de inteligencia artificial de ECMWF; IFS es su modelo físico tradicional; GFS es el modelo físico global de Estados Unidos (NOAA). Cada uno se verifica en su última corrida completa, por eso el número de pares puede diferir.</p>
-</section>
-
-<section>
-  <div class="sec-head"><h2>Error por plazo</h2>
-  <p class="muted">Cuánto se equivoca cada modelo según las horas de anticipación. Todas las estaciones juntas; en cada plazo, el menor error de temperatura va destacado. {nota_plazos}</p></div>
-  <div class="card tabla">
-    <table>
-      <thead><tr><th class="l">Plazo</th><th class="l">Modelo</th><th>Pares</th><th>Error temp.</th><th>Sesgo temp.</th><th>Error viento</th><th>Sesgo viento</th><th class="l">Nivel</th></tr></thead>
-      <tbody>{''.join(filas_plazo)}</tbody>
-    </table>
-  </div>
-</section>
-
-<section>
-  <div class="sec-head"><h2>Error por estación</h2>
-  <p class="muted">Fuente: {fuente_est}. Ordenado de mayor a menor error de temperatura de {MODELOS[base][0]}, para ver primero lo que requiere atención. Error de temperatura a 2 m de cada modelo (el menor va destacado); pares, sesgo, viento a 10 m y nivel corresponden a {MODELOS[base][0]}. Todos los plazos juntos.</p></div>
-  <div class="card tabla">
-    <table>
-      <thead><tr><th class="l">Estación</th><th>Pares</th>{cab_modelos}<th>Sesgo temp.</th><th>Error viento</th><th class="l">Nivel</th></tr></thead>
-      <tbody>{''.join(filas_est)}</tbody>
-    </table>
-  </div>
-</section>
-
-{serie}
-
-<section>
-  <details>
-    <summary>Cómo se calcula</summary>
-    <div class="body">
-      <p>Pronósticos: {lista_modelos}{'; pendientes: ' + ', '.join(etiqueta_modelo(m) for m in ausentes) if ausentes else ''}. Los tres en grilla global de 0,25° (unos 25 km), con temperatura a 2 m, viento a 10 m y precipitación, plazos 0, 6, 12, 18, 24, 36 y 48 h. AIFS e IFS vienen de los datos abiertos de ECMWF (CC-BY 4.0); GFS, del bucket público de NOAA en AWS (dominio público). Se toma el punto de grilla más cercano a cada aeródromo, sin corrección por altura.</p>
-      <p>Observación: reportes METAR horarios de {n_est} aeródromos chilenos (emitidos por la DMC, distribuidos por NOAA/AWC, dominio público). Un par se forma cuando hay una observación a menos de 31 minutos de la hora pronosticada. Los valores pronosticados en cada estación se guardan, así que los plazos largos se emparejan en las corridas siguientes, cuando ya existe la observación.</p>
-      <p>Error medio absoluto = promedio de |pronóstico − observación|. Sesgo = promedio de (pronóstico − observación). El pipeline corre 4 veces al día en GitHub Actions, toma la última corrida completa de cada modelo y acumula todos los pares; los resultados y el código son públicos.</p>
-      <p>Próximos pasos: sumar estaciones de la DMC, verificar precipitación y mostrar la serie de 30 días.</p>
-    </div>
-  </details>
-</section>
-
-<footer>
-  <p>Generado el {generado}. Datos: ECMWF open data, AIFS e IFS (CC-BY 4.0); NOAA GFS (dominio público); NOAA/AWC METAR (dominio público); contorno de Natural Earth (dominio público).
-  Código abierto: <a href="{REPO}" rel="noopener">github.com/PanchoDigevo/earth2-chile-verificacion</a>.</p>
-  <p><em>{narr_aviso or 'Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.'}</em></p>
-</footer>
-
-</div>
-</body>
-</html>
-"""
-    os.makedirs(SITE, exist_ok=True)
-    with open(os.path.join(SITE, "index.html"), "w", encoding="utf-8") as f:
-        f.write(html)
-    print(f"site/index.html listo ({len(html) // 1024} KB, {n_runs} corridas, {len(pts)} pares, {n_est} estaciones, modelos: {', '.join(presentes)})")
+    est = datos_estaciones()
+    kb1 = pagina_resumen(est, ahora)
+    kb2 = pagina_zona(est, pts, ahora)
+    print(f"site/index.html ({kb1} KB) y site/zona.html ({kb2} KB) listos: {len(est)} aeródromos consolidados, "
+          f"{len(pts)} comparaciones del pipeline diario")
 
 
 if __name__ == "__main__":

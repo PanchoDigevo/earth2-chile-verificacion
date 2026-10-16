@@ -1,0 +1,42 @@
+name: oceano
+# Capa estándar 3 y 5: temperatura del mar frente a la costa (NOAA OISST), índices Niño de NOAA CPC,
+# deriva por aeródromo y corrección móvil. Diario; el primer uso rellena desde enero de 2025.
+on:
+  workflow_dispatch:
+    inputs:
+      desde:
+        description: "Rellenar desde (YYYY-MM-DD); vacío = últimos 20 días"
+        default: ""
+  schedule:
+    - cron: "40 9 * * *"
+  push:
+    branches: [capas-estandar]
+    paths: ["oceano/oceano.py", "oceano/deriva.py", ".github/workflows/oceano.yml"]
+permissions:
+  contents: write
+concurrency:
+  group: oceano
+  cancel-in-progress: false
+jobs:
+  oceano:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r oceano/requirements.txt
+      - name: Temperatura del mar e índices Niño
+        run: python oceano/oceano.py ${{ inputs.desde && format('--desde {0}', inputs.desde) || '' }}
+      - name: Deriva y corrección móvil (temperatura)
+        run: python oceano/deriva.py --variable t
+      - name: Guardar
+        run: |
+          git config user.name "earth2-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add oceano/data
+          git diff --cached --quiet || git commit -m "océano: $(date -u +%Y-%m-%dT%H:%MZ)"
+          git pull --rebase -X theirs origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

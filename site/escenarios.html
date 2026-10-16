@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Escenarios · Earth-2 Chile</title>
+<meta name="description" content="Probabilidad de tiempo propicio para incendios en los próximos 15 días por comuna, con los 50 escenarios del ensamble de IA de ECMWF. Indicador de apoyo, no alerta.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Una columna de 1080 px; lo consolidado antes que lo preliminar; cada número con su explicación al lado.
+   Neutros fríos con leve sesgo azul (cielo y hielo), acento verde glaciar; semáforo fijo y siempre con texto. */
+:root{
+  --bg:#f4f6f8; --surface:#ffffff; --fg:#17212b; --muted:#5a6977; --line:#d8dfe6; --line-soft:#e9eef2;
+  --accent:#0e7c86; --accent-soft:#d7eef0; --tierra:#e3e9ee; --costa:#9fb0bd;
+  --bueno:#0ca30c; --medio:#c98500; --alto:#d03b3b; --sin:#8a99a6;
+  --font-display:"Sora",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-body:"Source Sans 3","Source Sans Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-data:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --radius:10px; color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111821; --surface:#19222c; --fg:#e7ecf1; --muted:#9fadba; --line:#2c3845; --line-soft:#232e3a;
+  --accent:#44bcc6; --accent-soft:#163b40; --tierra:#243040; --costa:#4f6071;
+  --bueno:#2fbf2f; --medio:#e0a428; --alto:#ee6a6a; --sin:#7d8c99; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111821; --surface:#19222c; --fg:#e7ecf1; --muted:#9fadba; --line:#2c3845; --line-soft:#232e3a;
+  --accent:#44bcc6; --accent-soft:#163b40; --tierra:#243040; --costa:#4f6071;
+  --bueno:#2fbf2f; --medio:#e0a428; --alto:#ee6a6a; --sin:#7d8c99; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
+a:focus-visible,button:focus-visible,summary:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:16px;padding-block:24px 56px;display:grid;gap:32px}
+@media (min-width:720px){.wrap{padding-inline:28px;padding-block:40px 72px;gap:44px}}
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(26px,3.8vw,40px);line-height:1.15;font-weight:600;max-width:26ch}
+h2{font-size:22px;font-weight:600}
+h3{font-size:17px;font-weight:600}
+p{margin:0;max-width:65ch}
+.eyebrow{font-family:var(--font-display);font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.muted{color:var(--muted)}
+.small{font-size:14.5px}
+header{display:grid;gap:12px}
+header .lead{font-size:19px;color:var(--muted);max-width:60ch}
+.aviso{border-left:3px solid var(--accent);padding:10px 14px;background:var(--accent-soft);border-radius:0 var(--radius) var(--radius) 0;max-width:72ch}
+.aviso p{max-width:none}
+section{display:grid;gap:14px}
+.sec-head{display:grid;gap:6px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;display:grid;gap:12px;min-width:0}
+/* cifras de la portada */
+.cifras{display:grid;gap:12px;grid-template-columns:1fr}
+@media (min-width:760px){.cifras{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.cifra{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;display:grid;gap:6px;align-content:start}
+.cifra .v{font-family:var(--font-display);font-size:42px;font-weight:600;line-height:1.05;letter-spacing:-.02em}
+.cifra .v small{font-size:18px;font-weight:500;color:var(--muted);margin-left:3px}
+.cifra .v .flecha{color:var(--muted);font-weight:400;margin:0 6px}
+.cifra p{font-size:15.5px}
+.cifra.principal{border-color:var(--accent)}
+/* puertas de entrada */
+.puertas{display:grid;gap:12px;grid-template-columns:1fr}
+@media (min-width:760px){.puertas{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.puerta{display:grid;gap:6px;align-content:start;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;color:var(--fg);text-decoration:none}
+.puerta:hover{border-color:var(--accent)}
+.puerta .q{font-family:var(--font-display);font-weight:600;font-size:18px}
+.puerta .ir{color:var(--accent);font-weight:600;font-size:15px}
+.puerta p{font-size:15.5px;color:var(--muted)}
+.confianza{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:14.5px;color:var(--muted)}
+/* controles */
+.controles{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center}
+.selector{display:flex;flex-wrap:wrap;gap:6px;border:0;padding:0;margin:0;align-items:center}
+.selector legend{float:left;margin-right:6px;padding:0}
+.selector label{position:relative;cursor:pointer;border:1px solid var(--line);border-radius:999px;padding:5px 13px;font-size:14.5px;font-weight:600;background:var(--bg)}
+.selector label .muted{font-weight:400;font-size:13px}
+.selector input{position:absolute;opacity:0;width:0;height:0;margin:0}
+.selector label:has(input:checked){background:var(--accent-soft);border-color:var(--accent)}
+.selector label:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+select{font:inherit;font-size:16px;padding:7px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg);max-width:100%}
+/* mapa */
+.mapa{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:flex-start;justify-content:center}
+.franja{margin:0;display:grid;gap:4px;justify-items:center}
+.franja svg{max-width:100%;height:auto;display:block;overflow:hidden}
+.franja figcaption{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.tierra{fill:var(--tierra);stroke:var(--costa);stroke-width:.6;vector-effect:non-scaling-stroke}
+.est{cursor:pointer;outline:none}
+.est .hit{fill:transparent}
+.est .pt{stroke:var(--surface);stroke-width:2;fill:var(--sin)}
+.est.bueno .pt{fill:var(--bueno)} .est.medio .pt{fill:var(--medio)} .est.alto .pt{fill:var(--alto)}
+.est .etq{display:none;font:600 10px var(--font-body);fill:var(--fg);paint-order:stroke;stroke:var(--surface);stroke-width:3px;stroke-linejoin:round}
+.est.con-etq .etq{display:block}
+.est.sel .pt{stroke:var(--fg);stroke-width:2.5;r:7}
+.est:focus-visible .pt{stroke:var(--accent);stroke-width:3}
+.est:hover .pt{r:7}
+.leyenda{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:14px;color:var(--muted);align-items:center}
+.leyenda span.item{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:2px 9px 2px 7px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--fg);white-space:nowrap}
+.chip i{width:8px;height:8px;border-radius:50%;background:var(--sin)}
+.chip.bueno i{background:var(--bueno)} .chip.medio i{background:var(--medio)} .chip.alto i{background:var(--alto)}
+.chip.sin{color:var(--muted)} .chip.prelim{color:var(--muted);border-style:dashed}
+/* tu zona */
+.zona{display:grid;gap:20px}
+@media (min-width:900px){.zona{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);align-items:start}}
+.ficha{position:relative}
+@media (min-width:900px){.ficha{position:sticky;top:72px}}
+.ficha-cab{display:grid;gap:2px}
+.antes-despues{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.antes-despues > div{display:grid;gap:2px;justify-items:start}
+.antes-despues .lbl{font-size:13px;color:var(--muted)}
+.antes-despues .v{font-family:var(--font-display);font-size:34px;font-weight:600;line-height:1.1}
+.antes-despues .v small{font-size:16px;font-weight:500;color:var(--muted);margin-left:2px}
+.antes-despues .flecha{font-size:24px;color:var(--muted)}
+/* tablas */
+.tabla{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line-soft);text-align:right;vertical-align:middle;white-space:nowrap}
+th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line)}
+th.l,td.l{text-align:left}
+td.num{font-family:var(--font-data);font-size:14px;font-variant-numeric:tabular-nums}
+td .region{display:block;font-size:13px;color:var(--muted)}
+tr.actual td{background:var(--accent-soft)}
+#tabla-est tbody tr{cursor:pointer}
+#tabla-est tbody tr:hover td{background:color-mix(in srgb,var(--accent) 8%,transparent)}
+table.mini{font-size:14.5px} table.mini th,table.mini td{padding:6px 8px}
+td.medida{min-width:9.5em}
+.medida-in{display:inline-grid;grid-template-columns:72px auto;gap:8px;align-items:center;justify-items:end}
+.bar{display:block;width:72px;height:8px;border-radius:4px;background:var(--line-soft);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:4px;background:var(--sin)}
+.bar.bueno i{background:var(--bueno)} .bar.medio i{background:var(--medio)} .bar.alto i{background:var(--alto)}
+td.plazo{font-weight:600;vertical-align:top} tr.sep td{border-top:1px solid var(--line)}
+td.modelo-nombre{font-weight:600} td.modelo-nombre .tipo{display:block;font-size:12px;color:var(--muted);font-weight:400}
+td.num.mejor{font-weight:700;color:var(--accent)}
+/* bloque preliminar */
+.prelim-bloque{border:1px dashed var(--line);border-radius:var(--radius);padding:16px;display:grid;gap:12px;background:var(--surface)}
+.modelos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.modelos{grid-template-columns:1fr}}
+.modelo{border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;display:grid;gap:2px;align-content:start;background:var(--bg)}
+.modelo .tipo{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.modelo .nombre{font-family:var(--font-display);font-size:18px;font-weight:600}
+.modelo .value{font-family:var(--font-display);font-size:28px;font-weight:600;line-height:1.1}
+.modelo .value small{font-size:15px;font-weight:500;color:var(--muted);margin-left:2px}
+.modelo .foot{font-size:13px;color:var(--muted)}
+/* narrativa y desplegables */
+.narrativa{display:grid;gap:12px;max-width:68ch}
+.narrativa p{max-width:none}
+.narrativa ol{margin:0;padding-left:1.25em;display:grid;gap:8px}
+details{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);padding:0}
+summary{cursor:pointer;padding:12px 16px;font-weight:600;font-family:var(--font-display);font-size:15.5px;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--muted);font-weight:400}
+details[open] summary::after{content:"–"}
+details .body{padding:0 16px 16px;display:grid;gap:12px}
+details .body p{max-width:72ch}
+footer{border-top:1px solid var(--line);padding-top:20px;display:grid;gap:8px;font-size:14px;color:var(--muted)}
+footer p{max-width:85ch}
+@media (max-width:600px){.cifra .v{font-size:36px}}
+@media (prefers-reduced-motion:no-preference){.est .pt{transition:r .15s ease}}
+
+.topnav{position:sticky;top:0;z-index:1100;background:var(--surface);border-bottom:1px solid var(--line)}
+.topnav .in{max-width:1400px;margin:0 auto;padding-inline:16px;display:flex;align-items:center;gap:16px;min-height:52px}
+.topnav .marca{font-family:var(--font-display);font-weight:600;font-size:15px;color:var(--fg);text-decoration:none;white-space:nowrap;letter-spacing:-.01em}
+.topnav .marca small{color:var(--muted);font-weight:500;font-size:13px;margin-left:8px}
+.topnav .tabs{display:flex;gap:2px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.topnav .tabs::-webkit-scrollbar{display:none}
+.topnav .tabs a{display:inline-flex;align-items:center;height:52px;padding:0 12px;color:var(--muted);text-decoration:none;font-weight:600;font-size:14.5px;border-bottom:3px solid transparent;white-space:nowrap}
+.topnav .tabs a:hover{color:var(--fg)}
+.topnav .tabs a.activa{color:var(--fg);border-bottom-color:var(--accent)}
+.topnav .tabs a:focus-visible{outline:2px solid var(--accent);outline-offset:-4px;border-radius:4px}
+@media (max-width:760px){
+  .topnav .in{flex-wrap:wrap;gap:0;padding-inline:0}
+  .topnav .marca{padding:10px 16px 2px;font-size:14px}
+  .topnav .marca small{display:none}
+  .topnav .tabs{margin-left:0;width:100%;padding-inline:6px}
+  .topnav .tabs a{height:42px;padding:0 10px;font-size:14px}
+  .topnav .largo{display:none}
+}
+
+.def{all:unset;cursor:help;border-bottom:1.5px dotted currentColor;text-underline-offset:2px}
+.def:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+.def-pop{position:absolute;z-index:2000;max-width:min(320px,calc(100vw - 32px));background:var(--fg);color:var(--bg);
+  font:400 14.5px/1.45 var(--font-body);padding:10px 12px;border-radius:8px;box-shadow:0 6px 24px rgba(0,0,0,.18)}
+
+:root{--calido:#d9622b;--frio:#2a78d6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--calido:#ef8a55;--frio:#5aa0f0}}
+:root[data-theme="dark"]{--calido:#ef8a55;--frio:#5aa0f0}
+.cambios{display:grid;gap:12px;grid-template-columns:1fr}
+@media (min-width:900px){.cambios{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}.cambios .cambio:nth-child(3){grid-column:1/-1}}
+.barras-mar{width:100%;max-width:560px;height:auto;display:block}
+.barras-mar .nom{font:14px var(--font-body);fill:var(--fg)}
+.barras-mar .val{font:600 12.5px var(--font-data);fill:var(--fg)}
+.barras-mar .eje{font:11.5px var(--font-data);fill:var(--muted)}
+.barras-mar .eje0{stroke:var(--line);stroke-width:1}
+.barras-mar .calido{fill:var(--calido)} .barras-mar .frio{fill:var(--frio)}
+.indices{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.indices > div{display:grid;gap:2px}
+.indices .lbl{font-size:13px;color:var(--muted)}
+.indices .v{font-family:var(--font-display);font-size:30px;font-weight:600;line-height:1.1}
+.indices .v small{font-size:15px;color:var(--muted);margin-left:2px}
+.serie-mini{width:100%;max-width:260px;height:auto}
+.serie-mini .cero{stroke:var(--line);stroke-width:1}
+.serie-mini .linea{fill:none;stroke:var(--calido);stroke-width:2;stroke-linejoin:round}
+.serie-mini .fin{fill:var(--calido);stroke:var(--surface);stroke-width:2}
+.lista-deriva{margin:0;padding-left:1.2em;display:grid;gap:6px;font-size:15.5px;max-width:80ch}
+
+:root{--p-alta:#e8a33a;--p-critica:#c2410c}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--p-alta:#f0b55a;--p-critica:#f07a45}}
+:root[data-theme="dark"]{--p-alta:#f0b55a;--p-critica:#f07a45}
+.comuna{display:none} .comuna.visible{display:grid;gap:14px}
+.barras{width:100%;height:auto;display:block}
+.barras .eje{font:11px var(--font-data);fill:var(--muted)}
+.barras .dia{font:11.5px var(--font-body);fill:var(--muted)}
+.barras .grid-l{stroke:var(--line-soft);stroke-width:1}
+.barras .alta{fill:var(--p-alta)} .barras .critica{fill:var(--p-critica)}
+.barras .val{font:600 11px var(--font-data);fill:var(--fg)}
+.ley{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;color:var(--muted)}
+.ley i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:6px}
+.ley .a i{background:var(--p-alta)} .ley .c i{background:var(--p-critica)}
+</style>
+</head>
+<body>
+<nav class="topnav" aria-label="Secciones del sitio"><div class="in"><a class="marca" href="./">Earth-2 Chile<small>verificación pública del pronóstico</small></a><div class="tabs"><a href="./">Resumen</a><a href="zona.html">Tu zona</a><a href="eventos.html">Eventos<span class="largo"> 2026</span></a><a href="quebradas.html">Quebradas</a><a href="escenarios.html" class="activa" aria-current="page">Escenarios</a><a href="metodo.html">Método</a></div></div></nav>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Escenarios de incendio</div>
+  <h1>¿Qué días de las próximas dos semanas podrían tener tiempo de incendio?</h1>
+  <p class="lead">El modelo de IA de ECMWF calcula 50 escenarios posibles del tiempo a 15 días. Contamos en cuántos de ellos una comuna cumple la regla <button type="button" class="def" data-def="Regla que usa CONAF: temperatura de 30 °C o más, humedad de 30 % o menos y viento de 30 km/h o más, al mismo tiempo.">30-30-30</button>, o casi la cumple después de varios días sin lluvia.</p>
+  <div class="aviso"><p class="small">Es un indicador de apoyo a la decisión, no una alerta. Los avisos y alertas oficiales de incendios son de <a href="https://www.conaf.cl/" rel="noopener">CONAF</a> y de <a href="https://www.senapred.cl/" rel="noopener">SENAPRED</a>.</p></div>
+</header>
+<section class="card">
+  <div class="controles"><label for="comuna" class="eyebrow">Comuna</label> <select id="comuna"><option value="0">Quilpué · Valparaíso</option><option value="1">Tomé · Biobío</option><option value="2">Hualqui · Biobío</option><option value="3">Santa Bárbara · Biobío</option></select></div>
+  <p class="small muted">Corrida del 16 oct, 09:00 (hora de Chile). Comunas incluidas por ahora: las nombradas públicamente como prioritarias para la temporada en estas regiones; la lista oficial completa de CONAF aún no está publicada.</p>
+</section>
+<div class="comuna visible" data-i="0">
+  <div class="sec-head"><h2>Quilpué</h2><p class="small muted">Valparaíso · nombrada como comuna prioritaria para la temporada 2026-2027 (<a href="https://www.t13.cl/noticia/el-tiempo/nacional/proyectan-verano-complejo-por-riesgo-incendios-forestales-comunas-prioritarias-12-9-2026" rel="noopener">fuente</a>)</p></div>
+  <p>En los próximos 15 días, ningún escenario llega a condición alta o crítica.</p>
+  <div class="card"><svg class="barras" viewBox="0 0 720 200" role="img" aria-label="Porcentaje de escenarios en condición alta o crítica por día"><line class="grid-l" x1="34" x2="716" y1="166.0" y2="166.0"/><text class="eje" x="28" y="170.0" text-anchor="end">0%</text><line class="grid-l" x1="34" x2="716" y1="128.0" y2="128.0"/><text class="eje" x="28" y="132.0" text-anchor="end">25%</text><line class="grid-l" x1="34" x2="716" y1="90.0" y2="90.0"/><text class="eje" x="28" y="94.0" text-anchor="end">50%</text><line class="grid-l" x1="34" x2="716" y1="52.0" y2="52.0"/><text class="eje" x="28" y="56.0" text-anchor="end">75%</text><line class="grid-l" x1="34" x2="716" y1="14.0" y2="14.0"/><text class="eje" x="28" y="18.0" text-anchor="end">100%</text><text class="dia" x="56.6" y="186" text-anchor="middle">sáb 17</text><text class="dia" x="101.8" y="186" text-anchor="middle">dom 18</text><text class="dia" x="147.0" y="186" text-anchor="middle">lun 19</text><text class="dia" x="192.2" y="186" text-anchor="middle">mar 20</text><text class="dia" x="237.4" y="186" text-anchor="middle">mié 21</text><text class="dia" x="282.6" y="186" text-anchor="middle">jue 22</text><text class="dia" x="327.8" y="186" text-anchor="middle">vie 23</text><text class="dia" x="373.0" y="186" text-anchor="middle">sáb 24</text><text class="dia" x="418.2" y="186" text-anchor="middle">dom 25</text><text class="dia" x="463.4" y="186" text-anchor="middle">lun 26</text><text class="dia" x="508.6" y="186" text-anchor="middle">mar 27</text><text class="dia" x="553.8" y="186" text-anchor="middle">mié 28</text><text class="dia" x="599.0" y="186" text-anchor="middle">jue 29</text><text class="dia" x="644.2" y="186" text-anchor="middle">vie 30</text><text class="dia" x="689.4" y="186" text-anchor="middle">sáb 31</text></svg>
+  <div class="ley"><span class="a"><i></i>Condición alta o crítica</span><span class="c"><i></i>Condición crítica (30-30-30)</span><span>Porcentaje de los 50 escenarios</span></div></div>
+  <details><summary>Temperatura, humedad y viento de cada día</summary><div class="body"><p class="small muted">Valor central de los escenarios y, entre paréntesis, el rango del 80 % central, a las 15 o 16 horas de Chile.</p><div class='tabla'><table><thead><tr><th class='l'>Día</th><th>Alta o crítica</th><th>Crítica</th><th>Temperatura</th><th>Humedad</th><th>Viento</th><th>Días sin lluvia</th></tr></thead><tbody><tr><td class='l'>sáb 17</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>14 °C <span class='muted'>(13–15)</span></td><td class='num'>89 % <span class='muted'>(86–93)</span></td><td class='num'>10 km/h <span class='muted'>(7–13)</span></td><td class='num'>1</td></tr><tr><td class='l'>dom 18</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>14 °C <span class='muted'>(13–15)</span></td><td class='num'>89 % <span class='muted'>(85–94)</span></td><td class='num'>10 km/h <span class='muted'>(7–13)</span></td><td class='num'>2</td></tr><tr><td class='l'>lun 19</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>15 °C <span class='muted'>(14–16)</span></td><td class='num'>87 % <span class='muted'>(82–93)</span></td><td class='num'>6 km/h <span class='muted'>(3–11)</span></td><td class='num'>3</td></tr><tr><td class='l'>mar 20</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>15 °C <span class='muted'>(14–16)</span></td><td class='num'>90 % <span class='muted'>(83–94)</span></td><td class='num'>13 km/h <span class='muted'>(9–19)</span></td><td class='num'>4</td></tr><tr><td class='l'>mié 21</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>15 °C <span class='muted'>(14–16)</span></td><td class='num'>85 % <span class='muted'>(80–90)</span></td><td class='num'>22 km/h <span class='muted'>(14–25)</span></td><td class='num'>0</td></tr><tr><td class='l'>jue 22</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>14 °C <span class='muted'>(13–15)</span></td><td class='num'>89 % <span class='muted'>(85–94)</span></td><td class='num'>10 km/h <span class='muted'>(4–18)</span></td><td class='num'>0</td></tr><tr><td class='l'>vie 23</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>13 °C <span class='muted'>(12–15)</span></td><td class='num'>88 % <span class='muted'>(83–95)</span></td><td class='num'>9 km/h <span class='muted'>(4–13)</span></td><td class='num'>1</td></tr><tr><td class='l'>sáb 24</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>14 °C <span class='muted'>(13–15)</span></td><td class='num'>85 % <span class='muted'>(80–93)</span></td><td class='num'>12 km/h <span class='muted'>(6–15)</span></td><td class='num'>2</td></tr><tr><td class='l'>dom 25</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>14 °C <span class='muted'>(11–15)</span></td><td class='num'>81 % <span class='muted'>(76–91)</span></td><td class='num'>8 km/h <span class='muted'>(4–14)</span></td><td class='num'>3</td></tr><tr><td class='l'>lun 26</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>14 °C <span class='muted'>(12–15)</span></td><td class='num'>86 % <span class='muted'>(78–90)</span></td><td class='num'>13 km/h <span class='muted'>(6–17)</span></td><td class='num'>4</td></tr><tr><td class='l'>mar 27</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>14 °C <span class='muted'>(13–15)</span></td><td class='num'>88 % <span class='muted'>(80–92)</span></td><td class='num'>9 km/h <span class='muted'>(4–14)</span></td><td class='num'>5</td></tr><tr><td class='l'>mié 28</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>14 °C <span class='muted'>(13–15)</span></td><td class='num'>88 % <span class='muted'>(81–94)</span></td><td class='num'>9 km/h <span class='muted'>(2–14)</span></td><td class='num'>6</td></tr><tr><td class='l'>jue 29</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>14 °C <span class='muted'>(13–15)</span></td><td class='num'>89 % <span class='muted'>(83–94)</span></td><td class='num'>8 km/h <span class='muted'>(3–16)</span></td><td class='num'>6</td></tr><tr><td class='l'>vie 30</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>14 °C <span class='muted'>(13–16)</span></td><td class='num'>88 % <span class='muted'>(82–96)</span></td><td class='num'>9 km/h <span class='muted'>(4–12)</span></td><td class='num'>7</td></tr><tr><td class='l'>sáb 31</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>14 °C <span class='muted'>(13–15)</span></td><td class='num'>89 % <span class='muted'>(83–95)</span></td><td class='num'>7 km/h <span class='muted'>(3–14)</span></td><td class='num'>7</td></tr></tbody></table></div></div></details>
+  <details><summary>Cómo cambia la probabilidad a medida que se acerca el día</summary><div class="body"><p class='small muted'>Cuando haya más de una corrida, aquí se verá cómo cambia la probabilidad de un mismo día a medida que se acerca.</p></div></details>
+</div><div class="comuna" data-i="1">
+  <div class="sec-head"><h2>Tomé</h2><p class="small muted">Biobío · nombrada como comuna prioritaria para la temporada 2026-2027 (<a href="https://www.t13.cl/noticia/el-tiempo/nacional/proyectan-verano-complejo-por-riesgo-incendios-forestales-comunas-prioritarias-12-9-2026" rel="noopener">fuente</a>)</p></div>
+  <p>En los próximos 15 días, ningún escenario llega a condición alta o crítica.</p>
+  <div class="card"><svg class="barras" viewBox="0 0 720 200" role="img" aria-label="Porcentaje de escenarios en condición alta o crítica por día"><line class="grid-l" x1="34" x2="716" y1="166.0" y2="166.0"/><text class="eje" x="28" y="170.0" text-anchor="end">0%</text><line class="grid-l" x1="34" x2="716" y1="128.0" y2="128.0"/><text class="eje" x="28" y="132.0" text-anchor="end">25%</text><line class="grid-l" x1="34" x2="716" y1="90.0" y2="90.0"/><text class="eje" x="28" y="94.0" text-anchor="end">50%</text><line class="grid-l" x1="34" x2="716" y1="52.0" y2="52.0"/><text class="eje" x="28" y="56.0" text-anchor="end">75%</text><line class="grid-l" x1="34" x2="716" y1="14.0" y2="14.0"/><text class="eje" x="28" y="18.0" text-anchor="end">100%</text><text class="dia" x="56.6" y="186" text-anchor="middle">sáb 17</text><text class="dia" x="101.8" y="186" text-anchor="middle">dom 18</text><text class="dia" x="147.0" y="186" text-anchor="middle">lun 19</text><text class="dia" x="192.2" y="186" text-anchor="middle">mar 20</text><text class="dia" x="237.4" y="186" text-anchor="middle">mié 21</text><text class="dia" x="282.6" y="186" text-anchor="middle">jue 22</text><text class="dia" x="327.8" y="186" text-anchor="middle">vie 23</text><text class="dia" x="373.0" y="186" text-anchor="middle">sáb 24</text><text class="dia" x="418.2" y="186" text-anchor="middle">dom 25</text><text class="dia" x="463.4" y="186" text-anchor="middle">lun 26</text><text class="dia" x="508.6" y="186" text-anchor="middle">mar 27</text><text class="dia" x="553.8" y="186" text-anchor="middle">mié 28</text><text class="dia" x="599.0" y="186" text-anchor="middle">jue 29</text><text class="dia" x="644.2" y="186" text-anchor="middle">vie 30</text><text class="dia" x="689.4" y="186" text-anchor="middle">sáb 31</text></svg>
+  <div class="ley"><span class="a"><i></i>Condición alta o crítica</span><span class="c"><i></i>Condición crítica (30-30-30)</span><span>Porcentaje de los 50 escenarios</span></div></div>
+  <details><summary>Temperatura, humedad y viento de cada día</summary><div class="body"><p class="small muted">Valor central de los escenarios y, entre paréntesis, el rango del 80 % central, a las 15 o 16 horas de Chile.</p><div class='tabla'><table><thead><tr><th class='l'>Día</th><th>Alta o crítica</th><th>Crítica</th><th>Temperatura</th><th>Humedad</th><th>Viento</th><th>Días sin lluvia</th></tr></thead><tbody><tr><td class='l'>sáb 17</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>14 °C <span class='muted'>(13–14)</span></td><td class='num'>89 % <span class='muted'>(86–94)</span></td><td class='num'>13 km/h <span class='muted'>(9–15)</span></td><td class='num'>1</td></tr><tr><td class='l'>dom 18</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>14 °C <span class='muted'>(13–14)</span></td><td class='num'>88 % <span class='muted'>(84–93)</span></td><td class='num'>14 km/h <span class='muted'>(10–17)</span></td><td class='num'>2</td></tr><tr><td class='l'>lun 19</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>14 °C <span class='muted'>(13–15)</span></td><td class='num'>89 % <span class='muted'>(84–93)</span></td><td class='num'>7 km/h <span class='muted'>(4–11)</span></td><td class='num'>3</td></tr><tr><td class='l'>mar 20</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>15 °C <span class='muted'>(14–16)</span></td><td class='num'>88 % <span class='muted'>(82–92)</span></td><td class='num'>11 km/h <span class='muted'>(6–17)</span></td><td class='num'>0</td></tr><tr><td class='l'>mié 21</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>15 °C <span class='muted'>(14–16)</span></td><td class='num'>87 % <span class='muted'>(83–90)</span></td><td class='num'>32 km/h <span class='muted'>(19–45)</span></td><td class='num'>0</td></tr><tr><td class='l'>jue 22</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>14 °C <span class='muted'>(13–15)</span></td><td class='num'>87 % <span class='muted'>(84–90)</span></td><td class='num'>23 km/h <span class='muted'>(9–32)</span></td><td class='num'>0</td></tr><tr><td class='l'>vie 23</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>14 °C <span class='muted'>(13–15)</span></td><td class='num'>86 % <span class='muted'>(76–93)</span></td><td class='num'>9 km/h <span class='muted'>(4–16)</span></td><td class='num'>0</td></tr><tr><td class='l'>sáb 24</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>14 °C <span class='muted'>(13–15)</span></td><td class='num'>86 % <span class='muted'>(75–92)</span></td><td class='num'>11 km/h <span class='muted'>(4–18)</span></td><td class='num'>1</td></tr><tr><td class='l'>dom 25</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>14 °C <span class='muted'>(13–15)</span></td><td class='num'>84 % <span class='muted'>(75–92)</span></td><td class='num'>9 km/h <span class='muted'>(4–16)</span></td><td class='num'>2</td></tr><tr><td class='l'>lun 26</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>14 °C <span class='muted'>(13–15)</span></td><td class='num'>85 % <span class='muted'>(81–90)</span></td><td class='num'>14 km/h <span class='muted'>(6–22)</span></td><td class='num'>1</td></tr><tr><td class='l'>mar 27</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>14 °C <span class='muted'>(12–15)</span></td><td class='num'>84 % <span class='muted'>(80–90)</span></td><td class='num'>13 km/h <span class='muted'>(4–22)</span></td><td class='num'>2</td></tr><tr><td class='l'>mié 28</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>14 °C <span class='muted'>(13–15)</span></td><td class='num'>86 % <span class='muted'>(79–92)</span></td><td class='num'>14 km/h <span class='muted'>(7–20)</span></td><td class='num'>3</td></tr><tr><td class='l'>jue 29</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>14 °C <span class='muted'>(13–15)</span></td><td class='num'>86 % <span class='muted'>(76–93)</span></td><td class='num'>12 km/h <span class='muted'>(5–19)</span></td><td class='num'>3</td></tr><tr><td class='l'>vie 30</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>14 °C <span class='muted'>(13–15)</span></td><td class='num'>88 % <span class='muted'>(79–94)</span></td><td class='num'>12 km/h <span class='muted'>(3–17)</span></td><td class='num'>4</td></tr><tr><td class='l'>sáb 31</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>14 °C <span class='muted'>(13–15)</span></td><td class='num'>90 % <span class='muted'>(79–96)</span></td><td class='num'>13 km/h <span class='muted'>(6–20)</span></td><td class='num'>4</td></tr></tbody></table></div></div></details>
+  <details><summary>Cómo cambia la probabilidad a medida que se acerca el día</summary><div class="body"><p class='small muted'>Cuando haya más de una corrida, aquí se verá cómo cambia la probabilidad de un mismo día a medida que se acerca.</p></div></details>
+</div><div class="comuna" data-i="2">
+  <div class="sec-head"><h2>Hualqui</h2><p class="small muted">Biobío · nombrada como comuna prioritaria para la temporada 2026-2027 (<a href="https://www.t13.cl/noticia/el-tiempo/nacional/proyectan-verano-complejo-por-riesgo-incendios-forestales-comunas-prioritarias-12-9-2026" rel="noopener">fuente</a>)</p></div>
+  <p>En los próximos 15 días, ningún escenario llega a condición alta o crítica.</p>
+  <div class="card"><svg class="barras" viewBox="0 0 720 200" role="img" aria-label="Porcentaje de escenarios en condición alta o crítica por día"><line class="grid-l" x1="34" x2="716" y1="166.0" y2="166.0"/><text class="eje" x="28" y="170.0" text-anchor="end">0%</text><line class="grid-l" x1="34" x2="716" y1="128.0" y2="128.0"/><text class="eje" x="28" y="132.0" text-anchor="end">25%</text><line class="grid-l" x1="34" x2="716" y1="90.0" y2="90.0"/><text class="eje" x="28" y="94.0" text-anchor="end">50%</text><line class="grid-l" x1="34" x2="716" y1="52.0" y2="52.0"/><text class="eje" x="28" y="56.0" text-anchor="end">75%</text><line class="grid-l" x1="34" x2="716" y1="14.0" y2="14.0"/><text class="eje" x="28" y="18.0" text-anchor="end">100%</text><text class="dia" x="56.6" y="186" text-anchor="middle">sáb 17</text><text class="dia" x="101.8" y="186" text-anchor="middle">dom 18</text><text class="dia" x="147.0" y="186" text-anchor="middle">lun 19</text><text class="dia" x="192.2" y="186" text-anchor="middle">mar 20</text><text class="dia" x="237.4" y="186" text-anchor="middle">mié 21</text><text class="dia" x="282.6" y="186" text-anchor="middle">jue 22</text><text class="dia" x="327.8" y="186" text-anchor="middle">vie 23</text><text class="dia" x="373.0" y="186" text-anchor="middle">sáb 24</text><text class="dia" x="418.2" y="186" text-anchor="middle">dom 25</text><text class="dia" x="463.4" y="186" text-anchor="middle">lun 26</text><text class="dia" x="508.6" y="186" text-anchor="middle">mar 27</text><text class="dia" x="553.8" y="186" text-anchor="middle">mié 28</text><text class="dia" x="599.0" y="186" text-anchor="middle">jue 29</text><text class="dia" x="644.2" y="186" text-anchor="middle">vie 30</text><text class="dia" x="689.4" y="186" text-anchor="middle">sáb 31</text></svg>
+  <div class="ley"><span class="a"><i></i>Condición alta o crítica</span><span class="c"><i></i>Condición crítica (30-30-30)</span><span>Porcentaje de los 50 escenarios</span></div></div>
+  <details><summary>Temperatura, humedad y viento de cada día</summary><div class="body"><p class="small muted">Valor central de los escenarios y, entre paréntesis, el rango del 80 % central, a las 15 o 16 horas de Chile.</p><div class='tabla'><table><thead><tr><th class='l'>Día</th><th>Alta o crítica</th><th>Crítica</th><th>Temperatura</th><th>Humedad</th><th>Viento</th><th>Días sin lluvia</th></tr></thead><tbody><tr><td class='l'>sáb 17</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>11 °C <span class='muted'>(10–12)</span></td><td class='num'>98 % <span class='muted'>(95–102)</span></td><td class='num'>5 km/h <span class='muted'>(4–8)</span></td><td class='num'>1</td></tr><tr><td class='l'>dom 18</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>10 °C <span class='muted'>(8–11)</span></td><td class='num'>95 % <span class='muted'>(89–100)</span></td><td class='num'>5 km/h <span class='muted'>(2–8)</span></td><td class='num'>2</td></tr><tr><td class='l'>lun 19</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>12 °C <span class='muted'>(11–13)</span></td><td class='num'>95 % <span class='muted'>(91–99)</span></td><td class='num'>4 km/h <span class='muted'>(2–7)</span></td><td class='num'>3</td></tr><tr><td class='l'>mar 20</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>12 °C <span class='muted'>(11–14)</span></td><td class='num'>93 % <span class='muted'>(89–99)</span></td><td class='num'>6 km/h <span class='muted'>(3–9)</span></td><td class='num'>0</td></tr><tr><td class='l'>mié 21</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>13 °C <span class='muted'>(12–14)</span></td><td class='num'>93 % <span class='muted'>(89–96)</span></td><td class='num'>19 km/h <span class='muted'>(9–27)</span></td><td class='num'>0</td></tr><tr><td class='l'>jue 22</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>12 °C <span class='muted'>(11–13)</span></td><td class='num'>95 % <span class='muted'>(92–99)</span></td><td class='num'>9 km/h <span class='muted'>(5–19)</span></td><td class='num'>0</td></tr><tr><td class='l'>vie 23</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>10 °C <span class='muted'>(8–11)</span></td><td class='num'>98 % <span class='muted'>(90–103)</span></td><td class='num'>5 km/h <span class='muted'>(2–8)</span></td><td class='num'>0</td></tr><tr><td class='l'>sáb 24</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>10 °C <span class='muted'>(7–11)</span></td><td class='num'>95 % <span class='muted'>(87–103)</span></td><td class='num'>5 km/h <span class='muted'>(2–8)</span></td><td class='num'>1</td></tr><tr><td class='l'>dom 25</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>10 °C <span class='muted'>(8–12)</span></td><td class='num'>95 % <span class='muted'>(86–101)</span></td><td class='num'>4 km/h <span class='muted'>(2–8)</span></td><td class='num'>1</td></tr><tr><td class='l'>lun 26</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>10 °C <span class='muted'>(7–12)</span></td><td class='num'>97 % <span class='muted'>(90–105)</span></td><td class='num'>5 km/h <span class='muted'>(3–9)</span></td><td class='num'>1</td></tr><tr><td class='l'>mar 27</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>10 °C <span class='muted'>(6–12)</span></td><td class='num'>94 % <span class='muted'>(89–103)</span></td><td class='num'>5 km/h <span class='muted'>(2–10)</span></td><td class='num'>1</td></tr><tr><td class='l'>mié 28</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>10 °C <span class='muted'>(8–12)</span></td><td class='num'>95 % <span class='muted'>(86–100)</span></td><td class='num'>5 km/h <span class='muted'>(3–9)</span></td><td class='num'>2</td></tr><tr><td class='l'>jue 29</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>10 °C <span class='muted'>(7–12)</span></td><td class='num'>94 % <span class='muted'>(85–101)</span></td><td class='num'>5 km/h <span class='muted'>(2–10)</span></td><td class='num'>3</td></tr><tr><td class='l'>vie 30</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>11 °C <span class='muted'>(8–13)</span></td><td class='num'>94 % <span class='muted'>(84–101)</span></td><td class='num'>5 km/h <span class='muted'>(2–9)</span></td><td class='num'>3</td></tr><tr><td class='l'>sáb 31</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>11 °C <span class='muted'>(9–13)</span></td><td class='num'>94 % <span class='muted'>(84–100)</span></td><td class='num'>5 km/h <span class='muted'>(3–9)</span></td><td class='num'>4</td></tr></tbody></table></div></div></details>
+  <details><summary>Cómo cambia la probabilidad a medida que se acerca el día</summary><div class="body"><p class='small muted'>Cuando haya más de una corrida, aquí se verá cómo cambia la probabilidad de un mismo día a medida que se acerca.</p></div></details>
+</div><div class="comuna" data-i="3">
+  <div class="sec-head"><h2>Santa Bárbara</h2><p class="small muted">Biobío · nombrada como comuna prioritaria para la temporada 2026-2027 (<a href="https://www.t13.cl/noticia/el-tiempo/nacional/proyectan-verano-complejo-por-riesgo-incendios-forestales-comunas-prioritarias-12-9-2026" rel="noopener">fuente</a>)</p></div>
+  <p>En los próximos 15 días, ningún escenario llega a condición alta o crítica.</p>
+  <div class="card"><svg class="barras" viewBox="0 0 720 200" role="img" aria-label="Porcentaje de escenarios en condición alta o crítica por día"><line class="grid-l" x1="34" x2="716" y1="166.0" y2="166.0"/><text class="eje" x="28" y="170.0" text-anchor="end">0%</text><line class="grid-l" x1="34" x2="716" y1="128.0" y2="128.0"/><text class="eje" x="28" y="132.0" text-anchor="end">25%</text><line class="grid-l" x1="34" x2="716" y1="90.0" y2="90.0"/><text class="eje" x="28" y="94.0" text-anchor="end">50%</text><line class="grid-l" x1="34" x2="716" y1="52.0" y2="52.0"/><text class="eje" x="28" y="56.0" text-anchor="end">75%</text><line class="grid-l" x1="34" x2="716" y1="14.0" y2="14.0"/><text class="eje" x="28" y="18.0" text-anchor="end">100%</text><text class="dia" x="56.6" y="186" text-anchor="middle">sáb 17</text><text class="dia" x="101.8" y="186" text-anchor="middle">dom 18</text><text class="dia" x="147.0" y="186" text-anchor="middle">lun 19</text><text class="dia" x="192.2" y="186" text-anchor="middle">mar 20</text><text class="dia" x="237.4" y="186" text-anchor="middle">mié 21</text><text class="dia" x="282.6" y="186" text-anchor="middle">jue 22</text><text class="dia" x="327.8" y="186" text-anchor="middle">vie 23</text><text class="dia" x="373.0" y="186" text-anchor="middle">sáb 24</text><text class="dia" x="418.2" y="186" text-anchor="middle">dom 25</text><text class="dia" x="463.4" y="186" text-anchor="middle">lun 26</text><text class="dia" x="508.6" y="186" text-anchor="middle">mar 27</text><text class="dia" x="553.8" y="186" text-anchor="middle">mié 28</text><text class="dia" x="599.0" y="186" text-anchor="middle">jue 29</text><text class="dia" x="644.2" y="186" text-anchor="middle">vie 30</text><text class="dia" x="689.4" y="186" text-anchor="middle">sáb 31</text></svg>
+  <div class="ley"><span class="a"><i></i>Condición alta o crítica</span><span class="c"><i></i>Condición crítica (30-30-30)</span><span>Porcentaje de los 50 escenarios</span></div></div>
+  <details><summary>Temperatura, humedad y viento de cada día</summary><div class="body"><p class="small muted">Valor central de los escenarios y, entre paréntesis, el rango del 80 % central, a las 15 o 16 horas de Chile.</p><div class='tabla'><table><thead><tr><th class='l'>Día</th><th>Alta o crítica</th><th>Crítica</th><th>Temperatura</th><th>Humedad</th><th>Viento</th><th>Días sin lluvia</th></tr></thead><tbody><tr><td class='l'>sáb 17</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>10 °C <span class='muted'>(8–12)</span></td><td class='num'>89 % <span class='muted'>(81–99)</span></td><td class='num'>4 km/h <span class='muted'>(3–8)</span></td><td class='num'>1</td></tr><tr><td class='l'>dom 18</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>9 °C <span class='muted'>(7–10)</span></td><td class='num'>93 % <span class='muted'>(88–100)</span></td><td class='num'>6 km/h <span class='muted'>(3–9)</span></td><td class='num'>2</td></tr><tr><td class='l'>lun 19</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>12 °C <span class='muted'>(10–13)</span></td><td class='num'>90 % <span class='muted'>(84–96)</span></td><td class='num'>6 km/h <span class='muted'>(3–10)</span></td><td class='num'>3</td></tr><tr><td class='l'>mar 20</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>11 °C <span class='muted'>(9–13)</span></td><td class='num'>91 % <span class='muted'>(86–94)</span></td><td class='num'>7 km/h <span class='muted'>(5–11)</span></td><td class='num'>0</td></tr><tr><td class='l'>mié 21</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>12 °C <span class='muted'>(10–13)</span></td><td class='num'>86 % <span class='muted'>(79–92)</span></td><td class='num'>10 km/h <span class='muted'>(7–17)</span></td><td class='num'>0</td></tr><tr><td class='l'>jue 22</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>11 °C <span class='muted'>(9–12)</span></td><td class='num'>92 % <span class='muted'>(85–97)</span></td><td class='num'>7 km/h <span class='muted'>(4–13)</span></td><td class='num'>0</td></tr><tr><td class='l'>vie 23</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>9 °C <span class='muted'>(7–11)</span></td><td class='num'>91 % <span class='muted'>(75–98)</span></td><td class='num'>8 km/h <span class='muted'>(5–14)</span></td><td class='num'>0</td></tr><tr><td class='l'>sáb 24</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>9 °C <span class='muted'>(7–12)</span></td><td class='num'>85 % <span class='muted'>(69–95)</span></td><td class='num'>8 km/h <span class='muted'>(5–17)</span></td><td class='num'>1</td></tr><tr><td class='l'>dom 25</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>10 °C <span class='muted'>(7–13)</span></td><td class='num'>90 % <span class='muted'>(64–96)</span></td><td class='num'>7 km/h <span class='muted'>(5–20)</span></td><td class='num'>0</td></tr><tr><td class='l'>lun 26</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>9 °C <span class='muted'>(7–11)</span></td><td class='num'>91 % <span class='muted'>(78–97)</span></td><td class='num'>8 km/h <span class='muted'>(4–12)</span></td><td class='num'>0</td></tr><tr><td class='l'>mar 27</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>9 °C <span class='muted'>(6–12)</span></td><td class='num'>92 % <span class='muted'>(83–100)</span></td><td class='num'>7 km/h <span class='muted'>(4–12)</span></td><td class='num'>1</td></tr><tr><td class='l'>mié 28</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>10 °C <span class='muted'>(7–12)</span></td><td class='num'>91 % <span class='muted'>(79–98)</span></td><td class='num'>7 km/h <span class='muted'>(3–13)</span></td><td class='num'>1</td></tr><tr><td class='l'>jue 29</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>10 °C <span class='muted'>(7–13)</span></td><td class='num'>89 % <span class='muted'>(66–99)</span></td><td class='num'>9 km/h <span class='muted'>(4–15)</span></td><td class='num'>1</td></tr><tr><td class='l'>vie 30</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>11 °C <span class='muted'>(8–13)</span></td><td class='num'>91 % <span class='muted'>(79–99)</span></td><td class='num'>6 km/h <span class='muted'>(3–12)</span></td><td class='num'>2</td></tr><tr><td class='l'>sáb 31</td><td class='num'>0 %</td><td class='num'>0 %</td><td class='num'>11 °C <span class='muted'>(8–13)</span></td><td class='num'>95 % <span class='muted'>(85–100)</span></td><td class='num'>6 km/h <span class='muted'>(3–10)</span></td><td class='num'>1</td></tr></tbody></table></div></div></details>
+  <details><summary>Cómo cambia la probabilidad a medida que se acerca el día</summary><div class="body"><p class='small muted'>Cuando haya más de una corrida, aquí se verá cómo cambia la probabilidad de un mismo día a medida que se acerca.</p></div></details>
+</div>
+<details><summary>Cómo se calcula</summary><div class="body">
+  <p>Fuente: AIFS-ENS, el ensamble de inteligencia artificial de ECMWF (50 escenarios, grilla de 0,25°, datos abiertos CC-BY 4.0). Para cada comuna se toma el punto de grilla más cercano y, cada día, la temperatura, la humedad relativa (calculada desde el punto de rocío) y el viento a 10 m de las 18 UTC, y la lluvia acumulada del día.</p>
+  <p>Condición crítica: se cumplen a la vez las tres partes de la regla 30-30-30. Condición alta: se cumplen al menos dos y la comuna lleva 5 días o más sin lluvia dentro del pronóstico. El porcentaje es la parte de los escenarios en esa condición.</p>
+  <p>Límites: la grilla de 25 km no ve el viento de quebradas y laderas, ni el estado del combustible; los días sin lluvia se cuentan desde el inicio del pronóstico, no desde la última lluvia real. El índice canadiense FWI no se calcula porque necesita la humedad del combustible de días anteriores, que el ensamble no trae.</p>
+</div></details>
+<footer><p>Actualizado el 16 oct, 18:20 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
+</div>
+<script>
+document.getElementById('comuna').addEventListener('change', e => {
+  document.querySelectorAll('.comuna').forEach(b => b.classList.toggle('visible', b.dataset.i === e.target.value));
+});
+</script>
+
+<script>
+(function(){
+  let pop=null, dueno=null;
+  function cerrar(){ if(pop){pop.remove();pop=null;} if(dueno){dueno.setAttribute('aria-expanded','false');dueno=null;} }
+  document.addEventListener('click',function(e){
+    const b=e.target.closest('.def');
+    if(!b){ if(pop && !e.target.closest('.def-pop')) cerrar(); return; }
+    e.preventDefault();
+    if(dueno===b){cerrar();return;}
+    cerrar(); dueno=b; b.setAttribute('aria-expanded','true');
+    pop=document.createElement('div'); pop.className='def-pop'; pop.setAttribute('role','tooltip'); pop.textContent=b.dataset.def;
+    document.body.appendChild(pop);
+    const r=b.getBoundingClientRect(), w=pop.offsetWidth;
+    let x=r.left+window.scrollX; x=Math.min(x, window.scrollX+document.documentElement.clientWidth-w-16); x=Math.max(16+window.scrollX,x);
+    pop.style.left=x+'px'; pop.style.top=(r.bottom+window.scrollY+6)+'px';
+  });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') cerrar(); });
+  window.addEventListener('resize',cerrar);
+})();
+</script>
+
+</body>
+</html>

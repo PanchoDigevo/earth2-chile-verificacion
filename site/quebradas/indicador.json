@@ -1,5 +1,5 @@
 {
-"generado": "2026-10-16T13:43Z",
+"generado": "2026-10-16T15:21Z",
 "lluvia_prevista": {
 "AIFS": {
 "corrida": "20261016_06",
@@ -30,7 +30,8 @@
 "umbrales": [
 0.2,
 0.5
-]
+],
+"prop_min": 0.01
 },
 "cuencas": [
 {
@@ -39,7 +40,9 @@
 "p6": 0.026,
 "p24": 0.026,
 "p": 0.026,
-"nivel": "bajo"
+"nivel": "bajo",
+"mm_atencion": 10.0,
+"mm_aviso": 16.2
 },
 {
 "id": 2,
@@ -47,7 +50,9 @@
 "p6": 0.026,
 "p24": 0.026,
 "p": 0.026,
-"nivel": "bajo"
+"nivel": "sin_quema",
+"mm_atencion": null,
+"mm_aviso": null
 },
 {
 "id": 3,
@@ -55,7 +60,9 @@
 "p6": 0.026,
 "p24": 0.026,
 "p": 0.026,
-"nivel": "bajo"
+"nivel": "bajo",
+"mm_atencion": 22.0,
+"mm_aviso": 35.7
 },
 {
 "id": 4,
@@ -63,7 +70,9 @@
 "p6": 0.026,
 "p24": 0.026,
 "p": 0.026,
-"nivel": "bajo"
+"nivel": "sin_quema",
+"mm_atencion": null,
+"mm_aviso": null
 },
 {
 "id": 5,
@@ -71,7 +80,9 @@
 "p6": 0.026,
 "p24": 0.026,
 "p": 0.026,
-"nivel": "bajo"
+"nivel": "sin_quema",
+"mm_atencion": null,
+"mm_aviso": null
 },
 {
 "id": 6,
@@ -79,7 +90,9 @@
 "p6": 0.026,
 "p24": 0.026,
 "p": 0.026,
-"nivel": "bajo"
+"nivel": "sin_quema",
+"mm_atencion": null,
+"mm_aviso": null
 },
 {
 "id": 7,
@@ -87,7 +100,9 @@
 "p6": 0.026,
 "p24": 0.026,
 "p": 0.026,
-"nivel": "bajo"
+"nivel": "sin_quema",
+"mm_atencion": null,
+"mm_aviso": null
 },
 {
 "id": 8,
@@ -95,7 +110,9 @@
 "p6": 0.026,
 "p24": 0.026,
 "p": 0.026,
-"nivel": "bajo"
+"nivel": "sin_quema",
+"mm_atencion": null,
+"mm_aviso": null
 },
 {
 "id": 9,
@@ -103,7 +120,9 @@
 "p6": 0.026,
 "p24": 0.026,
 "p": 0.026,
-"nivel": "bajo"
+"nivel": "sin_quema",
+"mm_atencion": null,
+"mm_aviso": null
 },
 {
 "id": 10,
@@ -111,7 +130,9 @@
 "p6": 0.026,
 "p24": 0.026,
 "p": 0.026,
-"nivel": "bajo"
+"nivel": "sin_quema",
+"mm_atencion": null,
+"mm_aviso": null
 },
 {
 "id": 11,
@@ -119,7 +140,9 @@
 "p6": 0.026,
 "p24": 0.026,
 "p": 0.026,
-"nivel": "bajo"
+"nivel": "sin_quema",
+"mm_atencion": null,
+"mm_aviso": null
 },
 {
 "id": 12,
@@ -127,7 +150,9 @@
 "p6": 0.026,
 "p24": 0.026,
 "p": 0.026,
-"nivel": "bajo"
+"nivel": "sin_quema",
+"mm_atencion": null,
+"mm_aviso": null
 },
 {
 "id": 13,
@@ -135,7 +160,9 @@
 "p6": 0.026,
 "p24": 0.026,
 "p": 0.026,
-"nivel": "bajo"
+"nivel": "sin_quema",
+"mm_atencion": null,
+"mm_aviso": null
 },
 {
 "id": 14,
@@ -143,7 +170,9 @@
 "p6": 0.026,
 "p24": 0.026,
 "p": 0.026,
-"nivel": "bajo"
+"nivel": "sin_quema",
+"mm_atencion": null,
+"mm_aviso": null
 },
 {
 "id": 15,
@@ -151,7 +180,9 @@
 "p6": 0.026,
 "p24": 0.026,
 "p": 0.026,
-"nivel": "bajo"
+"nivel": "sin_quema",
+"mm_atencion": null,
+"mm_aviso": null
 },
 {
 "id": 16,
@@ -159,7 +190,9 @@
 "p6": 0.026,
 "p24": 0.026,
 "p": 0.026,
-"nivel": "bajo"
+"nivel": "sin_quema",
+"mm_atencion": null,
+"mm_aviso": null
 },
 {
 "id": 17,
@@ -167,7 +200,9 @@
 "p6": 0.026,
 "p24": 0.026,
 "p": 0.026,
-"nivel": "bajo"
+"nivel": "sin_quema",
+"mm_atencion": null,
+"mm_aviso": null
 },
 {
 "id": 18,
@@ -175,7 +210,9 @@
 "p6": 0.026,
 "p24": 0.026,
 "p": 0.026,
-"nivel": "bajo"
+"nivel": "sin_quema",
+"mm_atencion": null,
+"mm_aviso": null
 },
 {
 "id": 19,
@@ -183,7 +220,9 @@
 "p6": 0.026,
 "p24": 0.026,
 "p": 0.026,
-"nivel": "bajo"
+"nivel": "sin_quema",
+"mm_atencion": null,
+"mm_aviso": null
 },
 {
 "id": 20,
@@ -191,7 +230,9 @@
 "p6": 0.026,
 "p24": 0.026,
 "p": 0.026,
-"nivel": "bajo"
+"nivel": "sin_quema",
+"mm_atencion": null,
+"mm_aviso": null
 },
 {
 "id": 21,
@@ -199,7 +240,9 @@
 "p6": 0.026,
 "p24": 0.026,
 "p": 0.026,
-"nivel": "bajo"
+"nivel": "sin_quema",
+"mm_atencion": null,
+"mm_aviso": null
 },
 {
 "id": 22,
@@ -207,7 +250,9 @@
 "p6": 0.026,
 "p24": 0.026,
 "p": 0.026,
-"nivel": "bajo"
+"nivel": "sin_quema",
+"mm_atencion": null,
+"mm_aviso": null
 },
 {
 "id": 23,
@@ -215,7 +260,9 @@
 "p6": 0.026,
 "p24": 0.026,
 "p": 0.026,
-"nivel": "bajo"
+"nivel": "sin_quema",
+"mm_atencion": null,
+"mm_aviso": null
 },
 {
 "id": 24,
@@ -223,7 +270,9 @@
 "p6": 0.026,
 "p24": 0.026,
 "p": 0.026,
-"nivel": "bajo"
+"nivel": "sin_quema",
+"mm_atencion": null,
+"mm_aviso": null
 },
 {
 "id": 25,
@@ -231,7 +280,9 @@
 "p6": 0.026,
 "p24": 0.026,
 "p": 0.026,
-"nivel": "bajo"
+"nivel": "sin_quema",
+"mm_atencion": null,
+"mm_aviso": null
 },
 {
 "id": 26,
@@ -239,7 +290,9 @@
 "p6": 0.026,
 "p24": 0.026,
 "p": 0.026,
-"nivel": "bajo"
+"nivel": "sin_quema",
+"mm_atencion": null,
+"mm_aviso": null
 },
 {
 "id": 27,
@@ -247,7 +300,9 @@
 "p6": 0.026,
 "p24": 0.026,
 "p": 0.026,
-"nivel": "bajo"
+"nivel": "sin_quema",
+"mm_atencion": null,
+"mm_aviso": null
 },
 {
 "id": 28,
@@ -255,7 +310,9 @@
 "p6": 0.026,
 "p24": 0.026,
 "p": 0.026,
-"nivel": "bajo"
+"nivel": "sin_quema",
+"mm_atencion": null,
+"mm_aviso": null
 }
 ]
 }

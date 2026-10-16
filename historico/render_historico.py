@@ -301,6 +301,26 @@ def pagina_metodo(r, n_pares, n_corridas, n_est, ahora):
   <details><summary>Por aeródromo, a 24 h</summary><div class="body">{tabla(["Aeródromo"] + [f"{m} (°C)" for m in ORDEN if not es.empty and m in set(es.modelo)], f_es)}</div></details>
 </section>"""
 
+    sec_movil = ""
+    try:
+        mt = ordenar(pd.read_csv(os.path.join(AQUI, "..", "oceano", "data", "correccion_movil_total.csv")))
+        me_ = pd.read_csv(os.path.join(AQUI, "..", "oceano", "data", "correccion_movil.csv"))
+    except Exception:
+        mt = pd.DataFrame()
+    if not mt.empty:
+        f_mt = [f"<tr><td class='l'>{x.modelo}</td><td class='num'>{int(x.lead_h)} h</td><td class='num'>{entero(x.n)}</td>"
+                f"<td class='num'>{num(x.mae_sin, 2, ' °C')}</td><td class='num'>{num(x.mae_fija, 2, ' °C')}</td><td class='num'>{num(x.mae_movil, 2, ' °C')}</td></tr>"
+                for x in mt.itertuples(index=False)]
+        g24 = me_[me_.lead_h == 24]
+        cuenta = {m: g24[g24.modelo == m].gana.value_counts().to_dict() for m in ORDEN}
+        frase = "; ".join(f"{m}: la móvil gana en {c.get('móvil', 0)}, la de 2025 en {c.get('fija', 0)} y empatan en {c.get('empate', 0)}" for m, c in cuenta.items() if c)
+        sec_movil = f"""<section class="card">
+  <div class="sec-head"><h2>Corrección fija o móvil</h2>
+  <p class="muted">La corrección fija usa el error típico de 2025. La móvil usa el de los últimos 45 días antes de cada pronóstico, sin mirar el futuro, así que se adapta si algo cambia (el mar, el entorno del aeródromo, el modelo). Las dos se evalúan sobre los mismos pronósticos de 2026.</p></div>
+  {tabla(["Modelo", "Plazo", "Comparaciones", "Sin corregir", "Corrección 2025", "Corrección 45 días"], f_mt)}
+  <p class="small">Por aeródromo, a 24 h: {frase}. El detalle de cada uno está en su ficha de <a href="zona.html">Tu zona</a>.</p>
+</section>"""
+
     glosario = "".join(f"<dt>{k[0].upper() + k[1:]}</dt><dd>{v}</dd>" for k, v in GLOSARIO.items())
     html = f"""{head("Método · Earth-2 Chile", "Cómo medimos el error de los pronósticos en Chile: fuentes, cálculos, corrección por estación, indicador de quebradas y límites conocidos.")}
 <body>
@@ -313,6 +333,7 @@ def pagina_metodo(r, n_pares, n_corridas, n_est, ahora):
 </header>
 {sec_corr}
 {sec_temp}
+{sec_movil}
 <section class="card">
   <div class="sec-head"><h2>Cómo se calcula</h2></div>
   <h3>Verificación diaria (Resumen, Tu zona)</h3>
@@ -365,8 +386,11 @@ def render(pares, r):
         n_pares, n_corridas, n_est = len(t), t.run.nunique(), t.icao.nunique()
     else:
         pl = r.get("plazos", pd.DataFrame())
-        n_pares = int(pl.n.sum()) if not pl.empty else 0
-        n_corridas = 0
+        n_pares = int(pl[pl.lead_h == 24].n.sum()) if not pl.empty else 0
+        try:
+            n_corridas = pd.read_csv(os.path.join(AQUI, "data", "pronosticos.csv.gz"), usecols=["run"]).run.nunique()
+        except Exception:
+            n_corridas = 0
         es = r.get("estaciones", pd.DataFrame())
         n_est = es.icao.nunique() if not es.empty else 0
     kb1 = pagina_eventos(r, ahora)
@@ -375,8 +399,13 @@ def render(pares, r):
     print(f"site/eventos.html ({kb1} KB), site/metodo.html ({kb2} KB) y site/historico.html (redirección) listos")
 
 
-if __name__ == "__main__":
+def desde_csv():
+    """Regenera Eventos y Método solo con los resultados guardados (lo llama el pipeline diario)."""
     r = {os.path.basename(f)[:-4]: pd.read_csv(f) for f in glob.glob(os.path.join(RES, "*.csv"))}
     ruta_pares = os.path.join(AQUI, "data", "pares.csv.gz")
     pares = pd.read_csv(ruta_pares, parse_dates=["run", "valid"]) if os.path.exists(ruta_pares) else None
     render(pares, r)
+
+
+if __name__ == "__main__":
+    desde_csv()

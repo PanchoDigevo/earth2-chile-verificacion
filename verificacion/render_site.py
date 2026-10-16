@@ -11,6 +11,7 @@ Fuentes de las cifras:
 Diseño: docs/brief_sitio.md. Lenguaje de aviso/indicador, nunca "alerta"."""
 import json, math, os, re
 import pandas as pd
+import cambio
 from comun import (CSS_NAV, CSS_DEF, JS_DEF, EVENTOS, GLOSARIO, aviso, d, entero, fecha, hora_chile, nav, num, pie, signo)
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
@@ -143,6 +144,8 @@ def datos_estaciones():
                       "n": int(x.n.iloc[0]), "s": round(float(s.sesgo.iloc[0]), 2) if len(s) else None}
         if not m:
             continue
+        for mod in m:
+            m[mod].update(cambio.por_estacion(r.icao, mod))
         corto, region = nombre(r.icao, r.nombre)
         out.append({"icao": r.icao, "nombre": corto, "region": region, "elev": None if pd.isna(r.elev) else int(float(r.elev)),
                     "lat": float(r.lat), "lon": float(r.lon), "m": m})
@@ -312,6 +315,8 @@ JS_MAPA = r"""
     const n = x ? x.n : 0;
     box.innerHTML = `<div class="ficha-cab"><h2>${e.nombre}</h2><p class="muted small">${e.region}${e.elev != null ? ' · ' + e.elev.toLocaleString('es-CL') + ' m de altura' : ''}</p></div>
       ${cuerpo}
+      ${x && x.movil != null ? `<p class="small">Corregir con los últimos 45 días en vez de 2025: ${fmt(x.movil)} °C frente a ${fmt(x.fija)} °C. ${x.gana === 'móvil' ? 'Aquí gana la corrección móvil.' : x.gana === 'fija' ? 'Aquí gana la corrección de 2025.' : 'Aquí dan casi lo mismo.'}</p>` : ''}
+      ${x && x.deriva != null ? `<p class="small"><span class="chip medio"><i></i>En deriva</span> En los últimos 30 días, este modelo pronosticó aquí ${fmt(Math.abs(x.deriva))} °C más ${x.deriva < 0 ? 'frío' : 'calor'} de lo que corresponde a su error de 2025.</p>` : ''}
       <table class="mini"><thead><tr><th class="l">Modelo</th><th>Sin corregir</th><th>Corregido</th></tr></thead><tbody>${filas}</tbody></table>
       <p class="muted small">Error medio de la temperatura pronosticada con 24 h de anticipación, ${n.toLocaleString('es-CL')} comparaciones en 2026. <a href="#${e.icao}">Enlace a esta estación</a></p>`;
   }
@@ -519,7 +524,7 @@ def head(titulo, descripcion):
 <meta name="description" content="{descripcion}">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
-<style>{CSS}{CSS_NAV}{CSS_DEF}</style>
+<style>{CSS}{CSS_NAV}{CSS_DEF}{cambio.CSS_CAMBIO}</style>
 </head>"""
 
 
@@ -597,6 +602,8 @@ def pagina_resumen(est, ahora):
   {mapa_svg(est)}
   {leyenda()}
 </section>
+
+{cambio.seccion(est)}
 
 <section aria-label="Explorar">
   <div class="puertas">{''.join(puertas)}</div>
@@ -740,6 +747,13 @@ def render_site(pts):
     kb2 = pagina_zona(est, pts, ahora)
     print(f"site/index.html ({kb1} KB) y site/zona.html ({kb2} KB) listos: {len(est)} aeródromos consolidados, "
           f"{len(pts)} comparaciones del pipeline diario")
+    try:                                     # Eventos y Método se regeneran con los resultados guardados
+        import sys
+        sys.path.insert(0, os.path.join(AQUI, "..", "historico"))
+        import render_historico
+        render_historico.desde_csv()
+    except Exception as e:
+        print("AVISO: no se regeneraron Eventos y Método:", e)
 
 
 if __name__ == "__main__":

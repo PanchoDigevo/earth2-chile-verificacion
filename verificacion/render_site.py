@@ -245,10 +245,14 @@ def mapa_svg(est):
             if not (la1 <= e["lat"] <= la0 and lo0 <= e["lon"] <= lo1):
                 continue
             x, y = proj(e["lon"], e["lat"])
+            etq = e["nombre"].split(" (")[0]
+            # la etiqueta va a la derecha del punto; si no cabe antes del borde de la franja, a la izquierda
+            cabe = (x1 - x) > 8 * len(etq) + 12
+            tx, ancla = (x + 9, "start") if cabe else (x - 9, "end")
             pts.append(f'<g class="est sin" data-icao="{e["icao"]}" tabindex="0" role="button" aria-label="{e["nombre"]}">'
                        f'<title>{e["nombre"]}</title><circle class="hit" cx="{x:.1f}" cy="{y:.1f}" r="11"/>'
                        f'<circle class="pt" cx="{x:.1f}" cy="{y:.1f}" r="5"/>'
-                       f'<text class="etq" x="{x + 9:.1f}" y="{y + 4:.1f}">{e["nombre"].split(" (")[0]}</text></g>')
+                       f'<text class="etq" x="{tx:.1f}" y="{y + 4:.1f}" text-anchor="{ancla}">{etq}</text></g>')
         figs.append(f'<figure class="franja"><svg viewBox="{x0:.1f} {y0:.1f} {w:.1f} {h:.1f}" width="{w:.0f}" height="{h:.0f}" '
                     f'role="group" aria-label="Zona {titulo.lower()}"><use href="#chile" class="tierra"/>{"".join(pts)}</svg>'
                     f'<figcaption>{titulo}</figcaption></figure>')

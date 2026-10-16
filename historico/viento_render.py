@@ -24,7 +24,7 @@ def ordenar(df):
     return df.sort_values(["_o"] + [c for c in ("lead_h",) if c in df]).drop(columns="_o")
 
 
-def bloque_evento(ev, num):
+def bloque_evento(ev, num, titulo="¿Y el viento?"):
     """Tabla compacta: viento y ráfaga máximos pronosticados vs. observados en los aeródromos de la zona, por anticipación."""
     v = leer(os.path.join(RES, "eventos_viento.csv"))
     if v.empty or "evento" not in v:
@@ -43,7 +43,7 @@ def bloque_evento(ev, num):
             w, g = x.w_fc_max.iloc[0], x.g_fc_max.iloc[0]
             celdas.append(f"<td class='num'>{num(w * KMH, 0)}{'' if pd.isna(g) else f' / {num(g * KMH, 0)}'}</td>")
         filas.append(f"<tr><td class='l'>{m}</td>{''.join(celdas)}</tr>")
-    return (f"<h3>¿Y el viento?</h3><p class='small muted'>Viento máximo pronosticado / ráfaga máxima pronosticada en los aeródromos de la zona "
+    return (f"<h3>{titulo}</h3><p class='small muted'>Viento máximo pronosticado / ráfaga máxima pronosticada en los aeródromos de la zona "
             f"(km/h, a las 21 y a las 9 de cada día). Observado: viento de hasta {num(obs_w * KMH, 0)} km/h y ráfagas de hasta "
             f"{num(obs_g * KMH, 0)} km/h. AIFS no publica ráfagas.</p>"
             "<div class='tabla'><table class='matriz'><thead><tr><th class='l'>Modelo</th><th>72 h antes</th><th>48 h antes</th><th>24 h antes</th></tr></thead>"

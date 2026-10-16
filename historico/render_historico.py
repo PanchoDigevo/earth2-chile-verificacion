@@ -185,14 +185,27 @@ def pagina_eventos(r, ahora):
                        f'<p class="small muted">Lluvia pronosticada para las 24 horas de cada día (de 8 o 9 de la mañana a la misma hora del día siguiente), '
                        f'según la corrida emitida 72, 48 y 24 horas antes. En negrita, 10 mm o más.{nota_sat}</p>'
                        f'{tabla_dia_a_dia(ev, dd, sat_idx)}</div></details>')
+        if ev.startswith("incendios"):
+            # evento de incendio: la pregunta es viento y sequedad, no lluvia
+            secos = total - con_lluvia
+            avisos = ""
+            if not rr.empty:
+                x = rr[(rr.modelo == "AIFS") & (rr.lead_h == 24)]
+                if len(x):
+                    marco = int(x.aciertos.iloc[0] + x.falsas.iloc[0])
+                    avisos = f" Con un día de anticipación, la IA (AIFS) anunció lluvia en {marco} de esos {total} casos."
+            cuerpo_evento = (viento_render.bloque_evento(ev, num, titulo="¿Anticiparon el viento?")
+                             + (f"<h3>¿Y la sequedad?</h3><p class='small'>En los aeródromos de la zona ({refs}) no llovió en {secos} de los {total} casos con observación, contando cada día en cada aeródromo.{avisos}</p>"
+                                if total else f"<p class='small muted'>Los datos de los aeródromos de la zona ({refs}) para estos días aparecerán cuando se complete el análisis del histórico.</p>"))
+        else:
+            cuerpo_evento = (f"<h3>¿Marcaron lluvia antes?</h3><p class='small muted'>En los aeródromos de la zona ({refs}) hubo {con_lluvia} casos con lluvia, "
+                             f"contando cada día en cada aeródromo{f', de {total} con observación' if total != con_lluvia else ''}. Cada celda dice en cuántos de esos casos "
+                             f"el modelo había anunciado lluvia con esa anticipación.</p>{matriz}{viento_render.bloque_evento(ev, num)}")
         bloques.append(f"""<article class="card evento" id="{ev}">
   <div class="sec-head"><div class="eyebrow">{cuando}</div><h2>{titulo}</h2>
   {f'<p class="imp">{impacto}.{fuente}</p>' if impacto else ''}</div>
   {f'<div class="lectura"><p><strong>Lectura.</strong> {lectura}</p></div>' if lectura else ''}
-  <h3>¿Marcaron lluvia antes?</h3>
-  <p class="small muted">En los aeródromos de la zona ({refs}) hubo {con_lluvia} casos con lluvia, contando cada día en cada aeródromo{f", de {total} con observación" if total != con_lluvia else ""}. Cada celda dice en cuántos de esos casos el modelo había anunciado lluvia con esa anticipación.</p>
-  {matriz}
-  {viento_render.bloque_evento(ev, num)}
+  {cuerpo_evento}
   {quebradas}
   {detalle}
 </article>""")

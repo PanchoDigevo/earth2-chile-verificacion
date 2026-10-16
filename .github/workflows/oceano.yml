@@ -32,6 +32,9 @@ jobs:
         run: python oceano/oceano.py ${{ inputs.desde && format('--desde {0}', inputs.desde) || '' }}
       - name: Deriva y corrección móvil (temperatura)
         run: python oceano/deriva.py --variable t
+      - name: Deriva y corrección móvil (viento)
+        run: python oceano/deriva.py --variable w
+        continue-on-error: true
       - name: Guardar
         run: |
           git config user.name "earth2-bot"

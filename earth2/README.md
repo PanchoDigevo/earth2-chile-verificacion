@@ -24,5 +24,5 @@ Earth2Studio trae listos los mismos conectores que escribimos a mano, con caché
 
 ## Instalar
 
-    pip install earth2studio            # datos, sin GPU (trae torch CPU; ~2 GB)
+    pip install "earth2studio[data]"    # conectores de datos, sin GPU (trae torch CPU; ~2 GB)
     pip install "earth2studio[aifs]"    # para correr AIFS en GPU

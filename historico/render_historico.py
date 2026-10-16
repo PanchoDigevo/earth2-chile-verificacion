@@ -14,6 +14,7 @@ from render_site import CSS, MODELOS, ORDEN, UMBRAL_T, MIN_PARES, chip, nivel, n
 from comun import (EVENTOS, GLOSARIO, JS_DEF, MESES, MESES_LARGO, aviso, d, entero, fecha, nav, num, pie, signo)  # noqa: E402
 
 RES = os.path.join(AQUI, "data", "resultados")
+import viento_render  # noqa: E402
 CATALOGO = os.path.join(AQUI, "..", "hindcast", "eventos", "eventos_2026.csv")
 PLAZOS = [72, 48, 24]
 UMBRAL_LLUVIA_MM = 1.0
@@ -191,6 +192,7 @@ def pagina_eventos(r, ahora):
   <h3>¿Marcaron lluvia antes?</h3>
   <p class="small muted">En los aeródromos de la zona ({refs}) hubo {con_lluvia} casos con lluvia, contando cada día en cada aeródromo{f", de {total} con observación" if total != con_lluvia else ""}. Cada celda dice en cuántos de esos casos el modelo había anunciado lluvia con esa anticipación.</p>
   {matriz}
+  {viento_render.bloque_evento(ev, num)}
   {quebradas}
   {detalle}
 </article>""")
@@ -334,6 +336,7 @@ def pagina_metodo(r, n_pares, n_corridas, n_est, ahora):
 {sec_corr}
 {sec_temp}
 {sec_movil}
+{viento_render.seccion_metodo(tabla, num, entero, signo, d)}
 <section class="card">
   <div class="sec-head"><h2>Cómo se calcula</h2></div>
   <h3>Verificación diaria (Resumen, Tu zona)</h3>

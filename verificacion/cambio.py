@@ -76,6 +76,16 @@ def por_estacion(icao, modelo):
         y = dv[(dv.modelo == modelo) & (dv.icao == icao)]
         if len(y) and str(y.deriva.iloc[0]).lower() == "true":
             out["deriva"] = round(float(y.res30.iloc[0]), 2)
+    try:
+        ve = pd.read_csv(os.path.join(AQUI, "..", "historico", "data", "resultados", "viento_estaciones.csv"))
+        z = ve[(ve.modelo == modelo) & (ve.icao == icao) & (ve.lead_h == 24)]
+        if len(z) and pd.notna(z.w_mae.iloc[0]):
+            out["viento"] = round(float(z.w_mae.iloc[0]) * 3.6, 1)
+            out["viento_sesgo"] = round(float(z.w_sesgo.iloc[0]) * 3.6, 1)
+            if pd.notna(z.g_mae.iloc[0]):
+                out["rafaga"] = round(float(z.g_mae.iloc[0]) * 3.6, 1)
+    except Exception:
+        pass
     return out
 
 

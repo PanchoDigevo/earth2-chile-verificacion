@@ -317,6 +317,7 @@ JS_MAPA = r"""
       ${cuerpo}
       ${x && x.movil != null ? `<p class="small">Corregir con los últimos 45 días en vez de 2025: ${fmt(x.movil)} °C frente a ${fmt(x.fija)} °C. ${x.gana === 'móvil' ? 'Aquí gana la corrección móvil.' : x.gana === 'fija' ? 'Aquí gana la corrección de 2025.' : 'Aquí dan casi lo mismo.'}</p>` : ''}
       ${x && x.deriva != null ? `<p class="small"><span class="chip medio"><i></i>En deriva</span> En los últimos 30 días, este modelo pronosticó aquí ${fmt(Math.abs(x.deriva))} °C más ${x.deriva < 0 ? 'frío' : 'calor'} de lo que corresponde a su error de 2025.</p>` : ''}
+      ${x && x.viento != null ? `<p class="small">Viento: ${MOD[st.modelo]} se equivoca en promedio ${fmt(x.viento, 0)} km/h en la velocidad de mañana${Math.abs(x.viento_sesgo) >= 3 ? (x.viento_sesgo > 0 ? ', y tiende a pronosticar más viento del que hay' : ', y tiende a pronosticar menos viento del que hay') : ''}${x.rafaga != null ? `; en las ráfagas, ${fmt(x.rafaga, 0)} km/h` : (st.modelo === 'AIFS' ? '; AIFS no pronostica ráfagas' : '')}.</p>` : ''}
       <table class="mini"><thead><tr><th class="l">Modelo</th><th>Sin corregir</th><th>Corregido</th></tr></thead><tbody>${filas}</tbody></table>
       <p class="muted small">Error medio de la temperatura pronosticada con 24 h de anticipación, ${n.toLocaleString('es-CL')} comparaciones en 2026. <a href="#${e.icao}">Enlace a esta estación</a></p>`;
   }

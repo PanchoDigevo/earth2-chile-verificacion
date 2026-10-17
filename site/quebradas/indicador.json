@@ -1,15 +1,21 @@
 {
-"generado": "2026-10-17T07:15Z",
+"generado": "2026-10-17T12:39Z",
 "lluvia_prevista": {
-"GFS": {
-"corrida": "20261017_00",
+"AIFS": {
+"corrida": "20261017_06",
 "mm6": 0.0,
-"mm24": 1.2,
-"mm48": 12.2
+"mm24": 0.5,
+"mm48": 1.7
+},
+"GFS": {
+"corrida": "20261017_06",
+"mm6": 0.0,
+"mm24": 1.1,
+"mm48": 6.4
 }
 },
 "mm6": 0.0,
-"mm24": 1.2,
+"mm24": 1.1,
 "horas_lluvia_7d": {},
 "factor_antecedente": 1.0,
 "parametros": {
@@ -32,8 +38,8 @@
 "id": 1,
 "nombre": "Quebrada de Apoquindo (San Carlos de Apoquindo)",
 "p6": 0.026,
-"p24": 0.028,
-"p": 0.028,
+"p24": 0.027,
+"p": 0.027,
 "nivel": "bajo",
 "mm_atencion": 10.0,
 "mm_aviso": 16.2
@@ -122,8 +128,8 @@
 "id": 10,
 "nombre": "Quebrada de Lo Cañas",
 "p6": 0.026,
-"p24": 0.027,
-"p": 0.027,
+"p24": 0.026,
+"p": 0.026,
 "nivel": "sin_quema",
 "mm_atencion": null,
 "mm_aviso": null
@@ -132,8 +138,8 @@
 "id": 11,
 "nombre": "Quebrada de Panul",
 "p6": 0.026,
-"p24": 0.027,
-"p": 0.027,
+"p24": 0.026,
+"p": 0.026,
 "nivel": "sin_quema",
 "mm_atencion": null,
 "mm_aviso": null
@@ -242,8 +248,8 @@
 "id": 22,
 "nombre": "Quebrada Oscura",
 "p6": 0.026,
-"p24": 0.027,
-"p": 0.027,
+"p24": 0.026,
+"p": 0.026,
 "nivel": "sin_quema",
 "mm_atencion": null,
 "mm_aviso": null

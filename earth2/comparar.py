@@ -2,7 +2,7 @@
 leído con eccodes, punto de grilla más cercano), para la misma corrida de AIFS y los mismos plazos.
 Si coinciden (diferencia máxima < 0,05 °C y < 0,05 m/s), fetch_e2s.py puede reemplazar a fetch_aifs.py.
 Salida: earth2/data/comparacion_aifs.csv y un resumen en pantalla."""
-import datetime as dt, json, os, sys, urllib.request
+import datetime as dt, json, os, sys, time, urllib.error, urllib.request
 import numpy as np, pandas as pd
 import eccodes as ec
 
@@ -15,17 +15,27 @@ PLAZOS = [0, 6, 12, 24]
 B = "https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com"
 
 
+def leer(url, rango=None, intentos=8):
+    """GET con reintentos: el bucket de ECMWF responde 503 Slow Down bajo carga."""
+    for i in range(intentos):
+        try:
+            h = {"Range": f"bytes={rango[0]}-{rango[1]}"} if rango else {}
+            return urllib.request.urlopen(urllib.request.Request(url, headers=h), timeout=120).read()
+        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError):
+            time.sleep(min(60, 2 * 2 ** i))
+    raise SystemExit(f"sin respuesta de ECMWF: {url}")
+
+
 def nuestro(est):
     filas = []
     for h in PLAZOS:
         base = f"{B}/{CORRIDA:%Y%m%d}/{CORRIDA:%H}z/aifs-single/0p25/oper/{CORRIDA:%Y%m%d%H}0000-{h}h-oper-fc"
-        idx = [json.loads(l) for l in urllib.request.urlopen(base + ".index", timeout=120).read().decode().splitlines() if l.startswith("{")]
+        idx = [json.loads(l) for l in leer(base + ".index").decode().splitlines() if l.startswith("{")]
         v = {}
         for e in idx:
             if e.get("levtype") == "sfc" and e["param"] in ("2t", "10u", "10v"):
                 o, n = int(e["_offset"]), int(e["_length"])
-                req = urllib.request.Request(base + ".grib2", headers={"Range": f"bytes={o}-{o + n - 1}"})
-                gid = ec.codes_new_from_message(urllib.request.urlopen(req, timeout=120).read())
+                gid = ec.codes_new_from_message(leer(base + ".grib2", (o, o + n - 1)))
                 v[e["param"]] = [ec.codes_grib_find_nearest(gid, la, lo)[0].value for la, lo in zip(est.lat, est.lon)]
                 ec.codes_release(gid)
         for i, r in est.reset_index(drop=True).iterrows():

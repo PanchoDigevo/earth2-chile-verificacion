@@ -23,5 +23,6 @@ Detectar cambios de régimen (El Niño, olas de calor marinas) desde datos prima
 - Guardar el histórico diario para mostrar cómo cambia la probabilidad de un mismo día a medida que se acerca.
 - Lenguaje de "indicador", nunca "alerta"; enlaces a CONAF y SENAPRED.
 
-## 4. [ ] Earth2Studio
+## 4. [x] Earth2Studio
 - Carpeta `earth2/`: instalar en venv aparte (`~/e2venv-e2s`), corregir la selección por estación de `fetch_e2s.py`, comparar con `fetch_aifs.py` en una corrida y, si coincide, usarlo en el workflow. Probar `earth2studio.data.GOES` y `GOESGLM` para el 13-oct entre 14:00 y 19:00 (hora de Chile).
+- Hecho en GitHub Actions (`.github/workflows/earth2.yml`), no en el Mac: Earth2Studio 0.19 pide Python 3.11 y el Mac tiene 3.9. La extracción por estación de `fetch_e2s.py` coincide con la nuestra (AIFS 2026-10-14 00z, 104 pares, diferencia 0,000). GOES-19 y GLM funcionan: 2.640 destellos sobre Santiago entre 14:00 y 19:00, máximo 1.403 entre 16:00 y 17:00, tope de nube a −51,6 °C. El workflow diario sigue con `fetch_aifs.py` hasta que Pancho decida: cambiarlo suma ~2 GB de torch a cada corrida y no mejora la precisión.

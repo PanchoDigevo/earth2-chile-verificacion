@@ -1,0 +1,48 @@
+name: seguimiento
+# Seguimiento permanente: cada hora registra las corridas nuevas de AIFS, IFS y GFS para las quebradas quemadas de
+# Santiago oriente y los aeródromos de Tobalaba y Pudahuel (hindcast/seguimiento/pronosticos.csv). No cambia el sitio.
+# Para un evento, agregar sus datos en "Resumen de evento" (o lanzarlo a mano con los parámetros).
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+    inputs:
+      evento:
+        description: "Identificador del evento (vacío = solo registrar)"
+        default: ""
+      desde:
+        description: "Inicio de la ventana, hora de Chile (YYYY-MM-DD HH:MM)"
+        default: ""
+      hasta:
+        description: "Fin de la ventana, hora de Chile (YYYY-MM-DD HH:MM)"
+        default: ""
+permissions:
+  contents: write
+concurrency:
+  group: seguimiento
+  cancel-in-progress: false
+jobs:
+  seguir:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      EVENTO: ${{ inputs.evento || '2026-10-20-rm' }}
+      DESDE: ${{ inputs.desde || '2026-10-20 00:00' }}
+      HASTA: ${{ inputs.hasta || '2026-10-21 12:00' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install pandas numpy eccodes shapely
+      - name: Registrar corridas nuevas
+        run: python hindcast/seguimiento.py --evento "$EVENTO" --desde "$DESDE" --hasta "$HASTA"
+      - name: Guardar
+        run: |
+          git config user.name "earth2-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add hindcast/seguimiento hindcast/eventos/prerregistro
+          git diff --cached --quiet || git commit -m "seguimiento: $(date -u +%Y-%m-%dT%H:%MZ)"
+          git pull --rebase -X theirs origin main
+          git push

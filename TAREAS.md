@@ -17,7 +17,7 @@ Detectar cambios de régimen (El Niño, olas de calor marinas) desde datos prima
 - En los cuatro eventos de 2026 y en los incendios de enero 2026 (Biobío/Ñuble, estaciones cercanas): viento y racha pronosticados vs. observados a 72/48/24 h.
 - Episodios de viento fuerte (racha > 50 km/h): cuántos anticipó cada modelo.
 
-## 3. [ ] Página de escenarios de incendio
+## 3. [x] Página de escenarios de incendio
 - `site/escenarios.html` (pestaña "Escenarios"): cada día AIFS-ENS (50 miembros) desde ECMWF open data en AWS, a 15 días, para comunas prioritarias de CONAF en RM, Valparaíso, O'Higgins, Maule, Ñuble y Biobío.
 - Por miembro, índice de peligro meteorológico de incendio (temperatura, humedad, viento, días sin lluvia; FWI si alcanza). Por comuna, probabilidad de superar el umbral cada día (abanico + % de miembros sobre umbral).
 - Guardar el histórico diario para mostrar cómo cambia la probabilidad de un mismo día a medida que se acerca.

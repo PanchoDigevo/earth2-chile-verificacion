@@ -120,7 +120,7 @@ def render():
 <details><summary>Cómo se calcula</summary><div class="body">
   <p>Fuente: AIFS-ENS, el ensamble de inteligencia artificial de ECMWF (50 escenarios, grilla de 0,25°, datos abiertos CC-BY 4.0). Para cada comuna se toma el punto de grilla más cercano y, cada día, la temperatura, la humedad relativa (calculada desde el punto de rocío) y el viento a 10 m de las 18 UTC, y la lluvia acumulada del día.</p>
   <p>Condición crítica: se cumplen a la vez las tres partes de la regla 30-30-30. Condición alta: se cumplen al menos dos y la comuna lleva {u["dias_secos"]} días o más sin lluvia dentro del pronóstico. El porcentaje es la parte de los escenarios en esa condición.</p>
-  <p>Límites: la grilla de 25 km no ve el viento de quebradas y laderas, ni el estado del combustible; los días sin lluvia se cuentan desde el inicio del pronóstico, no desde la última lluvia real. El índice canadiense FWI no se calcula porque necesita la humedad del combustible de días anteriores, que el ensamble no trae.</p>
+  <p>Límites: en comunas cercanas a la costa, como Quilpué o Tomé, el cuadrado de 25 km más cercano incluye mar, así que la temperatura sale más baja y la humedad más alta que en los valles del interior; el indicador queda por debajo de lo que se viviría tierra adentro. Es la misma brecha que mide la sección Tu zona. Además, la grilla no ve el viento de quebradas y laderas, ni el estado del combustible; los días sin lluvia se cuentan desde el inicio del pronóstico, no desde la última lluvia real. El índice canadiense FWI no se calcula porque necesita la humedad del combustible de días anteriores, que el ensamble no trae.</p>
 </div></details>
 {pie(a["generado"])}
 </div>

@@ -166,13 +166,19 @@ footer p{max-width:85ch}
 .topnav .tabs a:hover{color:var(--fg)}
 .topnav .tabs a.activa{color:var(--fg);border-bottom-color:var(--accent)}
 .topnav .tabs a:focus-visible{outline:2px solid var(--accent);outline-offset:-4px;border-radius:4px}
-@media (max-width:760px){
+.topnav .largo{margin-left:.3em}
+@media (max-width:1060px){
   .topnav .in{flex-wrap:wrap;gap:0;padding-inline:0}
   .topnav .marca{padding:10px 16px 2px;font-size:14px}
   .topnav .marca small{display:none}
   .topnav .tabs{margin-left:0;width:100%;padding-inline:6px}
   .topnav .tabs a{height:42px;padding:0 10px;font-size:14px}
   .topnav .largo{display:none}
+}
+@media (max-width:620px){
+  /* en teléfono las seis pestañas no caben: se desplazan y el borde derecho se desvanece como pista */
+  .topnav .tabs{-webkit-mask-image:linear-gradient(to right,#000 85%,transparent);mask-image:linear-gradient(to right,#000 85%,transparent);padding-right:28px}
+  .topnav .tabs a{padding:0 9px}
 }
 
 .def{all:unset;cursor:help;border-bottom:1.5px dotted currentColor;text-underline-offset:2px}
@@ -201,6 +207,9 @@ footer p{max-width:85ch}
 .serie-mini .linea{fill:none;stroke:var(--calido);stroke-width:2;stroke-linejoin:round}
 .serie-mini .fin{fill:var(--calido);stroke:var(--surface);stroke-width:2}
 .lista-deriva{margin:0;padding-left:1.2em;display:grid;gap:6px;font-size:15.5px;max-width:80ch}
+.cambios .contexto{grid-column:1/-1}
+.lista-ctx{margin:0;padding-left:1.2em;display:grid;gap:7px;font-size:15.5px;max-width:90ch}
+.lista-ctx .fuente{color:var(--muted);font-size:14px}
 
 :root{--p-alta:#e8a33a;--p-critica:#c2410c}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--p-alta:#f0b55a;--p-critica:#f07a45}}
@@ -218,7 +227,7 @@ footer p{max-width:85ch}
 </style>
 </head>
 <body>
-<nav class="topnav" aria-label="Secciones del sitio"><div class="in"><a class="marca" href="./">Earth-2 Chile<small>verificación pública del pronóstico</small></a><div class="tabs"><a href="./">Resumen</a><a href="zona.html">Tu zona</a><a href="eventos.html">Eventos<span class="largo"> 2026</span></a><a href="quebradas.html">Quebradas</a><a href="escenarios.html" class="activa" aria-current="page">Escenarios</a><a href="metodo.html">Método</a></div></div></nav>
+<nav class="topnav" aria-label="Secciones del sitio"><div class="in"><a class="marca" href="./">Earth-2 Chile<small>verificación pública del pronóstico</small></a><div class="tabs"><a href="./">Resumen</a><a href="zona.html">Tu zona</a><a href="eventos.html">Eventos<span class="largo">2026</span></a><a href="quebradas.html">Quebradas</a><a href="escenarios.html" class="activa" aria-current="page">Escenarios</a><a href="metodo.html">Método</a></div></div></nav>
 <div class="wrap">
 <header>
   <div class="eyebrow">Escenarios de incendio</div>
@@ -262,7 +271,7 @@ footer p{max-width:85ch}
 <details><summary>Cómo se calcula</summary><div class="body">
   <p>Fuente: AIFS-ENS, el ensamble de inteligencia artificial de ECMWF (50 escenarios, grilla de 0,25°, datos abiertos CC-BY 4.0). Para cada comuna se toma el punto de grilla más cercano y, cada día, la temperatura, la humedad relativa (calculada desde el punto de rocío) y el viento a 10 m de las 18 UTC, y la lluvia acumulada del día.</p>
   <p>Condición crítica: se cumplen a la vez las tres partes de la regla 30-30-30. Condición alta: se cumplen al menos dos y la comuna lleva 5 días o más sin lluvia dentro del pronóstico. El porcentaje es la parte de los escenarios en esa condición.</p>
-  <p>Límites: la grilla de 25 km no ve el viento de quebradas y laderas, ni el estado del combustible; los días sin lluvia se cuentan desde el inicio del pronóstico, no desde la última lluvia real. El índice canadiense FWI no se calcula porque necesita la humedad del combustible de días anteriores, que el ensamble no trae.</p>
+  <p>Límites: en comunas cercanas a la costa, como Quilpué o Tomé, el cuadrado de 25 km más cercano incluye mar, así que la temperatura sale más baja y la humedad más alta que en los valles del interior; el indicador queda por debajo de lo que se viviría tierra adentro. Es la misma brecha que mide la sección Tu zona. Además, la grilla no ve el viento de quebradas y laderas, ni el estado del combustible; los días sin lluvia se cuentan desde el inicio del pronóstico, no desde la última lluvia real. El índice canadiense FWI no se calcula porque necesita la humedad del combustible de días anteriores, que el ensamble no trae.</p>
 </div></details>
 <footer><p>Actualizado el 16 oct, 18:20 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
 </div>

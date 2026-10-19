@@ -40,6 +40,14 @@ jobs:
       - name: Indicador de quebradas (lluvia prevista y observada)
         run: python quebradas/indicador.py
         continue-on-error: true
+      - name: Earth-2 (endpoint propio; se omite si no hay secreto EARTH2_URL)
+        working-directory: verificacion
+        env:
+          EARTH2_URL: ${{ secrets.EARTH2_URL }}
+          EARTH2_API_KEY: ${{ secrets.EARTH2_API_KEY }}
+          EARTH2_MODELO: ${{ vars.EARTH2_MODELO }}
+        run: python ../earth2/endpoint.py
+        continue-on-error: true
       - name: Verificar y generar sitio
         working-directory: verificacion
         run: python verify.py

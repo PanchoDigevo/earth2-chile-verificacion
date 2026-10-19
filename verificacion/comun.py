@@ -26,6 +26,7 @@ SECCIONES = [
     ("eventos", "eventos.html", 'Eventos<span class="largo">2026</span>'),
     ("quebradas", "quebradas.html", "Quebradas"),
     ("escenarios", "escenarios.html", "Escenarios"),
+    ("envivo", "envivo.html", "En vivo"),
     ("metodo", "metodo.html", "Método"),
 ]
 

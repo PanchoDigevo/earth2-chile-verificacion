@@ -1,0 +1,42 @@
+name: envivo
+# Pestaña "En vivo": cada 10 minutos actualiza rayos GOES-19 y METAR, y los guarda en la rama datos-en-vivo
+# (un solo commit que se reemplaza, para no llenar el historial de main). La página los lee desde raw.githubusercontent.com.
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: envivo
+  cancel-in-progress: true
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install netCDF4 numpy
+      - name: Traer los datos anteriores (si existen)
+        run: |
+          mkdir -p datos/envivo
+          if git ls-remote --exit-code --heads origin datos-en-vivo >/dev/null; then
+            git fetch -q origin datos-en-vivo
+            git show origin/datos-en-vivo:envivo/rayos.json > datos/envivo/rayos.json 2>/dev/null || true
+          fi
+      - name: Actualizar rayos y METAR
+        run: python envivo/actualizar.py --salida datos/envivo
+      - name: Guardar en la rama datos-en-vivo
+        run: |
+          cd datos
+          git init -q -b datos-en-vivo
+          git config user.name "earth2-bot"
+          git config user.email "actions@users.noreply.github.com"
+          printf 'Datos de la pestaña En vivo (rayos GOES-19 y METAR), actualizados cada 10 minutos por envivo.yml.\nEsta rama se reemplaza en cada actualización.\n' > LEEME.md
+          git add -A
+          git commit -q -m "en vivo: $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" datos-en-vivo

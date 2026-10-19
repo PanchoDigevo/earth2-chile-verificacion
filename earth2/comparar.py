@@ -61,3 +61,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+    # Salida inmediata: al cerrar Python, eccodes y las bibliotecas netCDF/HDF5 que carga Earth2Studio chocan
+    # (segmentation fault / double free) aunque el trabajo ya terminó bien.
+    import sys as _s; _s.stdout.flush(); _s.stderr.flush(); os._exit(0)

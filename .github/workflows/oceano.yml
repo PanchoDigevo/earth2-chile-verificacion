@@ -1,6 +1,6 @@
 name: oceano
 # Capa estándar 3 y 5: temperatura del mar frente a la costa (NOAA OISST), índices Niño de NOAA CPC,
-# deriva por aeródromo y corrección móvil. Diario; el primer uso rellena desde enero de 2025.
+# deriva por aeródromo y corrección móvil. Diario (el cron solo corre en main); el primer uso rellena desde enero de 2025.
 on:
   workflow_dispatch:
     inputs:

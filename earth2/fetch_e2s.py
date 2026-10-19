@@ -23,7 +23,13 @@ def en_estaciones(da, est):
 
 def extraer(modelo, corrida, plazos, est):
     from earth2studio import data as e2d
-    src = getattr(e2d, MODELOS[modelo])(cache=False)
+    # Tiempo total mayor y reintentos cortos: el bucket de ECMWF responde "503 Slow Down" y el cliente por defecto
+    # espera 120 s por intento (hasta 500), lo que agota el límite de 600 s de Earth2Studio (FSTimeoutError).
+    src = getattr(e2d, MODELOS[modelo])(cache=False, async_timeout=3600)
+    if modelo in ("aifs", "ifs"):
+        from ecmwf import opendata
+        src.client = opendata.Client(source="aws", model="aifs-single" if modelo == "aifs" else "ifs",
+                                     maximum_retries=8, retry_after=15, use_server_retry_after=False)
     da = src(corrida, [dt.timedelta(hours=h) for h in plazos], VARS).isel(time=0)
     pts = en_estaciones(da, est)
     filas = []

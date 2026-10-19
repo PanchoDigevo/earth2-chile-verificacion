@@ -107,7 +107,7 @@ def main():
     lista = [m for p in PASOS for m in mensajes(run, p)]
     print(f"{len(lista)} mensajes por bajar", flush=True)
     V = {}
-    with ThreadPoolExecutor(max_workers=6) as ex:
+    with ThreadPoolExecutor(max_workers=10) as ex:
         for k, v in ex.map(lambda m: valores(m, puntos), lista):
             if v is not None:
                 V[k] = v

@@ -65,6 +65,17 @@ for f in sorted(glob.glob("data/*_*.grib2")):
         print("no se pudo leer", f, "->", type(e).__name__, e); continue
     print(f"{MODELOS[pref]}: {f} -> {len(filas)} valores en estaciones")
     nuevos += filas
+# Modelos externos (por ejemplo un endpoint de Earth-2): entregan directamente los valores en las estaciones en
+# data/puntos_<modelo>_<corrida>.csv con columnas modelo, run, lead_h, icao, t_fc (°C) y w_fc (m/s). Ver earth2/endpoint.py.
+for f in sorted(glob.glob("data/puntos_*.csv")):
+    try:
+        ext = pd.read_csv(f, parse_dates=["run"])
+        ext = ext.merge(stations[["icao", "name", "lat", "lon", "elev"]], on="icao", how="inner")
+        ext["valid"] = ext.run + pd.to_timedelta(ext.lead_h, unit="h")
+        nuevos += ext[["modelo", "run", "lead_h", "valid", "icao", "name", "lat", "lon", "elev", "t_fc", "w_fc"]].to_dict("records")
+        print(f"{ext.modelo.iloc[0] if len(ext) else '?'}: {f} -> {len(ext)} valores en estaciones (modelo externo)")
+    except Exception as e:
+        print("no se pudo leer", f, "->", type(e).__name__, e)
 pron = pd.DataFrame(nuevos, columns=["modelo", "run", "lead_h", "valid", "icao", "name", "lat", "lon", "elev", "t_fc", "w_fc"])
 if os.path.exists(PRON):
     pron = pd.concat([pd.read_csv(PRON, parse_dates=["run", "valid"]), pron])

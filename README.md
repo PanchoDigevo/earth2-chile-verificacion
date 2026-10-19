@@ -16,3 +16,7 @@ Primer resultado (14-oct-2026, 77 pares): error medio de temperatura 1,2–1,5 �
 Cada `fetch_*.py` acepta una corrida explícita (`python fetch_gfs.py 2026-10-14 12`). Los pronósticos en las estaciones quedan en `data/pronostico_puntos.csv`, los pares en `data/verif_puntos.csv` (columna `modelo`) y el resumen en `data/verif_resumen.csv`.
 
 Licencias de datos: ECMWF open data CC-BY 4.0 (atribuir a ECMWF); NOAA GFS y NOAA/AWC METAR dominio público. Aviso: información de apoyo a la decisión; no sustituye las alertas oficiales de la DMC ni de SENAPRED.
+
+## Conectar un endpoint de Earth-2
+
+Para verificar en público un modelo propio (por ejemplo un endpoint de NVIDIA Earth-2) junto a AIFS, IFS y GFS, ver [docs/guia_endpoint_earth2.md](docs/guia_endpoint_earth2.md). El conector está en `earth2/endpoint.py` y se activa al configurar el secreto `EARTH2_URL`.

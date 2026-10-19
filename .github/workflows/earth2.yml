@@ -4,7 +4,7 @@ name: earth2studio
 on:
   workflow_dispatch:
   push:
-    branches: [capas-estandar]
+    branches: [main]
     paths: ["earth2/**", ".github/workflows/earth2.yml"]
 permissions:
   contents: write

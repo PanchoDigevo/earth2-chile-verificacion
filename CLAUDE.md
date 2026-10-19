@@ -57,3 +57,9 @@ Regla: los cambios de régimen (El Niño, olas de calor marinas) se detectan des
 - Hold-out: los eventos 2026 nunca entran al entrenamiento. Comparar también contra el WRF operacional de la DMC (6 km).
 - Cosmos de NVIDIA no aplica (video sintético, no pronóstico).
 - Commits en español. No subir GRIB, netCDF, Zarr ni datos crudos.
+
+## Ramas y registro de cambios
+
+- Una sola rama de trabajo: `main`. Todo cambio se sube ahí (`git pull --rebase` antes, porque los bots commitean varias veces por hora). Si una tarea larga necesita rama propia, se fusiona en `main` y se borra apenas termina; ningún workflow escucha ramas distintas de `main`.
+- `datos-en-vivo` no es rama de trabajo: la reescribe `envivo.yml` cada 10 min con los datos de la pestaña En vivo. No tocarla.
+- Cada cambio visible para Pancho (pestaña, capa, workflow, conector) se anota en `CAMBIOS.md` en el mismo commit: fecha, qué cambió y dónde verlo. Los commits automáticos de los bots no se anotan.

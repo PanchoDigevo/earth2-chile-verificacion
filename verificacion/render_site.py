@@ -756,6 +756,8 @@ def render_site(pts):
         sys.path.insert(0, os.path.join(AQUI, "..", "historico"))
         import render_historico
         render_historico.desde_csv()
+        import envivo_pagina                 # pestaña En vivo: armazón; los datos los lee el navegador
+        print(f"site/envivo.html ({envivo_pagina.pagina(head, escribir, ahora)} KB) listo")
     except Exception as e:
         print("AVISO: no se regeneraron Eventos y Método:", e)
 

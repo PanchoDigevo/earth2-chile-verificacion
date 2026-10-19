@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>En vivo · Earth-2 Chile</title>
+<meta name="description" content="Rayos de los últimos 90 minutos sobre la zona central de Chile, lo que miden los aeródromos y lo que pronostican los modelos para las quebradas de Santiago oriente. Se actualiza cada unos 10 minutos.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Una columna de 1080 px; lo consolidado antes que lo preliminar; cada número con su explicación al lado.
+   Neutros fríos con leve sesgo azul (cielo y hielo), acento verde glaciar; semáforo fijo y siempre con texto. */
+:root{
+  --bg:#f4f6f8; --surface:#ffffff; --fg:#17212b; --muted:#5a6977; --line:#d8dfe6; --line-soft:#e9eef2;
+  --accent:#0e7c86; --accent-soft:#d7eef0; --tierra:#e3e9ee; --costa:#9fb0bd;
+  --bueno:#0ca30c; --medio:#c98500; --alto:#d03b3b; --sin:#8a99a6;
+  --font-display:"Sora",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-body:"Source Sans 3","Source Sans Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-data:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --radius:10px; color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111821; --surface:#19222c; --fg:#e7ecf1; --muted:#9fadba; --line:#2c3845; --line-soft:#232e3a;
+  --accent:#44bcc6; --accent-soft:#163b40; --tierra:#243040; --costa:#4f6071;
+  --bueno:#2fbf2f; --medio:#e0a428; --alto:#ee6a6a; --sin:#7d8c99; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111821; --surface:#19222c; --fg:#e7ecf1; --muted:#9fadba; --line:#2c3845; --line-soft:#232e3a;
+  --accent:#44bcc6; --accent-soft:#163b40; --tierra:#243040; --costa:#4f6071;
+  --bueno:#2fbf2f; --medio:#e0a428; --alto:#ee6a6a; --sin:#7d8c99; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
+a:focus-visible,button:focus-visible,summary:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:16px;padding-block:24px 56px;display:grid;gap:32px}
+@media (min-width:720px){.wrap{padding-inline:28px;padding-block:40px 72px;gap:44px}}
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(26px,3.8vw,40px);line-height:1.15;font-weight:600;max-width:26ch}
+h2{font-size:22px;font-weight:600}
+h3{font-size:17px;font-weight:600}
+p{margin:0;max-width:65ch}
+.eyebrow{font-family:var(--font-display);font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.muted{color:var(--muted)}
+.small{font-size:14.5px}
+header{display:grid;gap:12px}
+header .lead{font-size:19px;color:var(--muted);max-width:60ch}
+.aviso{border-left:3px solid var(--accent);padding:10px 14px;background:var(--accent-soft);border-radius:0 var(--radius) var(--radius) 0;max-width:72ch}
+.aviso p{max-width:none}
+section{display:grid;gap:14px}
+.sec-head{display:grid;gap:6px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;display:grid;gap:12px;min-width:0}
+/* cifras de la portada */
+.cifras{display:grid;gap:12px;grid-template-columns:1fr}
+@media (min-width:760px){.cifras{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.cifra{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;display:grid;gap:6px;align-content:start}
+.cifra .v{font-family:var(--font-display);font-size:42px;font-weight:600;line-height:1.05;letter-spacing:-.02em}
+.cifra .v small{font-size:18px;font-weight:500;color:var(--muted);margin-left:3px}
+.cifra .v .flecha{color:var(--muted);font-weight:400;margin:0 6px}
+.cifra p{font-size:15.5px}
+.cifra.principal{border-color:var(--accent)}
+/* puertas de entrada */
+.puertas{display:grid;gap:12px;grid-template-columns:1fr}
+@media (min-width:760px){.puertas{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.puerta{display:grid;gap:6px;align-content:start;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;color:var(--fg);text-decoration:none}
+.puerta:hover{border-color:var(--accent)}
+.puerta .q{font-family:var(--font-display);font-weight:600;font-size:18px}
+.puerta .ir{color:var(--accent);font-weight:600;font-size:15px}
+.puerta p{font-size:15.5px;color:var(--muted)}
+.confianza{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:14.5px;color:var(--muted)}
+/* controles */
+.controles{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center}
+.selector{display:flex;flex-wrap:wrap;gap:6px;border:0;padding:0;margin:0;align-items:center}
+.selector legend{float:left;margin-right:6px;padding:0}
+.selector label{position:relative;cursor:pointer;border:1px solid var(--line);border-radius:999px;padding:5px 13px;font-size:14.5px;font-weight:600;background:var(--bg)}
+.selector label .muted{font-weight:400;font-size:13px}
+.selector input{position:absolute;opacity:0;width:0;height:0;margin:0}
+.selector label:has(input:checked){background:var(--accent-soft);border-color:var(--accent)}
+.selector label:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+select{font:inherit;font-size:16px;padding:7px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg);max-width:100%}
+/* mapa */
+.mapa{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:flex-start;justify-content:center}
+.franja{margin:0;display:grid;gap:4px;justify-items:center}
+.franja svg{max-width:100%;height:auto;display:block;overflow:hidden}
+.franja figcaption{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.tierra{fill:var(--tierra);stroke:var(--costa);stroke-width:.6;vector-effect:non-scaling-stroke}
+.est{cursor:pointer;outline:none}
+.est .hit{fill:transparent}
+.est .pt{stroke:var(--surface);stroke-width:2;fill:var(--sin)}
+.est.bueno .pt{fill:var(--bueno)} .est.medio .pt{fill:var(--medio)} .est.alto .pt{fill:var(--alto)}
+.est .etq{display:none;font:600 10px var(--font-body);fill:var(--fg);paint-order:stroke;stroke:var(--surface);stroke-width:3px;stroke-linejoin:round}
+.est.con-etq .etq{display:block}
+.est.sel .pt{stroke:var(--fg);stroke-width:2.5;r:7}
+.est:focus-visible .pt{stroke:var(--accent);stroke-width:3}
+.est:hover .pt{r:7}
+.leyenda{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:14px;color:var(--muted);align-items:center}
+.leyenda span.item{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:2px 9px 2px 7px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--fg);white-space:nowrap}
+.chip i{width:8px;height:8px;border-radius:50%;background:var(--sin)}
+.chip.bueno i{background:var(--bueno)} .chip.medio i{background:var(--medio)} .chip.alto i{background:var(--alto)}
+.chip.sin{color:var(--muted)} .chip.prelim{color:var(--muted);border-style:dashed}
+/* tu zona */
+.zona{display:grid;gap:20px}
+@media (min-width:900px){.zona{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);align-items:start}}
+.ficha{position:relative}
+@media (min-width:900px){.ficha{position:sticky;top:72px}}
+.ficha-cab{display:grid;gap:2px}
+.antes-despues{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.antes-despues > div{display:grid;gap:2px;justify-items:start}
+.antes-despues .lbl{font-size:13px;color:var(--muted)}
+.antes-despues .v{font-family:var(--font-display);font-size:34px;font-weight:600;line-height:1.1}
+.antes-despues .v small{font-size:16px;font-weight:500;color:var(--muted);margin-left:2px}
+.antes-despues .flecha{font-size:24px;color:var(--muted)}
+/* tablas */
+.tabla{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line-soft);text-align:right;vertical-align:middle;white-space:nowrap}
+th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line)}
+th.l,td.l{text-align:left}
+td.num{font-family:var(--font-data);font-size:14px;font-variant-numeric:tabular-nums}
+td .region{display:block;font-size:13px;color:var(--muted)}
+tr.actual td{background:var(--accent-soft)}
+#tabla-est tbody tr{cursor:pointer}
+#tabla-est tbody tr:hover td{background:color-mix(in srgb,var(--accent) 8%,transparent)}
+table.mini{font-size:14.5px} table.mini th,table.mini td{padding:6px 8px}
+td.medida{min-width:9.5em}
+.medida-in{display:inline-grid;grid-template-columns:72px auto;gap:8px;align-items:center;justify-items:end}
+.bar{display:block;width:72px;height:8px;border-radius:4px;background:var(--line-soft);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:4px;background:var(--sin)}
+.bar.bueno i{background:var(--bueno)} .bar.medio i{background:var(--medio)} .bar.alto i{background:var(--alto)}
+td.plazo{font-weight:600;vertical-align:top} tr.sep td{border-top:1px solid var(--line)}
+td.modelo-nombre{font-weight:600} td.modelo-nombre .tipo{display:block;font-size:12px;color:var(--muted);font-weight:400}
+td.num.mejor{font-weight:700;color:var(--accent)}
+/* bloque preliminar */
+.prelim-bloque{border:1px dashed var(--line);border-radius:var(--radius);padding:16px;display:grid;gap:12px;background:var(--surface)}
+.modelos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.modelos{grid-template-columns:1fr}}
+.modelo{border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;display:grid;gap:2px;align-content:start;background:var(--bg)}
+.modelo .tipo{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.modelo .nombre{font-family:var(--font-display);font-size:18px;font-weight:600}
+.modelo .value{font-family:var(--font-display);font-size:28px;font-weight:600;line-height:1.1}
+.modelo .value small{font-size:15px;font-weight:500;color:var(--muted);margin-left:2px}
+.modelo .foot{font-size:13px;color:var(--muted)}
+/* narrativa y desplegables */
+.narrativa{display:grid;gap:12px;max-width:68ch}
+.narrativa p{max-width:none}
+.narrativa ol{margin:0;padding-left:1.25em;display:grid;gap:8px}
+details{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);padding:0}
+summary{cursor:pointer;padding:12px 16px;font-weight:600;font-family:var(--font-display);font-size:15.5px;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--muted);font-weight:400}
+details[open] summary::after{content:"–"}
+details .body{padding:0 16px 16px;display:grid;gap:12px}
+details .body p{max-width:72ch}
+footer{border-top:1px solid var(--line);padding-top:20px;display:grid;gap:8px;font-size:14px;color:var(--muted)}
+footer p{max-width:85ch}
+@media (max-width:600px){.cifra .v{font-size:36px}}
+@media (prefers-reduced-motion:no-preference){.est .pt{transition:r .15s ease}}
+
+.topnav{position:sticky;top:0;z-index:1100;background:var(--surface);border-bottom:1px solid var(--line)}
+.topnav .in{max-width:1400px;margin:0 auto;padding-inline:16px;display:flex;align-items:center;gap:16px;min-height:52px}
+.topnav .marca{font-family:var(--font-display);font-weight:600;font-size:15px;color:var(--fg);text-decoration:none;white-space:nowrap;letter-spacing:-.01em}
+.topnav .marca small{color:var(--muted);font-weight:500;font-size:13px;margin-left:8px}
+.topnav .tabs{display:flex;gap:2px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.topnav .tabs::-webkit-scrollbar{display:none}
+.topnav .tabs a{display:inline-flex;align-items:center;height:52px;padding:0 12px;color:var(--muted);text-decoration:none;font-weight:600;font-size:14.5px;border-bottom:3px solid transparent;white-space:nowrap}
+.topnav .tabs a:hover{color:var(--fg)}
+.topnav .tabs a.activa{color:var(--fg);border-bottom-color:var(--accent)}
+.topnav .tabs a:focus-visible{outline:2px solid var(--accent);outline-offset:-4px;border-radius:4px}
+.topnav .largo{margin-left:.3em}
+@media (max-width:1060px){
+  .topnav .in{flex-wrap:wrap;gap:0;padding-inline:0}
+  .topnav .marca{padding:10px 16px 2px;font-size:14px}
+  .topnav .marca small{display:none}
+  .topnav .tabs{margin-left:0;width:100%;padding-inline:6px}
+  .topnav .tabs a{height:42px;padding:0 10px;font-size:14px}
+  .topnav .largo{display:none}
+}
+@media (max-width:620px){
+  /* en teléfono las seis pestañas no caben: se desplazan y el borde derecho se desvanece como pista */
+  .topnav .tabs{-webkit-mask-image:linear-gradient(to right,#000 85%,transparent);mask-image:linear-gradient(to right,#000 85%,transparent);padding-right:28px}
+  .topnav .tabs a{padding:0 9px}
+}
+
+.def{all:unset;cursor:help;border-bottom:1.5px dotted currentColor;text-underline-offset:2px}
+.def:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+.def-pop{position:absolute;z-index:2000;max-width:min(320px,calc(100vw - 32px));background:var(--fg);color:var(--bg);
+  font:400 14.5px/1.45 var(--font-body);padding:10px 12px;border-radius:8px;box-shadow:0 6px 24px rgba(0,0,0,.18)}
+
+.aviso-oficial{border:1px solid var(--medio);border-left:6px solid var(--medio);background:color-mix(in srgb,var(--medio) 12%,var(--surface));
+  border-radius:var(--radius);padding:14px 16px;display:grid;gap:6px}
+.aviso-oficial strong.t{font-family:var(--font-display);font-size:17px}
+.aviso-oficial p{max-width:80ch;margin:0}
+.aviso-oficial .enlaces{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:15px}
+
+:root{--calido:#d9622b;--frio:#2a78d6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--calido:#ef8a55;--frio:#5aa0f0}}
+:root[data-theme="dark"]{--calido:#ef8a55;--frio:#5aa0f0}
+.cambios{display:grid;gap:12px;grid-template-columns:1fr}
+@media (min-width:900px){.cambios{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}.cambios .cambio:nth-child(3){grid-column:1/-1}}
+.barras-mar{width:100%;max-width:560px;height:auto;display:block}
+.barras-mar .nom{font:14px var(--font-body);fill:var(--fg)}
+.barras-mar .val{font:600 12.5px var(--font-data);fill:var(--fg)}
+.barras-mar .eje{font:11.5px var(--font-data);fill:var(--muted)}
+.barras-mar .eje0{stroke:var(--line);stroke-width:1}
+.barras-mar .calido{fill:var(--calido)} .barras-mar .frio{fill:var(--frio)}
+.indices{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.indices > div{display:grid;gap:2px}
+.indices .lbl{font-size:13px;color:var(--muted)}
+.indices .v{font-family:var(--font-display);font-size:30px;font-weight:600;line-height:1.1}
+.indices .v small{font-size:15px;color:var(--muted);margin-left:2px}
+.serie-mini{width:100%;max-width:260px;height:auto}
+.serie-mini .cero{stroke:var(--line);stroke-width:1}
+.serie-mini .linea{fill:none;stroke:var(--calido);stroke-width:2;stroke-linejoin:round}
+.serie-mini .fin{fill:var(--calido);stroke:var(--surface);stroke-width:2}
+.lista-deriva{margin:0;padding-left:1.2em;display:grid;gap:6px;font-size:15.5px;max-width:80ch}
+.cambios .contexto{grid-column:1/-1}
+.lista-ctx{margin:0;padding-left:1.2em;display:grid;gap:7px;font-size:15.5px;max-width:90ch}
+.lista-ctx .fuente{color:var(--muted);font-size:14px}
+
+.vivo{display:grid;gap:14px}
+@media (min-width:1000px){.vivo{grid-template-columns:minmax(0,1fr) 420px;align-items:start}}
+#mapa-vivo{height:72vh;min-height:380px;border:1px solid var(--line);border-radius:var(--radius);background:var(--line-soft)}
+@media (min-width:1000px){#mapa-vivo{position:sticky;top:72px}}
+.vivo .panel{display:grid;gap:12px}
+.cifras-vivo{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cifras-vivo div{display:grid;gap:2px}
+.cifras-vivo .v{font-family:var(--font-display);font-size:30px;font-weight:600;line-height:1.1}
+.cifras-vivo .l{font-size:12.5px;color:var(--muted)}
+.ley-vivo{display:flex;gap:12px;flex-wrap:wrap;font-size:13.5px;color:var(--muted)}
+.ley-vivo i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+:root{--r10:#d03b3b;--r30:#e07b39;--r90:#c98500}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--r10:#ee6a6a;--r30:#f08a4b;--r90:#e0a428}}
+:root[data-theme="dark"]{--r10:#ee6a6a;--r30:#f08a4b;--r90:#e0a428}
+tr.lluvia td{background:color-mix(in srgb,var(--accent) 14%,transparent)}
+td.alto{font-weight:700;color:var(--alto)}
+.estado-vivo{font-size:14.5px;color:var(--muted)}
+.leaflet-container{font-family:var(--font-body)}
+.leaflet-control-attribution{font-size:10px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .leaflet-tile{filter:brightness(.78) contrast(1.05)}}
+:root[data-theme="dark"] .leaflet-tile{filter:brightness(.78) contrast(1.05)}
+</style><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+</head>
+<body>
+<nav class="topnav" aria-label="Secciones del sitio"><div class="in"><a class="marca" href="./">Earth-2 Chile<small>verificación pública del pronóstico</small></a><div class="tabs"><a href="./">Resumen</a><a href="zona.html">Tu zona</a><a href="eventos.html">Eventos<span class="largo">2026</span></a><a href="quebradas.html">Quebradas</a><a href="escenarios.html">Escenarios</a><a href="envivo.html" class="activa" aria-current="page">En vivo</a><a href="metodo.html">Método</a></div></div></nav>
+<div class="wrap">
+<section class="aviso-oficial" role="status" aria-label="Alerta oficial vigente"><strong class="t">Alerta Amarilla de SENAPRED vigente en la Región Metropolitana</strong><p>SENAPRED declaró Alerta Amarilla para la Región Metropolitana por evento meteorológico (18 de octubre, 22:16). Para la lluvia del martes 20 de octubre, siga el aviso de la Dirección Meteorológica de Chile y las indicaciones de SENAPRED.</p><div class="enlaces"><a href="https://senapred.cl/alerta/se-declara-alerta-temprana-preventiva-para-la-region-metropolitana-por-evento-meteorologico-2026-10-16-19-50-34" rel="noopener">Alerta de SENAPRED</a><a href="https://senapred.cl/alertas/" rel="noopener">Alertas vigentes de SENAPRED</a><a href="https://www.meteochile.gob.cl/PortalDMC-web/index.xhtml" rel="noopener">Dirección Meteorológica de Chile</a></div></section>
+<header>
+  <div class="eyebrow">En vivo</div>
+  <h1>Dónde hay tormenta ahora en la zona central</h1>
+  <p class="lead">Los rayos que detecta el satélite GOES-19 muestran dónde hay tormentas en este momento. Junto a ellos, lo que miden los aeródromos y lo que pronostican los modelos para la Quebrada de Apoquindo.</p>
+  <p class="estado-vivo" id="estado-vivo" aria-live="polite">Cargando los datos en vivo…</p>
+</header>
+<div class="vivo">
+  <div id="mapa-vivo" role="img" aria-label="Mapa de rayos de los últimos 90 minutos en la zona central, con las quebradas de Santiago oriente"></div>
+  <div class="panel">
+    <div class="card"><h2>Rayos cerca de las quebradas</h2>
+      <div class="cifras-vivo"><div><span class="v" id="r10">–</span><span class="l">últimos 10 min</span></div><div><span class="v" id="r30">–</span><span class="l">últimos 30 min</span></div><div><span class="v" id="r90">–</span><span class="l">últimos 90 min</span></div></div>
+      <p class="small muted">A menos de 30 km de la Quebrada de Apoquindo (círculo punteado). En toda la zona del mapa: <strong id="rtot">–</strong> rayos en 90 minutos. La lluvia sin tormenta eléctrica no aparece en el mapa.</p>
+      <div class="ley-vivo"><span><i style="background:var(--r10)"></i>hace 0 a 10 min</span><span><i style="background:var(--r30)"></i>10 a 30 min</span><span><i style="background:var(--r90)"></i>30 a 90 min</span></div></div>
+    <div class="card"><h2>Lo que miden los aeródromos</h2>
+      <div class="tabla"><table id="metar"><thead><tr><th class="l">Hora</th><th class="l">Aeródromo</th><th>Temp.</th><th>Viento</th><th>Ráfaga</th><th class="l">Tiempo</th></tr></thead><tbody></tbody></table></div>
+      <p class="small muted">Reportes METAR de las últimas 12 horas, del más reciente al más antiguo; las filas con lluvia van marcadas. Los aeródromos chilenos no informan milímetros.</p></div>
+    <div class="card"><h2>Lo que pronostican para la Quebrada de Apoquindo</h2>
+      <div class="tabla"><table id="pronos"><thead><tr><th class="l">Bloque de 6 h</th></tr></thead><tbody></tbody></table></div>
+      <p class="small muted">Lluvia en milímetros por bloque de 6 horas, última corrida de cada modelo (<span id="pronos-corridas">–</span>). En rojo, 10 mm o más: si esa lluvia se concentrara en 2 horas, la quebrada pasaría a <button type="button" class="def" data-def="Nivel intermedio del indicador de quebradas: probabilidad estimada de flujo de detritos entre 20 y 50 %. Ver la pestaña Quebradas.">atención</button>. Detalle en la pestaña <a href="quebradas.html">Quebradas</a>.</p></div>
+  </div>
+</div>
+<div class="aviso"><p class="small">Apoyo a la decisión, no una alerta. Las alertas oficiales son de la <a href="https://www.meteochile.gob.cl/" rel="noopener">Dirección Meteorológica de Chile</a> y de <a href="https://www.senapred.cl/" rel="noopener">SENAPRED</a>.</p></div>
+<footer><p>Actualizado el 19 oct, 20:20 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+(function(){
+  const RAW = "https://raw.githubusercontent.com/PanchoDigevo/earth2-chile-verificacion";
+  const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  const APOQ = [-33.40, -70.51];
+  const mapa = L.map("mapa-vivo", {scrollWheelZoom: false}).setView([-33.6, -70.9], 8);
+  mapa.on("focus", () => mapa.scrollWheelZoom.enable()); mapa.on("blur", () => mapa.scrollWheelZoom.disable());
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {maxZoom: 14, attribution: "© OpenStreetMap"}).addTo(mapa);
+  L.circle(APOQ, {radius: 30000, color: css("--accent"), weight: 1, dashArray: "4 4", fill: false, interactive: false}).addTo(mapa);
+  fetch("quebradas/cuencas.geojson").then(r => r.json()).then(g => L.geoJSON(g, {interactive: false, style: f => {
+    const q = (f.properties.prop_hm23 || 0) >= 0.01; return {color: css("--accent"), weight: q ? 2.5 : 0.8, fillOpacity: q ? 0.25 : 0.04}; }}).addTo(mapa)).catch(() => {});
+  const capa = L.layerGroup().addTo(mapa);
+  const hora = s => new Date(s * 1000).toLocaleTimeString("es-CL", {timeZone: "America/Santiago", hour: "2-digit", minute: "2-digit", hourCycle: "h23"});
+  const dist = (a, b) => { const r = Math.PI / 180, dl = (b[0] - a[0]) * r, dn = (b[1] - a[1]) * r;
+    const h = Math.sin(dl / 2) ** 2 + Math.cos(a[0] * r) * Math.cos(b[0] * r) * Math.sin(dn / 2) ** 2; return 12742 * Math.asin(Math.sqrt(h)); };
+  const NOM = {SCTB: "Tobalaba", SCEL: "Pudahuel", SCSN: "Santo Domingo", SCVM: "Viña del Mar"};
+  const WX = s => s.replace(/\+/g, "fuerte ").replace(/-/g, "débil ").replace(/TSRA/g, "tormenta con lluvia").replace(/SHRA/g, "chubasco")
+    .replace(/TS/g, "tormenta").replace(/RA/g, "lluvia").replace(/DZ/g, "llovizna").replace(/GR|GS/g, "granizo").replace(/BR/g, "neblina").replace(/FG/g, "niebla").replace(/VC/g, "cerca: ");
+  async function j(url) { try { const r = await fetch(url + "?t=" + Date.now()); return r.ok ? r : null; } catch (e) { return null; } }
+  function csv(t) { const L = t.trim().split("\n"); const c = L[0].split(","); return L.slice(1).map(l => { const v = l.split(","); const o = {}; c.forEach((k, i) => o[k] = v[i]); return o; }); }
+
+  async function actualizar() {
+    const ahora = Date.now() / 1000;
+    const [ry, mt, sg] = await Promise.all([j(RAW + "/datos-en-vivo/envivo/rayos.json"), j(RAW + "/datos-en-vivo/envivo/metar.json"), j(RAW + "/main/hindcast/seguimiento/pronosticos.csv")]);
+    let gen = [];
+    if (ry) { const d = await ry.json(); gen.push(d.generado);
+      capa.clearLayers(); let c10 = 0, c30 = 0, c90 = 0;
+      d.rayos.forEach(([la, lo, t]) => { const e = (ahora - t) / 60; if (e > 90) return; const col = e < 10 ? "--r10" : e < 30 ? "--r30" : "--r90";
+        L.circleMarker([la, lo], {radius: e < 10 ? 4 : 3, stroke: false, fillColor: css(col), fillOpacity: 0.85, interactive: false}).addTo(capa);
+        if (dist(APOQ, [la, lo]) <= 30) { c90++; if (e < 30) c30++; if (e < 10) c10++; } });
+      document.getElementById("r10").textContent = c10; document.getElementById("r30").textContent = c30; document.getElementById("r90").textContent = c90;
+      document.getElementById("rtot").textContent = d.rayos.length.toLocaleString("es-CL"); }
+    if (mt) { const d = await mt.json(); gen.push(d.generado);
+      document.querySelector("#metar tbody").innerHTML = d.obs.sort((a, b) => b.t - a.t).map(o => `<tr class="${/RA|DZ|TS|GR/.test(o.wx) ? "lluvia" : ""}"><td class="l num">${hora(o.t)}</td><td class="l">${NOM[o.icao] || o.icao}</td>
+        <td class="num">${o.temp ?? "–"} °C</td><td class="num">${o.wspd != null ? Math.round(o.wspd * 1.852) + " km/h" : "–"}</td><td class="num">${o.wgst ? Math.round(o.wgst * 1.852) + " km/h" : "–"}</td><td class="l">${o.wx ? WX(o.wx) : "–"}</td></tr>`).join(""); }
+    if (sg) { const filas = csv(await sg.text()); const ult = {};
+      filas.forEach(r => { if (!ult[r.modelo] || r.corrida_utc > ult[r.modelo]) ult[r.modelo] = r.corrida_utc; });
+      const q = filas.filter(r => r.punto === "Q1" && r.corrida_utc === ult[r.modelo]); const mods = ["AIFS", "IFS", "GFS"].filter(m => ult[m]);
+      const bl = [...new Set(q.map(r => r.bloque_inicio_chile))].sort().filter(b => new Date(b.replace(" ", "T") + ":00-03:00").getTime() / 1000 > ahora - 6 * 3600).slice(0, 8);
+      document.querySelector("#pronos thead tr").innerHTML = `<th class="l">Bloque de 6 h</th>` + mods.map(m => `<th>${m}</th>`).join("");
+      document.querySelector("#pronos tbody").innerHTML = bl.map(b => `<tr><td class="l num">${b.slice(8, 10)}/${b.slice(5, 7)} ${b.slice(11, 13)}–${String((+b.slice(11, 13) + 6) % 24).padStart(2, "0")} h</td>` +
+        mods.map(m => { const r = q.find(x => x.modelo === m && x.bloque_inicio_chile === b); const v = r ? +r.mm_6h : null;
+          return `<td class="num${v != null && v >= 10 ? " alto" : ""}">${v == null ? "–" : v.toLocaleString("es-CL", {maximumFractionDigits: 1})}</td>`; }).join("") + "</tr>").join("");
+      document.getElementById("pronos-corridas").textContent = mods.map(m => `${m} ${ult[m].slice(8, 10)}/${ult[m].slice(5, 7)} ${ult[m].slice(11, 13)} UTC`).join(", "); }
+    const g = gen.length ? Math.min(...gen) : null;
+    document.getElementById("estado-vivo").textContent = g ? `Datos de las ${hora(g)} (hora de Chile). Se actualizan cada unos 10 minutos; esta página vuelve a leerlos cada minuto.`
+      : "Los datos en vivo todavía no están disponibles.";
+  }
+  actualizar(); setInterval(actualizar, 60000);
+})();
+</script>
+
+
+<script>
+(function(){
+  let pop=null, dueno=null;
+  function cerrar(){ if(pop){pop.remove();pop=null;} if(dueno){dueno.setAttribute('aria-expanded','false');dueno=null;} }
+  document.addEventListener('click',function(e){
+    const b=e.target.closest('.def');
+    if(!b){ if(pop && !e.target.closest('.def-pop')) cerrar(); return; }
+    e.preventDefault();
+    if(dueno===b){cerrar();return;}
+    cerrar(); dueno=b; b.setAttribute('aria-expanded','true');
+    pop=document.createElement('div'); pop.className='def-pop'; pop.setAttribute('role','tooltip'); pop.textContent=b.dataset.def;
+    document.body.appendChild(pop);
+    const r=b.getBoundingClientRect(), w=pop.offsetWidth;
+    let x=r.left+window.scrollX; x=Math.min(x, window.scrollX+document.documentElement.clientWidth-w-16); x=Math.max(16+window.scrollX,x);
+    pop.style.left=x+'px'; pop.style.top=(r.bottom+window.scrollY+6)+'px';
+  });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') cerrar(); });
+  window.addEventListener('resize',cerrar);
+})();
+</script>
+
+</body>
+</html>

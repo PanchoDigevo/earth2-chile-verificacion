@@ -7,13 +7,13 @@ SALIDA = os.path.join(AQUI, "data", "pronosticos.csv.gz")
 CLAVE = ["modelo", "run", "lead_h", "icao"]
 
 partes = []
+if os.path.exists(SALIDA):            # lo anterior primero: las filas nuevas (p. ej. con viento) reemplazan a las viejas
+    partes.append(pd.read_csv(SALIDA))
 for f in sorted(glob.glob(os.path.join(AQUI, "data", "puntos", "*.csv"))):
     try:
         partes.append(pd.read_csv(f))
     except pd.errors.EmptyDataError:
         print("vacío, se omite:", os.path.basename(f))
-if os.path.exists(SALIDA):
-    partes.append(pd.read_csv(SALIDA))
 if not partes:
     raise SystemExit("nada que consolidar")
 df = pd.concat(partes, ignore_index=True).drop_duplicates(subset=CLAVE, keep="last")

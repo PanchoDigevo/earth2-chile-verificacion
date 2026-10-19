@@ -10,7 +10,7 @@ import csv, gzip, io, os, sys, time, urllib.parse, urllib.request
 AQUI = os.path.dirname(os.path.abspath(__file__))
 ESTACIONES = [r["icao"] for r in csv.DictReader(open(os.path.join(AQUI, "estaciones.csv")))]
 URL = "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py"
-CAMPOS = ["tmpf", "dwpf", "drct", "sknt", "p01i", "wxcodes"]
+CAMPOS = ["tmpf", "dwpf", "drct", "sknt", "gust", "p01i", "wxcodes"]   # gust: solo cuando hay ráfaga significativa
 
 
 def bajar(anio):
@@ -52,12 +52,13 @@ for anio in [int(a) for a in sys.argv[1:]] or [2025, 2026]:
     n = 0
     with gzip.open(salida, "wt", newline="") as f:
         w = csv.writer(f)
-        w.writerow(["icao", "time", "temp_c", "dewp_c", "wdir", "wspd_ms", "p01_mm", "wx"])
+        w.writerow(["icao", "time", "temp_c", "dewp_c", "wdir", "wspd_ms", "gust_ms", "p01_mm", "wx"])
         for r in filas:
             if r.get("tmpf", "M") == "M":
                 continue
             w.writerow([r["station"], r["valid"], f_a_c(r["tmpf"]), f_a_c(r.get("dwpf", "M")),
                         "" if r.get("drct", "M") == "M" else r["drct"], kt_a_ms(r.get("sknt", "M")),
+                        kt_a_ms(r.get("gust", "M")),
                         in_a_mm(r.get("p01i", "M")), "" if r.get("wxcodes", "M") == "M" else r["wxcodes"]])
             n += 1
     print(f"{anio}: {len(filas)} reportes, {n} con temperatura -> {salida} en {round(time.time() - t0)} s")

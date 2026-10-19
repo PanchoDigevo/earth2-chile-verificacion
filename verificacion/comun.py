@@ -23,8 +23,9 @@ REPO = "https://github.com/PanchoDigevo/earth2-chile-verificacion"
 SECCIONES = [
     ("resumen", "./", "Resumen"),
     ("zona", "zona.html", "Tu zona"),
-    ("eventos", "eventos.html", 'Eventos<span class="largo"> 2026</span>'),
+    ("eventos", "eventos.html", 'Eventos<span class="largo">2026</span>'),
     ("quebradas", "quebradas.html", "Quebradas"),
+    ("escenarios", "escenarios.html", "Escenarios"),
     ("metodo", "metodo.html", "Método"),
 ]
 
@@ -34,6 +35,7 @@ EVENTOS = {
     "lascondes-oct": ("Las Condes, aluvión del 8 de octubre", "el aluvión de Las Condes"),
     "centrosur-ago": ("Centro-sur, frontal del 30 de julio al 2 de agosto", "el frontal del centro-sur"),
     "coquimbo-jul": ("Coquimbo y Huasco, frontal del 14 al 24 de julio", "el frontal de Coquimbo"),
+    "incendios-ene": ("Ñuble y Biobío, incendios del 17 al 21 de enero", "los incendios de enero en Ñuble y Biobío"),
 }
 
 MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
@@ -162,13 +164,19 @@ CSS_NAV = """
 .topnav .tabs a:hover{color:var(--fg)}
 .topnav .tabs a.activa{color:var(--fg);border-bottom-color:var(--accent)}
 .topnav .tabs a:focus-visible{outline:2px solid var(--accent);outline-offset:-4px;border-radius:4px}
-@media (max-width:760px){
+.topnav .largo{margin-left:.3em}
+@media (max-width:1060px){
   .topnav .in{flex-wrap:wrap;gap:0;padding-inline:0}
   .topnav .marca{padding:10px 16px 2px;font-size:14px}
   .topnav .marca small{display:none}
   .topnav .tabs{margin-left:0;width:100%;padding-inline:6px}
   .topnav .tabs a{height:42px;padding:0 10px;font-size:14px}
   .topnav .largo{display:none}
+}
+@media (max-width:620px){
+  /* en teléfono las seis pestañas no caben: se desplazan y el borde derecho se desvanece como pista */
+  .topnav .tabs{-webkit-mask-image:linear-gradient(to right,#000 85%,transparent);mask-image:linear-gradient(to right,#000 85%,transparent);padding-right:28px}
+  .topnav .tabs a{padding:0 9px}
 }
 """
 

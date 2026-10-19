@@ -1,10 +1,11 @@
 """Extrae de los archivos históricos de AIFS, IFS (ECMWF en AWS) y GFS (NOAA en AWS) el pronóstico en cada
-estación: temperatura a 2 m y precipitación acumulada desde el inicio de la corrida, para las corridas de
+estación: temperatura a 2 m, precipitación acumulada desde el inicio de la corrida, viento a 10 m (u, v) y ráfaga
+(IFS: 10fg, máxima de las 6 h previas; GFS: GUST, instantánea; AIFS no publica ráfaga), para las corridas de
 00 y 12 UTC y los plazos de 24, 48 y 72 h. Baja solo los mensajes GRIB necesarios por rango de bytes
 (1-2 MB cada uno), los lee en memoria y escribe un CSV pequeño. No guarda GRIB.
 
 Uso: python extraer_puntos.py --modelo aifs|ifs|gfs --desde 2026-10-01 --hasta 2026-10-03
-Salida: data/puntos/{MODELO}_{desde}_{hasta}.csv con columnas modelo,run,lead_h,valid,icao,t_fc,tp_fc"""
+Salida: data/puntos/{MODELO}_{desde}_{hasta}.csv con columnas modelo,run,lead_h,valid,icao,t_fc,tp_fc,u_fc,v_fc,g_fc"""
 import argparse, csv, datetime as dt, json, os, re, sys, time, urllib.error, urllib.request
 import eccodes as ec
 
@@ -42,7 +43,7 @@ def get(url, rango=None, intentos=8):
 
 
 def rangos_ecmwf(modelo, run, paso):
-    """Devuelve {param: (url_grib, (ini, fin))} para 2t y tp a partir del índice JSON-lines de ECMWF."""
+    """Devuelve {param: (url_grib, (ini, fin))} para 2t, tp, 10u, 10v y 10fg a partir del índice JSON-lines de ECMWF."""
     base = f"{ECMWF}/{run:%Y%m%d}/{run:%H}z/{modelo}/0p25/oper/{run:%Y%m%d%H}0000-{paso}h-oper-fc"
     idx = get(base + ".index")
     if not idx:
@@ -53,7 +54,7 @@ def rangos_ecmwf(modelo, run, paso):
             e = json.loads(linea)
         except ValueError:
             continue
-        if e.get("param") in ("2t", "tp") and e.get("levtype", "sfc") == "sfc":
+        if e.get("param") in ("2t", "tp", "10u", "10v", "10fg") and e.get("levtype", "sfc") == "sfc":
             off, ln = int(e["_offset"]), int(e["_length"])
             out[e["param"]] = (base + ".grib2", (off, off + ln - 1))
     return out
@@ -74,6 +75,12 @@ def rangos_gfs(run, paso):
         desc = ":".join(l[3:6])
         if desc.startswith("TMP:2 m above ground:"):
             out["2t"] = (base, (off, fin))
+        elif desc.startswith("UGRD:10 m above ground:"):
+            out["10u"] = (base, (off, fin))
+        elif desc.startswith("VGRD:10 m above ground:"):
+            out["10v"] = (base, (off, fin))
+        elif desc.startswith("GUST:surface:"):
+            out["10fg"] = (base, (off, fin))
         elif desc.startswith("APCP:surface:") and re.search(rf"APCP:surface:0-({paso} hour|{paso // 24} day) acc", desc):
             out["tp"] = (base, (off, fin))
     return out
@@ -108,7 +115,7 @@ def main():
     f = open(salida, "a", newline="")
     w = csv.writer(f)
     if not hechos:
-        w.writerow(["modelo", "run", "lead_h", "valid", "icao", "t_fc", "tp_fc"])
+        w.writerow(["modelo", "run", "lead_h", "valid", "icao", "t_fc", "tp_fc", "u_fc", "v_fc", "g_fc"])
     t0 = time.time(); n_ok = n_falta = 0
     dia = d0
     while dia <= d1:
@@ -132,8 +139,9 @@ def main():
                 for icao, _, _ in ests:
                     t = campos["2t"][icao] - 273.15
                     tp = campos.get("tp", {}).get(icao)
+                    extra = [campos.get(k, {}).get(icao) for k in ("10u", "10v", "10fg")]
                     w.writerow([nombre, f"{run:%Y-%m-%d %H:%M:%S}", paso, f"{valid:%Y-%m-%d %H:%M:%S}", icao,
-                                round(t, 2), "" if tp is None else round(tp, 2)])
+                                round(t, 2), "" if tp is None else round(tp, 2)] + ["" if x is None else round(x, 2) for x in extra])
                 n_ok += 1
             f.flush()
         print(f"{nombre} {dia}: listo ({n_ok} corridas-plazo, {n_falta} faltantes, {round(time.time() - t0)} s)", flush=True)

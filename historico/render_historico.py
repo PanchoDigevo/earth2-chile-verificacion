@@ -14,6 +14,7 @@ from render_site import CSS, MODELOS, ORDEN, UMBRAL_T, MIN_PARES, chip, nivel, n
 from comun import (EVENTOS, GLOSARIO, JS_DEF, MESES, MESES_LARGO, aviso, d, entero, fecha, nav, num, pie, signo)  # noqa: E402
 
 RES = os.path.join(AQUI, "data", "resultados")
+import viento_render  # noqa: E402
 CATALOGO = os.path.join(AQUI, "..", "hindcast", "eventos", "eventos_2026.csv")
 PLAZOS = [72, 48, 24]
 UMBRAL_LLUVIA_MM = 1.0
@@ -184,13 +185,27 @@ def pagina_eventos(r, ahora):
                        f'<p class="small muted">Lluvia pronosticada para las 24 horas de cada día (de 8 o 9 de la mañana a la misma hora del día siguiente), '
                        f'según la corrida emitida 72, 48 y 24 horas antes. En negrita, 10 mm o más.{nota_sat}</p>'
                        f'{tabla_dia_a_dia(ev, dd, sat_idx)}</div></details>')
+        if ev.startswith("incendios"):
+            # evento de incendio: la pregunta es viento y sequedad, no lluvia
+            secos = total - con_lluvia
+            avisos = ""
+            if not rr.empty:
+                x = rr[(rr.modelo == "AIFS") & (rr.lead_h == 24)]
+                if len(x):
+                    marco = int(x.aciertos.iloc[0] + x.falsas.iloc[0])
+                    avisos = f" Con un día de anticipación, la IA (AIFS) anunció lluvia en {marco} de esos {total} casos."
+            cuerpo_evento = (viento_render.bloque_evento(ev, num, titulo="¿Anticiparon el viento?")
+                             + (f"<h3>¿Y la sequedad?</h3><p class='small'>En los aeródromos de la zona ({refs}) no llovió en {secos} de los {total} casos con observación, contando cada día en cada aeródromo.{avisos}</p>"
+                                if total else f"<p class='small muted'>Los datos de los aeródromos de la zona ({refs}) para estos días aparecerán cuando se complete el análisis del histórico.</p>"))
+        else:
+            cuerpo_evento = (f"<h3>¿Marcaron lluvia antes?</h3><p class='small muted'>En los aeródromos de la zona ({refs}) hubo {con_lluvia} casos con lluvia, "
+                             f"contando cada día en cada aeródromo{f', de {total} con observación' if total != con_lluvia else ''}. Cada celda dice en cuántos de esos casos "
+                             f"el modelo había anunciado lluvia con esa anticipación.</p>{matriz}{viento_render.bloque_evento(ev, num)}")
         bloques.append(f"""<article class="card evento" id="{ev}">
   <div class="sec-head"><div class="eyebrow">{cuando}</div><h2>{titulo}</h2>
   {f'<p class="imp">{impacto}.{fuente}</p>' if impacto else ''}</div>
   {f'<div class="lectura"><p><strong>Lectura.</strong> {lectura}</p></div>' if lectura else ''}
-  <h3>¿Marcaron lluvia antes?</h3>
-  <p class="small muted">En los aeródromos de la zona ({refs}) hubo {con_lluvia} casos con lluvia, contando cada día en cada aeródromo{f", de {total} con observación" if total != con_lluvia else ""}. Cada celda dice en cuántos de esos casos el modelo había anunciado lluvia con esa anticipación.</p>
-  {matriz}
+  {cuerpo_evento}
   {quebradas}
   {detalle}
 </article>""")
@@ -301,6 +316,26 @@ def pagina_metodo(r, n_pares, n_corridas, n_est, ahora):
   <details><summary>Por aeródromo, a 24 h</summary><div class="body">{tabla(["Aeródromo"] + [f"{m} (°C)" for m in ORDEN if not es.empty and m in set(es.modelo)], f_es)}</div></details>
 </section>"""
 
+    sec_movil = ""
+    try:
+        mt = ordenar(pd.read_csv(os.path.join(AQUI, "..", "oceano", "data", "correccion_movil_total.csv")))
+        me_ = pd.read_csv(os.path.join(AQUI, "..", "oceano", "data", "correccion_movil.csv"))
+    except Exception:
+        mt = pd.DataFrame()
+    if not mt.empty:
+        f_mt = [f"<tr><td class='l'>{x.modelo}</td><td class='num'>{int(x.lead_h)} h</td><td class='num'>{entero(x.n)}</td>"
+                f"<td class='num'>{num(x.mae_sin, 2, ' °C')}</td><td class='num'>{num(x.mae_fija, 2, ' °C')}</td><td class='num'>{num(x.mae_movil, 2, ' °C')}</td></tr>"
+                for x in mt.itertuples(index=False)]
+        g24 = me_[me_.lead_h == 24]
+        cuenta = {m: g24[g24.modelo == m].gana.value_counts().to_dict() for m in ORDEN}
+        frase = "; ".join(f"{m}: la móvil gana en {c.get('móvil', 0)}, la de 2025 en {c.get('fija', 0)} y empatan en {c.get('empate', 0)}" for m, c in cuenta.items() if c)
+        sec_movil = f"""<section class="card">
+  <div class="sec-head"><h2>Corrección fija o móvil</h2>
+  <p class="muted">La corrección fija usa el error típico de 2025. La móvil usa el de los últimos 45 días antes de cada pronóstico, sin mirar el futuro, así que se adapta si algo cambia (el mar, el entorno del aeródromo, el modelo). Las dos se evalúan sobre los mismos pronósticos de 2026.</p></div>
+  {tabla(["Modelo", "Plazo", "Comparaciones", "Sin corregir", "Corrección 2025", "Corrección 45 días"], f_mt)}
+  <p class="small">Por aeródromo, a 24 h: {frase}. El detalle de cada uno está en su ficha de <a href="zona.html">Tu zona</a>.</p>
+</section>"""
+
     glosario = "".join(f"<dt>{k[0].upper() + k[1:]}</dt><dd>{v}</dd>" for k, v in GLOSARIO.items())
     html = f"""{head("Método · Earth-2 Chile", "Cómo medimos el error de los pronósticos en Chile: fuentes, cálculos, corrección por estación, indicador de quebradas y límites conocidos.")}
 <body>
@@ -313,6 +348,8 @@ def pagina_metodo(r, n_pares, n_corridas, n_est, ahora):
 </header>
 {sec_corr}
 {sec_temp}
+{sec_movil}
+{viento_render.seccion_metodo(tabla, num, entero, signo, d)}
 <section class="card">
   <div class="sec-head"><h2>Cómo se calcula</h2></div>
   <h3>Verificación diaria (Resumen, Tu zona)</h3>
@@ -365,8 +402,11 @@ def render(pares, r):
         n_pares, n_corridas, n_est = len(t), t.run.nunique(), t.icao.nunique()
     else:
         pl = r.get("plazos", pd.DataFrame())
-        n_pares = int(pl.n.sum()) if not pl.empty else 0
-        n_corridas = 0
+        n_pares = int(pl[pl.lead_h == 24].n.sum()) if not pl.empty else 0
+        try:
+            n_corridas = pd.read_csv(os.path.join(AQUI, "data", "pronosticos.csv.gz"), usecols=["run"]).run.nunique()
+        except Exception:
+            n_corridas = 0
         es = r.get("estaciones", pd.DataFrame())
         n_est = es.icao.nunique() if not es.empty else 0
     kb1 = pagina_eventos(r, ahora)
@@ -375,8 +415,13 @@ def render(pares, r):
     print(f"site/eventos.html ({kb1} KB), site/metodo.html ({kb2} KB) y site/historico.html (redirección) listos")
 
 
-if __name__ == "__main__":
+def desde_csv():
+    """Regenera Eventos y Método solo con los resultados guardados (lo llama el pipeline diario)."""
     r = {os.path.basename(f)[:-4]: pd.read_csv(f) for f in glob.glob(os.path.join(RES, "*.csv"))}
     ruta_pares = os.path.join(AQUI, "data", "pares.csv.gz")
     pares = pd.read_csv(ruta_pares, parse_dates=["run", "valid"]) if os.path.exists(ruta_pares) else None
     render(pares, r)
+
+
+if __name__ == "__main__":
+    desde_csv()

@@ -1,0 +1,39 @@
+{
+  "verificado": "2026-10-19",
+  "nota": "Contexto con fuentes, revisado a mano. Las cifras del estado actual salen de datos primarios (OISST y CPC); esto es solo el marco para leerlas. Actualizar 'estado_oficial' cuando NOAA o ENFEN publiquen un nuevo comunicado.",
+  "umbrales": [
+    {"texto": "NOAA, de Estados Unidos, mide El Niño en la región Niño 3.4, en el centro del Pacífico ecuatorial. Hay condiciones de El Niño cuando la anomalía promedio de tres meses llega a +0,5 °C; desde +1,0 °C se considera moderado, desde +1,5 °C fuerte y desde +2,0 °C muy fuerte.",
+     "fuente": "Instituto Geofísico del Perú, citando la Nota Técnica ENFEN 02-2015", "url": "https://repositorio.igp.gob.pe/bitstreams/61336f0f-2c7d-47fc-8880-680b06cf6481/download"},
+    {"texto": "En Perú, la Comisión Multisectorial ENFEN mide El Niño costero en la región Niño 1+2, frente a su costa, con el Índice Costero El Niño (promedio de tres meses), y lo clasifica como débil, moderado, fuerte o extraordinario.",
+     "fuente": "Instituto Geofísico del Perú", "url": "https://repositorio.igp.gob.pe/bitstreams/5ef6360d-e9fe-4534-b4ae-8c8fc1f206a8/download"}
+  ],
+  "umbral_nino34": [[2.0, "muy fuerte"], [1.5, "fuerte"], [1.0, "moderado"], [0.5, "débil"]],
+  "estado_oficial": [
+    {"texto": "NOAA mantiene un Aviso de El Niño (El Niño Advisory, de su ENSO Alert System); en su discusión del 10 de septiembre de 2026 daba más de 90 % de probabilidad de un evento muy fuerte en la primavera y el verano del hemisferio sur.",
+     "fuente": "NOAA CPC, discusión diagnóstica ENSO", "url": "https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso_advisory/ensodisc_Sp.shtml"},
+    {"texto": "El ENFEN de Perú mantiene el estado de Alerta de El Niño Costero; su comunicado oficial N° 16-2026, del 16 de septiembre de 2026, prevé una magnitud extraordinaria con un máximo probable entre septiembre de 2026 y enero de 2027.",
+     "fuente": "Comunicados oficiales del ENFEN", "url": "https://www.gob.pe/institucion/senamhi/colecciones/1308-comunicados-enfen"}
+  ],
+  "implicancias": [
+    {"zona": "Zona central (30 a 35° S)", "texto": "En años de El Niño, el invierno suele ser más lluvioso que el promedio.",
+     "fuente": "Montecinos y Aceituno (2003), Journal of Climate", "url": "https://repositorio.uchile.cl/handle/2250/126006"},
+    {"zona": "Centro-sur (35 a 38° S)", "texto": "La mayor lluvia suele desplazarse hacia fines de la primavera.",
+     "fuente": "Montecinos y Aceituno (2003), Journal of Climate", "url": "https://repositorio.uchile.cl/handle/2250/126006"},
+    {"zona": "Sur (38 a 41° S)", "texto": "Suele llover menos que el promedio en verano.",
+     "fuente": "Montecinos y Aceituno (2003), Journal of Climate", "url": "https://repositorio.uchile.cl/handle/2250/126006"},
+    {"zona": "Altiplano", "texto": "Los veranos suelen ser más cálidos y secos, con menos lluvia de verano.",
+     "fuente": "Morales y otros (2023), Climate of the Past", "url": "https://cp.copernicus.org/articles/19/457/2023/"},
+    {"zona": "Cordillera y quebradas", "texto": "Las tormentas cálidas, con la isoterma de 0 °C cerca de 2.900 m en lugar de 1.700 m, hacen que llueva donde normalmente nieva; son las que han producido aluviones y crecidas en el pasado reciente. Las fuentes consultadas no las atribuyen solo a El Niño.",
+     "fuente": "Mardones y Garreaud (2020), Atmosphere", "url": "https://www.mdpi.com/2073-4433/11/11/1259", "enlace_interno": "quebradas.html"}
+  ],
+  "activa": [
+    {"texto": "La Dirección Meteorológica de Chile publica cada mes su Boletín de Tendencias Climáticas con el estado de El Niño y la perspectiva de lluvia y temperatura; el de junio de 2026 proyectaba un El Niño moderado a fuerte en el segundo semestre.",
+     "fuente": "DMC, Boletín de Tendencias Climáticas", "url": "https://climatologia.meteochile.gob.cl/application/publicaciones/documentoPdf/boletinTendenciasClimaticas/boletinTendenciasClimaticas-202606.pdf"},
+    {"texto": "En mayo de 2026 el Gobierno convocó el comité nacional de gestión del riesgo (COGRID) en fase preventiva para el invierno, con foco entre Coquimbo y el Biobío; SENAPRED informó planes de contingencia y preparación en 334 municipios.",
+     "fuente": "Radio Universidad de Chile, 25 de mayo de 2026", "url": "https://radio.uchile.cl/2026/05/25/gobierno-activa-plan-preventivo-para-el-invierno-2026-con-foco-en-zonas-de-mayor-riesgo-entre-coquimbo-y-el-biobio/"},
+    {"texto": "El Ministerio de Agricultura elaboró un protocolo de gestión del riesgo de desastres ante El Niño, con monitoreo, alerta temprana, respuesta y recuperación, en el que participan INDAP, SAG y la Comisión Nacional de Riego.",
+     "fuente": "Agrolatam", "url": "https://www.agrolatam.com/chile/agricultura-chile/el-nino-2026-chile-impacto-agro-fruticultura/"},
+    {"texto": "La Subsecretaría de Pesca dejó constancia de una condición anómala pesquera entre Arica y Parinacota y Los Ríos, y registró una caída de los desembarques de peces pelágicos; el jurel concentró el mayor impacto.",
+     "fuente": "Subsecretaría de Pesca y Acuicultura", "url": "https://source.subpesca.cl/portal/616/articles-130648_documento.pdf"}
+  ]
+}

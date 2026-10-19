@@ -10,6 +10,11 @@ histórico (data/metar_*.csv.gz) y produce data/resultados/*.csv y, vía render_
  4. Error de temperatura por plazo, por mes y por estación.
  5. Corrección por estación: sesgo medio por estación × modelo × plazo × hora de corrida, aprendido
     SOLO con 2025 y aplicado SOLO a 2026. Se publica el error global vs. el corregido.
+ 6. Viento (capa estándar 4): velocidad a 10 m (desde u y v) contra el METAR más cercano (±31 min); dirección con
+    error circular, solo con viento observado de 2 m/s o más; ráfaga del modelo (IFS 10fg, máxima de las 6 h previas;
+    GFS GUST; AIFS no la publica) contra la mayor ráfaga o viento reportado en las 6 h previas a la hora válida.
+    Episodios de viento fuerte: ventanas de 6 h con ráfaga observada sobre 50 km/h; un modelo lo anticipó si su ráfaga
+    pronosticada para esa ventana pasaba de 50 km/h.
 
 Uso: python analizar.py"""
 import glob, os, re
@@ -21,13 +26,15 @@ RES = os.path.join(DATA, "resultados")
 EVENTOS = os.path.join(AQUI, "..", "hindcast", "eventos", "eventos_2026.csv")
 UMBRAL_LLUVIA_MM = 1.0       # pronóstico de 24 h que cuenta como "va a llover"
 UMBRAL_FUERTE_MM = 10.0      # lluvia fuerte
+UMBRAL_RAFAGA = 50 / 3.6     # 50 km/h en m/s
+VIENTO_MIN_DIR = 2.0         # m/s: bajo esto la dirección observada no es confiable
 MIN_REPORTES_24H = 12        # reportes METAR mínimos en 24 h para dar por observada la ventana
 MIN_PARES_SESGO = 30         # pares mínimos (en 2025) para aprender el sesgo de una celda
 ANIO_ENTRENA, ANIO_EVALUA = 2025, 2026
 
 # Estaciones que representan cada zona de evento (aeródromos más cercanos).
 ZONAS = {"coquimbo-jul": ["SCSE", "SCAT"], "centrosur-ago": ["SCQP", "SCTC", "SCGE", "SCCH", "SCIE"], "lascondes-oct": ["SCTB", "SCEL", "SCSN"],
-         "santiago-13oct": ["SCTB", "SCEL", "SCSN"]}
+         "santiago-13oct": ["SCTB", "SCEL", "SCSN"], "incendios-ene": ["SCCH", "SCIE", "SCGE"]}
 RE_LLUVIA = re.compile(r"(RA|DZ|SN|GR|GS|PL|UP)")
 
 
@@ -78,16 +85,93 @@ def lluvia_observada(pron, obs):
 
 def emparejar(pron, obs):
     p = tp_24h(pron).sort_values("valid")
-    o = obs[["icao", "time", "temp_c"]].sort_values("time")
+    cols = ["icao", "time", "temp_c"] + [c for c in ("wspd_ms", "wdir") if c in obs]
+    o = obs[cols].sort_values("time")
     pares = pd.merge_asof(p, o, left_on="valid", right_on="time", by="icao", tolerance=pd.Timedelta("31min"), direction="nearest")
-    pares = pares.rename(columns={"temp_c": "t_obs"})
+    pares = pares.rename(columns={"temp_c": "t_obs", "wspd_ms": "w_obs", "wdir": "d_obs"})
     pares["t_err"] = pares.t_fc - pares.t_obs
+    pares = viento(pares, obs)
     horas, n_rep = lluvia_observada(pares, obs)
     pares["horas_lluvia_obs"] = horas; pares["n_rep_24h"] = n_rep
     pares["lluvia_obs"] = np.where(n_rep >= MIN_REPORTES_24H, horas >= 1, np.nan)
     pares["lluvia_fc"] = np.where(pares.tp24_fc.notna(), pares.tp24_fc >= UMBRAL_LLUVIA_MM, np.nan)
     pares["anio"] = pares.valid.dt.year; pares["mes"] = pares.valid.dt.strftime("%Y-%m"); pares["hora_run"] = pares.run.dt.hour
     return pares.drop(columns=["time"])
+
+
+def viento(pares, obs):
+    """Velocidad, dirección y ráfaga del modelo contra el METAR. Si el pronóstico no trae u y v, deja NaN."""
+    for c in ("u_fc", "v_fc", "g_fc", "w_obs", "d_obs"):
+        if c not in pares:
+            pares[c] = np.nan
+    pares["w_fc"] = np.hypot(pares.u_fc, pares.v_fc)
+    pares["d_fc"] = (270 - np.degrees(np.arctan2(pares.v_fc, pares.u_fc))) % 360     # dirección de donde viene
+    pares["w_err"] = pares.w_fc - pares.w_obs
+    dd = ((pares.d_fc - pares.d_obs + 180) % 360) - 180
+    pares["d_err"] = np.where(pares.w_obs >= VIENTO_MIN_DIR, dd, np.nan)
+    # mayor ráfaga (o viento, si no hubo ráfaga significativa) reportada en las 6 h previas a la hora válida
+    g = obs[["icao", "time"]].copy()
+    rafaga = obs["gust_ms"] if "gust_ms" in obs else pd.Series(np.nan, index=obs.index)
+    g["max_g"] = np.fmax(rafaga.astype(float), obs["wspd_ms"].astype(float) if "wspd_ms" in obs else np.nan)
+    g = g.dropna(subset=["max_g"])
+    trozos = []
+    for icao, x in g.groupby("icao"):
+        x = x.sort_values("time").set_index("time")
+        r = x.max_g.rolling("6h").agg(["max", "count"])
+        trozos.append(pd.DataFrame({"icao": icao, "time": r.index, "g_obs6": r["max"].values, "n_obs6": r["count"].values}))
+    if trozos:
+        gg = pd.concat(trozos).sort_values("time")
+        gg["time"] = gg.time.astype("datetime64[ns]")
+        pares = pd.merge_asof(pares.sort_values("valid"), gg, left_on="valid", right_on="time", by="icao",
+                              tolerance=pd.Timedelta("61min"), direction="backward", suffixes=("", "_g")).drop(columns=["time_g"], errors="ignore")
+        pares.loc[pares.n_obs6 < 4, "g_obs6"] = np.nan          # al menos 4 reportes en la ventana
+    else:
+        pares["g_obs6"] = np.nan
+    pares["g_err"] = pares.g_fc - pares.g_obs6
+    return pares
+
+
+def resumen_viento(pares, por):
+    t = pares.dropna(subset=["w_err"])
+    if t.empty:
+        return pd.DataFrame()
+    r = t.groupby(por).agg(n=("w_err", "size"), w_mae=("w_err", mae), w_sesgo=("w_err", "mean"),
+                           d_n=("d_err", "count"), d_mae=("d_err", mae), g_n=("g_err", "count"), g_mae=("g_err", mae),
+                           g_sesgo=("g_err", "mean")).reset_index()
+    return r
+
+
+def episodios(pares, por):
+    """Ventanas de 6 h con ráfaga observada sobre 50 km/h: cuántas anticipó cada modelo (ráfaga pronosticada ≥ 50 km/h)."""
+    d = pares.dropna(subset=["g_obs6", "g_fc"]).copy()
+    if d.empty:
+        return pd.DataFrame()
+    d["obs"] = d.g_obs6 >= UMBRAL_RAFAGA; d["fc"] = d.g_fc >= UMBRAL_RAFAGA
+    c = d.groupby(por).agg(ventanas=("obs", "size"), episodios=("obs", "sum"), anticipados=("obs", lambda x: int((x & d.loc[x.index, "fc"]).sum())),
+                           en_falso=("fc", lambda x: int((x & ~d.loc[x.index, "obs"]).sum()))).reset_index()
+    c["pod"] = c.anticipados / c.episodios.replace(0, np.nan)
+    c["far"] = c.en_falso / (c.anticipados + c.en_falso).replace(0, np.nan)
+    return c
+
+
+def eventos_viento(pares):
+    """Viento y ráfaga pronosticados vs. observados en los días de cada evento (horas válidas 00 y 12 UTC)."""
+    try:
+        ev = pd.read_csv(EVENTOS, parse_dates=["inicio", "fin"])
+    except Exception:
+        return pd.DataFrame()
+    filas = []
+    for e in ev.itertuples(index=False):
+        ests = ZONAS.get(e.id, [])
+        validos = [d + pd.Timedelta(hours=h) for d in pd.date_range(e.inicio, e.fin, freq="D") for h in (24, 36)]
+        sel = pares[pares.icao.isin(ests) & pares.valid.isin(validos)]
+        if sel.empty:
+            continue
+        r = sel.groupby(["modelo", "lead_h"]).agg(w_fc_max=("w_fc", "max"), w_obs_max=("w_obs", "max"),
+                                                  g_fc_max=("g_fc", "max"), g_obs_max=("g_obs6", "max"), n=("w_fc", "count")).reset_index()
+        r.insert(0, "evento", e.id)
+        filas.append(r)
+    return pd.concat(filas, ignore_index=True) if filas else pd.DataFrame()
 
 
 def mae(e):
@@ -171,9 +255,19 @@ def main():
     r["lluvia_anio"] = contingencia(pares, ["anio", "modelo", "lead_h"])
     r["eventos_detalle"], r["eventos_resumen"] = eventos(pares)
     r["correccion_plazos"], r["correccion_estaciones"], evalua = correccion(pares)
+    r["viento_plazos"] = resumen_viento(pares, ["modelo", "lead_h"])
+    r["viento_mensual"] = resumen_viento(pares, ["mes", "modelo", "lead_h"])
+    r["viento_estaciones"] = resumen_viento(pares, ["modelo", "lead_h", "icao"])
+    r["rachas_episodios"] = episodios(pares, ["modelo", "lead_h"])
+    r["rachas_estaciones"] = episodios(pares, ["modelo", "lead_h", "icao"])
+    r["eventos_viento"] = eventos_viento(pares)
     for k, df in r.items():
         df.to_csv(os.path.join(RES, f"{k}.csv"), index=False)
     print(r["plazos"].round(2).to_string(index=False))
+    if not r["viento_plazos"].empty:
+        print(); print(r["viento_plazos"].round(2).to_string(index=False))
+    if not r["rachas_episodios"].empty:
+        print(); print(r["rachas_episodios"].round(2).to_string(index=False))
     if not r["correccion_plazos"].empty:
         print(); print(r["correccion_plazos"].round(2).to_string(index=False))
     else:

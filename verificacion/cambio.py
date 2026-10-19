@@ -36,6 +36,9 @@ CSS_CAMBIO = """
 .serie-mini .linea{fill:none;stroke:var(--calido);stroke-width:2;stroke-linejoin:round}
 .serie-mini .fin{fill:var(--calido);stroke:var(--surface);stroke-width:2}
 .lista-deriva{margin:0;padding-left:1.2em;display:grid;gap:6px;font-size:15.5px;max-width:80ch}
+.cambios .contexto{grid-column:1/-1}
+.lista-ctx{margin:0;padding-left:1.2em;display:grid;gap:7px;font-size:15.5px;max-width:90ch}
+.lista-ctx .fuente{color:var(--muted);font-size:14px}
 """
 
 
@@ -174,6 +177,44 @@ def bloque_deriva(dv, nombres):
             f'<p class="small muted">Al {fecha(dv.fecha.max())}, pronóstico de temperatura a 24 h, con al menos 20 comparaciones.</p></div>')
 
 
+CONTEXTO = os.path.join(AQUI, "..", "oceano", "contexto_enso.json")
+
+
+def bloque_contexto(nino):
+    """Qué significan los valores, qué ha implicado históricamente para Chile y qué activa. Todo con fuente; separado de los datos."""
+    import json
+    try:
+        cx = json.load(open(CONTEXTO, encoding="utf-8"))
+    except Exception:
+        return ""
+    fuente = lambda x: f' <span class="fuente">(<a href="{x["url"]}" rel="noopener">{x["fuente"]}</a>)</span>'
+    tramo = ""
+    if nino is not None and len(nino):
+        v = float(nino.iloc[-1].nino34_anom)
+        cat = next((c for u, c in cx.get("umbral_nino34", []) if v >= u), None)
+        if cat:
+            tramo = (f"<p class='small'><strong>Dónde cae el valor de hoy.</strong> El último valor semanal de Niño 3.4 ({signo(v, 1, ' °C')}) "
+                     f"está en el tramo que se llama «{cat}». Es solo una referencia: la clasificación oficial usa promedios de tres meses y la declaran NOAA y el ENFEN, no este sitio.</p>")
+    umb = "".join(f"<li>{x['texto']}{fuente(x)}</li>" for x in cx.get("umbrales", []))
+    est = "".join(f"<li>{x['texto']}{fuente(x)}</li>" for x in cx.get("estado_oficial", []))
+    imp = "".join(f"<li><strong>{x['zona']}.</strong> {x['texto']}"
+                  + (f' <a href="{x["enlace_interno"]}">Ver Quebradas</a>.' if x.get("enlace_interno") else "") + f"{fuente(x)}</li>"
+                  for x in cx.get("implicancias", []))
+    act = "".join(f"<li>{x['texto']}{fuente(x)}</li>" for x in cx.get("activa", []))
+    return f'''<div class="card cambio contexto">
+    <h3>Qué significan estos valores</h3>
+    <ul class="lista-ctx">{umb}</ul>{tramo}
+    <p class="small"><strong>Estado oficial, según quienes lo declaran</strong> (consultado el {fecha(pd.Timestamp(cx["verificado"]))}; el enlace lleva al estado vigente):</p>
+    <ul class="lista-ctx">{est}</ul>
+    <h3>Lo que históricamente ha implicado para Chile</h3>
+    <p class="small muted">Asociaciones observadas en años con anomalías así, no un pronóstico para este año.</p>
+    <ul class="lista-ctx">{imp}</ul>
+    <h3>Qué se ha puesto en marcha</h3>
+    <ul class="lista-ctx">{act}</ul>
+    <p class="small muted">Contexto revisado a mano con fuentes públicas. Las cifras de arriba, en cambio, salen cada día de los datos de NOAA.</p>
+  </div>'''
+
+
 def seccion(est):
     c = datos()
     if not c:
@@ -186,6 +227,7 @@ def seccion(est):
         bloques.append(bloque_nino(c["nino"]))
     if "deriva" in c:
         bloques.append(bloque_deriva(c["deriva"], nombres))
+    bloques.append(bloque_contexto(c.get("nino")))
     return ('<section aria-labelledby="t-cambio"><div class="sec-head"><h2 id="t-cambio">Lo que está cambiando</h2>'
             '<p class="muted">Datos de satélite y de los aeródromos, sin interpretación: si un dato no lo muestra, aquí no se dice.</p></div>'
             f'<div class="cambios">{"".join(bloques)}</div></section>')

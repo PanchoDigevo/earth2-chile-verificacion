@@ -107,6 +107,10 @@ footer p{max-width:90ch}
 .leaflet-control-attribution{font-size:10px}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .leaflet-tile{filter:brightness(.78) contrast(1.05)}}
 :root[data-theme="dark"] .leaflet-tile{filter:brightness(.78) contrast(1.05)}
+.aviso-oficial{border:1px solid var(--atencion);border-left:6px solid var(--atencion);background:color-mix(in srgb,var(--atencion) 12%,var(--surface));border-radius:var(--radius);padding:14px 16px;display:grid;gap:6px}
+.aviso-oficial strong.t{font-family:var(--font-display);font-size:17px}
+.aviso-oficial p{max-width:80ch;margin:0}
+.aviso-oficial .enlaces{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:15px}
 /* comun:css */
 .topnav{position:sticky;top:0;z-index:1100;background:var(--surface);border-bottom:1px solid var(--line)}
 .topnav .in{max-width:1400px;margin:0 auto;padding-inline:16px;display:flex;align-items:center;gap:16px;min-height:52px}
@@ -137,6 +141,7 @@ footer p{max-width:90ch}
 <body>
 <nav class="topnav" aria-label="Secciones del sitio"><div class="in"><a class="marca" href="./">Earth-2 Chile<small>verificación pública del pronóstico</small></a><div class="tabs"><a href="./">Resumen</a><a href="zona.html">Tu zona</a><a href="eventos.html">Eventos<span class="largo"> 2026</span></a><a href="quebradas.html" class="activa" aria-current="page">Quebradas</a><a href="metodo.html">Método</a></div></div></nav>
 <div class="wrap">
+<div id="aviso-oficial" hidden></div>
 <header>
   <div class="eyebrow">Quebradas de Santiago oriente</div>
   <h1>Las quebradas que se quemaron, y cuánta lluvia haría falta para que bajen</h1>
@@ -344,6 +349,24 @@ footer p{max-width:90ch}
     if (!capas[k]) return; if (e.target.checked) capas[k].addTo(mapa); else mapa.removeLayer(capas[k]);
     ["cicatrices", "cauces", "remociones"].forEach(c => { if (capas[c] && mapa.hasLayer(capas[c])) capas[c].bringToFront(); });
   }));
+})();
+</script>
+<script>
+/* Alerta oficial vigente (site/aviso_oficial.json, editado a mano). Explica por qué el indicador puede marcar "bajo". */
+(async function () {
+  try {
+    const a = await (await fetch("aviso_oficial.json", { cache: "no-cache" })).json();
+    if (!a || new Date() >= new Date(a.vigente_hasta)) return;
+    const caja = document.getElementById("aviso-oficial");
+    const enlaces = (a.enlaces || []).map(e => `<a href="${e.url}" rel="noopener">${e.texto}</a>`).join("");
+    caja.outerHTML = `<section class="aviso-oficial" role="status" aria-label="Alerta oficial vigente"><strong class="t">${a.titulo}</strong>
+      <p>${a.texto}</p>
+      <p><strong>Por qué el indicador de esta página puede marcar «bajo» igual:</strong> usa la lluvia de los modelos globales, que reparten los chaparrones en bloques de 6 horas. Lo peligroso es una lluvia concentrada en poco tiempo, como la del 13 de octubre. <span id="aviso-umbral"></span> Ante cualquier diferencia, mandan las indicaciones oficiales.</p>
+      <div class="enlaces">${enlaces}</div></section>`;
+    const pon = () => { const filas = document.querySelectorAll("#lista tbody tr"); if (!filas.length) return false;
+      const c = filas[0].querySelectorAll("td"); document.getElementById("aviso-umbral").textContent = `Si caen unos ${c[1].textContent.trim()} en 2 horas, ${c[0].textContent.trim()} pasaría a atención; con unos ${c[2].textContent.trim()}, a aviso de impacto.`; return true; };
+    if (!pon()) { const t = setInterval(() => { if (pon()) clearInterval(t); }, 400); setTimeout(() => clearInterval(t), 10000); }
+  } catch (e) { /* sin aviso vigente o sin conexión: la página sigue igual */ }
 })();
 </script>
 <!-- comun:js -->

@@ -1,0 +1,11 @@
+{
+  "vigente_hasta": "2026-10-22T09:00:00-03:00",
+  "titulo": "Alerta Amarilla de SENAPRED vigente en la Región Metropolitana",
+  "texto": "SENAPRED declaró Alerta Amarilla para la Región Metropolitana por evento meteorológico (18 de octubre, 22:16). Para la lluvia del martes 20 de octubre, siga el aviso de la Dirección Meteorológica de Chile y las indicaciones de SENAPRED.",
+  "enlaces": [
+    {"texto": "Alerta de SENAPRED", "url": "https://senapred.cl/alerta/se-declara-alerta-temprana-preventiva-para-la-region-metropolitana-por-evento-meteorologico-2026-10-16-19-50-34"},
+    {"texto": "Alertas vigentes de SENAPRED", "url": "https://senapred.cl/alertas/"},
+    {"texto": "Dirección Meteorológica de Chile", "url": "https://www.meteochile.gob.cl/PortalDMC-web/index.xhtml"}
+  ],
+  "fuente": "Verificado en senapred.cl/alertas el 19 de octubre de 2026."
+}

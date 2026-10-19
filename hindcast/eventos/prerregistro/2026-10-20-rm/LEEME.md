@@ -1,0 +1,87 @@
+# Registro previo: 2026-10-20-rm
+
+Ventana del evento: 2026-10-20 00:00 a 2026-10-21 12:00 (hora de Chile). Resumen actualizado el 19-10-2026 18:23 (hora de Chile).
+Cada fila es una corrida de un modelo; las más nuevas, abajo. La fecha de cada registro está en la columna
+registrado_utc de hindcast/seguimiento/pronosticos.csv y en el historial de git.
+
+## Quebrada de Apoquindo (San Carlos de Apoquindo)
+
+| Modelo | Corrida (UTC) | Lluvia en la ventana | Bloque más lluvioso | Isoterma 0 °C |
+|---|---|---|---|---|
+| GFS | 2026-10-18 12:00 | 18 mm | 7.7 mm (20 09-15 h) | 2871 a 3034 m |
+| GFS | 2026-10-18 18:00 | 15 mm | 4.9 mm (20 09-15 h) | 2855 a 2997 m |
+| GFS | 2026-10-19 00:00 | 14 mm | 4.3 mm (20 09-15 h) | 2860 a 2993 m |
+| GFS | 2026-10-19 06:00 | 20 mm | 6.8 mm (20 15-21 h) | 2775 a 2934 m |
+| GFS | 2026-10-19 12:00 | 23 mm | 8.5 mm (20 15-21 h) | 2759 a 2968 m |
+| AIFS | 2026-10-18 12:00 | 13 mm | 4.6 mm (20 15-21 h) | – |
+| AIFS | 2026-10-19 00:00 | 19 mm | 6.9 mm (20 15-21 h) | – |
+| AIFS | 2026-10-19 06:00 | 20 mm | 6.8 mm (20 15-21 h) | – |
+| AIFS | 2026-10-19 12:00 | 20 mm | 6.8 mm (20 15-21 h) | – |
+| IFS | 2026-10-18 12:00 | 39 mm | 23.0 mm (20 21-03 h) | – |
+| IFS | 2026-10-18 18:00 | 38 mm | 17.7 mm (20 21-03 h) | – |
+| IFS | 2026-10-19 00:00 | 39 mm | 16.9 mm (20 21-03 h) | – |
+| IFS | 2026-10-19 06:00 | 40 mm | 14.8 mm (20 15-21 h) | – |
+| IFS | 2026-10-19 12:00 | 34 mm | 10.9 mm (20 21-03 h) | – |
+
+Umbral del indicador: atención con unos 10 mm en 2 h; aviso de impacto con unos 16 mm en 2 h.
+
+## Quebrada de Ramón
+
+| Modelo | Corrida (UTC) | Lluvia en la ventana | Bloque más lluvioso | Isoterma 0 °C |
+|---|---|---|---|---|
+| GFS | 2026-10-18 12:00 | 18 mm | 7.7 mm (20 09-15 h) | 2871 a 3034 m |
+| GFS | 2026-10-18 18:00 | 15 mm | 4.9 mm (20 09-15 h) | 2855 a 2997 m |
+| GFS | 2026-10-19 00:00 | 14 mm | 4.3 mm (20 09-15 h) | 2860 a 2993 m |
+| GFS | 2026-10-19 06:00 | 20 mm | 6.8 mm (20 15-21 h) | 2775 a 2934 m |
+| GFS | 2026-10-19 12:00 | 23 mm | 8.5 mm (20 15-21 h) | 2759 a 2968 m |
+| AIFS | 2026-10-18 12:00 | 13 mm | 4.6 mm (20 15-21 h) | – |
+| AIFS | 2026-10-19 00:00 | 19 mm | 6.9 mm (20 15-21 h) | – |
+| AIFS | 2026-10-19 06:00 | 20 mm | 6.8 mm (20 15-21 h) | – |
+| AIFS | 2026-10-19 12:00 | 20 mm | 6.8 mm (20 15-21 h) | – |
+| IFS | 2026-10-18 12:00 | 39 mm | 23.0 mm (20 21-03 h) | – |
+| IFS | 2026-10-18 18:00 | 38 mm | 17.7 mm (20 21-03 h) | – |
+| IFS | 2026-10-19 00:00 | 39 mm | 16.9 mm (20 21-03 h) | – |
+| IFS | 2026-10-19 06:00 | 40 mm | 14.8 mm (20 15-21 h) | – |
+| IFS | 2026-10-19 12:00 | 34 mm | 10.9 mm (20 21-03 h) | – |
+
+Umbral del indicador: atención con unos 22 mm en 2 h; aviso de impacto con unos 36 mm en 2 h.
+
+## Tobalaba (Las Condes)
+
+| Modelo | Corrida (UTC) | Lluvia en la ventana | Bloque más lluvioso | Isoterma 0 °C |
+|---|---|---|---|---|
+| GFS | 2026-10-18 12:00 | 18 mm | 7.7 mm (20 09-15 h) | 2871 a 3034 m |
+| GFS | 2026-10-18 18:00 | 15 mm | 4.9 mm (20 09-15 h) | 2855 a 2997 m |
+| GFS | 2026-10-19 00:00 | 14 mm | 4.3 mm (20 09-15 h) | 2860 a 2993 m |
+| GFS | 2026-10-19 06:00 | 20 mm | 6.8 mm (20 15-21 h) | 2775 a 2934 m |
+| GFS | 2026-10-19 12:00 | 23 mm | 8.5 mm (20 15-21 h) | 2759 a 2968 m |
+| AIFS | 2026-10-18 12:00 | 13 mm | 4.6 mm (20 15-21 h) | – |
+| AIFS | 2026-10-19 00:00 | 19 mm | 6.9 mm (20 15-21 h) | – |
+| AIFS | 2026-10-19 06:00 | 20 mm | 6.8 mm (20 15-21 h) | – |
+| AIFS | 2026-10-19 12:00 | 20 mm | 6.8 mm (20 15-21 h) | – |
+| IFS | 2026-10-18 12:00 | 39 mm | 23.0 mm (20 21-03 h) | – |
+| IFS | 2026-10-18 18:00 | 38 mm | 17.7 mm (20 21-03 h) | – |
+| IFS | 2026-10-19 00:00 | 39 mm | 16.9 mm (20 21-03 h) | – |
+| IFS | 2026-10-19 06:00 | 40 mm | 14.8 mm (20 15-21 h) | – |
+| IFS | 2026-10-19 12:00 | 34 mm | 10.9 mm (20 21-03 h) | – |
+
+## Santiago (Pudahuel)
+
+| Modelo | Corrida (UTC) | Lluvia en la ventana | Bloque más lluvioso | Isoterma 0 °C |
+|---|---|---|---|---|
+| GFS | 2026-10-18 12:00 | 6 mm | 2.4 mm (20 09-15 h) | 2829 a 2970 m |
+| GFS | 2026-10-18 18:00 | 7 mm | 2.6 mm (20 03-09 h) | 2789 a 2946 m |
+| GFS | 2026-10-19 00:00 | 7 mm | 3.6 mm (20 15-21 h) | 2784 a 2922 m |
+| GFS | 2026-10-19 06:00 | 9 mm | 4.2 mm (20 15-21 h) | 2815 a 2932 m |
+| GFS | 2026-10-19 12:00 | 11 mm | 4.8 mm (20 15-21 h) | 2815 a 2913 m |
+| AIFS | 2026-10-18 12:00 | 14 mm | 5.7 mm (20 15-21 h) | – |
+| AIFS | 2026-10-19 00:00 | 21 mm | 8.8 mm (20 15-21 h) | – |
+| AIFS | 2026-10-19 06:00 | 22 mm | 8.8 mm (20 15-21 h) | – |
+| AIFS | 2026-10-19 12:00 | 22 mm | 8.6 mm (20 15-21 h) | – |
+| IFS | 2026-10-18 12:00 | 39 mm | 26.2 mm (20 15-21 h) | – |
+| IFS | 2026-10-18 18:00 | 35 mm | 21.4 mm (20 15-21 h) | – |
+| IFS | 2026-10-19 00:00 | 37 mm | 24.1 mm (20 15-21 h) | – |
+| IFS | 2026-10-19 06:00 | 30 mm | 15.7 mm (20 15-21 h) | – |
+| IFS | 2026-10-19 12:00 | 31 mm | 22.3 mm (20 15-21 h) | – |
+
+Registro para verificación posterior. No es un aviso ni una alerta: las alertas oficiales son de la DMC y SENAPRED.

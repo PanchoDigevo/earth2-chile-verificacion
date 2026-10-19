@@ -11,7 +11,7 @@ Detectar cambios de régimen (El Niño, olas de calor marinas) desde datos prima
 - En el sitio, sección "Lo que está cambiando": anomalía del mar por tramo de costa, Niño 1+2, estaciones en deriva, con fecha y fuente (NOAA). Lenguaje descriptivo, sin titulares. Si el dato no muestra calentamiento, no se dice.
 - Si una fuente no responde, avisar y proponer alternativa (ERA5 SST) antes de improvisar.
 
-## 2. [ ] Viento (capa estándar)
+## 2. [x] Viento (capa estándar)
 - Histórico: extraer viento 10 m (10u, 10v) de AIFS, IFS y GFS, y rachas donde la fuente las publique (revisar qué campo de ráfaga trae cada open data; si no hay, decirlo). METAR histórico: agregar la racha (campo gust de Iowa State).
 - Verificar velocidad, dirección y rachas por estación, plazo y mes, igual que la temperatura, con corrección fija y móvil.
 - En los cuatro eventos de 2026 y en los incendios de enero 2026 (Biobío/Ñuble, estaciones cercanas): viento y racha pronosticados vs. observados a 72/48/24 h.

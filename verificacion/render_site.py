@@ -11,6 +11,7 @@ Fuentes de las cifras:
 Diseño: docs/brief_sitio.md. Lenguaje de aviso/indicador, nunca "alerta"."""
 import json, math, os, re
 import pandas as pd
+import aviso_oficial
 import cambio
 from comun import (CSS_NAV, CSS_DEF, JS_DEF, EVENTOS, GLOSARIO, aviso, d, entero, fecha, hora_chile, nav, num, pie, signo)
 
@@ -525,7 +526,7 @@ def head(titulo, descripcion):
 <meta name="description" content="{descripcion}">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
-<style>{CSS}{CSS_NAV}{CSS_DEF}{cambio.CSS_CAMBIO}</style>
+<style>{CSS}{CSS_NAV}{CSS_DEF}{aviso_oficial.CSS}{cambio.CSS_CAMBIO}</style>
 </head>"""
 
 
@@ -583,6 +584,7 @@ def pagina_resumen(est, ahora):
 <body>
 {nav("resumen")}
 <div class="wrap">
+{aviso_oficial.html('<p>Para las quebradas quemadas de Santiago oriente, mire también <a href="quebradas.html">cuánta lluvia las acercaría a un umbral</a>.</p>')}
 
 <header>
   <div class="eyebrow">Verificación pública del pronóstico del tiempo en Chile</div>
@@ -689,6 +691,7 @@ def pagina_zona(est, pts, ahora):
 <body>
 {nav("zona")}
 <div class="wrap">
+{aviso_oficial.html()}
 
 <header>
   <div class="eyebrow">Tu zona</div>

@@ -7,13 +7,15 @@ Fuentes de las cifras:
   - Consolidadas (lo que se presenta como resultado): historico/data/resultados/*.csv, año 2026, pronóstico a 24 h,
     error sin corregir y corregido por estación (corrección aprendida solo con 2025).
   - Últimos días (siempre rotulado "preliminar" hasta juntar 30 días): data/verif_puntos.csv de este pipeline.
+  - Lluvia en milímetros: data/verif_lluvia.csv (lluvia.py), pronóstico de 24 h frente a la estación SYNOP de la DMC
+    en cada aeródromo; preliminar hasta juntar 30 días.
   - Quebradas hoy: site/quebradas/indicador.json + cuencas.geojson.
 Diseño: docs/brief_sitio.md. Lenguaje de aviso/indicador, nunca "alerta"."""
 import json, math, os, re
 import pandas as pd
 import aviso_oficial
 import cambio
-from comun import (CSS_NAV, CSS_DEF, JS_DEF, EVENTOS, GLOSARIO, aviso, d, entero, fecha, hora_chile, nav, num, pie, signo)
+from comun import (CSS_NAV, CSS_DEF, JS_DEF, EVENTOS, GLOSARIO, MESES, a_chile, aviso, d, entero, fecha, hora_chile, nav, num, pie, signo)
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 SITE = os.path.join(AQUI, "..", "site")
@@ -211,6 +213,66 @@ def quebradas_hoy():
             "n_quemadas": len(quemadas), "n_total": len(ind.get("cuencas", [])), "mas_cerca": mas_cerca}
 
 
+def datos_lluvia(est):
+    """Lluvia de 24 h pronosticada frente a la medida (lluvia.py): totales por modelo y, en cada aeródromo de est, su
+    estación, sus cuentas por modelo y los últimos días (e["ll"]). None si todavía no hay comparaciones."""
+    try:
+        import lluvia
+        v, par = lluvia.dias(), lluvia.parejas()
+    except Exception as e:
+        print("AVISO: sin lluvia medida:", type(e).__name__, e)
+        return None
+    v = v[v.modelo.isin(ORDEN)] if not v.empty else v
+    if v.empty:
+        return None
+    hora = f"{a_chile(v.valid.iloc[0]):%H:%M}".lstrip("0")
+    for e in est:
+        p, g = par.get(e["icao"]), v[v.icao == e["icao"]]
+        if not p or g.empty:
+            continue
+        donde = "en el mismo aeródromo" if p["km"] < 2 else f"de {p['estacion']}, a {num(p['km'], 1)} km"
+        tabla = g.pivot_table(index="valid", values="mm_fc", columns="modelo").join(g.groupby("valid").mm_obs.first()).sort_index().tail(7)
+        dias = [{"f": f"{a_chile(t).day} {MESES[a_chile(t).month - 1]}", "o": float(r.mm_obs),
+                 "p": {m: float(r[m]) for m in ORDEN if m in r and not pd.isna(r[m])}} for t, r in tabla.iterrows()]
+        e["ll"] = {"donde": donde, "m": {m: lluvia.cuentas(x) for m, x in g.groupby("modelo")}, "dias": dias[::-1]}
+    n_dias = (v.valid.max() - v.valid.min()).days + 1
+    return {"tot": {m: lluvia.cuentas(v[v.modelo == m]) for m in ORDEN if (v.modelo == m).any()}, "desde": v.valid.min(),
+            "n_dias": n_dias, "n_est": v.icao.nunique(), "hora": hora, "umbral": lluvia.UMBRAL}
+
+
+DIA_AERO = d("días-aeródromo", definicion="Cada día en cada aeródromo cuenta una vez: 15 días en 20 aeródromos son 300 días-aeródromo.")
+
+
+def seccion_lluvia(ll):
+    """Resumen: la lluvia en milímetros, por modelo. Preliminar hasta DIAS_CONSOLIDADO días."""
+    if not ll:
+        return ""
+    tot = ll["tot"]
+    tarjetas = "".join(
+        f'<div class="modelo"><div class="tipo">{MODELOS[m][1]} · {MODELOS[m][2]}</div><div class="nombre">{m}</div>'
+        f'<div class="value">{c["avisados"]}<small>de {c["llovio"]} días con lluvia avisados</small></div>'
+        f'<div class="foot">Acertó si llovería o no en {num(100 * c["aciertos"] / c["n"], 0)} % de {entero(c["n"])} {DIA_AERO}; '
+        f'{c["falsas"]} {"falsa alarma" if c["falsas"] == 1 else "falsas alarmas"}. Error medio {num(c["mae"], 1)} mm por día'
+        f'{f""", {num(c["mae_lluvia"], 1)} mm los días con lluvia""" if c["mae_lluvia"] is not None else ""}.</div></div>'
+        for m, c in tot.items())
+    mas = [m for m, c in tot.items() if c["medido"] > 0 and c["pronosticado"] > 1.2 * c["medido"]]
+    medido = max(c["medido"] for c in tot.values())
+    frase = ""
+    if medido > 0:
+        partes = ", ".join(f'{m} {entero(c["pronosticado"])} mm' for m, c in tot.items())
+        frase = (f'<p class="small">Sumando todos los días y aeródromos cayeron {entero(medido)} mm; los modelos pronosticaron {partes}. '
+                 + ("Los tres anunciaron más lluvia de la que cayó." if len(mas) == len(tot) else "") + "</p>")
+    prelim = ll["n_dias"] < DIAS_CONSOLIDADO
+    rotulo = (f'{chip("prelim")} {ll["n_dias"]} días de datos; se consolida al cumplir {DIAS_CONSOLIDADO} días.' if prelim
+              else f'{ll["n_dias"]} días de datos.')
+    return f"""<section class="card" id="lluvia">
+  <div class="sec-head"><h2>Y la lluvia, en milímetros</h2>
+  <p class="muted small">Los aeródromos no informan milímetros. Desde el {fecha(ll["desde"])}, comparamos la lluvia de 24 horas que pronosticó cada modelo el día anterior con lo que midió el pluviómetro de la {d("DMC", definicion="Dirección Meteorológica de Chile. Sus estaciones automáticas envían cada hora la lluvia de la última hora a la red de la Organización Meteorológica Mundial.")} en {ll["n_est"]} aeródromos. Cada día va de las {ll["hora"]} a las {ll["hora"]} (hora de Chile) y cuenta como día con lluvia desde {num(ll["umbral"], 0)} mm.</p></div>
+  <div class="prelim-bloque"><p class="small">{rotulo}</p><div class="modelos">{tarjetas}</div>{frase}</div>
+  <p class="small"><a href="zona.html">Ver la lluvia en tu zona →</a> · <a href="metodo.html#lluvia-mm">Cómo se compara</a></p>
+</section>"""
+
+
 # ---------- mapa de aeródromos (SVG en tres franjas, coloreado con JavaScript) ----------
 K = 20.0            # px por grado de latitud
 LAT_TOP = -17.0
@@ -320,7 +382,24 @@ JS_MAPA = r"""
       ${x && x.deriva != null ? `<p class="small"><span class="chip medio"><i></i>En deriva</span> En los últimos 30 días, este modelo pronosticó aquí ${fmt(Math.abs(x.deriva))} °C más ${x.deriva < 0 ? 'frío' : 'calor'} de lo que corresponde a su error de 2025.</p>` : ''}
       ${x && x.viento != null ? `<p class="small">Viento: ${MOD[st.modelo]} se equivoca en promedio ${fmt(x.viento, 0)} km/h en la velocidad de mañana${Math.abs(x.viento_sesgo) >= 3 ? (x.viento_sesgo > 0 ? ', y tiende a pronosticar más viento del que hay' : ', y tiende a pronosticar menos viento del que hay') : ''}${x.rafaga != null ? `; en las ráfagas, ${fmt(x.rafaga, 0)} km/h` : (st.modelo === 'AIFS' ? '; AIFS no pronostica ráfagas' : '')}.</p>` : ''}
       <table class="mini"><thead><tr><th class="l">Modelo</th><th>Sin corregir</th><th>Corregido</th></tr></thead><tbody>${filas}</tbody></table>
-      <p class="muted small">Error medio de la temperatura pronosticada con 24 h de anticipación, ${n.toLocaleString('es-CL')} comparaciones en 2026. <a href="#${e.icao}">Enlace a esta estación</a></p>`;
+      <p class="muted small">Error medio de la temperatura pronosticada con 24 h de anticipación, ${n.toLocaleString('es-CL')} comparaciones en 2026. <a href="#${e.icao}">Enlace a esta estación</a></p>
+      ${lluvia(e)}`;
+  }
+
+  function lluvia(e){
+    const L = Z.lluvia; if (!L) return '';
+    if (!e.ll) return `<h3>Lluvia</h3><p class="small muted">Este aeródromo no tiene un pluviómetro de la DMC a menos de 15 km y a una altura parecida.</p>`;
+    const c = e.ll.m[st.modelo];
+    const dias = n => n === 1 ? '1 día' : n + ' días', cap = t => t[0].toUpperCase() + t.slice(1);
+    const txt = !c ? `<p class="muted small">Sin comparaciones de lluvia de ${st.modelo} en este aeródromo.</p>` :
+      `<p class="small">Desde el ${L.desde}, el pluviómetro de la DMC ${e.ll.donde} midió ${L.umbral} mm o más en <strong>${c.llovio} de ${dias(c.n)}</strong>.
+       ${c.llovio ? `${cap(MOD[st.modelo])} avisó la lluvia el día anterior en ${c.avisados} de ${c.llovio === 1 ? 'ese día' : 'esos ' + c.llovio}` : `${cap(MOD[st.modelo])} no tenía lluvia que avisar`}${c.falsas ? `${c.llovio ? ', y' : ', pero'} anunció lluvia que no cayó en ${dias(c.falsas)}` : ''}.
+       Se equivocó en promedio ${fmt(c.mae)} mm por día${c.mae_lluvia != null ? ` (${fmt(c.mae_lluvia)} mm los días con lluvia)` : ''}.</p>`;
+    const mm = v => v == null ? '–' : fmt(v);
+    const filas = e.ll.dias.map(x => `<tr><td class="l">${x.f}</td><td class="num${x.o >= L.umbral ? ' mejor' : ''}">${mm(x.o)}</td>${['AIFS','IFS','GFS'].map(m => `<td class="num${m === st.modelo ? ' sel' : ''}">${mm(x.p[m])}</td>`).join('')}</tr>`).join('');
+    return `<h3>Lluvia</h3>${txt}
+      <table class="mini"><thead><tr><th class="l">Día</th><th>Medido</th><th>AIFS</th><th>IFS</th><th>GFS</th></tr></thead><tbody>${filas}</tbody></table>
+      <p class="muted small">Milímetros en 24 h hasta las ${L.hora} de cada día, últimos días con datos. Pronóstico hecho el día anterior.</p>`;
   }
 
   function tabla(){
@@ -330,6 +409,11 @@ JS_MAPA = r"""
       return `<tr data-icao="${e.icao}" tabindex="0"${e.icao === st.sel ? ' class="actual"' : ''}><td class="l">${e.nombre}<span class="region">${e.region}</span></td>
         <td class="num">${fmt(x.g)} °C</td><td class="num">${fmt(x.c)} °C</td><td class="num">${x.c < x.g ? '−' + fmt(mej, 0) : '+' + fmt(-mej, 0)} %</td><td>${chip(niv(val(e)))}</td></tr>`; }).join('');
     const cab = document.getElementById('tabla-modelo'); if (cab) cab.textContent = st.modelo;
+    const tl = document.querySelector('#tabla-lluvia tbody'); if (!tl) return;
+    tl.innerHTML = E.filter(e => e.ll && e.ll.m[st.modelo]).map(e => { const c = e.ll.m[st.modelo];
+      return `<tr data-icao="${e.icao}"${e.icao === st.sel ? ' class="actual"' : ''}><td class="l">${e.nombre}<span class="region">Pluviómetro ${e.ll.donde.replace('en el mismo aeródromo', 'en el aeródromo')}</span></td>
+        <td class="num">${c.n}</td><td class="num">${c.llovio}</td><td class="num">${c.llovio ? c.avisados + ' de ' + c.llovio : '–'}</td><td class="num">${c.falsas}</td><td class="num">${fmt(c.mae)} mm</td></tr>`; }).join('');
+    document.querySelectorAll('[data-modelo-txt]').forEach(el => el.textContent = st.modelo);
   }
 
   function elegir(icao, desplazar){
@@ -343,7 +427,7 @@ JS_MAPA = r"""
 
   document.addEventListener('click', ev => {
     const g = ev.target.closest('.est'); if (g) { elegir(g.dataset.icao, true); return; }
-    const tr = ev.target.closest('#tabla-est tr[data-icao]'); if (tr) elegir(tr.dataset.icao, true);
+    const tr = ev.target.closest('#tabla-est tr[data-icao], #tabla-lluvia tr[data-icao]'); if (tr) elegir(tr.dataset.icao, true);
   });
   document.addEventListener('keydown', ev => {
     if (ev.key !== 'Enter' && ev.key !== ' ') return;
@@ -477,8 +561,10 @@ th.l,td.l{text-align:left}
 td.num{font-family:var(--font-data);font-size:14px;font-variant-numeric:tabular-nums}
 td .region{display:block;font-size:13px;color:var(--muted)}
 tr.actual td{background:var(--accent-soft)}
-#tabla-est tbody tr{cursor:pointer}
-#tabla-est tbody tr:hover td{background:color-mix(in srgb,var(--accent) 8%,transparent)}
+#tabla-est tbody tr,#tabla-lluvia tbody tr{cursor:pointer}
+#tabla-est tbody tr:hover td,#tabla-lluvia tbody tr:hover td{background:color-mix(in srgb,var(--accent) 8%,transparent)}
+.ficha h3{margin-top:6px}
+table.mini td.sel{background:var(--accent-soft)}
 table.mini{font-size:14.5px} table.mini th,table.mini td{padding:6px 8px}
 td.medida{min-width:9.5em}
 .medida-in{display:inline-grid;grid-template-columns:72px auto;gap:8px;align-items:center;justify-items:end}
@@ -538,7 +624,7 @@ def escribir(nombre_archivo, html):
 
 
 # ---------- página: Resumen ----------
-def pagina_resumen(est, ahora):
+def pagina_resumen(est, ahora, ll=None):
     c = cifras_portada(est)
     ev = eventos_destacado()
     q = quebradas_hoy()
@@ -607,6 +693,8 @@ def pagina_resumen(est, ahora):
 </section>
 
 {cambio.seccion(est)}
+
+{seccion_lluvia(ll)}
 
 <section aria-label="Explorar">
   <div class="puertas">{''.join(puertas)}</div>
@@ -681,12 +769,28 @@ def bloque_ultimos_dias(pts):
     return bloque, tecnico
 
 
-def pagina_zona(est, pts, ahora):
+def lluvia_js(ll):
+    return {"desde": fecha(ll["desde"]), "umbral": num(ll["umbral"], 0), "hora": ll["hora"]} if ll else None
+
+
+def tabla_lluvia(ll):
+    """Tu zona: lluvia medida frente a pronosticada en cada aeródromo (la llena el JS según el modelo elegido)."""
+    if not ll:
+        return ""
+    return f"""<section id="lluvia">
+  <div class="sec-head"><h2>La lluvia en cada aeródromo</h2>
+  <p class="muted">Modelo <strong data-modelo-txt>AIFS</strong>. Desde el {fecha(ll["desde"])}: días comparados, días en que el pluviómetro de la DMC midió {num(ll["umbral"], 0)} mm o más, cuántos de ellos avisó el modelo el día anterior, días en que anunció lluvia que no cayó y su {d("error medio")} en milímetros por día. De norte a sur; toca una fila para ver su ficha.</p></div>
+  <div class="prelim-bloque"><p class="small">{chip("prelim") + f" {ll['n_dias']} días de datos; se consolida al cumplir {DIAS_CONSOLIDADO} días." if ll["n_dias"] < DIAS_CONSOLIDADO else f"{ll['n_dias']} días de datos."} Detalle en <a href="metodo.html#lluvia-mm">Método</a>.</p>
+  <div class="tabla"><table id="tabla-lluvia"><thead><tr><th class="l">Aeródromo</th><th>Días</th><th>Con lluvia</th><th>Avisados</th><th>Falsas alarmas</th><th>Error medio</th></tr></thead><tbody></tbody></table></div></div>
+</section>"""
+
+
+def pagina_zona(est, pts, ahora, ll=None):
     c = cifras_portada(est)
     inicial = c["ejemplo"]["icao"] if "ejemplo" in c else (est[0]["icao"] if est else "")
     opciones = "".join(f'<option value="{e["icao"]}">{e["nombre"]} · {e["region"]}</option>' for e in est)
     ultimos, tecnico = bloque_ultimos_dias(pts)
-    datos_js = json.dumps({"est": est, "modelo": "AIFS", "navegar": False, "ficha": True, "inicial": inicial}, ensure_ascii=False)
+    datos_js = json.dumps({"est": est, "modelo": "AIFS", "navegar": False, "ficha": True, "inicial": inicial, "lluvia": lluvia_js(ll)}, ensure_ascii=False)
     html = f"""{head("Tu zona · Earth-2 Chile", "Elige un aeródromo de Chile y mira cuánto se equivocan los modelos de pronóstico al predecir la temperatura de mañana, con y sin corrección local.")}
 <body>
 {nav("zona")}
@@ -696,7 +800,7 @@ def pagina_zona(est, pts, ahora):
 <header>
   <div class="eyebrow">Tu zona</div>
   <h1>¿Cuánto se equivoca el pronóstico donde vives?</h1>
-  <p class="lead">Elige un aeródromo en la lista o en el mapa. Las cifras son el {d("error medio")} de la temperatura pronosticada para el día siguiente, durante 2026, sin corregir y con la {d("corrección por estación")}.</p>
+  <p class="lead">Elige un aeródromo en la lista o en el mapa. Las cifras son el {d("error medio")} de la temperatura pronosticada para el día siguiente, durante 2026, sin corregir y con la {d("corrección por estación")}.{" Más abajo, la lluvia pronosticada frente a la que midió el pluviómetro de cada aeródromo." if ll else ""}</p>
 </header>
 
 <section class="card">
@@ -721,6 +825,8 @@ def pagina_zona(est, pts, ahora):
   <p class="muted">Modelo <strong id="tabla-modelo">AIFS</strong>, error medio a 24 h en 2026. Toca una fila para ver su ficha.</p></div>
   <div class="card tabla"><table id="tabla-est"><thead><tr><th class="l">Aeródromo</th><th>Sin corregir</th><th>Corregido</th><th>Cambio</th><th class="l">Nivel</th></tr></thead><tbody></tbody></table></div>
 </section>
+
+{tabla_lluvia(ll)}
 
 {ultimos}
 
@@ -747,10 +853,11 @@ def render_site(pts):
     pts["valid"] = pd.to_datetime(pts["valid"])
     ahora = pd.Timestamp.now("UTC")
     est = datos_estaciones()
-    kb1 = pagina_resumen(est, ahora)
-    kb2 = pagina_zona(est, pts, ahora)
+    ll = datos_lluvia(est)
+    kb1 = pagina_resumen(est, ahora, ll)
+    kb2 = pagina_zona(est, pts, ahora, ll)
     print(f"site/index.html ({kb1} KB) y site/zona.html ({kb2} KB) listos: {len(est)} aeródromos consolidados, "
-          f"{len(pts)} comparaciones del pipeline diario")
+          f"{len(pts)} comparaciones del pipeline diario" + (f", lluvia en {ll['n_est']} aeródromos" if ll else ", sin lluvia medida"))
     try:                                     # Eventos y Método se regeneran con los resultados guardados
         import sys
         sys.path.insert(0, os.path.join(AQUI, "..", "historico"))

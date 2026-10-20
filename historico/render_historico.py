@@ -353,7 +353,7 @@ def pagina_metodo(r, n_pares, n_corridas, n_est, ahora):
 <section class="card">
   <div class="sec-head"><h2>Cómo se calcula</h2></div>
   <h3>Verificación diaria (Resumen, Tu zona)</h3>
-  <p>Cuatro veces al día, un proceso automático en GitHub Actions toma la última corrida completa de AIFS (IA de ECMWF), IFS (ECMWF) y GFS (NOAA), los tres en grilla global de 0,25° (unos 25 km), y lee la temperatura a 2 m, el viento a 10 m y la lluvia en el punto de grilla más cercano a cada aeródromo, sin corrección por altura. Cada pronóstico se guarda y se compara con el reporte METAR del aeródromo más cercano en el tiempo, a menos de 31 minutos de la hora pronosticada.</p>
+  <p>Cuatro veces al día, un proceso automático en GitHub Actions toma la última corrida completa de AIFS (IA de ECMWF), IFS (ECMWF) y GFS (NOAA), los tres en grilla global de 0,25° (unos 25 km), y lee la temperatura a 2 m, el viento a 10 m y la lluvia en el punto de grilla más cercano a cada aeródromo, sin corrección por altura. Cada pronóstico se guarda y se compara con el reporte METAR del aeródromo más cercano en el tiempo, a menos de 31 minutos de la hora pronosticada. La lluvia de 24 horas se compara con los milímetros del pluviómetro de la DMC en cada aeródromo (ver <a href="#lluvia-mm">Lluvia en milímetros en cada aeródromo</a>).</p>
   <h3>Verificación retroactiva 2025–2026 (Eventos, cifras del Resumen)</h3>
   <p>Del archivo abierto de ECMWF y de NOAA en AWS se leen las corridas de 00 y 12 UTC de enero de 2025 a hoy, solo temperatura y lluvia acumulada a 24, 48 y 72 horas en cada aeródromo; los archivos de modelo no se guardan. Las observaciones vienen del archivo METAR de la Iowa Environmental Mesonet. Los METAR chilenos no informan milímetros de lluvia: se usa el tiempo presente (lluvia, llovizna, chubasco, tormenta) para saber si llovió en las 24 horas, exigiendo al menos 12 reportes. La lluvia por satélite de los eventos viene de PERSIANN-CCS (o de IMERG de la NASA, cuando hay credenciales).</p>
   <h3>Corrección por estación</h3>
@@ -363,7 +363,7 @@ def pagina_metodo(r, n_pares, n_corridas, n_est, ahora):
 </section>
 <section class="card" id="estaciones">
   <div class="sec-head"><h2>Lluvia medida en estaciones</h2></div>
-  <p>Los aeródromos chilenos no informan milímetros. Para medir la lluvia usamos todas las estaciones chilenas que envían cada hora un mensaje SYNOP a la red de la Organización Meteorológica Mundial, con la lluvia de la última hora y la temperatura: 141 estaciones, casi todas automáticas de la Dirección Meteorológica de Chile (DMC), de Visviri a Isla Diego Ramírez, más Isla de Pascua y Juan Fernández. Se guardan todas; por ahora la comparación con los pronósticos y la pestaña En vivo usan las de Santiago. La más cercana a las quebradas de Santiago oriente es Aguas Andinas, en La Florida (670 m, a unos 16 km de la Quebrada de Apoquindo); en la precordillera están San José Guayacán (Cajón del Maipo) y Río Clarillo (Pirque), y en la cordillera El Colorado (2.750 m), cuya temperatura indica si la isoterma 0 °C está sobre o bajo esa altura.</p>
+  <p>Los aeródromos chilenos no informan milímetros. Para medir la lluvia usamos todas las estaciones chilenas que envían cada hora un mensaje SYNOP a la red de la Organización Meteorológica Mundial, con la lluvia de la última hora y la temperatura: 141 estaciones, casi todas automáticas de la Dirección Meteorológica de Chile (DMC), de Visviri a Isla Diego Ramírez, más Isla de Pascua y Juan Fernández. Se guardan todas: la verificación diaria compara la lluvia de cada aeródromo con la de su estación (ver <a href="#lluvia-mm">Lluvia en milímetros en cada aeródromo</a>), y el seguimiento de las quebradas y la pestaña En vivo usan las de Santiago. La más cercana a las quebradas de Santiago oriente es Aguas Andinas, en La Florida (670 m, a unos 16 km de la Quebrada de Apoquindo); en la precordillera están San José Guayacán (Cajón del Maipo) y Río Clarillo (Pirque), y en la cordillera El Colorado (2.750 m), cuya temperatura indica si la isoterma 0 °C está sobre o bajo esa altura.</p>
   <h3>Cómo se usa</h3>
   <p>Cada hora un proceso automático guarda la lluvia horaria y la temperatura de esas estaciones (un archivo por mes en <code>estaciones/datos/synop/</code>; nombres, coordenadas y alturas en <code>estaciones/catalogo.csv</code>) y compara cada bloque de 6 horas que guardó el seguimiento de pronósticos de AIFS, IFS y GFS con lo medido en la estación más cercana bajo 1.500 m (<code>estaciones/VERIFICACION_LLUVIA.md</code>). Un bloque solo se compara si llegaron las seis horas. La pestaña <a href="envivo.html">En vivo</a> muestra lo medido en las últimas 24 horas junto al pronóstico para la Quebrada de Apoquindo.</p>
   <h3>Licencia y fuente</h3>
@@ -377,11 +377,12 @@ def pagina_metodo(r, n_pares, n_corridas, n_est, ahora):
     <li>Por ahora no hay una medición automática de nieve (altura o agua equivalente) para comparar con la isoterma 0 °C pronosticada.</li>
   </ul>
 </section>
+{seccion_lluvia_mm()}
 <section class="card">
   <div class="sec-head"><h2>Límites que conocemos</h2></div>
   <ul class="limites">
     <li>Los aeródromos no son las quebradas ni los barrios: miden en terreno plano y abierto. Las estaciones de la DMC que envían SYNOP ya se usan para la lluvia; las demás requieren un acceso que está en trámite.</li>
-    <li>La lluvia observada en aeródromos es sí o no, sin milímetros. Los milímetros por satélite son estimaciones y subestiman la lluvia de montaña. Desde octubre de 2026 la lluvia se mide además en estaciones de la DMC (ver <a href="#estaciones">Lluvia medida en estaciones</a>); la verificación retroactiva 2025–2026 todavía no las usa.</li>
+    <li>La lluvia observada en aeródromos es sí o no, sin milímetros. Los milímetros por satélite son estimaciones y subestiman la lluvia de montaña. Desde octubre de 2026 la verificación diaria usa además los milímetros de los pluviómetros de la DMC (ver <a href="#lluvia-mm">Lluvia en milímetros en cada aeródromo</a>); la verificación retroactiva 2025–2026 y los eventos todavía no los usan.</li>
     <li>El modelo del USGS fue calibrado en el oeste de Estados Unidos y no está validado en Chile. Usa un valor de erodabilidad del suelo (0,25) supuesto, porque no hay mapa para Chile.</li>
     <li>Los umbrales de bueno, aceptable y alto (1,5 y 3 °C) y los del indicador de quebradas son de trabajo y están en revisión con un meteorólogo.</li>
     <li>Las cifras de los últimos días se marcan como preliminares hasta juntar 30 días.</li>
@@ -399,6 +400,43 @@ def pagina_metodo(r, n_pares, n_corridas, n_est, ahora):
 </html>
 """
     return escribir("metodo.html", html.replace("</style>", CSS_EXTRA + "</style>", 1))
+
+
+def seccion_lluvia_mm():
+    """Método: cómo se compara la lluvia de 24 h de cada aeródromo con su pluviómetro (verificacion/lluvia.py)."""
+    try:
+        import lluvia
+        par, excl, cat = lluvia.parejas(), lluvia.EXCLUIDAS, lluvia.synop.estaciones()
+    except Exception as e:
+        print("AVISO: Método sin pluviómetros por aeródromo:", type(e).__name__, e)
+        return ""
+    info = pd.read_csv(os.path.join(AQUI, "estaciones.csv")).sort_values("lat", ascending=False)
+    filas = []
+    for r in info.itertuples(index=False):
+        corto, region = nombre(r.icao, r.nombre)
+        p = par.get(r.icao)
+        filas.append(f"<tr><td class='l'>{corto}<span class='region'>{region}</span></td>" +
+                     (f"<td class='l'>{p['estacion']} <span class='muted'>· {p['wmo']}</span></td><td class='num'>{num(p['km'], 1)} km</td>"
+                      f"<td class='num'>{entero(p['altura_m'])} m</td>" if p else
+                      "<td class='l muted' colspan='3'>Sin pluviómetro a menos de 15 km y a una altura parecida</td>") + "</tr>")
+    juntos = sum(1 for p in par.values() if p["km"] < 2)
+    excluidas = "".join(f"<li>No se usa {cat[w]['nombre'] if w in cat else w} (OMM {w}): {motivo}.</li>" for w, motivo in excl.items())
+    return f"""<section class="card" id="lluvia-mm">
+  <div class="sec-head"><h2>Lluvia en milímetros en cada aeródromo</h2></div>
+  <p>Desde octubre de 2026, la verificación diaria compara también la lluvia en milímetros. Cada aeródromo se empareja con la estación de la DMC que envía SYNOP con lluvia en el mismo lugar; si no hay una, con la más cercana a menos de {lluvia.RADIO_KM} km y con menos de {lluvia.DESNIVEL_M} m de diferencia de altura. En {juntos} de los {len(par)} aeródromos con pareja, el pluviómetro está en el mismo aeródromo, a menos de 2 km.</p>
+  <h3>Cómo se compara</h3>
+  <p>Lo medido es la lluvia de 24 horas que termina a las 12 UTC (9 de la mañana en hora de verano de Chile, 8 en invierno): la suma de cuatro bloques de 6 horas, cada uno con el total de 6 horas que informan las estaciones con observador o con la suma de las seis lluvias horarias de las automáticas. Si falta un bloque, ese día no se compara. Lo pronosticado es la lluvia de esas mismas 24 horas según la corrida de las 12 UTC del día anterior (plazo de 24 horas), en el punto de grilla de 0,25° más cercano, para AIFS, IFS y GFS. Para los primeros días de octubre se usan las corridas guardadas por la verificación retroactiva; cada día nuevo, las del proceso diario.</p>
+  <p>Un día cuenta como lluvioso desde {num(lluvia.UMBRAL, 0)} mm, igual en lo medido y en lo pronosticado. Se cuentan los días con lluvia medida que el modelo avisó (pronosticó {num(lluvia.UMBRAL, 0)} mm o más), las falsas alarmas (pronosticó {num(lluvia.UMBRAL, 0)} mm o más y cayó menos), los aciertos de sí o no (los dos sobre o los dos bajo {num(lluvia.UMBRAL, 0)} mm) y el error medio en milímetros: la diferencia sin signo entre lo pronosticado y lo medido, promediada por día. Las comparaciones quedan en <code>verificacion/data/verif_lluvia.csv</code>; el código, en <code>verificacion/lluvia.py</code>.</p>
+  <h3>Pluviómetro de cada aeródromo</h3>
+  <div class="tabla">{tabla(["Aeródromo", "Estación de la DMC · índice OMM", "Distancia", "Altura"], filas)}</div>
+  <h3>Límites</h3>
+  <ul class="limites">
+    <li>Un pluviómetro mide un punto; el modelo, el promedio de una celda de unos 25 km. Con chubascos, el modelo puede acertar la zona y fallar el punto.</li>
+    <li>En el norte casi nunca llueve, y ahí acertar que no lloverá es fácil. Por eso se muestran aparte los días con lluvia avisados y las falsas alarmas, y no solo el porcentaje de aciertos.</li>
+    <li>Las estaciones con observador informan la lluvia de 6 horas en milímetros enteros; las automáticas, la de cada hora en décimas.</li>
+    {excluidas}
+  </ul>
+</section>"""
 
 
 def redireccion():

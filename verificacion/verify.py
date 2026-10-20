@@ -1,4 +1,5 @@
-"""Verifica tres modelos globales (0,25°) contra METAR de aeródromos chilenos: temperatura 2 m y viento 10 m por plazo.
+"""Verifica tres modelos globales (0,25°) contra METAR de aeródromos chilenos: temperatura 2 m y viento 10 m por plazo,
+y la lluvia de 24 h contra los milímetros de la estación SYNOP de cada aeródromo (lluvia.py).
   AIFS  ECMWF, inteligencia artificial      data/aifs_*.grib2
   IFS   ECMWF, modelo físico                 data/ifs_*.grib2
   GFS   NOAA, modelo físico                  data/gfs_*.grib2
@@ -9,7 +10,9 @@ Flujo:
     se emparejan en corridas posteriores, cuando ya existe la observación, aunque el GRIB ya no esté.
  2. Cada pronóstico guardado se empareja con la observación METAR más cercana (±31 min).
  3. Los pares se acumulan en data/verif_puntos.csv (columna "modelo"; el histórico sin columna es AIFS),
-    se resume en data/verif_resumen.csv y render_site.py genera ../site/index.html."""
+    se resume en data/verif_resumen.csv y render_site.py genera ../site/index.html.
+ 4. lluvia.py compara la lluvia de 24 h (columna tp_fc: acumulado desde el inicio de la corrida, mm) con la medida
+    por la estación SYNOP de cada aeródromo y acumula data/verif_lluvia.csv."""
 import glob, os
 import numpy as np, pandas as pd, xarray as xr
 
@@ -30,6 +33,30 @@ def abrir(f, short_name):
     return xr.open_dataset(f, engine="cfgrib", backend_kwargs={"filter_by_keys": {"shortName": short_name}, "indexpath": ""})
 
 
+def lluvia_de(f):
+    """Lluvia acumulada desde el inicio de la corrida (mm) en el punto de grilla más cercano a cada aeródromo: {plazo: {icao: mm}}.
+    Con eccodes y no cfgrib: GFS trae en cada plazo dos acumulados (el de su bloque de 6 h y el desde el inicio); se toma el mayor."""
+    import eccodes as ec
+    acum = {}
+    with open(f, "rb") as fh:
+        while True:
+            gid = ec.codes_grib_new_from_file(fh)
+            if gid is None:
+                break
+            try:
+                if ec.codes_get(gid, "shortName") != "tp":
+                    continue
+                paso, factor = int(ec.codes_get(gid, "endStep")), 1000.0 if ec.codes_get(gid, "units") == "m" else 1.0
+                ya = acum.setdefault(paso, {})
+                for icao, lat, lon in stations[["icao", "lat", "lon"]].itertuples(index=False):
+                    v = ec.codes_grib_find_nearest(gid, lat, lon)[0].value * factor
+                    ya[icao] = max(ya.get(icao, 0.0), float(v))
+            finally:
+                ec.codes_release(gid)
+    acum.setdefault(0, {})
+    return acum
+
+
 def puntos_de(f, modelo):
     """Valores de 2t y viento 10 m en el punto de grilla más cercano a cada aeródromo, para cada plazo del GRIB."""
     ds2t, ds10u, ds10v = abrir(f, "2t"), abrir(f, "10u"), abrir(f, "10v")
@@ -39,6 +66,10 @@ def puntos_de(f, modelo):
     run = pd.Timestamp(ds2t.time.values)
     lons = ds2t.longitude.values
     lon_360 = lons.max() > 180
+    try:
+        tp = lluvia_de(f)
+    except Exception as e:
+        print("sin lluvia en", f, "->", type(e).__name__, e); tp = {}
     filas = []
     for icao, lat, lon, name, elev in stations[["icao", "lat", "lon", "name", "elev"]].itertuples(index=False):
         lon_m = lon % 360 if lon_360 else lon
@@ -49,7 +80,8 @@ def puntos_de(f, modelo):
         for k, step in enumerate(np.atleast_1d(t2m.step.values)):
             lead = int(pd.Timedelta(step).total_seconds() // 3600)
             filas.append(dict(modelo=modelo, run=run, lead_h=lead, valid=run + pd.Timedelta(step), icao=icao, name=name,
-                              lat=lat, lon=lon, elev=elev, t_fc=float(t[k]), w_fc=float(w[k])))
+                              lat=lat, lon=lon, elev=elev, t_fc=float(t[k]), w_fc=float(w[k]),
+                              tp_fc=tp.get(lead, {}).get(icao, 0.0 if lead == 0 else None)))
     return filas
 
 
@@ -66,17 +98,20 @@ for f in sorted(glob.glob("data/*_*.grib2")):
     print(f"{MODELOS[pref]}: {f} -> {len(filas)} valores en estaciones")
     nuevos += filas
 # Modelos externos (por ejemplo un endpoint de Earth-2): entregan directamente los valores en las estaciones en
-# data/puntos_<modelo>_<corrida>.csv con columnas modelo, run, lead_h, icao, t_fc (°C) y w_fc (m/s). Ver earth2/endpoint.py.
+# data/puntos_<modelo>_<corrida>.csv con columnas modelo, run, lead_h, icao, t_fc (°C), w_fc (m/s) y, si la tienen, tp_fc
+# (mm acumulados desde el inicio de la corrida). Ver earth2/endpoint.py.
 for f in sorted(glob.glob("data/puntos_*.csv")):
     try:
         ext = pd.read_csv(f, parse_dates=["run"])
         ext = ext.merge(stations[["icao", "name", "lat", "lon", "elev"]], on="icao", how="inner")
         ext["valid"] = ext.run + pd.to_timedelta(ext.lead_h, unit="h")
-        nuevos += ext[["modelo", "run", "lead_h", "valid", "icao", "name", "lat", "lon", "elev", "t_fc", "w_fc"]].to_dict("records")
+        if "tp_fc" not in ext.columns:
+            ext["tp_fc"] = None
+        nuevos += ext[["modelo", "run", "lead_h", "valid", "icao", "name", "lat", "lon", "elev", "t_fc", "w_fc", "tp_fc"]].to_dict("records")
         print(f"{ext.modelo.iloc[0] if len(ext) else '?'}: {f} -> {len(ext)} valores en estaciones (modelo externo)")
     except Exception as e:
         print("no se pudo leer", f, "->", type(e).__name__, e)
-pron = pd.DataFrame(nuevos, columns=["modelo", "run", "lead_h", "valid", "icao", "name", "lat", "lon", "elev", "t_fc", "w_fc"])
+pron = pd.DataFrame(nuevos, columns=["modelo", "run", "lead_h", "valid", "icao", "name", "lat", "lon", "elev", "t_fc", "w_fc", "tp_fc"])
 if os.path.exists(PRON):
     pron = pd.concat([pd.read_csv(PRON, parse_dates=["run", "valid"]), pron])
 pron = pron.drop_duplicates(subset=CLAVE, keep="last")
@@ -121,6 +156,12 @@ res.to_csv("data/verif_resumen.csv", index=False)
 bye = (pts.groupby(["modelo", "icao", "name", "elev"], dropna=False).agg(n=("t_err", "size"), t_bias=("t_err", "mean"), t_mae=("t_err", mae), w_mae=("w_err", mae))
        .reset_index().sort_values(["modelo", "t_mae"], ascending=[True, False]))
 print(res.round(2).to_string(index=False)); print(); print(bye.round(2).to_string(index=False))
+
+import lluvia
+try:
+    lluvia.verificar()
+except Exception as e:                    # la lluvia no debe impedir publicar la temperatura
+    print("AVISO: no se verificó la lluvia:", type(e).__name__, e)
 
 from render_site import render_site
 render_site(pts)

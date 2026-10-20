@@ -4,6 +4,11 @@ Lo hecho, en orden inverso y en simple. Los commits automáticos (verificación,
 
 Sitio: https://panchodigevo.github.io/earth2-chile-verificacion/
 
+## 20-oct-2026
+
+- **La lluvia, en milímetros, en la verificación diaria** (`verificacion/lluvia.py`, lo llama `verify.py` 4 veces al día): la lluvia de 24 h que pronosticaron AIFS, IFS y GFS el día anterior se compara con los milímetros del pluviómetro de la DMC en cada aeródromo (SYNOP de `estaciones/`), desde el 1-oct. En 23 aeródromos la estación está en el mismo aeródromo; Tobalaba usa Quinta Normal (12,6 km), y Pucón y Base Frei no tienen pluviómetro cerca. Un día cuenta como lluvioso desde 1 mm: días con lluvia avisados, falsas alarmas, aciertos de sí o no y error medio en mm. Se ve en Resumen («Y la lluvia, en milímetros»), en Tu zona (ficha de cada aeródromo con sus últimos días y tabla «La lluvia en cada aeródromo») y se explica en Método («Lluvia en milímetros en cada aeródromo»). Preliminar hasta juntar 30 días. Comparaciones en `verificacion/data/verif_lluvia.csv`.
+- **Pluviómetro de Aguas Andinas (La Florida) fuera de la comparación:** entre el 6 y el 7-oct midió 11 mm cuando el resto del valle midió de 45 a 75 mm. Lo siguen usando el seguimiento de las quebradas y la pestaña En vivo; conviene revisarlo.
+
 ## 19-oct-2026
 
 - **Lluvia medida en estaciones** (`estaciones/`, `estaciones.yml` cada hora): lluvia horaria y temperatura de las 141 estaciones SYNOP de Chile (casi todas automáticas de la DMC, de Visviri a Diego Ramírez, Isla de Pascua y Juan Fernández; mensajes de la OMM sin clave), desde el 1-oct, un CSV por mes en `estaciones/datos/synop/`. Se compara con cada bloque de 6 h del seguimiento de pronósticos en `estaciones/VERIFICACION_LLUVIA.md`. En la pestaña En vivo: tarjeta con lo medido en las estaciones más cercanas a Apoquindo (la primera es Aguas Andinas, La Florida, a 16 km), columna «Medido» en la tabla de pronósticos y temperatura en El Colorado (2.750 m) frente a la isoterma 0 °C de GFS. Explicado en Método («Lluvia medida en estaciones»).

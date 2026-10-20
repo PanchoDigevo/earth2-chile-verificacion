@@ -234,6 +234,7 @@ footer p{max-width:85ch}
 tr.lluvia td{background:color-mix(in srgb,var(--accent) 14%,transparent)}
 td.alto{font-weight:700;color:var(--alto)}
 .estado-vivo{font-size:14.5px;color:var(--muted)}
+.estado-vivo.atrasado{color:inherit;background:color-mix(in srgb,var(--medio) 12%,var(--surface));border-left:4px solid var(--medio);padding:8px 12px;border-radius:6px}
 .leaflet-container{font-family:var(--font-body)}
 .leaflet-control-attribution{font-size:10px}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .leaflet-tile{filter:brightness(.78) contrast(1.05)}}
@@ -266,7 +267,7 @@ td.alto{font-weight:700;color:var(--alto)}
   </div>
 </div>
 <div class="aviso"><p class="small">Apoyo a la decisión, no una alerta. Las alertas oficiales son de la <a href="https://www.meteochile.gob.cl/" rel="noopener">Dirección Meteorológica de Chile</a> y de <a href="https://www.senapred.cl/" rel="noopener">SENAPRED</a>.</p></div>
-<footer><p>Actualizado el 19 oct, 21:08 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
+<footer><p>Actualizado el 19 oct, 21:56 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -296,12 +297,12 @@ td.alto{font-weight:700;color:var(--alto)}
     const [ry, mt, sg] = await Promise.all([j(RAW + "/datos-en-vivo/envivo/rayos.json"), j(RAW + "/datos-en-vivo/envivo/metar.json"), j(RAW + "/main/hindcast/seguimiento/pronosticos.csv")]);
     let gen = [];
     if (ry) { const d = await ry.json(); gen.push(d.generado);
-      capa.clearLayers(); let c10 = 0, c30 = 0, c90 = 0;
-      d.rayos.forEach(([la, lo, t]) => { const e = (ahora - t) / 60; if (e > 90) return; const col = e < 10 ? "--r10" : e < 30 ? "--r30" : "--r90";
+      capa.clearLayers(); let c10 = 0, c30 = 0, c90 = 0, tot = 0;
+      d.rayos.forEach(([la, lo, t]) => { const e = (ahora - t) / 60; if (e > 90) return; tot++; const col = e < 10 ? "--r10" : e < 30 ? "--r30" : "--r90";
         L.circleMarker([la, lo], {radius: e < 10 ? 4 : 3, stroke: false, fillColor: css(col), fillOpacity: 0.85, interactive: false}).addTo(capa);
         if (dist(APOQ, [la, lo]) <= 30) { c90++; if (e < 30) c30++; if (e < 10) c10++; } });
       document.getElementById("r10").textContent = c10; document.getElementById("r30").textContent = c30; document.getElementById("r90").textContent = c90;
-      document.getElementById("rtot").textContent = d.rayos.length.toLocaleString("es-CL"); }
+      document.getElementById("rtot").textContent = tot.toLocaleString("es-CL"); }
     if (mt) { const d = await mt.json(); gen.push(d.generado);
       document.querySelector("#metar tbody").innerHTML = d.obs.sort((a, b) => b.t - a.t).map(o => `<tr class="${/RA|DZ|TS|GR/.test(o.wx) ? "lluvia" : ""}"><td class="l num">${hora(o.t)}</td><td class="l">${NOM[o.icao] || o.icao}</td>
         <td class="num">${o.temp ?? "–"} °C</td><td class="num">${o.wspd != null ? Math.round(o.wspd * 1.852) + " km/h" : "–"}</td><td class="num">${o.wgst ? Math.round(o.wgst * 1.852) + " km/h" : "–"}</td><td class="l">${o.wx ? WX(o.wx) : "–"}</td></tr>`).join(""); }
@@ -315,8 +316,11 @@ td.alto{font-weight:700;color:var(--alto)}
           return `<td class="num${v != null && v >= 10 ? " alto" : ""}">${v == null ? "–" : v.toLocaleString("es-CL", {maximumFractionDigits: 1})}</td>`; }).join("") + "</tr>").join("");
       document.getElementById("pronos-corridas").textContent = mods.map(m => `${m} ${ult[m].slice(8, 10)}/${ult[m].slice(5, 7)} ${ult[m].slice(11, 13)} UTC`).join(", "); }
     const g = gen.length ? Math.min(...gen) : null;
-    document.getElementById("estado-vivo").textContent = g ? `Datos de las ${hora(g)} (hora de Chile). Se actualizan cada unos 10 minutos; esta página vuelve a leerlos cada minuto.`
-      : "Los datos en vivo todavía no están disponibles.";
+    const est = document.getElementById("estado-vivo"), atraso = g ? Math.round((ahora - g) / 60) : null;
+    est.classList.toggle("atrasado", atraso != null && atraso > 20);
+    est.textContent = g == null ? "Los datos en vivo todavía no están disponibles."
+      : atraso > 20 ? `Los datos en vivo están atrasados: son de las ${hora(g)} (hace ${atraso} min). Los rayos y mediciones posteriores todavía no aparecen; los conteos solo cubren lo que llegó.`
+      : `Datos de las ${hora(g)} (hora de Chile). Se actualizan cada unos 5 minutos; esta página vuelve a leerlos cada minuto.`;
   }
   actualizar(); setInterval(actualizar, 60000);
 })();

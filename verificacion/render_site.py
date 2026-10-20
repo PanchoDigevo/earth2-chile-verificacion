@@ -250,7 +250,7 @@ def seccion_lluvia(ll):
     tot = ll["tot"]
     tarjetas = "".join(
         f'<div class="modelo"><div class="tipo">{MODELOS[m][1]} · {MODELOS[m][2]}</div><div class="nombre">{m}</div>'
-        f'<div class="value">{c["avisados"]}<small>de {c["llovio"]} días con lluvia avisados</small></div>'
+        f'<div class="value">{c["avisados"]}<small>de {c["llovio"]}</small></div><div class="que">días con lluvia avisados el día anterior</div>'
         f'<div class="foot">Acertó si llovería o no en {num(100 * c["aciertos"] / c["n"], 0)} % de {entero(c["n"])} {DIA_AERO}; '
         f'{c["falsas"]} {"falsa alarma" if c["falsas"] == 1 else "falsas alarmas"}. Error medio {num(c["mae"], 1)} mm por día'
         f'{f""", {num(c["mae_lluvia"], 1)} mm los días con lluvia""" if c["mae_lluvia"] is not None else ""}.</div></div>'
@@ -392,8 +392,8 @@ JS_MAPA = r"""
     const c = e.ll.m[st.modelo];
     const dias = n => n === 1 ? '1 día' : n + ' días', cap = t => t[0].toUpperCase() + t.slice(1);
     const txt = !c ? `<p class="muted small">Sin comparaciones de lluvia de ${st.modelo} en este aeródromo.</p>` :
-      `<p class="small">Desde el ${L.desde}, el pluviómetro de la DMC ${e.ll.donde} midió ${L.umbral} mm o más en <strong>${c.llovio} de ${dias(c.n)}</strong>.
-       ${c.llovio ? `${cap(MOD[st.modelo])} avisó la lluvia el día anterior en ${c.avisados} de ${c.llovio === 1 ? 'ese día' : 'esos ' + c.llovio}` : `${cap(MOD[st.modelo])} no tenía lluvia que avisar`}${c.falsas ? `${c.llovio ? ', y' : ', pero'} anunció lluvia que no cayó en ${dias(c.falsas)}` : ''}.
+      `<p class="small">Desde el ${L.desde}, el pluviómetro de la DMC ${e.ll.donde}${e.ll.donde.startsWith('en ') ? '' : ','} midió ${L.umbral} mm o más en <strong>${c.llovio} de ${dias(c.n)}</strong>.
+       ${c.llovio ? `${cap(MOD[st.modelo])} avisó la lluvia el día anterior ${c.avisados === c.llovio ? (c.llovio === 1 ? 'ese día' : 'en los ' + c.llovio) : (c.avisados === 0 ? 'en ninguno' : 'en ' + c.avisados + (c.llovio === 1 ? '' : ' de esos ' + c.llovio))}` : `${cap(MOD[st.modelo])} no tenía lluvia que avisar`}${c.falsas ? `${c.llovio ? ', y' : ', pero'} anunció lluvia que no cayó en ${dias(c.falsas)}` : ''}.
        Se equivocó en promedio ${fmt(c.mae)} mm por día${c.mae_lluvia != null ? ` (${fmt(c.mae_lluvia)} mm los días con lluvia)` : ''}.</p>`;
     const mm = v => v == null ? '–' : fmt(v);
     const filas = e.ll.dias.map(x => `<tr><td class="l">${x.f}</td><td class="num${x.o >= L.umbral ? ' mejor' : ''}">${mm(x.o)}</td>${['AIFS','IFS','GFS'].map(m => `<td class="num${m === st.modelo ? ' sel' : ''}">${mm(x.p[m])}</td>`).join('')}</tr>`).join('');
@@ -412,7 +412,7 @@ JS_MAPA = r"""
     const tl = document.querySelector('#tabla-lluvia tbody'); if (!tl) return;
     tl.innerHTML = E.filter(e => e.ll && e.ll.m[st.modelo]).map(e => { const c = e.ll.m[st.modelo];
       return `<tr data-icao="${e.icao}"${e.icao === st.sel ? ' class="actual"' : ''}><td class="l">${e.nombre}<span class="region">Pluviómetro ${e.ll.donde.replace('en el mismo aeródromo', 'en el aeródromo')}</span></td>
-        <td class="num">${c.n}</td><td class="num">${c.llovio}</td><td class="num">${c.llovio ? c.avisados + ' de ' + c.llovio : '–'}</td><td class="num">${c.falsas}</td><td class="num">${fmt(c.mae)} mm</td></tr>`; }).join('');
+        <td class="num">${c.n}</td><td class="num">${c.llovio}</td><td class="num">${c.llovio ? c.avisados : '–'}</td><td class="num">${c.falsas}</td><td class="num">${fmt(c.mae)} mm</td></tr>`; }).join('');
     document.querySelectorAll('[data-modelo-txt]').forEach(el => el.textContent = st.modelo);
   }
 
@@ -565,6 +565,7 @@ tr.actual td{background:var(--accent-soft)}
 #tabla-est tbody tr:hover td,#tabla-lluvia tbody tr:hover td{background:color-mix(in srgb,var(--accent) 8%,transparent)}
 .ficha h3{margin-top:6px}
 table.mini td.sel{background:var(--accent-soft)}
+.modelo .que{font-size:14.5px;margin-bottom:4px}
 table.mini{font-size:14.5px} table.mini th,table.mini td{padding:6px 8px}
 td.medida{min-width:9.5em}
 .medida-in{display:inline-grid;grid-template-columns:72px auto;gap:8px;align-items:center;justify-items:end}

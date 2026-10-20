@@ -189,6 +189,16 @@ footer p{max-width:85ch}
 .def-pop{position:absolute;z-index:2000;max-width:min(320px,calc(100vw - 32px));background:var(--fg);color:var(--bg);
   font:400 14.5px/1.45 var(--font-body);padding:10px 12px;border-radius:8px;box-shadow:0 6px 24px rgba(0,0,0,.18)}
 
+.etapas{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.etapas li{display:grid;grid-template-columns:8.5em 1fr;gap:4px 12px;align-items:start}
+.etapas .tag{justify-self:start}
+.etapas .tag{font:600 12px var(--font-body);letter-spacing:.02em;padding:3px 9px;border-radius:999px;border:1px solid var(--line);white-space:nowrap;margin-top:2px}
+.etapas .hecho .tag{background:var(--accent-soft);border-color:var(--accent);color:var(--fg)}
+.etapas .curso .tag{background:color-mix(in srgb,var(--medio) 14%,var(--surface));border-color:var(--medio);color:var(--fg)}
+.etapas .pendiente .tag{background:var(--surface);border-style:dashed;color:var(--muted)}
+.etapas p{margin:0}
+@media (max-width:560px){.etapas li{grid-template-columns:1fr}}
+
 .aviso-oficial{border:1px solid var(--medio);border-left:6px solid var(--medio);background:color-mix(in srgb,var(--medio) 12%,var(--surface));
   border-radius:var(--radius);padding:14px 16px;display:grid;gap:6px}
 .aviso-oficial strong.t{font-family:var(--font-display);font-size:17px}
@@ -277,7 +287,7 @@ td.parcial{color:var(--muted)}
   </div>
 </div>
 <div class="aviso"><p class="small">Apoyo a la decisión, no una alerta. Las alertas oficiales son de la <a href="https://www.meteochile.gob.cl/" rel="noopener">Dirección Meteorológica de Chile</a> y de <a href="https://www.senapred.cl/" rel="noopener">SENAPRED</a>.</p></div>
-<footer><p>Actualizado el 20 oct, 15:44 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
+<footer><p>Actualizado el 20 oct, 19:20 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>

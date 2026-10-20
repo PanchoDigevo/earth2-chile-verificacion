@@ -63,22 +63,30 @@ JS = r"""
     const g = k => +p.find(x => x.type === k).value; const loc = Date.UTC(g("year"), g("month") - 1, g("day"), g("hour")); const h = Math.round((loc - f.getTime()) / 3600000); return (h < 0 ? "-" : "+") + String(Math.abs(h)).padStart(2, "0") + ":00"; }
   const cifra = v => v == null ? "–" : v.toLocaleString("es-CL", {minimumFractionDigits: 1, maximumFractionDigits: 1});
   const capaLl = L.layerGroup().addTo(mapa);
-  // lluvia.json: por estación, [hora UTC, mm en 1 h, mm en 6 h, °C]. Las estaciones con observador informan 6 h a las
-  // 00/06/12/18 UTC en vez de 1 h: esa hora se reconstruye restando las 5 anteriores.
+  // lluvia.json: por estación, [hora UTC, mm en 1 h, mm en 6 h, °C]. Las estaciones con observador (Quinta Normal,
+  // Pudahuel) informan a las 00/06/12/18 UTC la lluvia de 6 h y a las 03/09/15/21 UTC ninguna: en las sumas, sus 6 h
+  // cubren esas horas. Para la última hora, la de 6 h se reconstruye restando las 5 anteriores cuando se puede.
   function lluvia(d, ahora) {
-    const H = {};
-    for (const e of d.estaciones) { const o = d.obs[e.wmo] || [], h = {};
-      o.forEach(([t, m1]) => { if (m1 != null) h[t] = m1; });
-      o.forEach(([t, m1, m6]) => { if (m1 == null && m6 != null) { let s = 0, ok = true; for (let k = 1; k < 6; k++) { const v = h[t - k * 3600]; if (v == null) ok = false; else s += v; } if (ok) h[t] = Math.max(0, Math.round((m6 - s) * 10) / 10); } });
-      H[e.wmo] = h; }
+    const H = {}, H6 = {}, R = {};
+    for (const e of d.estaciones) { const o = d.obs[e.wmo] || [], h = {}, h6 = {};
+      o.forEach(([t, m1, m6]) => { if (m1 != null || m6 != null) R[e.wmo] = Math.max(R[e.wmo] || 0, t); if (m1 != null) h[t] = m1; if (m6 != null) h6[t] = m6; });
+      H[e.wmo] = h; H6[e.wmo] = h6; }
+    const hora1 = (w, t) => { if (H[w][t] != null) return H[w][t]; const m6 = H6[w][t]; if (m6 == null) return null;
+      let s = 0; for (let k = 1; k < 6; k++) { const v = H[w][t - k * 3600]; if (v == null) return null; s += v; } return Math.max(0, Math.round((m6 - s) * 10) / 10); };
     // suma de las horas que terminan en (t0, t1]; parcial si el bloque sigue en curso
-    const suma = (w, t0, t1) => { const h = H[w]; let s = 0, n = 0, esp = 0; for (let t = Math.ceil((t0 + 1) / 3600) * 3600; t <= Math.min(t1, ahora); t += 3600) { esp++; if (h[t] != null) { s += h[t]; n++; } }
-      return {mm: esp && n === esp ? Math.round(s * 10) / 10 : (esp && n >= esp - 1 && t1 > ahora ? Math.round(s * 10) / 10 : null), parcial: t1 > ahora, n, esp}; };
-    const ult = w => Math.max(0, ...Object.keys(H[w]).map(Number));
-    const filas = d.estaciones.filter(e => e.alt < 1500).map(e => { const u = ult(e.wmo);
-      return {e, u, h1: u ? H[e.wmo][u] : null, h6: suma(e.wmo, u - 6 * 3600, u), h24: suma(e.wmo, u - 24 * 3600, u)}; });
+    const suma = (w, t0, t1) => { const h = H[w], h6 = H6[w], ini = Math.ceil((t0 + 1) / 3600) * 3600, fin = Math.min(t1, ahora), cub = new Set();
+      let s = 0, n = 0, esp = 0;
+      for (let t = ini; t <= fin; t += 3600) if (t % 21600 === 0 && h6[t] != null && t - 5 * 3600 >= ini) { s += h6[t]; for (let k = 0; k < 6; k++) cub.add(t - k * 3600); }
+      for (let t = ini; t <= fin; t += 3600) { esp++; if (cub.has(t)) n++; else if (h[t] != null) { s += h[t]; n++; } }
+      return {mm: esp && (n === esp || (n >= esp - 1 && t1 > ahora)) ? Math.round(s * 10) / 10 : null, parcial: t1 > ahora, n, esp}; };
+    const filas = d.estaciones.filter(e => e.alt < 1500 && R[e.wmo] && ahora - R[e.wmo] < 6 * 3600).map(e => { let u = R[e.wmo];
+      const h1 = hora1(e.wmo, u);
+      let h6 = suma(e.wmo, u - 6 * 3600, u), h24 = suma(e.wmo, u - 24 * 3600, u);
+      const u6 = Math.max(0, ...Object.keys(H6[e.wmo]).map(Number));   // con observador: hasta su último total de 6 h
+      if ((h6.mm == null || h24.mm == null) && u6) { u = u6; h6 = suma(e.wmo, u - 6 * 3600, u); h24 = suma(e.wmo, u - 24 * 3600, u); }
+      return {e, u, h1, h6, h24}; });
     document.querySelector("#lluvia tbody").innerHTML = filas.slice(0, 6).map(f => `<tr class="${(f.h24.mm || 0) >= 1 ? "lluvia" : ""}"><td class="l">${f.e.nombre}<br><span class="small muted">${f.e.alt.toLocaleString("es-CL")} m · ${Math.round(f.e.km)} km</span></td>
-      <td class="num">${cifra(f.h1)}</td><td class="num">${f.h6.mm == null ? "s/d" : cifra(f.h6.mm)}</td><td class="num">${f.h24.mm == null ? "s/d" : cifra(f.h24.mm)}</td><td class="l num">${f.u ? hora(f.u) : "–"}</td></tr>`).join("");
+      <td class="num">${cifra(f.h1)}</td><td class="num">${f.h6.mm == null ? "s/d" : cifra(f.h6.mm)}</td><td class="num">${f.h24.mm == null ? "s/d" : cifra(f.h24.mm)}</td><td class="l num">${hora(f.u)}</td></tr>`).join("") || `<tr><td class="l" colspan="5">Sin reportes recientes.</td></tr>`;
     capaLl.clearLayers();
     filas.forEach(f => { const v = f.h24.mm;
       L.circleMarker([f.e.lat, f.e.lon], {radius: 7, color: css("--accent"), weight: 2, fillColor: v >= 1 ? css("--accent") : css("--surface"), fillOpacity: 0.9})
@@ -119,7 +127,7 @@ JS = r"""
         return `<tr><td class="l num">${b.slice(8, 10)}/${b.slice(5, 7)} ${b.slice(11, 13)}–${String((+b.slice(11, 13) + 6) % 24).padStart(2, "0")} h</td>` +
         mods.map(m => { const r = q[m + "|" + b]; const v = r ? +r.mm_6h : null;
           return `<td class="num${v != null && v >= 10 ? " alto" : ""}">${v == null ? "–" : fmt(v)}</td>`; }).join("") +
-        (medido ? `<td class="num medido${mdd && mdd.parcial ? " parcial" : ""}">${mdd == null ? "" : mdd.mm == null ? "s/d" : fmt(mdd.mm) + (mdd.parcial ? "…" : "")}</td>` : "") + "</tr>"; }).join("");
+        (medido ? `<td class="num medido${mdd && mdd.parcial ? " parcial" : ""}">${mdd == null ? "" : mdd.mm == null ? "s/d" : cifra(mdd.mm) + (mdd.parcial ? "…" : "")}</td>` : "") + "</tr>"; }).join("");
       if (medido) document.getElementById("pronos-medido").innerHTML = ` La columna Medido es la lluvia del pluviómetro de ${medido.cerca.nombre} (${medido.cerca.alt.toLocaleString("es-CL")} m, a ${Math.round(medido.cerca.km)} km); con «…», el bloque en curso, y «s/d», sin datos completos. En los bloques que ya pasaron, cada modelo muestra su corrida más reciente que los cubría.`;
       const iso = Object.values(q).filter(r => r.modelo === "GFS" && r.isoterma0_m && seg(r.bloque_inicio_chile) <= ahora && ahora < seg(r.bloque_inicio_chile) + 6 * 3600)[0];
       if (medido && medido.colorado) { const c = medido.colorado;
@@ -160,9 +168,9 @@ def pagina(head, escribir, ahora):
       <p class="small muted">A menos de 30 km de la Quebrada de Apoquindo (círculo punteado). En toda la zona del mapa: <strong id="rtot">–</strong> rayos en 90 minutos. La lluvia sin tormenta eléctrica no aparece en el mapa.</p>
       <div class="ley-vivo"><span><i style="background:var(--r10)"></i>hace 0 a 10 min</span><span><i style="background:var(--r30)"></i>10 a 30 min</span><span><i style="background:var(--r90)"></i>30 a 90 min</span></div></div>
     <div class="card"><h2>Lluvia medida cerca de las quebradas</h2>
-      <div class="tabla"><table id="lluvia"><thead><tr><th class="l">Estación</th><th>Última hora</th><th>6 h</th><th>24 h</th><th class="l">Reporte</th></tr></thead><tbody><tr><td class="l" colspan="5">Cargando…</td></tr></tbody></table></div>
+      <div class="tabla"><table id="lluvia"><thead><tr><th class="l">Estación</th><th>Última hora</th><th>6 h</th><th>24 h</th><th class="l">Hasta</th></tr></thead><tbody><tr><td class="l" colspan="5">Cargando…</td></tr></tbody></table></div>
       <p class="iso-vivo" id="iso-vivo"></p>
-      <p class="small muted">Milímetros medidos por los pluviómetros de las estaciones automáticas de la {d("DMC", definicion="Dirección Meteorológica de Chile. Sus estaciones envían cada hora un mensaje SYNOP a la red de la Organización Meteorológica Mundial con la lluvia de la última hora.")}, de la más cercana a la Quebrada de Apoquindo a la más lejana, bajo 1.500 m. Llegan cada hora con unos 30 a 60 minutos de atraso y son provisorios. «s/d»: faltan horas. Los puntos del mapa son estas estaciones; rellenos, si midieron 1 mm o más en 24 h. Detalle en <a href="metodo.html#estaciones">Método</a>.</p></div>
+      <p class="small muted">Milímetros medidos por los pluviómetros de las estaciones automáticas de la {d("DMC", definicion="Dirección Meteorológica de Chile. Sus estaciones envían cada hora un mensaje SYNOP a la red de la Organización Meteorológica Mundial con la lluvia de la última hora.")}, de la más cercana a la Quebrada de Apoquindo a la más lejana, bajo 1.500 m. Llegan cada hora con unos 30 a 60 minutos de atraso y son provisorios. «s/d»: faltan horas. Quinta Normal y Pudahuel informan la lluvia cada 6 h: su «última hora» puede faltar y sus 6 y 24 h van hasta su último informe de 6 h. Los puntos del mapa son estas estaciones; rellenos, si midieron 1 mm o más en 24 h. Detalle en <a href="metodo.html#estaciones">Método</a>.</p></div>
     <div class="card"><h2>Lo que miden los aeródromos</h2>
       <div class="tabla"><table id="metar"><thead><tr><th class="l">Hora</th><th class="l">Aeródromo</th><th>Temp.</th><th>Viento</th><th>Ráfaga</th><th class="l">Tiempo</th></tr></thead><tbody></tbody></table></div>
       <p class="small muted">Reportes METAR de las últimas 12 horas, del más reciente al más antiguo; las filas con lluvia van marcadas. Los aeródromos chilenos no informan milímetros.</p></div>

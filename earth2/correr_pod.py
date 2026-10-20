@@ -17,7 +17,7 @@ recorte de Chile, que earth2/endpoint.py baja desde GitHub Actions.
 Uso en el POD:   python earth2/correr_pod.py --modelo aifs [--corrida 2026-10-21T00] [--horas 240] [--control]
 Prueba sin GPU:  python earth2/correr_pod.py --modelo persistencia --horas 12 --control
                  (modelo trivial de Earth2Studio que repite el análisis: prueba la descarga de IFS, el recorte, los archivos y
-                 el control, que a plazo 0 debe dar casi cero; lo corre .github/workflows/earth2-pod-prueba.yml)
+                 el control, que a plazo 0 da ~0,6 °C por el cambio de grilla de AIFS; lo corre .github/workflows/earth2-pod-prueba.yml)
                  python earth2/correr_pod.py --modelo aifs --simular   (datos inventados, ni siquiera Earth2Studio)"""
 import argparse, datetime as dt, json, os, shutil, sys, time
 from collections import OrderedDict

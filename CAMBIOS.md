@@ -6,6 +6,7 @@ Sitio: https://panchodigevo.github.io/earth2-chile-verificacion/
 
 ## 19-oct-2026
 
+- **En vivo más confiable:** GitHub se saltaba la actualización cada 10 min (en 1,5 h no corrió ninguna). Ahora cada corrida actualiza cada 5 min durante casi 6 h, y la página avisa en ámbar cuando los datos tienen más de 20 min de atraso; el total de rayos cuenta solo los de los últimos 90 min.
 - **Todo consolidado en `main`.** Se fusionó y borró la rama `capas-estandar`; los workflows de océano, escenarios y Earth2Studio ahora escuchan `main`.
 - **Pestaña En vivo** (`envivo.html`): rayos GOES-19 de los últimos 90 min, METAR de Tobalaba, Pudahuel, El Bosque y Viña, y la lluvia que espera cada modelo para Apoquindo. Se actualiza cada 10 min (`envivo.yml`, datos en la rama `datos-en-vivo`).
 - **Seguimiento horario de pronósticos** (`seguimiento.yml`): guarda cada corrida nueva de AIFS, IFS y GFS para las quebradas quemadas, Tobalaba y Pudahuel en `hindcast/seguimiento/pronosticos.csv`, y el registro previo del evento del 20-oct en `hindcast/eventos/prerregistro/2026-10-20-rm/`.

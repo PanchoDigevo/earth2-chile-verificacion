@@ -223,3 +223,38 @@ def actualizar_quebradas():
 
 if __name__ == "__main__":
     actualizar_quebradas()
+
+
+# ---------- etapas del proyecto (portada y Método) ----------
+ETAPAS = [
+    ("Funciona hoy", "hecho",
+     "Verificación diaria de tres pronósticos globales de 25 km (AIFS, IFS y GFS, que bajamos ya calculados), corrección por estación "
+     "(medida: baja el error entre 19 y 28 %), escenarios a 15 días con el ensamble de IA de ECMWF, indicador de quebradas quemadas y vista en vivo."),
+    ("Siguiente", "curso",
+     "Correr nosotros FourCastNet, un modelo global de NVIDIA Earth-2, y verificarlo aquí junto a los demás. Sirve en Chile tal como viene, "
+     "porque cubre todo el planeta."),
+    ("Por entrenar", "pendiente",
+     "CorrDiff-Chile, el zoom de 25 a 4 km. NVIDIA entrega la receta, pero los modelos ya entrenados solo existen para Estados Unidos y Taiwán "
+     "y no sirven para Chile. Hay que entrenarlo con 22 años de simulación del clima chileno a 4 km (SAAG-WRF). Todavía no existe: nada de "
+     "lo que se ve hoy en el sitio usa CorrDiff."),
+]
+
+CSS_ETAPAS = """
+.etapas{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.etapas li{display:grid;grid-template-columns:8.5em 1fr;gap:4px 12px;align-items:start}
+.etapas .tag{justify-self:start}
+.etapas .tag{font:600 12px var(--font-body);letter-spacing:.02em;padding:3px 9px;border-radius:999px;border:1px solid var(--line);white-space:nowrap;margin-top:2px}
+.etapas .hecho .tag{background:var(--accent-soft);border-color:var(--accent);color:var(--fg)}
+.etapas .curso .tag{background:color-mix(in srgb,var(--medio) 14%,var(--surface));border-color:var(--medio);color:var(--fg)}
+.etapas .pendiente .tag{background:var(--surface);border-style:dashed;color:var(--muted)}
+.etapas p{margin:0}
+@media (max-width:560px){.etapas li{grid-template-columns:1fr}}
+"""
+
+
+def etapas():
+    """Bloque "En qué etapa estamos": qué funciona hoy, qué sigue y qué hay que entrenar."""
+    filas = "".join(f'<li class="{c}"><span class="tag">{t}</span><p>{x}</p></li>' for t, c, x in ETAPAS)
+    return (f'<section class="card" aria-labelledby="etapas-t"><div class="sec-head"><h2 id="etapas-t">En qué etapa estamos</h2></div>'
+            f'<ul class="etapas">{filas}</ul></section>')
+

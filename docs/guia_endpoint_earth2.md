@@ -2,6 +2,8 @@
 
 Para quien tenga acceso a un endpoint de Earth-2 (una función en NVIDIA Cloud Functions, un NIM o un servidor propio) y quiera que su pronóstico se verifique en público junto a AIFS, IFS y GFS.
 
+**Qué modelo correr.** Uno global, como FourCastNet (FCN3 o SFNO): cubre todo el planeta y sirve en Chile tal como viene. CorrDiff no sirve todavía: los modelos ya entrenados que publica NVIDIA son de Estados Unidos (y de Taiwán, con licencia no comercial) y no saben nada de Chile. CorrDiff-Chile hay que entrenarlo primero (ver al final).
+
 ## Qué hace hoy el sitio
 
 Cuatro veces al día, `.github/workflows/verificacion.yml` baja la última corrida de AIFS, IFS y GFS. Extrae la temperatura a 2 m y el viento a 10 m en los 21 aeródromos de `historico/estaciones.csv` y los compara con lo que miden (METAR). El resultado se publica en https://panchodigevo.github.io/earth2-chile-verificacion/.
@@ -35,7 +37,7 @@ Para que la comparación sea justa, el endpoint debería partir de la misma hora
 
 ## Y el downscaling a 4 km
 
-CorrDiff-Chile, el zoom de 25 a 4 km, es otro caso: no reemplaza a un modelo global, lo afina. Cuando exista, el mismo esquema sirve: se escribe `puntos_CORRDIFF_<corrida>.csv` con los valores en los aeródromos y se verifica contra el global del que partió. Ahí está la prueba central del proyecto.
+CorrDiff-Chile, el zoom de 25 a 4 km, es otro caso: no reemplaza a un modelo global, lo afina. Todavía no existe: hay que entrenarlo con PhysicsNeMo (`examples/weather/corrdiff`) usando SAAG-WRF a 4 km como objetivo y ERA5 como entrada (tareas 6 y 7 de `TAREAS.md`). Cuando exista, el mismo esquema sirve: se escribe `puntos_CORRDIFF_<corrida>.csv` con los valores en los aeródromos y se verifica contra el global del que partió. Ahí está la prueba central del proyecto.
 
 ## Reglas
 

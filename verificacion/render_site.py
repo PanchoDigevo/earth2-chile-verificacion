@@ -15,7 +15,7 @@ import json, math, os, re
 import pandas as pd
 import aviso_oficial
 import cambio
-from comun import (CSS_NAV, CSS_DEF, JS_DEF, EVENTOS, GLOSARIO, MESES, a_chile, aviso, d, entero, fecha, hora_chile, nav, num, pie, signo)
+from comun import (CSS_ETAPAS, CSS_NAV, CSS_DEF, JS_DEF, etapas, EVENTOS, GLOSARIO, MESES, a_chile, aviso, d, entero, fecha, hora_chile, nav, num, pie, signo)
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 SITE = os.path.join(AQUI, "..", "site")
@@ -613,7 +613,7 @@ def head(titulo, descripcion):
 <meta name="description" content="{descripcion}">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
-<style>{CSS}{CSS_NAV}{CSS_DEF}{aviso_oficial.CSS}{cambio.CSS_CAMBIO}</style>
+<style>{CSS}{CSS_NAV}{CSS_DEF}{CSS_ETAPAS}{aviso_oficial.CSS}{cambio.CSS_CAMBIO}</style>
 </head>"""
 
 
@@ -702,6 +702,8 @@ def pagina_resumen(est, ahora, ll=None):
   <p class="confianza"><span>Datos al {hora_chile(ahora)}</span><span>Se actualiza cuatro veces al día</span><span><a href="metodo.html">Cómo se calcula</a></span><span><a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">Código y datos abiertos</a></span></p>
   {aviso()}
 </section>
+
+{etapas()}
 
 {f'''<details><summary>Por qué hacemos esto</summary><div class="body narrativa">{narr_html}</div></details>''' if narr_html else ''}
 

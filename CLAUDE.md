@@ -39,6 +39,7 @@ Regla: los cambios de régimen (El Niño, olas de calor marinas) se detectan des
 3. Página de aviso simulado: cómo se ve el mensaje para un municipio.
 4. Capa de superficie y mapa de quebradas quemadas (primera venta, sin GPU): Sentinel-2 dNBR del verano 2026 sobre Santiago oriente (incendio de enero sobre San Carlos de Apoquindo, ~1.012 ha), DEM Copernicus 30 m → pendiente, cauces OSM/DGA, humedad SMAP, catálogo de remociones en masa de SERNAGEOMIN. Salida: GeoJSON de cuencas de quebrada con quema × pendiente × historial, publicado en `site/quebradas.html` sobre el mapa de Natural Earth + teselas abiertas. Luego, umbral de intensidad-duración tipo USGS por cuenca para el aviso. Eventos: `hindcast/eventos/eventos_2026.csv`.
 5. CorrDiff-Chile (downscaling 25 → 4 km) con SAAG-WRF 4 km + ERA5, en GPUs L40S con PhysicsNeMo. No bloquea los puntos anteriores.
+   **Hay que entrenarlo: no existe un CorrDiff para Chile.** Los CorrDiff preentrenados de NVIDIA son de EE.UU. y Taiwán y no sirven para inferencia sobre Chile. Lo que corre hoy sobre Chile son modelos globales (AIFS, IFS, GFS bajados ya calculados; FourCastNet cuando lo corramos). Todo texto público (sitio, README, presentaciones) debe decirlo así: CorrDiff-Chile "por entrenar", nunca como algo que ya corre. El bloque "En qué etapa estamos" (`ETAPAS` en `verificacion/comun.py`) se actualiza cuando cambia una etapa.
 
 ## Dónde corre cada cosa
 

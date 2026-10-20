@@ -20,7 +20,8 @@ Earth2Studio trae listos los mismos conectores que escribimos a mano, con caché
 
 - `earth2studio.models.px.AIFS` / `AIFS2`: correr AIFS nosotros mismos (extra `aifs`: anemoi, flash-attn).
 - `earth2studio.models.px.StormScopeGOES`: nowcaster de 0–6 h sobre imágenes GOES a 3 km cada 10 min. Está entrenado para EE.UU. (grilla HRRR); es el punto de partida para el nowcaster chileno, no el producto final.
-- `earth2studio.models.dx.CorrDiff`: downscaling. Los pesos públicos son de Taiwán (licencia no comercial) → CorrDiff-Chile se entrena con PhysicsNeMo (`examples/weather/corrdiff`) y se carga aquí.
+- `earth2studio.models.dx.CorrDiff`: downscaling. Los pesos públicos son de Estados Unidos y de Taiwán (esta última, licencia no comercial): ninguno sirve para inferencia sobre Chile. CorrDiff-Chile se entrena con PhysicsNeMo (`examples/weather/corrdiff`) y recién entonces se carga aquí.
+- `earth2studio.models.px.SFNO` / FourCastNet 3: modelo global; sirve en Chile tal como viene. Es el primero que corremos nosotros y verificamos junto a AIFS, IFS y GFS (`earth2/endpoint.py`).
 
 ## Instalar
 

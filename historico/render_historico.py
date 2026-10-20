@@ -11,7 +11,7 @@ AQUI = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(AQUI, "..", "verificacion"))
 sys.path.insert(0, AQUI)
 from render_site import CSS, MODELOS, ORDEN, UMBRAL_T, MIN_PARES, chip, nivel, nombre, barra, head, escribir  # noqa: E402
-from comun import (EVENTOS, GLOSARIO, JS_DEF, MESES, MESES_LARGO, aviso, d, entero, fecha, nav, num, pie, signo)  # noqa: E402
+from comun import (etapas, EVENTOS, GLOSARIO, JS_DEF, MESES, MESES_LARGO, aviso, d, entero, fecha, nav, num, pie, signo)  # noqa: E402
 
 RES = os.path.join(AQUI, "data", "resultados")
 import viento_render  # noqa: E402
@@ -392,6 +392,7 @@ def pagina_metodo(r, n_pares, n_corridas, n_est, ahora):
   <div class="sec-head"><h2>Glosario</h2></div>
   <dl class="glosario">{glosario}</dl>
 </section>
+{etapas()}
 {aviso()}
 {pie(ahora)}
 </div>

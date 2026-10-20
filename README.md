@@ -6,7 +6,7 @@ Repositorio del piloto **Earth-2 Chile** (Digevo): inteligencia climática con I
 - `site/` — página pública generada por el pipeline (GitHub Pages).
 - `hindcast/` — eventos de 2026: lo que se veía antes (lluvia), la superficie de ese momento (incendios, pendiente, suelo) y lo que pasó (catálogos).
 
-Primer resultado (14-oct-2026, 77 pares): error medio de temperatura 1,2–1,5 °C a 0–24 h; sesgo frío de –3 °C en Iquique, Arica y Balmaceda, donde la grilla de 25 km mezcla mar y tierra. Esa es la brecha que el downscaling a 2–4 km (CorrDiff-Chile) debe cerrar.
+Primer resultado (14-oct-2026, 77 pares): error medio de temperatura 1,2–1,5 °C a 0–24 h; sesgo frío de –3 °C en Iquique, Arica y Balmaceda, donde la grilla de 25 km mezcla mar y tierra. Esa es la brecha que el downscaling a 2–4 km (CorrDiff-Chile) debe cerrar. CorrDiff-Chile todavía no existe: NVIDIA solo publica CorrDiff entrenados para EE.UU. y Taiwán, así que hay que entrenarlo con datos chilenos (SAAG-WRF 4 km). Hoy se verifican modelos globales (AIFS, IFS, GFS) y el siguiente es FourCastNet.
 
 ## Correr local
     python -m venv .venv && . .venv/bin/activate

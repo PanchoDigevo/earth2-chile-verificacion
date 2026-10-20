@@ -1,6 +1,6 @@
 # Registro previo: 2026-10-20-rm
 
-Ventana del evento: 2026-10-20 00:00 a 2026-10-21 12:00 (hora de Chile). Resumen actualizado el 19-10-2026 18:23 (hora de Chile).
+Ventana del evento: 2026-10-20 00:00 a 2026-10-21 12:00 (hora de Chile). Resumen actualizado el 19-10-2026 21:26 (hora de Chile).
 Cada fila es una corrida de un modelo; las más nuevas, abajo. La fecha de cada registro está en la columna
 registrado_utc de hindcast/seguimiento/pronosticos.csv y en el historial de git.
 
@@ -22,6 +22,9 @@ registrado_utc de hindcast/seguimiento/pronosticos.csv y en el historial de git.
 | IFS | 2026-10-19 00:00 | 39 mm | 16.9 mm (20 21-03 h) | – |
 | IFS | 2026-10-19 06:00 | 40 mm | 14.8 mm (20 15-21 h) | – |
 | IFS | 2026-10-19 12:00 | 34 mm | 10.9 mm (20 21-03 h) | – |
+| GFS | 2026-10-19 18:00 | 24 mm | 10.9 mm (20 15-21 h) | 2823 a 2939 m |
+| AIFS | 2026-10-18 18:00 | 18 mm | 6.3 mm (20 15-21 h) | – |
+| AIFS | 2026-10-19 18:00 | 22 mm | 8.5 mm (20 15-21 h) | – |
 
 Umbral del indicador: atención con unos 10 mm en 2 h; aviso de impacto con unos 16 mm en 2 h.
 
@@ -43,6 +46,9 @@ Umbral del indicador: atención con unos 10 mm en 2 h; aviso de impacto con unos
 | IFS | 2026-10-19 00:00 | 39 mm | 16.9 mm (20 21-03 h) | – |
 | IFS | 2026-10-19 06:00 | 40 mm | 14.8 mm (20 15-21 h) | – |
 | IFS | 2026-10-19 12:00 | 34 mm | 10.9 mm (20 21-03 h) | – |
+| GFS | 2026-10-19 18:00 | 24 mm | 10.9 mm (20 15-21 h) | 2823 a 2939 m |
+| AIFS | 2026-10-18 18:00 | 18 mm | 6.3 mm (20 15-21 h) | – |
+| AIFS | 2026-10-19 18:00 | 22 mm | 8.5 mm (20 15-21 h) | – |
 
 Umbral del indicador: atención con unos 22 mm en 2 h; aviso de impacto con unos 36 mm en 2 h.
 
@@ -64,6 +70,9 @@ Umbral del indicador: atención con unos 22 mm en 2 h; aviso de impacto con unos
 | IFS | 2026-10-19 00:00 | 39 mm | 16.9 mm (20 21-03 h) | – |
 | IFS | 2026-10-19 06:00 | 40 mm | 14.8 mm (20 15-21 h) | – |
 | IFS | 2026-10-19 12:00 | 34 mm | 10.9 mm (20 21-03 h) | – |
+| GFS | 2026-10-19 18:00 | 24 mm | 10.9 mm (20 15-21 h) | 2823 a 2939 m |
+| AIFS | 2026-10-18 18:00 | 18 mm | 6.3 mm (20 15-21 h) | – |
+| AIFS | 2026-10-19 18:00 | 22 mm | 8.5 mm (20 15-21 h) | – |
 
 ## Santiago (Pudahuel)
 
@@ -83,5 +92,8 @@ Umbral del indicador: atención con unos 22 mm en 2 h; aviso de impacto con unos
 | IFS | 2026-10-19 00:00 | 37 mm | 24.1 mm (20 15-21 h) | – |
 | IFS | 2026-10-19 06:00 | 30 mm | 15.7 mm (20 15-21 h) | – |
 | IFS | 2026-10-19 12:00 | 31 mm | 22.3 mm (20 15-21 h) | – |
+| GFS | 2026-10-19 18:00 | 13 mm | 6.4 mm (20 15-21 h) | 2801 a 2950 m |
+| AIFS | 2026-10-18 18:00 | 20 mm | 8.3 mm (20 15-21 h) | – |
+| AIFS | 2026-10-19 18:00 | 25 mm | 10.6 mm (20 15-21 h) | – |
 
 Registro para verificación posterior. No es un aviso ni una alerta: las alertas oficiales son de la DMC y SENAPRED.

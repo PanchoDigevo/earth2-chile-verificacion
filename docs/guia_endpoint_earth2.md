@@ -2,7 +2,7 @@
 
 Para quien tenga acceso a un endpoint de Earth-2 (una función en NVIDIA Cloud Functions, un NIM o un servidor propio) y quiera que su pronóstico se verifique en público junto a AIFS, IFS y GFS.
 
-**Qué modelo correr.** Uno global, como FourCastNet (FCN3 o SFNO): cubre todo el planeta y sirve en Chile tal como viene. CorrDiff no sirve todavía: los modelos ya entrenados que publica NVIDIA son de Estados Unidos (y de Taiwán, con licencia no comercial) y no saben nada de Chile. CorrDiff-Chile hay que entrenarlo primero (ver al final).
+**Qué modelo correr.** Uno global: cubre todo el planeta y sirve en Chile tal como viene. En una L40S (48 GB) caben AIFS y FourCastNet v2 (SFNO), que piden unos 40 GB según su ficha en Earth2Studio 0.19; FourCastNet 3 (FCN3) pide unos 80 GB y no cabe en una sola L40S. `earth2/correr_pod.py` ya corre AIFS o SFNO desde el análisis de IFS, recorta Chile y deja el CSV por aeródromo: sirve como cuerpo de la función. CorrDiff no sirve todavía: los modelos ya entrenados que publica NVIDIA son de Estados Unidos (y de Taiwán, con licencia no comercial) y no saben nada de Chile. CorrDiff-Chile hay que entrenarlo primero (ver al final).
 
 ## Qué hace hoy el sitio
 

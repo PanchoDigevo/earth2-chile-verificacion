@@ -231,8 +231,8 @@ ETAPAS = [
      "Verificación diaria de tres pronósticos globales de 25 km (AIFS, IFS y GFS, que bajamos ya calculados), corrección por estación "
      "(medida: baja el error entre 19 y 28 %), escenarios a 15 días con el ensamble de IA de ECMWF, indicador de quebradas quemadas y vista en vivo."),
     ("Siguiente", "curso",
-     "Correr nosotros FourCastNet, un modelo global de NVIDIA Earth-2, y verificarlo aquí junto a los demás. Sirve en Chile tal como viene, "
-     "porque cubre todo el planeta."),
+     "Correr nosotros, en las GPUs del POD, modelos globales de Earth-2: AIFS (para comprobar que da lo mismo que el de ECMWF) y FourCastNet, "
+     "y verificarlos aquí junto a los demás. Sirven en Chile tal como vienen, porque cubren todo el planeta."),
     ("Por entrenar", "pendiente",
      "CorrDiff-Chile, el zoom de 25 a 4 km. NVIDIA entrega la receta, pero los modelos ya entrenados solo existen para Estados Unidos y Taiwán "
      "y no sirven para Chile. Hay que entrenarlo con 22 años de simulación del clima chileno a 4 km (SAAG-WRF). Todavía no existe: nada de "

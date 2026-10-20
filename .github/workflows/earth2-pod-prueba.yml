@@ -1,0 +1,34 @@
+name: earth2-pod-prueba
+# Prueba sin GPU de earth2/correr_pod.py (tarea 5): con el modelo de persistencia de Earth2Studio recorre el camino
+# real (análisis de IFS en AWS, recorte de Chile, CSV por aeródromo, ficha técnica y control contra el AIFS de ECMWF).
+# No sube nada al repo: el resultado queda en el registro. AIFS y SFNO necesitan GPU y corren en el POD.
+on:
+  workflow_dispatch:
+    inputs:
+      corrida:
+        description: "YYYY-MM-DDTHH (UTC); vacío = la última con 6 h de antigüedad"
+        default: ""
+permissions:
+  contents: read
+jobs:
+  probar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Instalar Earth2Studio (CPU)
+        run: |
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install -r earth2/requirements.txt psutil
+      - name: Correr persistencia y control
+        env:
+          CORRIDA: ${{ inputs.corrida }}
+        run: python earth2/correr_pod.py --modelo persistencia --horas 12 --control --salida /tmp/earth2_datos ${CORRIDA:+--corrida "$CORRIDA"}
+      - name: Mostrar resultados
+        run: |
+          head -5 verificacion/data/puntos_PERSISTENCIA_*.csv
+          cat earth2/workload/PERSISTENCIA_*.json

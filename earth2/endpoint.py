@@ -41,8 +41,14 @@ def pedir_pronostico(url, clave, corrida, plazos):
 
 
 def en_estaciones(ds, corrida, modelo, est):
-    """Valor del punto de grilla más cercano a cada aeródromo, para cada plazo (selección punto a punto)."""
+    """Valor del punto de grilla más cercano a cada aeródromo, para cada plazo (selección punto a punto).
+    Un aeródromo a más de medio grado de la grilla (fuera del recorte) se omite: el más cercano sería otro lugar."""
     import xarray as xr
+    lon_e = (est.lon.values + 360.0) % 360.0 if float(np.nanmax(ds.lon.values)) > 180 else est.lon.values
+    dentro = [float(np.abs(ds.lat.values - la).min()) <= 0.5 and float(np.abs(ds.lon.values - lo).min()) <= 0.5 for la, lo in zip(est.lat.values, lon_e)]
+    if not all(dentro):
+        print("Fuera del recorte, se omiten:", ", ".join(est.icao[[not x for x in dentro]]))
+        est = est[dentro].reset_index(drop=True)
     lat = xr.DataArray(est.lat.values, dims="estacion")
     lon_ds = ds.lon.values
     lon = xr.DataArray((est.lon.values + 360.0) % 360.0 if float(np.nanmax(lon_ds)) > 180 else est.lon.values, dims="estacion")

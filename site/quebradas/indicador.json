@@ -1,11 +1,11 @@
 {
-"generado": "2026-10-20T15:59Z",
+"generado": "2026-10-20T18:43Z",
 "lluvia_prevista": {
 "AIFS": {
-"corrida": "20261020_00",
-"mm6": 0.3,
-"mm24": 20.4,
-"mm48": 28.1
+"corrida": "20261020_12",
+"mm6": 4.4,
+"mm24": 21.3,
+"mm48": 29.1
 },
 "GFS": {
 "corrida": "20261020_12",
@@ -15,12 +15,12 @@
 }
 },
 "mm6": 4.4,
-"mm24": 20.4,
+"mm24": 21.3,
 "horas_lluvia_7d": {
-"SCEL": 1,
-"SCTB": 2
+"SCEL": 3,
+"SCTB": 4
 },
-"factor_antecedente": 1.04,
+"factor_antecedente": 1.08,
 "parametros": {
 "KF": 0.25,
 "beta": [
@@ -40,19 +40,19 @@
 {
 "id": 1,
 "nombre": "Quebrada de Apoquindo (San Carlos de Apoquindo)",
-"p6": 0.069,
-"p24": 0.08,
-"p": 0.08,
+"p6": 0.071,
+"p24": 0.088,
+"p": 0.088,
 "nivel": "bajo",
-"mm_atencion": 9.6,
-"mm_aviso": 15.6
+"mm_atencion": 9.3,
+"mm_aviso": 15.0
 },
 {
 "id": 2,
 "nombre": "Quebrada Grande (Los Almendros)",
 "p6": 0.041,
-"p24": 0.044,
-"p": 0.044,
+"p24": 0.046,
+"p": 0.046,
 "nivel": "sin_quema",
 "mm_atencion": null,
 "mm_aviso": null
@@ -61,18 +61,18 @@
 "id": 3,
 "nombre": "Quebrada de Ramón",
 "p6": 0.041,
-"p24": 0.044,
-"p": 0.044,
+"p24": 0.045,
+"p": 0.045,
 "nivel": "bajo",
-"mm_atencion": 21.2,
-"mm_aviso": 34.3
+"mm_atencion": 20.4,
+"mm_aviso": 33.0
 },
 {
 "id": 4,
 "nombre": "Quebrada Guayacán",
-"p6": 0.04,
-"p24": 0.043,
-"p": 0.043,
+"p6": 0.041,
+"p24": 0.045,
+"p": 0.045,
 "nivel": "sin_quema",
 "mm_atencion": null,
 "mm_aviso": null
@@ -80,9 +80,9 @@
 {
 "id": 5,
 "nombre": "Quebrada sin nombre (Peñalolén norte)",
-"p6": 0.04,
-"p24": 0.043,
-"p": 0.043,
+"p6": 0.041,
+"p24": 0.045,
+"p": 0.045,
 "nivel": "sin_quema",
 "mm_atencion": null,
 "mm_aviso": null
@@ -90,9 +90,9 @@
 {
 "id": 6,
 "nombre": "Quebrada Nido del Águila",
-"p6": 0.04,
-"p24": 0.043,
-"p": 0.043,
+"p6": 0.041,
+"p24": 0.045,
+"p": 0.045,
 "nivel": "sin_quema",
 "mm_atencion": null,
 "mm_aviso": null
@@ -100,9 +100,9 @@
 {
 "id": 7,
 "nombre": "Quebrada sin nombre (Lo Hermida)",
-"p6": 0.041,
-"p24": 0.044,
-"p": 0.044,
+"p6": 0.042,
+"p24": 0.046,
+"p": 0.046,
 "nivel": "sin_quema",
 "mm_atencion": null,
 "mm_aviso": null
@@ -111,8 +111,8 @@
 "id": 8,
 "nombre": "Quebrada de Macul",
 "p6": 0.04,
-"p24": 0.042,
-"p": 0.042,
+"p24": 0.044,
+"p": 0.044,
 "nivel": "sin_quema",
 "mm_atencion": null,
 "mm_aviso": null
@@ -121,8 +121,8 @@
 "id": 9,
 "nombre": "Quebrada sin nombre (Canal del Monte)",
 "p6": 0.041,
-"p24": 0.044,
-"p": 0.044,
+"p24": 0.046,
+"p": 0.046,
 "nivel": "sin_quema",
 "mm_atencion": null,
 "mm_aviso": null
@@ -130,9 +130,9 @@
 {
 "id": 10,
 "nombre": "Quebrada de Lo Cañas",
-"p6": 0.038,
-"p24": 0.04,
-"p": 0.04,
+"p6": 0.039,
+"p24": 0.042,
+"p": 0.042,
 "nivel": "sin_quema",
 "mm_atencion": null,
 "mm_aviso": null
@@ -140,9 +140,9 @@
 {
 "id": 11,
 "nombre": "Quebrada de Panul",
-"p6": 0.038,
-"p24": 0.04,
-"p": 0.04,
+"p6": 0.039,
+"p24": 0.042,
+"p": 0.042,
 "nivel": "sin_quema",
 "mm_atencion": null,
 "mm_aviso": null
@@ -151,8 +151,8 @@
 "id": 12,
 "nombre": "Quebrada San Francisco",
 "p6": 0.042,
-"p24": 0.045,
-"p": 0.045,
+"p24": 0.047,
+"p": 0.047,
 "nivel": "sin_quema",
 "mm_atencion": null,
 "mm_aviso": null
@@ -160,9 +160,9 @@
 {
 "id": 13,
 "nombre": "Quebrada Las Cañitas",
-"p6": 0.042,
-"p24": 0.045,
-"p": 0.045,
+"p6": 0.043,
+"p24": 0.047,
+"p": 0.047,
 "nivel": "sin_quema",
 "mm_atencion": null,
 "mm_aviso": null
@@ -170,9 +170,9 @@
 {
 "id": 14,
 "nombre": "Quebrada sin nombre (Pochoco)",
-"p6": 0.041,
-"p24": 0.044,
-"p": 0.044,
+"p6": 0.042,
+"p24": 0.046,
+"p": 0.046,
 "nivel": "sin_quema",
 "mm_atencion": null,
 "mm_aviso": null
@@ -180,9 +180,9 @@
 {
 "id": 15,
 "nombre": "Quebrada Agua de Aranda",
-"p6": 0.039,
-"p24": 0.042,
-"p": 0.042,
+"p6": 0.04,
+"p24": 0.044,
+"p": 0.044,
 "nivel": "sin_quema",
 "mm_atencion": null,
 "mm_aviso": null
@@ -191,8 +191,8 @@
 "id": 16,
 "nombre": "Quebrada del Garin",
 "p6": 0.042,
-"p24": 0.045,
-"p": 0.045,
+"p24": 0.047,
+"p": 0.047,
 "nivel": "sin_quema",
 "mm_atencion": null,
 "mm_aviso": null
@@ -200,9 +200,9 @@
 {
 "id": 17,
 "nombre": "Quebrada El Manzano",
-"p6": 0.041,
-"p24": 0.044,
-"p": 0.044,
+"p6": 0.042,
+"p24": 0.046,
+"p": 0.046,
 "nivel": "sin_quema",
 "mm_atencion": null,
 "mm_aviso": null
@@ -210,9 +210,9 @@
 {
 "id": 18,
 "nombre": "Quebrada El Quisco",
-"p6": 0.04,
-"p24": 0.043,
-"p": 0.043,
+"p6": 0.041,
+"p24": 0.045,
+"p": 0.045,
 "nivel": "sin_quema",
 "mm_atencion": null,
 "mm_aviso": null
@@ -220,9 +220,9 @@
 {
 "id": 19,
 "nombre": "Quebrada El Quisco (ramal poniente)",
-"p6": 0.04,
-"p24": 0.043,
-"p": 0.043,
+"p6": 0.041,
+"p24": 0.045,
+"p": 0.045,
 "nivel": "sin_quema",
 "mm_atencion": null,
 "mm_aviso": null
@@ -230,9 +230,9 @@
 {
 "id": 20,
 "nombre": "Quebrada El Culén",
-"p6": 0.04,
-"p24": 0.043,
-"p": 0.043,
+"p6": 0.041,
+"p24": 0.045,
+"p": 0.045,
 "nivel": "sin_quema",
 "mm_atencion": null,
 "mm_aviso": null
@@ -240,9 +240,9 @@
 {
 "id": 21,
 "nombre": "Estero Las Hualtatas",
-"p6": 0.04,
-"p24": 0.043,
-"p": 0.043,
+"p6": 0.041,
+"p24": 0.045,
+"p": 0.045,
 "nivel": "sin_quema",
 "mm_atencion": null,
 "mm_aviso": null
@@ -250,9 +250,9 @@
 {
 "id": 22,
 "nombre": "Quebrada Oscura",
-"p6": 0.039,
-"p24": 0.042,
-"p": 0.042,
+"p6": 0.04,
+"p24": 0.044,
+"p": 0.044,
 "nivel": "sin_quema",
 "mm_atencion": null,
 "mm_aviso": null
@@ -261,8 +261,8 @@
 "id": 23,
 "nombre": "Quebrada El Carrizo",
 "p6": 0.041,
-"p24": 0.044,
-"p": 0.044,
+"p24": 0.046,
+"p": 0.046,
 "nivel": "sin_quema",
 "mm_atencion": null,
 "mm_aviso": null
@@ -270,9 +270,9 @@
 {
 "id": 24,
 "nombre": "Quebrada Los Carboneros",
-"p6": 0.041,
-"p24": 0.044,
-"p": 0.044,
+"p6": 0.042,
+"p24": 0.046,
+"p": 0.046,
 "nivel": "sin_quema",
 "mm_atencion": null,
 "mm_aviso": null
@@ -280,9 +280,9 @@
 {
 "id": 25,
 "nombre": "Quebrada Los Chanchos",
-"p6": 0.04,
-"p24": 0.043,
-"p": 0.043,
+"p6": 0.041,
+"p24": 0.045,
+"p": 0.045,
 "nivel": "sin_quema",
 "mm_atencion": null,
 "mm_aviso": null
@@ -290,9 +290,9 @@
 {
 "id": 26,
 "nombre": "Quebrada La Ermita",
-"p6": 0.04,
-"p24": 0.043,
-"p": 0.043,
+"p6": 0.041,
+"p24": 0.045,
+"p": 0.045,
 "nivel": "sin_quema",
 "mm_atencion": null,
 "mm_aviso": null
@@ -300,9 +300,9 @@
 {
 "id": 27,
 "nombre": "Quebrada Onda (Las Ondas)",
-"p6": 0.04,
-"p24": 0.043,
-"p": 0.043,
+"p6": 0.041,
+"p24": 0.045,
+"p": 0.045,
 "nivel": "sin_quema",
 "mm_atencion": null,
 "mm_aviso": null
@@ -310,9 +310,9 @@
 {
 "id": 28,
 "nombre": "Quebrada Agua del Palo",
-"p6": 0.04,
-"p24": 0.043,
-"p": 0.043,
+"p6": 0.041,
+"p24": 0.045,
+"p": 0.045,
 "nivel": "sin_quema",
 "mm_atencion": null,
 "mm_aviso": null

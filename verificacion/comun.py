@@ -202,7 +202,8 @@ def aviso():
 def pie(generado=None):
     cuando = f"Actualizado el {hora_chile(generado)}. " if generado is not None else ""
     return (f'<footer><p>{cuando}Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), '
-            'Iowa Environmental Mesonet, Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. '
+            'Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), '
+            'OpenStreetMap (ODbL), SERNAGEOMIN. '
             f'<a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="{REPO}" rel="noopener">GitHub</a>.</p>'
             '<p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección '
             'Meteorológica de Chile ni de SENAPRED.</em></p></footer>')

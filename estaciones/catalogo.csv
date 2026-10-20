@@ -1,0 +1,31 @@
+red,codigo,wmo,nombre,lat,lon,altura_m,lectura,nota
+DMC,330122,85565,Aguas Andinas (La Florida),-33.5450,-70.5481,670,synop,Pie de la precordillera; la más cercana a las quebradas de Santiago oriente
+DMC,330020,85577,Quinta Normal,-33.4450,-70.6825,520,synop,Estación principal de Santiago; con observador: a las 00/06/12/18 UTC informa 6 h en vez de 1 h
+DMC,330021,85574,Pudahuel (aeropuerto),-33.3917,-70.7942,482,synop,Mismo lugar que el METAR SCEL; con observador
+DMC,330026,85584,La Platina (INIA),-33.5728,-70.6194,630,synop,
+DMC,330114,85572,San Pablo (DASA),-33.4419,-70.7467,490,synop,
+DMC,330118,85570,Lo Pinto,-33.2681,-70.7319,512,synop,
+DMC,330141,85589,Rinconada (U. de Chile),-33.4969,-70.8456,462,synop,
+DMC,330162,85596,Colina,-33.1619,-70.6431,755,synop,
+DMC,330163,85597,Peldehue,-33.1136,-70.6856,683,synop,
+DMC,330071,85568,Talagante,-33.6703,-70.8492,390,synop,
+DMC,330160,85591,El Milagro (Buin),-33.7544,-70.7644,460,synop,
+DMC,330112,85593,San José Guayacán (Cajón del Maipo),-33.6153,-70.3506,928,synop,Precordillera
+DMC,330075,85595,Río Clarillo (Pirque),-33.7281,-70.4967,876,synop,Precordillera
+DMC,,85571,Lo Prado (cerro),-33.4581,-70.9483,1068,synop,Cordillera de la Costa
+DMC,330077,85594,El Colorado,-33.3500,-70.2936,2750,synop,Cordillera; el pluviómetro mide mal la nieve; su temperatura indica si la isoterma 0 °C está sobre o bajo 2.750 m
+DMC,320051,85539,Paso Los Libertadores,-32.8456,-70.1192,2955,synop,Cordillera; mismas salvedades que El Colorado
+DGA,05730008-6,,Quebrada Ramón en Recinto EMOS,,,,sin_lectura,Red DGA en tiempo real: los datos solo se entregan tras un captcha; falta pedir acceso a la DGA
+DGA,05730061-2,,Quebrada de Ramón 1,,,,sin_lectura,Ídem
+DGA,05730062-0,,Quebrada de Ramón 2,,,,sin_lectura,Ídem
+DGA,05730039-6,,Quebrada de Macul,,,,sin_lectura,Ídem
+DGA,05730013-2,,Antupirén (Peñalolén),,,,sin_lectura,Ídem; pluviómetro (precipitación acumulada e instantánea)
+DGA,05730012-4,,Cerro Calán,,,,sin_lectura,Ídem
+DGA,05722008-2,,Parque El Arrayán,,,,sin_lectura,Ídem
+DGA,05720005-7,,Farellones,,,,sin_lectura,Ídem; cordillera
+DGA,05721019-2,,La Parva,,,,sin_lectura,Ídem; cordillera
+DGA,05703012-7,,Valle Echaurren Norte,,,,sin_lectura,Ídem; nivométrica (nieve)
+DGA,05703013-5,,Portezuelo Glaciar Echaurren Norte,,,,sin_lectura,Ídem; cordillera
+DGA,05703009-7,,Laguna Negra,,,,sin_lectura,Ídem; cordillera
+DGA,05703014-3,,Termas del Plomo,,,,sin_lectura,Ídem; cordillera
+DGA,05701010-K,,Las Melosas,,,,sin_lectura,Ídem; cordillera

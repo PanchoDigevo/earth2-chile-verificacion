@@ -361,11 +361,27 @@ def pagina_metodo(r, n_pares, n_corridas, n_est, ahora):
   <h3>Indicador de quebradas</h3>
   <p>Regla del Servicio Geológico de Estados Unidos (USGS) para flujos de detritos después de incendios (Staley y otros, 2017, modelo M1). Usa la fracción de la cuenca quemada con pendiente de 23° o más (Sentinel-2 y Copernicus DEM), la severidad media de la quema y la intensidad de la lluvia prevista por AIFS y GFS, que se supone concentrada en 2 horas. Las cuencas se delimitan desde el modelo de elevación a 30 m. Detalle completo en la sección Quebradas.</p>
 </section>
+<section class="card" id="estaciones">
+  <div class="sec-head"><h2>Lluvia medida en estaciones</h2></div>
+  <p>Los aeródromos chilenos no informan milímetros. Para medir la lluvia usamos las estaciones automáticas de la Dirección Meteorológica de Chile (DMC) que envían cada hora un mensaje SYNOP a la red de la Organización Meteorológica Mundial, con la lluvia de la última hora y la temperatura: 16 en la Región Metropolitana y la cordillera central. La más cercana a las quebradas de Santiago oriente es Aguas Andinas, en La Florida (670 m, a unos 16 km de la Quebrada de Apoquindo); en la precordillera están San José Guayacán (Cajón del Maipo) y Río Clarillo (Pirque), y en la cordillera El Colorado (2.750 m), cuya temperatura indica si la isoterma 0 °C está sobre o bajo esa altura.</p>
+  <h3>Cómo se usa</h3>
+  <p>Cada hora un proceso automático guarda la lluvia horaria y la temperatura de esas estaciones (<code>estaciones/datos/synop_horario.csv</code>) y compara cada bloque de 6 horas que guardó el seguimiento de pronósticos de AIFS, IFS y GFS con lo medido en la estación más cercana bajo 1.500 m (<code>estaciones/VERIFICACION_LLUVIA.md</code>). Un bloque solo se compara si llegaron las seis horas. La pestaña <a href="envivo.html">En vivo</a> muestra lo medido en las últimas 24 horas junto al pronóstico para la Quebrada de Apoquindo.</p>
+  <h3>Licencia y fuente</h3>
+  <p>Los SYNOP son datos esenciales de libre intercambio según la Resolución 40 de la OMM. Los produce la DMC; los leemos sin clave desde Ogimet, un servicio gratuito que redistribuye los mensajes de la red mundial, con pocas consultas y pausas entre ellas. Al reutilizarlos, citar a la DMC como fuente.</p>
+  <h3>Límites de esta red</h3>
+  <ul class="limites">
+    <li>Un pluviómetro mide un punto; el modelo, el promedio de una celda de unos 25 km. Aguas Andinas está al pie del cerro, no en las laderas quemadas: con tormentas puede llover en San Carlos de Apoquindo y no en La Florida, o al revés.</li>
+    <li>Los pluviómetros automáticos miden mal la nieve y la lluvia con viento fuerte: en la cordillera los milímetros no son confiables, y por eso solo se usa su temperatura.</li>
+    <li>Son datos provisorios, sin control de calidad, y pueden faltar horas o llegar con atraso. Quinta Normal y Pudahuel, que tienen observador, informan la lluvia de 6 horas a las 21, 3, 9 y 15 h (hora de verano de Chile) en vez de la de 1 hora.</li>
+    <li>Todavía faltan dos redes. La de la Dirección General de Aguas (DGA, MOP), con pluviómetros en la Quebrada de Ramón, la Quebrada de Macul, Antupirén y el Cerro Calán, y estaciones de nieve como Valle Echaurren Norte, entrega sus datos en tiempo real solo después de un captcha, así que no se pueden leer de forma automática: hay que pedirle acceso a la DGA. La API de la DMC, con más estaciones (por ejemplo Tobalaba), se activa con un usuario y un token que están en trámite.</li>
+    <li>Por ahora no hay una medición automática de nieve (altura o agua equivalente) para comparar con la isoterma 0 °C pronosticada.</li>
+  </ul>
+</section>
 <section class="card">
   <div class="sec-head"><h2>Límites que conocemos</h2></div>
   <ul class="limites">
-    <li>Los aeródromos no son las quebradas ni los barrios: miden en terreno plano y abierto. Faltan estaciones de la DMC, que requieren un acceso que está en trámite.</li>
-    <li>La lluvia observada en aeródromos es sí o no, sin milímetros. Los milímetros por satélite son estimaciones y subestiman la lluvia de montaña.</li>
+    <li>Los aeródromos no son las quebradas ni los barrios: miden en terreno plano y abierto. Las estaciones de la DMC que envían SYNOP ya se usan para la lluvia; las demás requieren un acceso que está en trámite.</li>
+    <li>La lluvia observada en aeródromos es sí o no, sin milímetros. Los milímetros por satélite son estimaciones y subestiman la lluvia de montaña. Desde octubre de 2026 la lluvia se mide además en estaciones de la DMC (ver <a href="#estaciones">Lluvia medida en estaciones</a>); la verificación retroactiva 2025–2026 todavía no las usa.</li>
     <li>El modelo del USGS fue calibrado en el oeste de Estados Unidos y no está validado en Chile. Usa un valor de erodabilidad del suelo (0,25) supuesto, porque no hay mapa para Chile.</li>
     <li>Los umbrales de bueno, aceptable y alto (1,5 y 3 °C) y los del indicador de quebradas son de trabajo y están en revisión con un meteorólogo.</li>
     <li>Las cifras de los últimos días se marcan como preliminares hasta juntar 30 días.</li>

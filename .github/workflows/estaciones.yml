@@ -1,0 +1,46 @@
+name: estaciones
+# Lluvia medida en estaciones chilenas: cada hora lee los SYNOP de las estaciones automáticas de la DMC de la RM y la
+# cordillera central (estaciones/synop.py), la API de la DMC si están los secretos DMC_USUARIO y DMC_TOKEN
+# (estaciones/dmc.py; sin ellos no hace nada) y compara el seguimiento de pronósticos con lo medido
+# (estaciones/verificar_lluvia.py). Guarda CSV livianos en estaciones/. No cambia el sitio.
+on:
+  schedule:
+    - cron: "40 * * * *"
+  workflow_dispatch:
+    inputs:
+      desde:
+        description: "Rellenar desde esta fecha (YYYY-MM-DD, UTC; vacío = últimas 48 h)"
+        default: ""
+permissions:
+  contents: write
+concurrency:
+  group: estaciones
+  cancel-in-progress: false
+jobs:
+  leer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: SYNOP de la DMC (vía Ogimet)
+        env:
+          DESDE: ${{ inputs.desde }}
+        run: python estaciones/synop.py ${DESDE:+--desde "$DESDE"}
+      - name: API de la DMC (solo con usuario y token)
+        env:
+          DMC_USUARIO: ${{ secrets.DMC_USUARIO }}
+          DMC_TOKEN: ${{ secrets.DMC_TOKEN }}
+        run: python estaciones/dmc.py
+      - name: Lluvia pronosticada frente a medida
+        run: python estaciones/verificar_lluvia.py
+      - name: Guardar
+        run: |
+          git config user.name "earth2-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add estaciones
+          git diff --cached --quiet || git commit -m "estaciones: $(date -u +%Y-%m-%dT%H:%MZ)"
+          git pull --rebase -X theirs origin main
+          git push

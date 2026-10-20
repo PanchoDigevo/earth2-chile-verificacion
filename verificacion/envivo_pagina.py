@@ -1,5 +1,6 @@
 """Pestaña "En vivo" (site/envivo.html): rayos de los últimos 90 minutos sobre la zona central (GOES-19 GLM),
-METAR de las últimas 12 horas y la última corrida de cada modelo para la Quebrada de Apoquindo.
+METAR de las últimas 12 horas, lluvia medida en las estaciones DMC más cercanas (SYNOP) y la última corrida de cada
+modelo para la Quebrada de Apoquindo, con lo medido en los bloques que ya pasaron.
 
 La página es un armazón que se genera con el resto del sitio; los datos los lee el navegador desde la rama
 datos-en-vivo (envivo/actualizar.py, cada 10 minutos) y desde el seguimiento horario de pronósticos
@@ -26,6 +27,9 @@ CSS = """
 :root[data-theme="dark"]{--r10:#ee6a6a;--r30:#f08a4b;--r90:#e0a428}
 tr.lluvia td{background:color-mix(in srgb,var(--accent) 14%,transparent)}
 td.alto{font-weight:700;color:var(--alto)}
+td.medido{font-weight:600}
+td.parcial{color:var(--muted)}
+.iso-vivo{font-size:14.5px}
 .estado-vivo{font-size:14.5px;color:var(--muted)}
 .estado-vivo.atrasado{color:inherit;background:color-mix(in srgb,var(--medio) 12%,var(--surface));border-left:4px solid var(--medio);padding:8px 12px;border-radius:6px}
 .leaflet-container{font-family:var(--font-body)}
@@ -54,13 +58,44 @@ JS = r"""
   const NOM = {SCTB: "Tobalaba", SCEL: "Pudahuel", SCSN: "Santo Domingo", SCVM: "Viña del Mar"};
   const WX = s => s.replace(/\+/g, "fuerte ").replace(/-/g, "débil ").replace(/TSRA/g, "tormenta con lluvia").replace(/SHRA/g, "chubasco")
     .replace(/TS/g, "tormenta").replace(/RA/g, "lluvia").replace(/DZ/g, "llovizna").replace(/GR|GS/g, "granizo").replace(/BR/g, "neblina").replace(/FG/g, "niebla").replace(/VC/g, "cerca: ");
+  // desfase de Chile continental para una fecha "YYYY-MM-DD HH:MM" (horario de verano: −03, de invierno: −04)
+  function desfase(b) { const f = new Date(b.replace(" ", "T") + ":00Z"); const p = new Intl.DateTimeFormat("en-US", {timeZone: "America/Santiago", hourCycle: "h23", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit"}).formatToParts(f);
+    const g = k => +p.find(x => x.type === k).value; const loc = Date.UTC(g("year"), g("month") - 1, g("day"), g("hour")); const h = Math.round((loc - f.getTime()) / 3600000); return (h < 0 ? "-" : "+") + String(Math.abs(h)).padStart(2, "0") + ":00"; }
+  const cifra = v => v == null ? "–" : v.toLocaleString("es-CL", {minimumFractionDigits: 1, maximumFractionDigits: 1});
+  const capaLl = L.layerGroup().addTo(mapa);
+  // lluvia.json: por estación, [hora UTC, mm en 1 h, mm en 6 h, °C]. Las estaciones con observador informan 6 h a las
+  // 00/06/12/18 UTC en vez de 1 h: esa hora se reconstruye restando las 5 anteriores.
+  function lluvia(d, ahora) {
+    const H = {};
+    for (const e of d.estaciones) { const o = d.obs[e.wmo] || [], h = {};
+      o.forEach(([t, m1]) => { if (m1 != null) h[t] = m1; });
+      o.forEach(([t, m1, m6]) => { if (m1 == null && m6 != null) { let s = 0, ok = true; for (let k = 1; k < 6; k++) { const v = h[t - k * 3600]; if (v == null) ok = false; else s += v; } if (ok) h[t] = Math.max(0, Math.round((m6 - s) * 10) / 10); } });
+      H[e.wmo] = h; }
+    // suma de las horas que terminan en (t0, t1]; parcial si el bloque sigue en curso
+    const suma = (w, t0, t1) => { const h = H[w]; let s = 0, n = 0, esp = 0; for (let t = Math.ceil((t0 + 1) / 3600) * 3600; t <= Math.min(t1, ahora); t += 3600) { esp++; if (h[t] != null) { s += h[t]; n++; } }
+      return {mm: esp && n === esp ? Math.round(s * 10) / 10 : (esp && n >= esp - 1 && t1 > ahora ? Math.round(s * 10) / 10 : null), parcial: t1 > ahora, n, esp}; };
+    const ult = w => Math.max(0, ...Object.keys(H[w]).map(Number));
+    const filas = d.estaciones.filter(e => e.alt < 1500).map(e => { const u = ult(e.wmo);
+      return {e, u, h1: u ? H[e.wmo][u] : null, h6: suma(e.wmo, u - 6 * 3600, u), h24: suma(e.wmo, u - 24 * 3600, u)}; });
+    document.querySelector("#lluvia tbody").innerHTML = filas.slice(0, 6).map(f => `<tr class="${(f.h24.mm || 0) >= 1 ? "lluvia" : ""}"><td class="l">${f.e.nombre}<br><span class="small muted">${f.e.alt.toLocaleString("es-CL")} m · ${Math.round(f.e.km)} km</span></td>
+      <td class="num">${cifra(f.h1)}</td><td class="num">${f.h6.mm == null ? "s/d" : cifra(f.h6.mm)}</td><td class="num">${f.h24.mm == null ? "s/d" : cifra(f.h24.mm)}</td><td class="l num">${f.u ? hora(f.u) : "–"}</td></tr>`).join("");
+    capaLl.clearLayers();
+    filas.forEach(f => { const v = f.h24.mm;
+      L.circleMarker([f.e.lat, f.e.lon], {radius: 7, color: css("--accent"), weight: 2, fillColor: v >= 1 ? css("--accent") : css("--surface"), fillOpacity: 0.9})
+        .bindTooltip(`${f.e.nombre}: ${v == null ? "sin datos completos" : cifra(v) + " mm en 24 h"}`).addTo(capaLl); });
+    const cerca = filas[0] ? filas[0].e : null;
+    const col = (d.obs["85594"] || []).filter(o => o[3] != null).pop();
+    return {generado: d.generado, cerca, colorado: col ? {t: col[0], temp: col[3]} : null,
+      bloque: (t0, t1) => cerca && t0 < ahora ? suma(cerca.wmo, t0, t1) : null};
+  }
   async function j(url) { try { const r = await fetch(url + "?t=" + Date.now()); return r.ok ? r : null; } catch (e) { return null; } }
   function csv(t) { const L = t.trim().split("\n"); const c = L[0].split(","); return L.slice(1).map(l => { const v = l.split(","); const o = {}; c.forEach((k, i) => o[k] = v[i]); return o; }); }
 
   async function actualizar() {
     const ahora = Date.now() / 1000;
-    const [ry, mt, sg] = await Promise.all([j(RAW + "/datos-en-vivo/envivo/rayos.json"), j(RAW + "/datos-en-vivo/envivo/metar.json"), j(RAW + "/main/hindcast/seguimiento/pronosticos.csv")]);
-    let gen = [];
+    const [ry, mt, sg, ll] = await Promise.all([j(RAW + "/datos-en-vivo/envivo/rayos.json"), j(RAW + "/datos-en-vivo/envivo/metar.json"), j(RAW + "/main/hindcast/seguimiento/pronosticos.csv"), j(RAW + "/datos-en-vivo/envivo/lluvia.json")]);
+    let gen = [], medido = null;
+    if (ll) { const d = await ll.json(); medido = lluvia(d, ahora); }
     if (ry) { const d = await ry.json(); gen.push(d.generado);
       capa.clearLayers(); let c10 = 0, c30 = 0, c90 = 0, tot = 0;
       d.rayos.forEach(([la, lo, t]) => { const e = (ahora - t) / 60; if (e > 90) return; tot++; const col = e < 10 ? "--r10" : e < 30 ? "--r30" : "--r90";
@@ -73,12 +108,24 @@ JS = r"""
         <td class="num">${o.temp ?? "–"} °C</td><td class="num">${o.wspd != null ? Math.round(o.wspd * 1.852) + " km/h" : "–"}</td><td class="num">${o.wgst ? Math.round(o.wgst * 1.852) + " km/h" : "–"}</td><td class="l">${o.wx ? WX(o.wx) : "–"}</td></tr>`).join(""); }
     if (sg) { const filas = csv(await sg.text()); const ult = {};
       filas.forEach(r => { if (!ult[r.modelo] || r.corrida_utc > ult[r.modelo]) ult[r.modelo] = r.corrida_utc; });
-      const q = filas.filter(r => r.punto === "Q1" && r.corrida_utc === ult[r.modelo]); const mods = ["AIFS", "IFS", "GFS"].filter(m => ult[m]);
-      const bl = [...new Set(q.map(r => r.bloque_inicio_chile))].sort().filter(b => new Date(b.replace(" ", "T") + ":00-03:00").getTime() / 1000 > ahora - 6 * 3600).slice(0, 8);
-      document.querySelector("#pronos thead tr").innerHTML = `<th class="l">Bloque de 6 h</th>` + mods.map(m => `<th>${m}</th>`).join("");
-      document.querySelector("#pronos tbody").innerHTML = bl.map(b => `<tr><td class="l num">${b.slice(8, 10)}/${b.slice(5, 7)} ${b.slice(11, 13)}–${String((+b.slice(11, 13) + 6) % 24).padStart(2, "0")} h</td>` +
-        mods.map(m => { const r = q.find(x => x.modelo === m && x.bloque_inicio_chile === b); const v = r ? +r.mm_6h : null;
-          return `<td class="num${v != null && v >= 10 ? " alto" : ""}">${v == null ? "–" : v.toLocaleString("es-CL", {maximumFractionDigits: 1})}</td>`; }).join("") + "</tr>").join("");
+      // para cada modelo y bloque, la corrida más reciente que lo cubre (en los bloques futuros, la última corrida)
+      const q = {}; filas.filter(r => r.punto === "Q1").forEach(r => { const k = r.modelo + "|" + r.bloque_inicio_chile; if (!q[k] || r.corrida_utc > q[k].corrida_utc) q[k] = r; });
+      const mods = ["AIFS", "IFS", "GFS"].filter(m => ult[m]);
+      const seg = b => new Date(b.replace(" ", "T") + ":00" + desfase(b)).getTime() / 1000;
+      const bl = [...new Set(Object.values(q).map(r => r.bloque_inicio_chile))].sort().filter(b => seg(b) > ahora - (medido ? 24 : 6) * 3600).slice(0, medido ? 10 : 8);
+      const fmt = v => v.toLocaleString("es-CL", {maximumFractionDigits: 1});
+      document.querySelector("#pronos thead tr").innerHTML = `<th class="l">Bloque de 6 h</th>` + mods.map(m => `<th>${m}</th>`).join("") + (medido ? `<th>Medido</th>` : "");
+      document.querySelector("#pronos tbody").innerHTML = bl.map(b => { const t0 = seg(b), mdd = medido ? medido.bloque(t0, t0 + 6 * 3600) : null;
+        return `<tr><td class="l num">${b.slice(8, 10)}/${b.slice(5, 7)} ${b.slice(11, 13)}–${String((+b.slice(11, 13) + 6) % 24).padStart(2, "0")} h</td>` +
+        mods.map(m => { const r = q[m + "|" + b]; const v = r ? +r.mm_6h : null;
+          return `<td class="num${v != null && v >= 10 ? " alto" : ""}">${v == null ? "–" : fmt(v)}</td>`; }).join("") +
+        (medido ? `<td class="num medido${mdd && mdd.parcial ? " parcial" : ""}">${mdd == null ? "" : mdd.mm == null ? "s/d" : fmt(mdd.mm) + (mdd.parcial ? "…" : "")}</td>` : "") + "</tr>"; }).join("");
+      if (medido) document.getElementById("pronos-medido").innerHTML = ` La columna Medido es la lluvia del pluviómetro de ${medido.cerca.nombre} (${medido.cerca.alt.toLocaleString("es-CL")} m, a ${Math.round(medido.cerca.km)} km); con «…», el bloque en curso, y «s/d», sin datos completos. En los bloques que ya pasaron, cada modelo muestra su corrida más reciente que los cubría.`;
+      const iso = Object.values(q).filter(r => r.modelo === "GFS" && r.isoterma0_m && seg(r.bloque_inicio_chile) <= ahora && ahora < seg(r.bloque_inicio_chile) + 6 * 3600)[0];
+      if (medido && medido.colorado) { const c = medido.colorado;
+        document.getElementById("iso-vivo").innerHTML = `En El Colorado (2.750 m) hacían <strong>${c.temp.toLocaleString("es-CL")} °C</strong> a las ${hora(c.t)}: ` +
+          (c.temp > 0 ? "la isoterma 0 °C está más arriba de esa altura." : "la isoterma 0 °C está a esa altura o más abajo.") +
+          (iso ? ` GFS la pronostica a unos ${(+iso.isoterma0_m).toLocaleString("es-CL")} m en este bloque.` : ""); }
       document.getElementById("pronos-corridas").textContent = mods.map(m => `${m} ${ult[m].slice(8, 10)}/${ult[m].slice(5, 7)} ${ult[m].slice(11, 13)} UTC`).join(", "); }
     const g = gen.length ? Math.min(...gen) : null;
     const est = document.getElementById("estado-vivo"), atraso = g ? Math.round((ahora - g) / 60) : null;
@@ -102,7 +149,7 @@ def pagina(head, escribir, ahora):
 <header>
   <div class="eyebrow">En vivo</div>
   <h1>Dónde hay tormenta ahora en la zona central</h1>
-  <p class="lead">Los rayos que detecta el satélite GOES-19 muestran dónde hay tormentas en este momento. Junto a ellos, lo que miden los aeródromos y lo que pronostican los modelos para la Quebrada de Apoquindo.</p>
+  <p class="lead">Los rayos que detecta el satélite GOES-19 muestran dónde hay tormentas en este momento. Junto a ellos, la lluvia que miden las estaciones más cercanas y lo que pronostican los modelos para la Quebrada de Apoquindo.</p>
   <p class="estado-vivo" id="estado-vivo" aria-live="polite">Cargando los datos en vivo…</p>
 </header>
 <div class="vivo">
@@ -112,12 +159,16 @@ def pagina(head, escribir, ahora):
       <div class="cifras-vivo"><div><span class="v" id="r10">–</span><span class="l">últimos 10 min</span></div><div><span class="v" id="r30">–</span><span class="l">últimos 30 min</span></div><div><span class="v" id="r90">–</span><span class="l">últimos 90 min</span></div></div>
       <p class="small muted">A menos de 30 km de la Quebrada de Apoquindo (círculo punteado). En toda la zona del mapa: <strong id="rtot">–</strong> rayos en 90 minutos. La lluvia sin tormenta eléctrica no aparece en el mapa.</p>
       <div class="ley-vivo"><span><i style="background:var(--r10)"></i>hace 0 a 10 min</span><span><i style="background:var(--r30)"></i>10 a 30 min</span><span><i style="background:var(--r90)"></i>30 a 90 min</span></div></div>
+    <div class="card"><h2>Lluvia medida cerca de las quebradas</h2>
+      <div class="tabla"><table id="lluvia"><thead><tr><th class="l">Estación</th><th>Última hora</th><th>6 h</th><th>24 h</th><th class="l">Reporte</th></tr></thead><tbody><tr><td class="l" colspan="5">Cargando…</td></tr></tbody></table></div>
+      <p class="iso-vivo" id="iso-vivo"></p>
+      <p class="small muted">Milímetros medidos por los pluviómetros de las estaciones automáticas de la {d("DMC", definicion="Dirección Meteorológica de Chile. Sus estaciones envían cada hora un mensaje SYNOP a la red de la Organización Meteorológica Mundial con la lluvia de la última hora.")}, de la más cercana a la Quebrada de Apoquindo a la más lejana, bajo 1.500 m. Llegan cada hora con unos 30 a 60 minutos de atraso y son provisorios. «s/d»: faltan horas. Los puntos del mapa son estas estaciones; rellenos, si midieron 1 mm o más en 24 h. Detalle en <a href="metodo.html#estaciones">Método</a>.</p></div>
     <div class="card"><h2>Lo que miden los aeródromos</h2>
       <div class="tabla"><table id="metar"><thead><tr><th class="l">Hora</th><th class="l">Aeródromo</th><th>Temp.</th><th>Viento</th><th>Ráfaga</th><th class="l">Tiempo</th></tr></thead><tbody></tbody></table></div>
       <p class="small muted">Reportes METAR de las últimas 12 horas, del más reciente al más antiguo; las filas con lluvia van marcadas. Los aeródromos chilenos no informan milímetros.</p></div>
     <div class="card"><h2>Lo que pronostican para la Quebrada de Apoquindo</h2>
       <div class="tabla"><table id="pronos"><thead><tr><th class="l">Bloque de 6 h</th></tr></thead><tbody></tbody></table></div>
-      <p class="small muted">Lluvia en milímetros por bloque de 6 horas, última corrida de cada modelo (<span id="pronos-corridas">–</span>). En rojo, 10 mm o más: si esa lluvia se concentrara en 2 horas, la quebrada pasaría a {d("atención", definicion="Nivel intermedio del indicador de quebradas: probabilidad estimada de flujo de detritos entre 20 y 50 %. Ver la pestaña Quebradas.")}. Detalle en la pestaña <a href="quebradas.html">Quebradas</a>.</p></div>
+      <p class="small muted">Lluvia en milímetros por bloque de 6 horas, última corrida de cada modelo (<span id="pronos-corridas">–</span>). En rojo, 10 mm o más: si esa lluvia se concentrara en 2 horas, la quebrada pasaría a {d("atención", definicion="Nivel intermedio del indicador de quebradas: probabilidad estimada de flujo de detritos entre 20 y 50 %. Ver la pestaña Quebradas.")}. Detalle en la pestaña <a href="quebradas.html">Quebradas</a>.<span id="pronos-medido"></span></p></div>
   </div>
 </div>
 {aviso()}

@@ -1,20 +1,27 @@
 """Datos de la pestaña "En vivo": rayos GOES-19 (sensor GLM, NOAA) de los últimos 90 minutos sobre la zona central
-y METAR de las últimas 12 horas de Tobalaba, Pudahuel, Santo Domingo y Viña del Mar.
+y METAR de las últimas 12 horas de Tobalaba, Pudahuel, Santo Domingo y Viña del Mar, y la lluvia horaria de las
+últimas 26 horas en las estaciones DMC cercanas a las quebradas (mensajes SYNOP, estaciones/synop.py).
 
-Corre cada 10 minutos en GitHub Actions (envivo.yml) y escribe rayos.json y metar.json en la carpeta indicada,
+Corre cada 10 minutos en GitHub Actions (envivo.yml) y escribe rayos.json, metar.json y lluvia.json en la carpeta indicada,
 que el workflow guarda en la rama datos-en-vivo (un solo commit que se reemplaza, para no llenar el historial).
 Es incremental: rayos.json guarda qué archivos GLM ya se procesaron. La página site/envivo.html los lee desde
 raw.githubusercontent.com. No es un aviso; las alertas oficiales son de la DMC y SENAPRED.
 
 Uso: python envivo/actualizar.py --salida datos/envivo"""
-import argparse, datetime as dt, json, os, re, urllib.request
+import argparse, datetime as dt, json, math, os, re, sys, urllib.request
 import netCDF4, numpy as np
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "estaciones"))
+import synop  # noqa: E402
 
 LAT0, LAT1, LON0, LON1 = -38.5, -28.5, -74.5, -68.0
 VENTANA_MIN = 90
 GLM = "https://noaa-goes19.s3.amazonaws.com"
 METAR = "https://aviationweather.gov/api/data/metar?ids=SCTB,SCEL,SCSN,SCVM&format=json&hours=12"
 UA = {"User-Agent": "earth2-chile-verificacion/envivo"}
+APOQ = (-33.40, -70.51)
+RADIO_KM = 45                 # estaciones de lluvia que se muestran: hasta esta distancia de Apoquindo, más El Colorado
+CADA_MIN = 15                 # los SYNOP llegan cada hora: no hace falta pedirlos a Ogimet cada 5 minutos
 
 
 def get(url, timeout=60):
@@ -77,7 +84,41 @@ def metar(ruta):
     print(f"metar: {len(obs)} reportes", flush=True)
 
 
+def lluvia(ruta):
+    try:
+        previo = json.load(open(ruta, encoding="utf-8"))
+        if dt.datetime.now(dt.timezone.utc).timestamp() - previo["generado"] < CADA_MIN * 60:
+            print("lluvia: se mantiene la lectura de hace menos de 15 min", flush=True); return
+    except Exception:
+        pass
+    r = math.pi / 180
+    km = lambda la, lo: 111.2 * math.hypot(la - APOQ[0], (lo - APOQ[1]) * math.cos(APOQ[0] * r))
+    est = []
+    for w, e in synop.estaciones().items():
+        d = km(float(e["lat"]), float(e["lon"]))
+        if d <= RADIO_KM or w == "85594":
+            est.append({"wmo": w, "nombre": e["nombre"], "lat": float(e["lat"]), "lon": float(e["lon"]), "alt": int(e["altura_m"]), "km": round(d, 1)})
+    filas = synop.recientes(26)
+    if not filas:
+        print("lluvia: Ogimet no entregó datos; se mantiene la lectura anterior", flush=True); return
+    obs = {}
+    for f in filas:
+        t = int(dt.datetime.strptime(f["hora_utc"], "%Y-%m-%d %H:%M").replace(tzinfo=dt.timezone.utc).timestamp())
+        obs.setdefault(f["wmo"], {})[t] = [t, f["mm_1h"], f["mm_6h"], f["temp_c"]]
+    json.dump({"generado": int(dt.datetime.now(dt.timezone.utc).timestamp()),
+               "fuente": "Estaciones automáticas de la DMC, mensajes SYNOP de la OMM vía Ogimet (datos provisorios)",
+               "estaciones": sorted(est, key=lambda e: e["km"]),
+               "obs": {w: [v[t] for t in sorted(v)] for w, v in obs.items() if any(e["wmo"] == w for e in est)}},
+              open(ruta, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
+    llovio = sorted({f["wmo"] for f in filas if (f["mm_1h"] or 0) > 0 or (f["mm_6h"] or 0) > 0})
+    print(f"lluvia: {len(filas)} reportes SYNOP; con lluvia en 26 h: {', '.join(llovio) or 'ninguna'}", flush=True)
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(); ap.add_argument("--salida", required=True); a = ap.parse_args()
     os.makedirs(a.salida, exist_ok=True)
     rayos(os.path.join(a.salida, "rayos.json")); metar(os.path.join(a.salida, "metar.json"))
+    try:
+        lluvia(os.path.join(a.salida, "lluvia.json"))
+    except Exception as e:                      # la lluvia no debe frenar los rayos ni el METAR
+        print("lluvia: falló esta vuelta:", e, flush=True)

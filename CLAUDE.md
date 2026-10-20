@@ -13,6 +13,7 @@ Inteligencia climática con IA para Chile a escala kilométrica (lluvia, tempera
 
 - `verificacion/` — pipeline diario: AIFS, IFS (ECMWF) y GFS (NOAA), los tres a 0,25°, vs METAR de 25 aeródromos chilenos; genera `site/`. Corre en GitHub Actions 4×/día (`.github/workflows/verificacion.yml`). `corridas.py` elige la última corrida completa con HEAD a los índices (nunca `Client.latest()`); `verify.py` guarda los pronósticos por estación en `data/pronostico_puntos.csv` y empareja con METAR cuando llega la observación; los pares llevan columna `modelo`.
 - `site/` — página pública en GitHub Pages.
+- `estaciones/` — lluvia medida: SYNOP horarios de las estaciones automáticas de la DMC en la RM y la cordillera central, vía Ogimet (`synop.py`, sin clave), API de la DMC con secretos `DMC_USUARIO`/`DMC_TOKEN` (`dmc.py`, sin ellos no hace nada) y verificación de los bloques de 6 h del seguimiento (`verificar_lluvia.py`). Corre cada hora (`estaciones.yml`). La red en tiempo real de la DGA pide captcha: no se lee automáticamente (no saltarse el captcha; hay que pedir acceso a la DGA). Estaciones en `estaciones/catalogo.csv`.
 - `hindcast/` — eventos 2026 en tres capas: lluvia (ERA5 + pronósticos históricos IFS/GFS/AIFS a 24-48-72 h), superficie (Sentinel-2 dNBR de incendios, DEM 30 m, quebradas OSM, humedad de suelo), verdad (SERNAGEOMIN, SENAPRED). Lógica tipo USGS post-incendio: intensidad de lluvia × severidad de quema × pendiente × suelo.
 - `earth2/` — cómo usamos Earth2Studio (dependencia, no copia): conectores de datos sin GPU (`AIFS_FX`, `IFS_FX`, `GFS_FX`, `IEM_ASOS`, `GOES`, `GOESGLM`, `ARCO_ERA5`) y, con GPU, `AIFS`, `StormScopeGOES` (nowcaster base) y CorrDiff. `earth2/fetch_e2s.py` reemplaza a `fetch_aifs.py` cuando se valide (revisar la selección por estación con `sel`, está esbozada).
 - `docs/chile_natural_earth_10m.json` — contorno de Chile (Natural Earth, dominio público) para mapas.
@@ -33,7 +34,7 @@ Regla: los cambios de régimen (El Niño, olas de calor marinas) se detectan des
 
 ## Próximos pasos técnicos
 
-1. Sitio: serie de 30 días, precipitación; estaciones DMC cuando haya token. (IFS y GFS ya se comparan; el mapa ya colorea por error y modelo.)
+1. Sitio: serie de 30 días, precipitación (ya hay lluvia medida en `estaciones/`); más estaciones DMC cuando haya token; acceso a la DGA. (IFS y GFS ya se comparan; el mapa ya colorea por error y modelo.)
 2. Hindcast: catálogo de eventos (`hindcast/eventos/`), capa de lluvia, capa de superficie para RM y V Región, cruce con la verdad. Resultado: "de N eventos, M marcados con X h de anticipación".
 3. Página de aviso simulado: cómo se ve el mensaje para un municipio.
 4. Capa de superficie y mapa de quebradas quemadas (primera venta, sin GPU): Sentinel-2 dNBR del verano 2026 sobre Santiago oriente (incendio de enero sobre San Carlos de Apoquindo, ~1.012 ha), DEM Copernicus 30 m → pendiente, cauces OSM/DGA, humedad SMAP, catálogo de remociones en masa de SERNAGEOMIN. Salida: GeoJSON de cuencas de quebrada con quema × pendiente × historial, publicado en `site/quebradas.html` sobre el mapa de Natural Earth + teselas abiertas. Luego, umbral de intensidad-duración tipo USGS por cuenca para el aviso. Eventos: `hindcast/eventos/eventos_2026.csv`.

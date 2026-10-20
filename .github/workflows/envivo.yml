@@ -33,6 +33,7 @@ jobs:
           if git ls-remote --exit-code --heads origin datos-en-vivo >/dev/null; then
             git fetch -q origin datos-en-vivo
             git show origin/datos-en-vivo:envivo/rayos.json > datos/envivo/rayos.json 2>/dev/null || true
+            git show origin/datos-en-vivo:envivo/lluvia.json > datos/envivo/lluvia.json 2>/dev/null || rm -f datos/envivo/lluvia.json
           fi
       - name: Actualizar rayos y METAR cada 5 minutos
         env:

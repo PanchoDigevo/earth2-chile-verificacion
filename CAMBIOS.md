@@ -6,7 +6,7 @@ Sitio: https://panchodigevo.github.io/earth2-chile-verificacion/
 
 ## 20-oct-2026
 
-- **Faena minera en Escenarios** (`escenarios/faenas.csv`): punto en el altiplano de Tarapacá (20°59′S 68°38′W, 4.400 m, comuna de Pica), primero en la pestaña. Con los 50 escenarios de AIFS-ENS, la probabilidad diaria de viento fuerte (≥ 50 km/h), nevada (≥ 2 cm), chubasco convectivo (indicio de tormenta) y frío extremo (≤ −10 °C de madrugada, llevado a 4.400 m). Por regla del repo público, la faena no se nombra.
+- **Faena minera Collahuasi en Escenarios** (`escenarios/faenas.csv`): 20°59′S 68°38′W, 4.400 m, comuna de Pica, primero en la pestaña. Con los 50 escenarios de AIFS-ENS, la probabilidad diaria de viento fuerte (≥ 50 km/h), nevada (≥ 2 cm), chubasco convectivo (indicio de tormenta) y frío extremo (≤ −10 °C de madrugada, llevado a 4.400 m). Se nombra por el lugar, que es público (decisión de Pancho).
 - **Corrección en Escenarios de incendio:** con la corrida de 12 UTC se tomaba la hora de las 03 de Chile en vez de media tarde, así que la regla 30-30-30 casi nunca podía cumplirse. Ahora se toman siempre las 18 UTC. La lluvia diaria ya no depende de adivinar la unidad.
 
 ## 20-oct-2026

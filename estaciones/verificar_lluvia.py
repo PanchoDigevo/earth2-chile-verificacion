@@ -15,7 +15,6 @@ from collections import defaultdict
 AQUI = os.path.dirname(os.path.abspath(__file__))
 RAIZ = os.path.join(AQUI, "..")
 PRONOS = os.path.join(RAIZ, "hindcast", "seguimiento", "pronosticos.csv")
-SYNOP = os.path.join(AQUI, "datos", "synop_horario.csv")
 SALIDA = os.path.join(AQUI, "verificacion_lluvia.csv")
 RESUMEN = os.path.join(AQUI, "VERIFICACION_LLUVIA.md")
 AEROPUERTOS = {"SCTB": (-33.456, -70.547), "SCEL": (-33.393, -70.786)}
@@ -68,7 +67,7 @@ def main():
     import synop
     est = synop.estaciones()
     obs = defaultdict(dict)
-    for r in csv.DictReader(open(SYNOP, encoding="utf-8")):
+    for r in synop.leer(set(est)):
         obs[r["wmo"]][dt.datetime.strptime(r["hora_utc"], "%Y-%m-%d %H:%M").replace(tzinfo=UTC)] = r
     pts, elegida, filas = centros(), {}, []
     for r in csv.DictReader(open(PRONOS, encoding="utf-8")):
@@ -99,7 +98,7 @@ def main():
     lin = ["# Lluvia pronosticada frente a lluvia medida", "",
            f"Actualizado el {ahora:%d-%m-%Y %H:%M} (hora de Chile) por `estaciones/verificar_lluvia.py`. Bloques de 6 h del seguimiento",
            f"horario (`hindcast/seguimiento/pronosticos.csv`) comparados con la estación DMC más cercana bajo {ALTURA_MAX:,} m".replace(",", "."),
-           f"(mensajes SYNOP, `estaciones/datos/synop_horario.csv`). Un bloque cuenta como lluvioso desde {UMBRAL:g} mm en 6 h.", "",
+           f"(mensajes SYNOP, `estaciones/datos/synop/`). Un bloque cuenta como lluvioso desde {UMBRAL:g} mm en 6 h.", "",
            "Estación usada para cada punto:", ""]
     nom = {r["punto"]: r["nombre"] for r in filas}
     for p, (d, wmo) in sorted(elegida.items()):

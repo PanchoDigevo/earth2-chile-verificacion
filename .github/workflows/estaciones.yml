@@ -1,6 +1,6 @@
 name: estaciones
-# Lluvia medida en estaciones chilenas: cada hora lee los SYNOP de las estaciones automáticas de la DMC de la RM y la
-# cordillera central (estaciones/synop.py), la API de la DMC si están los secretos DMC_USUARIO y DMC_TOKEN
+# Lluvia medida en estaciones chilenas: cada hora lee los SYNOP de las 141 estaciones de Chile, casi todas automáticas
+# de la DMC (estaciones/synop.py, un CSV por mes), la API de la DMC si están los secretos DMC_USUARIO y DMC_TOKEN
 # (estaciones/dmc.py; sin ellos no hace nada) y compara el seguimiento de pronósticos con lo medido
 # (estaciones/verificar_lluvia.py). Guarda CSV livianos en estaciones/. No cambia el sitio.
 on:

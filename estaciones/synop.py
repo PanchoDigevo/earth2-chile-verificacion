@@ -1,4 +1,5 @@
-"""Lluvia horaria medida en las estaciones automáticas de la DMC de la Región Metropolitana y la cordillera central.
+"""Lluvia horaria medida en todas las estaciones SYNOP de Chile (bloque 85 de la OMM: de Visviri a Magallanes, Isla de
+Pascua y Juan Fernández).
 
 Las estaciones de la Dirección Meteorológica de Chile (DMC) envían cada hora un mensaje SYNOP al Sistema Mundial de
 Telecomunicación de la OMM, con la lluvia de la última hora (grupo 6RRR5 de la sección 333) y la temperatura. Las que
@@ -6,20 +7,24 @@ tienen observador (Quinta Normal, Pudahuel) informan a las 00/06/12/18 UTC la ll
 Los mensajes son datos esenciales de libre intercambio (Resolución 40 de la OMM); se leen desde Ogimet, que los
 redistribuye sin clave. Se pide un bloque de 2 días por consulta, con pausas y reintentos acotados.
 
-Guarda estaciones/datos/synop_horario.csv (una fila por estación y hora, solo las estaciones de catalogo.csv):
+Guarda un CSV por mes en estaciones/datos/synop/AAAA-MM.csv (una fila por estación y hora; las estaciones están en
+catalogo.csv, con nombre, coordenadas y altura):
   wmo, hora_utc, mm_1h, mm_6h, temp_c      (vacío = no informado; 0 = informó que no llovió)
 
 Uso:
   python estaciones/synop.py                    -> agrega las últimas 48 h
   python estaciones/synop.py --desde 2026-10-01 -> rellena desde esa fecha (UTC)
+  python estaciones/synop.py --catalogo         -> agrega a catalogo.csv las estaciones chilenas nuevas de Ogimet
 No es un aviso; las alertas oficiales son de la DMC y SENAPRED."""
 import argparse, csv, datetime as dt, os, re, time, urllib.request
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 CATALOGO = os.path.join(AQUI, "catalogo.csv")
-CSV = os.path.join(AQUI, "datos", "synop_horario.csv")
+CARPETA = os.path.join(AQUI, "datos", "synop")
 CAMPOS = ["wmo", "hora_utc", "mm_1h", "mm_6h", "temp_c"]
-OGIMET = "https://www.ogimet.com/cgi-bin/getsynop?block=855&begin={0:%Y%m%d%H}00&end={1:%Y%m%d%H}00"
+OGIMET = "https://www.ogimet.com/cgi-bin/getsynop?block={b}&begin={0:%Y%m%d%H}00&end={1:%Y%m%d%H}00"
+LISTA = "https://www.ogimet.com/display_stations.php?lang=en&tipo=AND&isyn=&oaci=&nombre=&estado=Chile&Send=Send"
+COLUMNAS_CAT = ["red", "codigo", "wmo", "nombre", "lat", "lon", "altura_m", "lectura", "nota"]
 UA = {"User-Agent": "earth2-chile-verificacion/estaciones (+https://github.com/PanchoDigevo/earth2-chile-verificacion)"}
 UTC = dt.timezone.utc
 
@@ -87,11 +92,12 @@ def decodificar(linea):
     return out
 
 
-def descargar(desde, hasta, wmos):
+def descargar(desde, hasta, wmos, bloque="85"):
+    """bloque "85" = todo Chile; "855" = zona central (lo que usa la pestaña En vivo)."""
     filas, t = [], desde
     while t < hasta:
-        f = min(t + dt.timedelta(days=2), hasta)
-        txt = get(OGIMET.format(t, f))
+        f = min(t + dt.timedelta(days=1), hasta)
+        txt = get(OGIMET.format(t, f, b=bloque))
         if txt is None:
             print(f"Ogimet no respondió para {t:%Y-%m-%d %H}–{f:%Y-%m-%d %H} UTC; se reintenta en la próxima corrida", flush=True)
         else:
@@ -102,34 +108,97 @@ def descargar(desde, hasta, wmos):
     return filas
 
 
+def archivo(mes):
+    return os.path.join(CARPETA, f"{mes}.csv")
+
+
 def guardar(nuevas):
-    previas = {}
-    if os.path.exists(CSV):
-        previas = {(r["wmo"], r["hora_utc"]): r for r in csv.DictReader(open(CSV, encoding="utf-8"))}
+    """Mezcla los reportes nuevos en el CSV de su mes. Devuelve el total de filas de los meses tocados."""
+    por_mes = {}
     for r in nuevas:
-        k = (r["wmo"], r["hora_utc"])
-        viejo = previas.get(k, {})
-        # una corrección posterior del mensaje reemplaza al anterior, pero no borra lo que ya se tenía
-        previas[k] = {c: (r[c] if r.get(c) is not None else viejo.get(c, "")) for c in CAMPOS}
-    os.makedirs(os.path.dirname(CSV), exist_ok=True)
-    with open(CSV, "w", newline="", encoding="utf-8") as fh:
-        w = csv.DictWriter(fh, fieldnames=CAMPOS); w.writeheader()
-        for k in sorted(previas, key=lambda k: (k[1], k[0])):
-            w.writerow({c: ("" if previas[k][c] is None else previas[k][c]) for c in CAMPOS})
-    return len(previas)
+        por_mes.setdefault(r["hora_utc"][:7], []).append(r)
+    total = 0
+    for mes, filas in por_mes.items():
+        ruta, previas = archivo(mes), {}
+        if os.path.exists(ruta):
+            previas = {(r["wmo"], r["hora_utc"]): r for r in csv.DictReader(open(ruta, encoding="utf-8"))}
+        for r in filas:
+            k = (r["wmo"], r["hora_utc"])
+            viejo = previas.get(k, {})
+            # una corrección posterior del mensaje reemplaza al anterior, pero no borra lo que ya se tenía
+            previas[k] = {c: (r[c] if r.get(c) is not None else viejo.get(c, "")) for c in CAMPOS}
+        os.makedirs(CARPETA, exist_ok=True)
+        with open(ruta, "w", newline="", encoding="utf-8") as fh:
+            w = csv.DictWriter(fh, fieldnames=CAMPOS); w.writeheader()
+            for k in sorted(previas, key=lambda k: (k[1], k[0])):
+                w.writerow({c: ("" if previas[k][c] is None else previas[k][c]) for c in CAMPOS})
+        total += len(previas)
+    return total
 
 
-def recientes(horas=26):
-    """Para la pestaña En vivo: últimas horas de las estaciones del catálogo, sin escribir el CSV."""
+def leer(wmos=None):
+    """Todas las filas guardadas (de todos los meses), opcionalmente solo de algunas estaciones."""
+    out = []
+    for n in sorted(os.listdir(CARPETA)) if os.path.isdir(CARPETA) else []:
+        if n.endswith(".csv"):
+            out += [r for r in csv.DictReader(open(os.path.join(CARPETA, n), encoding="utf-8")) if wmos is None or r["wmo"] in wmos]
+    return out
+
+
+def recientes(horas=26, bloque="855"):
+    """Para la pestaña En vivo: últimas horas de la zona central, sin escribir los CSV."""
     hasta = dt.datetime.now(UTC).replace(minute=0, second=0, microsecond=0)
-    return descargar(hasta - dt.timedelta(hours=horas), hasta, set(estaciones()))
+    return descargar(hasta - dt.timedelta(hours=horas), hasta, set(estaciones()), bloque)
+
+
+def actualizar_catalogo():
+    """Agrega a catalogo.csv las estaciones SYNOP chilenas (bloque 85) de la lista de Ogimet que aún no estén.
+    Las filas existentes (nombres y notas escritos a mano) no se tocan."""
+    import html as h
+    t = get(LISTA)
+    if not t:
+        print("no se pudo leer la lista de estaciones de Ogimet"); return
+    t = t.encode("latin-1").decode("utf-8", "replace")
+    def grados(x):
+        a = re.match(r"(\d+)-(\d+)(?:-(\d+))?([NSEW])", x)
+        v = int(a[1]) + int(a[2]) / 60 + int(a[3] or 0) / 3600
+        return round(-v if a[4] in "SW" else v, 4)
+    filas = list(csv.DictReader(open(CATALOGO, encoding="utf-8")))
+    hay, nuevas = {r["wmo"] for r in filas if r["wmo"]}, []
+    for fila in t.split("<tr>"):
+        m = re.search(r"ind=(85\d{3})", fila)
+        if not m or m[1] in hay:
+            continue
+        w = re.search(r"wigos=0-152-\d-(\d+)", fila)
+        fila = re.sub(r'onmouse\w+="[^"]*"', "", fila)          # los textos emergentes traen etiquetas que confunden
+        c = [h.unescape(re.sub(r"<[^>]+>", "", x)).strip() for x in re.findall(r"<td[^>]*>(.*?)</td>", fila, flags=re.S)]
+        c = c[2:]                                                  # WIGOS, índice | OACI, nombre, país, lat, lon, altura
+        if len(c) < 6:
+            continue
+        try:
+            la, lo, alt = grados(c[3]), grados(c[4]), int(float(c[5] or 0))
+        except Exception:
+            continue
+        hay.add(m[1])
+        nuevas.append({"red": "DMC" if w else "SYNOP", "codigo": w[1] if w else "", "wmo": m[1], "nombre": c[1].strip(" ,"), "lat": la, "lon": lo,
+                       "altura_m": alt, "lectura": "synop", "nota": ""})
+    synop = [r for r in filas if r["lectura"] == "synop"] + nuevas
+    resto = [r for r in filas if r["lectura"] != "synop"]
+    synop.sort(key=lambda r: r["wmo"])
+    with open(CATALOGO, "w", newline="", encoding="utf-8") as fh:
+        wr = csv.DictWriter(fh, fieldnames=COLUMNAS_CAT); wr.writeheader(); wr.writerows(synop + resto)
+    print(f"catálogo: {len(nuevas)} estaciones nuevas; {len(synop)} SYNOP en total")
 
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser(); ap.add_argument("--desde", help="YYYY-MM-DD (UTC)"); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("--desde", help="YYYY-MM-DD (UTC)"); ap.add_argument("--catalogo", action="store_true")
+    a = ap.parse_args()
+    if a.catalogo:
+        actualizar_catalogo(); raise SystemExit
     hasta = dt.datetime.now(UTC).replace(minute=0, second=0, microsecond=0)
     desde = dt.datetime.strptime(a.desde, "%Y-%m-%d").replace(tzinfo=UTC) if a.desde else hasta - dt.timedelta(hours=48)
     filas = descargar(desde, hasta, set(estaciones()))
     n = guardar(filas)
     con_lluvia = sum(1 for r in filas if (r["mm_1h"] or 0) > 0 or (r["mm_6h"] or 0) > 0)
-    print(f"SYNOP: {len(filas)} reportes leídos ({con_lluvia} con lluvia); {n} filas en {os.path.relpath(CSV)}")
+    print(f"SYNOP: {len(filas)} reportes de {len({r['wmo'] for r in filas})} estaciones ({con_lluvia} con lluvia); "
+          f"{n} filas en los meses tocados de {os.path.relpath(CARPETA)}")

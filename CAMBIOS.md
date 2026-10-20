@@ -6,6 +6,11 @@ Sitio: https://panchodigevo.github.io/earth2-chile-verificacion/
 
 ## 20-oct-2026
 
+- **Faena minera en Escenarios** (`escenarios/faenas.csv`): punto en el altiplano de Tarapacá (20°59′S 68°38′W, 4.400 m, comuna de Pica), primero en la pestaña. Con los 50 escenarios de AIFS-ENS, la probabilidad diaria de viento fuerte (≥ 50 km/h), nevada (≥ 2 cm), chubasco convectivo (indicio de tormenta) y frío extremo (≤ −10 °C de madrugada, llevado a 4.400 m). Por regla del repo público, la faena no se nombra.
+- **Corrección en Escenarios de incendio:** con la corrida de 12 UTC se tomaba la hora de las 03 de Chile en vez de media tarde, así que la regla 30-30-30 casi nunca podía cumplirse. Ahora se toman siempre las 18 UTC. La lluvia diaria ya no depende de adivinar la unidad.
+
+## 20-oct-2026
+
 - **La lluvia, en milímetros, en la verificación diaria** (`verificacion/lluvia.py`, lo llama `verify.py` 4 veces al día): la lluvia de 24 h que pronosticaron AIFS, IFS y GFS el día anterior se compara con los milímetros del pluviómetro de la DMC en cada aeródromo (SYNOP de `estaciones/`), desde el 1-oct. En 23 aeródromos la estación está en el mismo aeródromo; Tobalaba usa Quinta Normal (12,6 km), y Pucón y Base Frei no tienen pluviómetro cerca. Un día cuenta como lluvioso desde 1 mm: días con lluvia avisados, falsas alarmas, aciertos de sí o no y error medio en mm. Se ve en Resumen («Y la lluvia, en milímetros»), en Tu zona (ficha de cada aeródromo con sus últimos días y tabla «La lluvia en cada aeródromo») y se explica en Método («Lluvia en milímetros en cada aeródromo»). Preliminar hasta juntar 30 días. Comparaciones en `verificacion/data/verif_lluvia.csv`.
 - **Pluviómetro de Aguas Andinas (La Florida) fuera de la comparación:** entre el 6 y el 7-oct midió 11 mm cuando el resto del valle midió de 45 a 75 mm. Lo siguen usando el seguimiento de las quebradas y la pestaña En vivo; conviene revisarlo.
 

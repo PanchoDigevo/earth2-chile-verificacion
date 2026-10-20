@@ -21,7 +21,77 @@ CSS_ESC = """
 .ley{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;color:var(--muted)}
 .ley i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:6px}
 .ley .a i{background:var(--p-alta)} .ley .c i{background:var(--p-critica)}
+.calor{border-collapse:separate;border-spacing:2px;width:100%;font-size:14px}
+.calor th{font:600 12px var(--font-body);color:var(--muted);text-align:center;padding:2px;white-space:nowrap}
+.calor th.l{text-align:left;color:var(--fg);font-size:14px;font-weight:600;padding-right:8px;white-space:normal;min-width:130px;text-transform:none;letter-spacing:0}
+.calor td{font:12px var(--font-data);text-align:center;border-radius:4px;padding:7px 2px;min-width:30px;color:var(--fg);
+  background:color-mix(in srgb,var(--accent) calc(var(--p) * 0.6%),var(--surface));outline:1px solid var(--line-soft)}
+.calor td.bajo{color:var(--muted)} .calor td.sin{background:var(--surface);color:var(--muted)}
+.calor-escala{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.calor-escala i{display:inline-block;width:120px;height:10px;border-radius:3px;background:linear-gradient(90deg,var(--surface),color-mix(in srgb,var(--accent) 60%,var(--surface)));outline:1px solid var(--line-soft)}
+.seccion-faena{display:grid;gap:14px}
 """
+
+RIESGOS = [("viento", "Viento fuerte", "50 km/h o más a media tarde"), ("nieve", "Nevada", "unos 2 cm de nieve o más en el día"),
+           ("convectivo", "Chubasco convectivo", "posible tormenta eléctrica"), ("frio", "Frío extremo", "−10 °C o menos de madrugada")]
+
+
+def mapa_calor(f):
+    cab = "".join(f"<th scope='col'>{fecha_corta(x['fecha'])[0]}</th>" for x in f["dias"])
+    filas = []
+    for k, nombre, regla in RIESGOS:
+        celdas = []
+        for x in f["dias"]:
+            p = x["p"][k]
+            if p is None:
+                celdas.append(f"<td class='sin' title='{fecha_corta(x['fecha'])[1]}: sin dato'>–</td>")
+            else:
+                celdas.append(f"<td class='{'bajo' if p < 10 else ''}' style='--p:{p:.0f}' title='{fecha_corta(x['fecha'])[1]}: {num(p, 0)} % de los escenarios con {nombre.lower()}'>{num(p, 0)}</td>")
+        filas.append(f"<tr><th scope='row' class='l'>{nombre}<br><span class='small muted' style='font-weight:400'>{regla}</span></th>{''.join(celdas)}</tr>")
+    return (f"<div class='tabla'><table class='calor' aria-label='Porcentaje de escenarios con cada riesgo, por día'><thead><tr><th class='l'>Riesgo</th>{cab}</tr></thead>"
+            f"<tbody>{''.join(filas)}</tbody></table></div>")
+
+
+def resumen_faena(f):
+    partes = []
+    for k, nombre, _ in RIESGOS:
+        vals = [(x["p"][k], x["fecha"]) for x in f["dias"] if x["p"][k] is not None]
+        if not vals:
+            continue
+        p, fecha = max(vals)
+        if p >= 20:
+            partes.append(f"{nombre.lower()} el {fecha_corta(fecha)[1]} ({num(p, 0)} % de los escenarios)")
+    if not partes:
+        return "En los próximos 15 días ningún riesgo llega al 20 % de los escenarios."
+    return "Lo más probable en los próximos 15 días: " + "; ".join(partes) + "."
+
+
+def tabla_faena(f):
+    r = lambda v, u="": "–" if v is None else f"{num(v, 0)}{u}"
+    filas = "".join(
+        f"<tr><td class='l'>{fecha_corta(x['fecha'])[0]}</td>"
+        f"<td class='num'>{r(x['t_madrugada'][1], ' °C')} <span class='muted'>({r(x['t_madrugada'][0])} a {r(x['t_madrugada'][2])})</span></td>"
+        f"<td class='num'>{r(x['t_tarde'][1], ' °C')} <span class='muted'>({r(x['t_tarde'][0])} a {r(x['t_tarde'][2])})</span></td>"
+        f"<td class='num'>{r(x['v'][1], ' km/h')} <span class='muted'>(hasta {r(x['v'][2])})</span></td>"
+        f"<td class='num'>{num(x['nieve'][0], 1)} mm <span class='muted'>(hasta {num(x['nieve'][1], 1)})</span></td>"
+        f"<td class='num'>{num(x['convectivo'][0], 1)} mm <span class='muted'>(hasta {num(x['convectivo'][1], 1)})</span></td></tr>" for x in f["dias"])
+    return ("<div class='tabla'><table><thead><tr><th class='l'>Día</th><th>Madrugada</th><th>Tarde</th><th>Viento</th><th>Nieve (agua)</th><th>Convectiva</th></tr></thead>"
+            "<tbody>" + filas + "</tbody></table></div>")
+
+
+def bloque_faena(f, a):
+    grilla = (f"El cuadrado de 25 km del modelo tiene el terreno a {num(f['altura_grilla_m'], 0)} m; la temperatura se llevó a {num(float(f['altitud_m']), 0)} m "
+              f"({'+' if f['correccion_c'] > 0 else ''}{num(f['correccion_c'], 1)} °C).") if f.get("altura_grilla_m") is not None else ""
+    lat, lon = abs(float(f["lat"])), abs(float(f["lon"]))
+    gms = lambda v: f"{int(v)}°{round((v - int(v)) * 60):02d}′"
+    return f'''<section class="seccion-faena">
+  <div class="sec-head"><h2>{f["faena"]}</h2><p class="small muted">{f["descripcion"]} · comuna de {f["comuna"]}, {f["region"]} · {gms(lat)}S {gms(lon)}W · {num(float(f["altitud_m"]), 0)} m</p></div>
+  <p>{resumen_faena(f)}</p>
+  <div class="card">{mapa_calor(f)}
+  <div class="calor-escala"><span>0 %</span><i></i><span>100 % de los {a["miembros"]} escenarios</span><span>· corrida del {hora_chile(a["corrida"])}</span></div></div>
+  <details><summary>Temperatura, viento y nieve de cada día</summary><div class="body"><p class="small muted">Valor central de los escenarios y, entre paréntesis, el rango del 80 % central o el valor que supera solo uno de cada diez escenarios. Madrugada: 03 h de Chile; tarde: 15 h. {grilla}</p>{tabla_faena(f)}</div></details>
+</section>'''
+
 
 
 def fecha_corta(iso):
@@ -87,6 +157,7 @@ def render():
     except FileNotFoundError:
         hist = []
     u = a["umbrales"]
+    faenas = "".join(bloque_faena(f, a) for f in a.get("faenas", []))
     opciones = "".join(f'<option value="{i}">{c["comuna"]} · {c["region"]}</option>' for i, c in enumerate(a["comunas"]))
     bloques = []
     for i, c in enumerate(a["comunas"]):
@@ -98,20 +169,22 @@ def render():
   <p>{resumen}</p>
   <div class="card">{svg_barras(c["dias"])}
   <div class="ley"><span class="a"><i></i>Condición alta o crítica</span><span class="c"><i></i>Condición crítica (30-30-30)</span><span>Porcentaje de los {a["miembros"]} escenarios</span></div></div>
-  <details><summary>Temperatura, humedad y viento de cada día</summary><div class="body"><p class="small muted">Valor central de los escenarios y, entre paréntesis, el rango del 80 % central, a las 15 o 16 horas de Chile.</p>{tabla_dias(c["dias"])}</div></details>
+  <details><summary>Temperatura, humedad y viento de cada día</summary><div class="body"><p class="small muted">Valor central de los escenarios y, entre paréntesis, el rango del 80 % central, a las 18 UTC (15 h de Chile en horario de verano, 14 h en invierno).</p>{tabla_dias(c["dias"])}</div></details>
   <details><summary>Cómo cambia la probabilidad a medida que se acerca el día</summary><div class="body">{como_cambia(c["comuna"], hist)}</div></details>
 </div>''')
     regla = d("30-30-30", definicion=f"Regla que usa CONAF: temperatura de {num(u['t'], 0)} °C o más, humedad de {num(u['hr'], 0)} % o menos y viento de {num(u['v'], 0)} km/h o más, al mismo tiempo.")
-    html = f"""{head("Escenarios · Earth-2 Chile", "Probabilidad de tiempo propicio para incendios en los próximos 15 días por comuna, con los 50 escenarios del ensamble de IA de ECMWF. Indicador de apoyo, no alerta.")}
+    html = f"""{head("Escenarios · Earth-2 Chile", "Probabilidad de viento, nieve, tormenta y frío en una faena minera, y de tiempo propicio para incendios por comuna, en los próximos 15 días, con los 50 escenarios del ensamble de IA de ECMWF. Indicador de apoyo, no alerta.")}
 <body>
 {nav("escenarios")}
 <div class="wrap">
 <header>
-  <div class="eyebrow">Escenarios de incendio</div>
-  <h1>¿Qué días de las próximas dos semanas podrían tener tiempo de incendio?</h1>
-  <p class="lead">El modelo de IA de ECMWF calcula 50 escenarios posibles del tiempo a 15 días. Contamos en cuántos de ellos una comuna cumple la regla {regla}, o casi la cumple después de varios días sin lluvia.</p>
-  <div class="aviso"><p class="small">Es un indicador de apoyo a la decisión, no una alerta. Los avisos y alertas oficiales de incendios son de <a href="https://www.conaf.cl/" rel="noopener">CONAF</a> y de <a href="https://www.senapred.cl/" rel="noopener">SENAPRED</a>.</p></div>
+  <div class="eyebrow">Escenarios a 15 días</div>
+  <h1>¿Qué podría pasar en las próximas dos semanas?</h1>
+  <p class="lead">El modelo de IA de ECMWF calcula 50 escenarios posibles del tiempo a 15 días. Contamos en cuántos de ellos se da cada condición: así se ve qué tan probable es, día por día.</p>
+  <div class="aviso"><p class="small">Es un indicador de apoyo a la decisión, no una alerta. Los avisos y alertas oficiales son de la <a href="https://www.meteochile.gob.cl/" rel="noopener">Dirección Meteorológica de Chile</a>, de <a href="https://www.senapred.cl/" rel="noopener">SENAPRED</a> y, para incendios, de <a href="https://www.conaf.cl/" rel="noopener">CONAF</a>.</p></div>
 </header>
+{faenas}
+<section class="sec-head"><h2>Tiempo de incendio por comuna</h2><p>Cuántos escenarios cumplen la regla {regla} en cada comuna, o casi la cumplen después de varios días sin lluvia.</p></section>
 <section class="card">
   <div class="controles"><label for="comuna" class="eyebrow">Comuna</label> <select id="comuna">{opciones}</select></div>
   <p class="small muted">Corrida del {hora_chile(a["corrida"])}. Comunas incluidas por ahora: las nombradas públicamente como prioritarias para la temporada en estas regiones; la lista oficial completa de CONAF aún no está publicada.</p>
@@ -120,6 +193,7 @@ def render():
 <details><summary>Cómo se calcula</summary><div class="body">
   <p>Fuente: AIFS-ENS, el ensamble de inteligencia artificial de ECMWF (50 escenarios, grilla de 0,25°, datos abiertos CC-BY 4.0). Para cada comuna se toma el punto de grilla más cercano y, cada día, la temperatura, la humedad relativa (calculada desde el punto de rocío) y el viento a 10 m de las 18 UTC, y la lluvia acumulada del día.</p>
   <p>Condición crítica: se cumplen a la vez las tres partes de la regla 30-30-30. Condición alta: se cumplen al menos dos y la comuna lleva {u["dias_secos"]} días o más sin lluvia dentro del pronóstico. El porcentaje es la parte de los escenarios en esa condición.</p>
+  <p>Faena: con los mismos escenarios se cuenta, cada día, viento de {num(a.get("umbrales_faena", {}).get("viento", 50), 0)} km/h o más a 10 m a las 18 UTC; nevada de 2 mm o más de agua equivalente (unos 2 cm de nieve) y precipitación convectiva de 2 mm o más entre las 18 UTC de un día y las del siguiente; y −10 °C o menos a las 06 UTC. La temperatura del cuadrado de 25 km se lleva a la altura de la faena con 6,5 °C por kilómetro. El modelo no pronostica rayos: la precipitación convectiva es el indicio de tormenta. El viento se mira a una sola hora del día, así que una ráfaga de otra hora no aparece; en un relieve tan marcado, el viento real en la faena puede ser bastante mayor o menor que el del cuadrado de 25 km.</p>
   <p>Límites: en comunas cercanas a la costa, como Quilpué o Tomé, el cuadrado de 25 km más cercano incluye mar, así que la temperatura sale más baja y la humedad más alta que en los valles del interior; el indicador queda por debajo de lo que se viviría tierra adentro. Es la misma brecha que mide la sección Tu zona. Además, la grilla no ve el viento de quebradas y laderas, ni el estado del combustible; los días sin lluvia se cuentan desde el inicio del pronóstico, no desde la última lluvia real. El índice canadiense FWI no se calcula porque necesita la humedad del combustible de días anteriores, que el ensamble no trae.</p>
 </div></details>
 {pie(a["generado"])}

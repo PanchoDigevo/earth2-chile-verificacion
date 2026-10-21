@@ -1,6 +1,6 @@
 # Lluvia pronosticada frente a lluvia medida
 
-Actualizado el 21-10-2026 12:33 (hora de Chile) por `estaciones/verificar_lluvia.py`. Bloques de 6 h del seguimiento
+Actualizado el 21-10-2026 16:33 (hora de Chile) por `estaciones/verificar_lluvia.py`. Bloques de 6 h del seguimiento
 horario (`hindcast/seguimiento/pronosticos.csv`) comparados con la estación DMC más cercana bajo 1.500 m
 (mensajes SYNOP, `estaciones/datos/synop/`). Un bloque cuenta como lluvioso desde 1 mm en 6 h.
 
@@ -13,15 +13,15 @@ Estación usada para cada punto:
 
 | Modelo | Plazo | Bloques | Bloques con lluvia medida | Avisados por el modelo | Falsas alarmas | Error medio (mm) | Lluvia medida / pronosticada |
 |---|---|---|---|---|---|---|---|
-| AIFS | hasta 24 h | 164 | 48 | 48 | 48 | -0,1 | 518,0 / 507,6 |
-| AIFS | hasta 48 h | 100 | 48 | 48 | 35 | -1,7 | 516,1 / 345,7 |
-| AIFS | hasta 72 h | 36 | 24 | 24 | 0 | -5,5 | 297,9 / 100,7 |
-| GFS | hasta 24 h | 164 | 48 | 47 | 75 | +0,6 | 518,0 / 609,9 |
-| GFS | hasta 48 h | 100 | 48 | 45 | 31 | -2,0 | 516,1 / 318,9 |
-| GFS | hasta 72 h | 36 | 24 | 23 | 0 | -6,2 | 297,9 / 75,1 |
-| IFS | hasta 24 h | 164 | 48 | 46 | 57 | +1,5 | 518,0 / 767,1 |
-| IFS | hasta 48 h | 100 | 48 | 47 | 42 | +0,6 | 516,1 / 580,0 |
-| IFS | hasta 72 h | 36 | 24 | 24 | 9 | +1,5 | 297,9 / 351,7 |
+| AIFS | hasta 24 h | 176 | 48 | 48 | 60 | +0,1 | 518,9 / 529,8 |
+| AIFS | hasta 48 h | 116 | 48 | 48 | 51 | -1,3 | 517,3 / 371,2 |
+| AIFS | hasta 72 h | 52 | 24 | 24 | 16 | -3,3 | 299,1 / 127,4 |
+| GFS | hasta 24 h | 176 | 48 | 47 | 75 | +0,5 | 518,9 / 613,3 |
+| GFS | hasta 48 h | 116 | 48 | 45 | 31 | -1,7 | 517,3 / 323,1 |
+| GFS | hasta 72 h | 52 | 24 | 23 | 0 | -4,2 | 299,1 / 82,0 |
+| IFS | hasta 24 h | 176 | 48 | 46 | 57 | +1,4 | 518,9 / 774,0 |
+| IFS | hasta 48 h | 116 | 48 | 47 | 49 | +0,7 | 517,3 / 595,1 |
+| IFS | hasta 72 h | 52 | 24 | 24 | 13 | +1,3 | 299,1 / 365,3 |
 
 Los pluviómetros miden un punto; el modelo, el promedio de una celda de unos 25 km. Datos de estación provisorios,
 sin control de calidad. No es un aviso: las alertas oficiales son de la DMC y SENAPRED.

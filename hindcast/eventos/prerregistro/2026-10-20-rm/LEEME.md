@@ -1,6 +1,6 @@
 # Registro previo: 2026-10-20-rm
 
-Ventana del evento: 2026-10-20 00:00 a 2026-10-21 12:00 (hora de Chile). Resumen actualizado el 21-10-2026 07:20 (hora de Chile).
+Ventana del evento: 2026-10-20 00:00 a 2026-10-21 12:00 (hora de Chile). Resumen actualizado el 21-10-2026 12:23 (hora de Chile).
 Cada fila es una corrida de un modelo; las más nuevas, abajo. La fecha de cada registro está en la columna
 registrado_utc de hindcast/seguimiento/pronosticos.csv y en el historial de git.
 
@@ -42,6 +42,8 @@ registrado_utc de hindcast/seguimiento/pronosticos.csv y en el historial de git.
 | GFS | 2026-10-21 06:00 | 1 mm | 0.7 mm (21 03-09 h) | 2866 a 2866 m |
 | AIFS | 2026-10-21 00:00 | 6 mm | 5.6 mm (20 21-03 h) | – |
 | IFS | 2026-10-21 00:00 | 19 mm | 17.9 mm (20 21-03 h) | – |
+| AIFS | 2026-10-21 06:00 | 0 mm | 0.2 mm (21 03-09 h) | – |
+| IFS | 2026-10-21 06:00 | 5 mm | 5.2 mm (21 03-09 h) | – |
 
 Umbral del indicador: atención con unos 10 mm en 2 h; aviso de impacto con unos 16 mm en 2 h.
 
@@ -83,6 +85,8 @@ Umbral del indicador: atención con unos 10 mm en 2 h; aviso de impacto con unos
 | GFS | 2026-10-21 06:00 | 1 mm | 0.7 mm (21 03-09 h) | 2866 a 2866 m |
 | AIFS | 2026-10-21 00:00 | 6 mm | 5.6 mm (20 21-03 h) | – |
 | IFS | 2026-10-21 00:00 | 19 mm | 17.9 mm (20 21-03 h) | – |
+| AIFS | 2026-10-21 06:00 | 0 mm | 0.2 mm (21 03-09 h) | – |
+| IFS | 2026-10-21 06:00 | 5 mm | 5.2 mm (21 03-09 h) | – |
 
 Umbral del indicador: atención con unos 22 mm en 2 h; aviso de impacto con unos 36 mm en 2 h.
 
@@ -124,6 +128,8 @@ Umbral del indicador: atención con unos 22 mm en 2 h; aviso de impacto con unos
 | GFS | 2026-10-21 06:00 | 1 mm | 0.7 mm (21 03-09 h) | 2866 a 2866 m |
 | AIFS | 2026-10-21 00:00 | 6 mm | 5.6 mm (20 21-03 h) | – |
 | IFS | 2026-10-21 00:00 | 19 mm | 17.9 mm (20 21-03 h) | – |
+| AIFS | 2026-10-21 06:00 | 0 mm | 0.2 mm (21 03-09 h) | – |
+| IFS | 2026-10-21 06:00 | 5 mm | 5.2 mm (21 03-09 h) | – |
 
 ## Santiago (Pudahuel)
 
@@ -163,5 +169,7 @@ Umbral del indicador: atención con unos 22 mm en 2 h; aviso de impacto con unos
 | GFS | 2026-10-21 06:00 | 1 mm | 1.3 mm (21 03-09 h) | 2748 a 2748 m |
 | AIFS | 2026-10-21 00:00 | 4 mm | 4.0 mm (20 21-03 h) | – |
 | IFS | 2026-10-21 00:00 | 3 mm | 2.8 mm (20 21-03 h) | – |
+| AIFS | 2026-10-21 06:00 | 0 mm | 0.1 mm (21 03-09 h) | – |
+| IFS | 2026-10-21 06:00 | 2 mm | 1.5 mm (21 03-09 h) | – |
 
 Registro para verificación posterior. No es un aviso ni una alerta: las alertas oficiales son de la DMC y SENAPRED.

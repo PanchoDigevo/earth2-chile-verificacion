@@ -370,7 +370,7 @@ JS_MAPA = r"""
       g.querySelector('title').textContent = e.nombre + ': ' + (v == null ? 'sin datos suficientes' : fmt(v) + ' °C de error medio');
       g.setAttribute('aria-label', e.nombre + ', ' + (v == null ? 'sin datos' : fmt(v) + ' grados de error medio'));
     });
-    if (Z.ficha) { ficha(); tabla(); }
+    if (Z.ficha) { ficha(); tabla(); document.dispatchEvent(new CustomEvent('zona:sel', {detail: {icao: st.sel, modelo: st.modelo}})); }
     document.querySelectorAll('[data-estado-txt]').forEach(el => el.textContent = st.estado === 'g' ? 'sin corregir' : 'corregido por estación');
   }
 
@@ -804,12 +804,106 @@ def tabla_lluvia(ll):
 </section>"""
 
 
+DIAS_SESGO = 30          # ventana de la corrección móvil del pronóstico que viene
+MIN_SESGO = 10           # pares mínimos por modelo, aeródromo y hora del día para corregir
+
+
+def pronostico_js(est, pts, ahora):
+    """Próximas 48 h por aeródromo según la última corrida de cada modelo, cruda y corregida.
+    Corrección móvil: error medio de cada modelo en cada aeródromo a esa hora del día (UTC), en los últimos DIAS_SESGO días
+    del pipeline diario; con menos de MIN_SESGO pares no se corrige."""
+    try:
+        pr = pd.read_csv(os.path.join(AQUI, "data", "pronostico_puntos.csv"))
+    except Exception:
+        return {}
+    for c in ("run", "valid"):
+        pr[c] = pd.to_datetime(pr[c], format="mixed")
+    pr = pr[pr.modelo.isin(orden_diario(pr.modelo))]
+    ahora_n = ahora.tz_localize(None) if ahora.tzinfo else ahora
+    ult = pr.groupby("modelo").run.max()
+    pr = pr[pr.run == pr.modelo.map(ult)].copy()
+    pr = pr.sort_values(["modelo", "icao", "lead_h"])
+    # lluvia de cada bloque de 6 h desde el acumulado de la corrida (antes de descartar las horas pasadas)
+    pr["p6"] = pr.groupby(["modelo", "icao"]).tp_fc.diff()
+    pr["ph"] = pr.groupby(["modelo", "icao"]).lead_h.diff()      # horas que cubre esa lluvia (6, o 12 después de 24 h)
+    pr = pr[pr.valid >= ahora_n - pd.Timedelta(hours=3)]
+    sesgo = pd.DataFrame()
+    if pts is not None and not pts.empty:
+        v = pts[pts.valid >= ahora_n - pd.Timedelta(days=DIAS_SESGO)].dropna(subset=["t_err"]).copy()
+        v["h"] = v.valid.dt.hour
+        sesgo = v.groupby(["modelo", "icao", "h"]).t_err.agg(["mean", "size"]).reset_index()
+        sesgo = sesgo[sesgo["size"] >= MIN_SESGO]
+    pr["h"] = pr.valid.dt.hour
+    if not sesgo.empty:
+        pr = pr.merge(sesgo.rename(columns={"mean": "sesgo", "size": "n_sesgo"}), on=["modelo", "icao", "h"], how="left")
+    else:
+        pr["sesgo"] = np.nan
+    out = {}
+    nombres = {e["icao"] for e in est}
+    for icao, g in pr.groupby("icao"):
+        if icao not in nombres:
+            continue
+        filas = {}
+        for x in g.itertuples(index=False):
+            k = x.valid.strftime("%Y-%m-%dT%H")
+            f = filas.setdefault(k, {"t": k, "chile": a_chile(x.valid).strftime("%Y-%m-%dT%H:%M"), "m": {}})
+            f["m"][x.modelo] = {"t": round(float(x.t_fc), 1),
+                                "tc": None if pd.isna(x.sesgo) else round(float(x.t_fc - x.sesgo), 1),
+                                "w": None if pd.isna(x.w_fc) else round(float(x.w_fc) * 3.6),
+                                "p": None if pd.isna(x.p6) else round(max(float(x.p6), 0.0), 1),
+                                "ph": None if pd.isna(x.ph) else int(x.ph)}
+        out[icao] = {"filas": [filas[k] for k in sorted(filas)][:9],
+                     "corridas": {m: a_chile(t).strftime("%Y-%m-%dT%H:%M") for m, t in ult.items()}}
+    return out
+
+
+def seccion_pronostico():
+    return """<section class="card" id="pronostico" aria-labelledby="pr-titulo" hidden>
+  <div class="sec-head"><h2 id="pr-titulo">Lo que viene en <span id="pr-nombre"></span></h2>
+  <p class="muted">Próximas 48 horas según la última corrida de cada modelo: cada 6 horas el primer día y cada 12 el segundo. <strong>Corregida</strong> resta el error que tuvo el modelo en este aeródromo, a esa misma hora del día, en los últimos 30 días: es la capa chilena funcionando en vivo. Preliminar: se corrige solo donde hay al menos 10 comparaciones.</p></div>
+  <div class="tabla"><table id="pr-tabla"><thead><tr><th class="l">Hora de Chile</th><th>Temperatura <span id="pr-modelo"></span></th><th>Corregida</th><th>Los modelos entre</th><th>Viento</th><th>Lluvia</th></tr></thead><tbody></tbody></table></div>
+  <p class="small muted" id="pr-pie"></p>
+</section>"""
+
+
+JS_PRONOSTICO = """
+<script>
+(function(){
+  const P = (window.ZONA || {}).prono || {}, E = {}; (window.ZONA.est || []).forEach(e => E[e.icao] = e);
+  const sec = document.getElementById('pronostico'); if (!sec) return;
+  const DIA = ['dom','lun','mar','mié','jue','vie','sáb'];
+  const n = (v, d=1) => v == null ? '–' : Number(v).toLocaleString('es-CL', {minimumFractionDigits:d, maximumFractionDigits:d}).replace('-', '−');
+  const hora_s = s => { const [f, h] = s.split('T'); const [a, m, d] = f.split('-').map(Number); const t = new Date(a, m - 1, d); return DIA[t.getDay()] + ' ' + d + ', ' + h.slice(0, 5); };
+  document.addEventListener('zona:sel', ev => {
+    const {icao, modelo} = ev.detail, p = P[icao], e = E[icao];
+    if (!p || !p.filas.length) { sec.hidden = true; return; }
+    sec.hidden = false;
+    document.getElementById('pr-nombre').textContent = e ? e.nombre : icao;
+    document.getElementById('pr-modelo').textContent = modelo;
+    const filas = p.filas.filter(f => f.m[modelo]);
+    document.querySelector('#pr-tabla tbody').innerHTML = filas.map(f => {
+      const x = f.m[modelo], ts = Object.values(f.m).map(v => v.t);
+      const rango = ts.length > 1 ? n(Math.min(...ts), 0) + ' a ' + n(Math.max(...ts), 0) + ' °C' : '–';
+      return `<tr><td class="l">${hora_s(f.chile)}</td><td class="num">${n(x.t)} °C</td><td class="num"><strong>${x.tc == null ? '–' : n(x.tc) + ' °C'}</strong></td>` +
+             `<td class="num muted">${rango}</td><td class="num">${x.w == null ? '–' : n(x.w, 0) + ' km/h'}</td><td class="num">${x.p == null ? '–' : n(x.p) + ' mm' + (x.ph ? ` <span class="muted">en ${x.ph} h</span>` : '')}</td></tr>`;
+    }).join('');
+    const c = p.corridas[modelo];
+    const err = e && e.m && e.m[modelo] ? e.m[modelo] : null;
+    document.getElementById('pr-pie').textContent = (c ? `Corrida de ${modelo}: ${hora_s(c)} (hora de Chile). ` : '') +
+      (err && err.g != null ? `Para calibrar: en 2026 este modelo se equivocó en ${n(err.g)} °C en promedio a 24 h en este aeródromo` + (err.c != null ? `, y ${n(err.c)} °C con corrección.` : '.') : '') +
+      ' «Los modelos entre» muestra el rango de todos los modelos: si es ancho, hay más incertidumbre. No es un aviso: las alertas oficiales son de la DMC y SENAPRED.';
+  });
+})();
+</script>"""
+
+
 def pagina_zona(est, pts, ahora, ll=None):
     c = cifras_portada(est)
     inicial = c["ejemplo"]["icao"] if "ejemplo" in c else (est[0]["icao"] if est else "")
     opciones = "".join(f'<option value="{e["icao"]}">{e["nombre"]} · {e["region"]}</option>' for e in est)
     ultimos, tecnico = bloque_ultimos_dias(pts)
-    datos_js = json.dumps({"est": est, "modelo": "AIFS", "navegar": False, "ficha": True, "inicial": inicial, "lluvia": lluvia_js(ll)}, ensure_ascii=False)
+    datos_js = json.dumps({"est": est, "modelo": "AIFS", "navegar": False, "ficha": True, "inicial": inicial, "lluvia": lluvia_js(ll),
+                           "prono": pronostico_js(est, pts, ahora)}, ensure_ascii=False)
     html = f"""{head("Tu zona · Earth-2 Chile", "Elige un aeródromo de Chile y mira cuánto se equivocan los modelos de pronóstico al predecir la temperatura de mañana, con y sin corrección local.")}
 <body>
 {nav("zona")}
@@ -839,6 +933,8 @@ def pagina_zona(est, pts, ahora, ll=None):
   </div>
 </section>
 
+{seccion_pronostico()}
+
 <section>
   <div class="sec-head"><h2>Todos los aeródromos, de mayor a menor error</h2>
   <p class="muted">Modelo <strong id="tabla-modelo">AIFS</strong>, error medio a 24 h en 2026. Toca una fila para ver su ficha.</p></div>
@@ -855,6 +951,7 @@ def pagina_zona(est, pts, ahora, ll=None):
 {pie(ahora)}
 </div>
 <script>window.ZONA = {datos_js};</script>
+{JS_PRONOSTICO}
 {JS_MAPA}
 {JS_DEF}
 </body>

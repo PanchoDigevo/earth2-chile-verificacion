@@ -44,7 +44,7 @@ Regla: los cambios de régimen (El Niño, olas de calor marinas) se detectan des
 ## Dónde corre cada cosa
 
 - GitHub Actions: lo liviano y diario.
-- Instancia de nube sin GPU o nodos CPU del POD: hindcast pesado y preparación de datasets (ERA5, SAAG en `s3://saag-wrf/`, Sentinel-2). Solo resultados vuelven al repo.
+- Instancia de nube sin GPU o nodos CPU del POD: hindcast pesado y preparación de datasets (ERA5, SAAG-WRF desde NCAR vía OSDF —la copia `s3://saag-wrf` del registro de AWS no existe—, Sentinel-2; ver `entrenamiento/README.md`). Solo resultados vuelven al repo.
 - GPUs L40S del POD: entrenamiento (contenedor `nvcr.io/nvidia/physicsnemo/physicsnemo:25.11`, ejemplo `examples/weather/corrdiff`) y, en fase 1, inferencia vía NVIDIA Cloud Functions.
 - El Mac de Pancho solo orquesta: sin GPU NVIDIA, red lenta, VM de 4 GB.
 

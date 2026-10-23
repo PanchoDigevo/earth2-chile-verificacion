@@ -6,6 +6,7 @@ Sitio: https://panchodigevo.github.io/earth2-chile-verificacion/
 
 ## 23-oct-2026
 
+- **Tarea 6: dataset de CorrDiff-Chile listo para armarse** (`entrenamiento/`): pares ERA5 25 km → SAAG-WRF 4 km sobre Chile (1.120 × 352 puntos, de Arica al Cabo de Hornos) en el formato que lee PhysicsNeMo; una muestra cargó sin errores. La copia de SAAG en AWS no existe: se lee de NCAR. El dataset completo (~0,65 TB) se arma en el POD. El entrenamiento será en las GPUs del POD, en horas valle.
 - **FCN3 listo para aparecer en el sitio:** en Tu zona, "Últimos días" suma una tarjeta por cada modelo de Earth-2 corrido por nosotros (FCN3, AIFS-POD, SFNO) apenas tenga pares, con su origen y la marca "pocas todavía" bajo 30 comparaciones. Las tablas históricas no cambian. Botón de prueba en Actions: `earth2-endpoint-prueba` llama a la función de NVCF y muestra los valores, sin subir nada.
 - **FCN3 en el POD:** Guillermo desplegó FourCastNet 3 en NVCF y cargó en una L40S de 48 GB. `correr_pod.py` lo corre (`--modelo fcn3`, ahora por defecto) y el Dockerfile instala makani y torch-harmonics desde GitHub sin dependencias, con un candado para no reemplazar el torch de PhysicsNeMo. Se corrige lo que decía antes: FCN3 sí cabe.
 - **Conector Earth-2 listo para la función de NVCF de Guillermo** (`earth2/endpoint.py`): manda la corrida, recibe `{"estado": "lanzada"}` y vuelve a preguntar cada 20 s hasta que llega el netCDF (tope 15 min). El paso del workflow tiene tope de 16 min y el entorno ya abre netCDF en memoria (`h5netcdf`, `h5py`, `scipy`). Se activa al cargar los secretos.

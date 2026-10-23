@@ -1,0 +1,22 @@
+name: saag-explorar
+# Tarea 6: explora SAAG-WRF 4 km en NCAR (vía OSDF) leyendo solo trozos de los archivos HDF5, y mide cuánto se baja.
+# No sube nada al repo: el informe queda en el registro.
+on:
+  workflow_dispatch:
+    inputs:
+      fecha:
+        description: "Hora a explorar, YYYY-MM-DDTHH"
+        default: "2018-01-01T00"
+permissions:
+  contents: read
+jobs:
+  explorar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy h5py fsspec aiohttp requests
+      - run: python entrenamiento/explorar_saag.py --fecha "${{ inputs.fecha }}"

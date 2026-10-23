@@ -38,7 +38,9 @@ def pares(variable="t"):
         raise SystemExit(f"los pares históricos no tienen {err}")
     p = p.dropna(subset=[err])[["modelo", "run", "lead_h", "valid", "icao", fc, ob, err]]
     if os.path.exists(DIARIO):
-        v = pd.read_csv(DIARIO, parse_dates=["run", "valid"])
+        v = pd.read_csv(DIARIO)
+        for c in ("run", "valid"):   # fechas con y sin hora (pandas omite 00:00:00 si una tanda es toda de medianoche)
+            v[c] = pd.to_datetime(v[c], format="mixed")
         if "modelo" not in v:
             v.insert(0, "modelo", "AIFS")
         v = v[(v.run.dt.hour.isin([0, 12])) & (v.lead_h.isin([24, 48, 72])) & (v.run > p.run.max())]

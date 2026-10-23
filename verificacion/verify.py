@@ -19,6 +19,16 @@ import numpy as np, pandas as pd, xarray as xr
 MODELOS = {"aifs": "AIFS", "ifs": "IFS", "gfs": "GFS"}
 PRON = "data/pronostico_puntos.csv"
 HIST = "data/verif_puntos.csv"
+FMT_FECHA = "%Y-%m-%d %H:%M:%S"   # siempre con hora: pandas escribe "2026-10-21" si una tanda es toda de las 00 UTC
+
+
+def leer_con_fechas(ruta):
+    """Lee run y valid aceptando fechas con y sin hora (archivos escritos antes del 23-oct-2026)."""
+    d = pd.read_csv(ruta)
+    for c in ("run", "valid"):
+        if c in d:
+            d[c] = pd.to_datetime(d[c], format="mixed")
+    return d
 CLAVE = ["modelo", "run", "lead_h", "icao"]
 DIAS_PRON = 4          # los pronósticos cuya hora válida sea más antigua ya no recibirán observaciones nuevas
 
@@ -113,11 +123,11 @@ for f in sorted(glob.glob("data/puntos_*.csv")):
         print("no se pudo leer", f, "->", type(e).__name__, e)
 pron = pd.DataFrame(nuevos, columns=["modelo", "run", "lead_h", "valid", "icao", "name", "lat", "lon", "elev", "t_fc", "w_fc", "tp_fc"])
 if os.path.exists(PRON):
-    pron = pd.concat([pd.read_csv(PRON, parse_dates=["run", "valid"]), pron])
+    pron = pd.concat([leer_con_fechas(PRON), pron])
 pron = pron.drop_duplicates(subset=CLAVE, keep="last")
 ahora = pd.Timestamp.now("UTC").tz_localize(None)
 pron = pron[pron.valid >= ahora - pd.Timedelta(days=DIAS_PRON)].sort_values(["run", "modelo", "lead_h", "icao"])
-pron.to_csv(PRON, index=False)
+pron.to_csv(PRON, index=False, date_format=FMT_FECHA)
 print(f"pronósticos guardados: {len(pron)} filas ({pron.modelo.nunique()} modelos, {pron.run.nunique()} corridas)")
 
 # 2. emparejar con la observación más cercana (±31 min) ------------------------------------------
@@ -137,7 +147,7 @@ print(f"pares nuevos o actualizados: {len(pares)}")
 
 # 3. acumular histórico (sin duplicar; el histórico anterior a la columna "modelo" es AIFS) ------
 if os.path.exists(HIST):
-    old = pd.read_csv(HIST, parse_dates=["run", "valid"])
+    old = leer_con_fechas(HIST)
     if "modelo" not in old.columns:
         old.insert(0, "modelo", "AIFS")
     old["modelo"] = old["modelo"].fillna("AIFS")
@@ -147,7 +157,7 @@ if pts.empty:
     print("sin pares pronóstico-observación todavía"); raise SystemExit(0)
 cols = ["modelo", "run", "lead_h", "valid", "icao", "name", "lat", "lon", "elev", "t_fc", "t_obs", "t_err", "w_fc", "w_obs", "w_err"]
 pts = pts[cols].sort_values(["run", "modelo", "lead_h", "icao"])
-pts.to_csv(HIST, index=False)
+pts.to_csv(HIST, index=False, date_format=FMT_FECHA)
 
 mae = lambda e: e.abs().mean()
 res = (pts.groupby(["modelo", "lead_h"]).agg(n=("t_err", "size"), t_bias=("t_err", "mean"), t_mae=("t_err", mae),

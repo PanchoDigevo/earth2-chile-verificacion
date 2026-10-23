@@ -46,7 +46,9 @@ def reporta_lluvia(wx):
 
 
 def cargar():
-    pron = pd.read_csv(os.path.join(DATA, "pronosticos.csv.gz"), parse_dates=["run", "valid"])
+    pron = pd.read_csv(os.path.join(DATA, "pronosticos.csv.gz"))
+    for c in ("run", "valid"):   # fechas con y sin hora
+        pron[c] = pd.to_datetime(pron[c], format="mixed")
     obs = pd.concat([pd.read_csv(f, parse_dates=["time"]) for f in sorted(glob.glob(os.path.join(DATA, "metar_*.csv.gz")))], ignore_index=True)
     obs = obs.dropna(subset=["temp_c"]).sort_values("time")
     # misma resolución de fecha en ambas tablas (pandas 3 puede inferir "s" o "us" y merge_asof exige igualdad)

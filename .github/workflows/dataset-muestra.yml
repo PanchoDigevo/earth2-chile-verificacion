@@ -1,0 +1,49 @@
+name: dataset-muestra
+# Tarea 6: arma una muestra chica del dataset de CorrDiff-Chile (SAAG 4 km + ERA5) y la carga con el cargador "cwb"
+# del ejemplo corrdiff de PhysicsNeMo v1.3.0. Criterio de la tarea: un lote carga sin errores. No sube nada al repo.
+on:
+  workflow_dispatch:
+    inputs:
+      desde:
+        description: "Primera hora, YYYY-MM-DDTHH"
+        default: "2018-01-01T00"
+      hasta:
+        description: "Última hora, YYYY-MM-DDTHH"
+        default: "2018-01-01T22"
+permissions:
+  contents: read
+jobs:
+  muestra:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Instalar
+        run: |
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install numpy scipy h5py fsspec aiohttp requests "xarray>=2025.1" "zarr>=3" cftime opencv-python-headless hydra-core
+      - name: Armar la muestra
+        run: python entrenamiento/preparar_dataset.py --desde "${{ inputs.desde }}" --hasta "${{ inputs.hasta }}" --cada 2 --salida /tmp/muestra.zarr --procesos 4 --bloque 6
+      - name: Cargar con el cargador de PhysicsNeMo
+        run: |
+          mkdir -p /tmp/cd/datasets && cd /tmp/cd/datasets
+          for f in __init__.py base.py cwb.py img_utils.py norm.py; do
+            curl -sf "https://raw.githubusercontent.com/NVIDIA/physicsnemo/v1.3.0/examples/weather/corrdiff/datasets/$f" -o $f
+          done
+          cd /tmp/cd && python - <<'PY'
+          import numpy as np
+          from datasets.cwb import _ZarrDataset
+          d = _ZarrDataset("/tmp/muestra.zarr")
+          print("muestras válidas:", len(d), "| forma:", d.image_shape())
+          print("salidas:", [c.name for c in d.output_channels()])
+          print("entradas:", [c.name for c in d.input_channels()])
+          obj, ent = d[0]
+          print("objetivo", obj.shape, "entrada", ent.shape, "| NaN:", int(np.isnan(obj).sum()), int(np.isnan(ent).sum()))
+          for n, x in zip([c.name for c in d.output_channels()], obj):
+              print(f"  {n:22s} normalizado: media {x.mean():+.2f}, desv {x.std():.2f}")
+          print("tiempos:", d.time()[:3], "...")
+          PY
+          du -sh /tmp/muestra.zarr

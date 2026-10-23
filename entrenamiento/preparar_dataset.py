@@ -85,15 +85,19 @@ def una_hora(args):
             ok_obj = True; break
         except Exception as e:
             ok_obj = False; err = e; time.sleep(5 * (intento + 1))
-    if not ok_obj:
+    if ok_obj and not np.isfinite(obj).all():
+        ok_obj = False; print(f"SAAG {t:%Y-%m-%d %H}: {int((~np.isfinite(obj)).sum())} puntos sin valor", flush=True)
+    if not ok_obj and "err" in locals():
         print(f"SAAG {t:%Y-%m-%d %H}: {type(err).__name__} {err}", flush=True)
     e5 = era5()
-    caja = dict(latitude=slice(-10, -62), longitude=slice(278, 306))
+    caja = dict(latitude=slice(0, -70), longitude=slice(260, 320))      # holgada: el trozo de ERA5 es global de todos modos
     for i, (k, _) in enumerate(ENTRADAS):
         try:
             da = e5[k].sel(time=np.datetime64(t)).sel(**caja)
             ent[i] = interpolar(da.values, da.latitude.values, da.longitude.values, xlat, xlon)
             ok_ent[i] = np.isfinite(ent[i]).all()
+            if not ok_ent[i]:
+                print(f"ERA5 {k} {t:%Y-%m-%d %H}: {int((~np.isfinite(ent[i])).sum())} puntos sin valor", flush=True)
         except Exception as e:
             ok_ent[i] = False; print(f"ERA5 {k} {t:%Y-%m-%d %H}: {type(e).__name__} {e}", flush=True)
     return obj, ent, ok_obj, ok_ent

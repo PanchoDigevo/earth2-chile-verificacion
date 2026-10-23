@@ -4,7 +4,9 @@ Para declarar el workload a NVIDIA (NVCF). Solo datos técnicos: nada de cifras 
 
 ## Qué corre
 
-- Modelo global de Earth-2 en una GPU L40S: **AIFS-Single 1.1** (control contra el AIFS que publica ECMWF) y, después, **FourCastNet v2 (SFNO)**. Ambos piden unos 40 GB de memoria de GPU según su ficha en Earth2Studio 0.19, así que caben en una L40S de 48 GB. FourCastNet 3 pide unos 80 GB: no cabe en una sola L40S.
+- Modelo global de Earth-2 en una GPU L40S: **FourCastNet 3 (FCN3)**, desplegado por Guillermo en NVCF y cargado en 48 GB (su ficha en Earth2Studio dice ~80 GB; falta medir la inferencia a 10 días); **AIFS-Single 1.1** como control contra el AIFS que publica ECMWF; **SFNO** como alternativa (~40 GB).
+- El modelo corre dentro del contenedor: la entrada global (~72 canales, ~285 MB) supera el límite de 270 MB del gateway de NVCF, así que no puede viajar por la red; la petición es una fecha y la respuesta, el recorte de Chile, ~3 MB.
+- La función responde en dos tiempos: la corrida tarda ~60 s y el gateway corta conexiones largas, así que la primera llamada la lanza (`{"estado": "lanzada"}`) y se vuelve a llamar cada 20 s hasta recibir el netCDF.
 - Condición inicial: análisis de IFS de ECMWF open data en AWS (0,25°). Alcance: 10 días en pasos de 6 h (40 pasos).
 - 4 veces al día: corridas de 00, 06, 12 y 18 UTC.
 - Script: `earth2/correr_pod.py`; contenedor: `earth2/pod/Dockerfile`. Cada corrida escribe su ficha en `earth2/workload/<MODELO>_<corrida>.json`.
@@ -17,15 +19,15 @@ Dos caminos; el primero es el que está armando Guillermo:
 
 ## Medidas (se llenan con las primeras corridas reales)
 
-| Medida | AIFS | SFNO |
-|---|---|---|
-| GPUs por corrida | 1 L40S | 1 L40S |
-| Minutos por corrida (10 días) | por medir | por medir |
-| Memoria GPU máxima (GB) | por medir (ficha: ~40) | por medir (ficha: ~40) |
-| Horas-GPU por día (4 corridas) | por medir | por medir |
-| Tráfico de red por corrida (GB) | por medir | por medir |
-| Recorte de Chile por corrida (MB) | por medir | por medir |
-| Pesos del modelo en disco (GB) | por medir | por medir |
+| Medida | FCN3 | AIFS | SFNO |
+|---|---|---|---|
+| GPUs por corrida | 1 L40S | 1 L40S | 1 L40S |
+| Minutos por corrida (10 días) | ~1 (Guillermo, por confirmar) | por medir | por medir |
+| Memoria GPU máxima (GB) | carga en 48 (ficha: ~80) | por medir (ficha: ~40) | por medir (ficha: ~40) |
+| Horas-GPU por día (4 corridas) | por medir | por medir | por medir |
+| Tráfico de red por corrida (GB) | por medir | por medir | por medir |
+| Respuesta: recorte de Chile (MB) | ~3 | por medir | por medir |
+| Pesos del modelo en disco (GB) | por medir | por medir | por medir |
 
 ## Control (AIFS)
 

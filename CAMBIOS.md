@@ -6,6 +6,7 @@ Sitio: https://panchodigevo.github.io/earth2-chile-verificacion/
 
 ## 23-oct-2026
 
+- **FCN3 en el POD:** Guillermo desplegó FourCastNet 3 en NVCF y cargó en una L40S de 48 GB. `correr_pod.py` lo corre (`--modelo fcn3`, ahora por defecto) y el Dockerfile instala makani y torch-harmonics desde GitHub sin dependencias, con un candado para no reemplazar el torch de PhysicsNeMo. Se corrige lo que decía antes: FCN3 sí cabe.
 - **Conector Earth-2 listo para la función de NVCF de Guillermo** (`earth2/endpoint.py`): manda la corrida, recibe `{"estado": "lanzada"}` y vuelve a preguntar cada 20 s hasta que llega el netCDF (tope 15 min). El paso del workflow tiene tope de 16 min y el entorno ya abre netCDF en memoria (`h5netcdf`, `h5py`, `scipy`). Se activa al cargar los secretos.
 
 ## 20-oct-2026

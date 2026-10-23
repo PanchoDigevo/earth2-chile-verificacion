@@ -1,9 +1,12 @@
 """Corre un modelo global de Earth-2 en una GPU propia (L40S del POD) y deja su salida lista para verificar (tarea 5).
 
-Modelos que caben en una L40S (48 GB), según la ficha de cada modelo en Earth2Studio 0.19:
-  aifs  AIFS-Single 1.1 de ECMWF (pide ~40 GB). Es el control: debe parecerse al AIFS que publica ECMWF.
+Modelos (todos globales; sirven en Chile tal como vienen):
+  fcn3  FourCastNet 3 de NVIDIA. Su ficha en Earth2Studio dice ~80 GB, pero Guillermo lo desplegó y cargó en una L40S
+        de 48 GB (23-oct-2026); falta probar la inferencia completa a 10 días.
+  aifs  AIFS-Single 1.1 de ECMWF (~40 GB). Es el control: debe parecerse al AIFS que publica ECMWF.
   sfno  FourCastNet v2 (SFNO) de NVIDIA (~40 GB).
-FourCastNet 3 (FCN3) pide ~80 GB: no cabe en una L40S sin repartirlo en varias GPUs.
+Se corre DENTRO del contenedor: la entrada global (un tensor de ~72 canales, ~285 MB) supera el límite de 270 MB del
+gateway de NVCF, así que un NIM que la recibe por la red no sirve; la petición es una fecha y la respuesta ~3 MB.
 
 Condición inicial: el análisis de IFS de ECMWF open data en AWS (0,25°), la misma hora de corrida que AIFS, IFS y GFS.
 Salidas (todas fuera del repo salvo el CSV por estación):
@@ -27,7 +30,7 @@ AQUI = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, AQUI)
 from endpoint import ESTACIONES, SALIDA, en_estaciones, ultima_corrida  # noqa: E402
 
-NOMBRE = {"aifs": "AIFS-POD", "sfno": "SFNO", "persistencia": "PERSISTENCIA"}
+NOMBRE = {"fcn3": "FCN3", "aifs": "AIFS-POD", "sfno": "SFNO", "persistencia": "PERSISTENCIA"}
 CAJA = (-15.0, -63.0, 284.0, 302.0)   # latitud norte, sur, longitud oeste, este (0-360): Chile, su mar y el aeródromo antártico
 VARS = ["t2m", "u10m", "v10m", "tp"]  # tp solo si el modelo la entrega
 
@@ -36,8 +39,8 @@ def cargar(modelo):
     if modelo == "persistencia":
         from earth2studio.models.px import Persistence
         return Persistence(["t2m", "u10m", "v10m"], OrderedDict({"lat": np.linspace(90, -90, 721), "lon": np.arange(0, 360, 0.25)}))
-    from earth2studio.models.px import AIFS, SFNO
-    clase = {"aifs": AIFS, "sfno": SFNO}[modelo]
+    from earth2studio.models.px import AIFS, FCN3, SFNO
+    clase = {"aifs": AIFS, "fcn3": FCN3, "sfno": SFNO}[modelo]
     return clase.load_model(clase.load_default_package())
 
 
@@ -98,7 +101,7 @@ def control(df_pod, corrida):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--modelo", choices=sorted(NOMBRE), default="aifs")
+    ap.add_argument("--modelo", choices=sorted(NOMBRE), default="fcn3")
     ap.add_argument("--corrida", help="YYYY-MM-DDTHH (UTC); por defecto, la última con 6 h de antigüedad")
     ap.add_argument("--horas", type=int, default=240, help="alcance en horas, múltiplo de 6 (10 días = 240)")
     ap.add_argument("--salida", default=os.environ.get("EARTH2_DATOS", os.path.expanduser("~/earth2_datos")), help="carpeta para el recorte (fuera del repo)")

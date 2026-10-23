@@ -44,10 +44,24 @@ def cargar(modelo):
     return clase.load_model(clase.load_default_package())
 
 
-def pronosticar(modelo, corrida, horas, dispositivo="cuda"):
-    """Corre el modelo desde el análisis de IFS y devuelve el recorte de Chile como xarray.Dataset."""
-    import torch
+def fuente_inicial(ci):
+    """Condición inicial. IFS de ECMWF en AWS responde "503 Slow Down" con carga, y con el tope por defecto de Earth2Studio
+    (600 s) corta con FSTimeoutError (pasó en la función de NVCF el 23-oct-2026): tope de 1 h y reintentos cortos.
+    GFS de NOAA en AWS no frena así; es el respaldo."""
+    if ci == "gfs":
+        from earth2studio.data import GFS
+        return GFS(source="aws", cache=False, async_timeout=1800, retries=6)
     from earth2studio.data import IFS
+    from ecmwf import opendata
+    src = IFS(source="aws", cache=False, async_timeout=3600)
+    src.client = opendata.Client(source="aws", model="ifs", maximum_retries=8, retry_after=15, use_server_retry_after=False)
+    return src
+
+
+def pronosticar(modelo, corrida, horas, dispositivo="cuda", ci="auto"):
+    """Corre el modelo desde el análisis de IFS (o de GFS si IFS no responde, con ci="auto") y devuelve el recorte de
+    Chile como xarray.Dataset; el atributo "condicion_inicial" dice con cuál partió."""
+    import torch
     from earth2studio.io import XarrayBackend
     from earth2studio.run import deterministic
     m = cargar(modelo)
@@ -58,9 +72,16 @@ def pronosticar(modelo, corrida, horas, dispositivo="cuda"):
         "lon": lon[(lon >= CAJA[2]) & (lon <= CAJA[3])],
         "variable": np.array([v for v in VARS if v in list(oc["variable"])]),
     })
-    io = XarrayBackend()
-    deterministic([corrida], horas // 6, m, IFS(source="aws"), io, output_coords=salida, device=torch.device(dispositivo))
-    return io.root
+    for fuente in (["ifs", "gfs"] if ci == "auto" else [ci]):
+        try:
+            io = XarrayBackend()
+            deterministic([corrida], horas // 6, m, fuente_inicial(fuente), io, output_coords=salida, device=torch.device(dispositivo))
+            io.root.attrs["condicion_inicial"] = fuente.upper()
+            return io.root
+        except Exception as e:
+            if fuente == "gfs" or ci != "auto":
+                raise
+            print(f"Condición inicial IFS falló ({type(e).__name__}: {e}); se usa GFS", flush=True)
 
 
 def simulado(corrida, horas):
@@ -105,6 +126,7 @@ def main():
     ap.add_argument("--corrida", help="YYYY-MM-DDTHH (UTC); por defecto, la última con 6 h de antigüedad")
     ap.add_argument("--horas", type=int, default=240, help="alcance en horas, múltiplo de 6 (10 días = 240)")
     ap.add_argument("--salida", default=os.environ.get("EARTH2_DATOS", os.path.expanduser("~/earth2_datos")), help="carpeta para el recorte (fuera del repo)")
+    ap.add_argument("--ci", choices=["auto", "ifs", "gfs"], default="auto", help="condición inicial (auto: IFS y, si falla, GFS)")
     ap.add_argument("--control", action="store_true", help="comparar con el AIFS de ECMWF en los mismos pares")
     ap.add_argument("--simular", action="store_true", help="sin GPU ni modelo: datos inventados, para probar el resto")
     a = ap.parse_args()
@@ -116,14 +138,15 @@ def main():
     if a.simular:
         ds = simulado(corrida, a.horas)
     elif a.modelo == "persistencia":
-        ds = pronosticar(a.modelo, corrida, a.horas, dispositivo="cpu")
+        ds = pronosticar(a.modelo, corrida, a.horas, dispositivo="cpu", ci=a.ci)
     else:
         import torch
         torch.cuda.reset_peak_memory_stats()
-        ds = pronosticar(a.modelo, corrida, a.horas)
+        ds = pronosticar(a.modelo, corrida, a.horas, ci=a.ci)
         ficha.update({"gpu": torch.cuda.get_device_name(0), "gpus_usadas": 1,
                       "memoria_gpu_max_gb": round(torch.cuda.max_memory_allocated() / 1e9, 1)})
     ficha["minutos"] = round((time.time() - t0) / 60, 1)
+    ficha["condicion_inicial"] = ds.attrs.get("condicion_inicial", "simulada")
     if r0 is not None:
         ficha["trafico_red_gb"] = round((red_bytes() - r0) / 1e9, 2)
 

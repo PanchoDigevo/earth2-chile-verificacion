@@ -8,6 +8,9 @@ on:
       corrida:
         description: "YYYY-MM-DDTHH (UTC); vacío = la última con 6 h de antigüedad"
         default: ""
+      ci:
+        description: "Condición inicial: auto (IFS y si falla GFS), ifs o gfs"
+        default: "auto"
 permissions:
   contents: read
 jobs:
@@ -27,7 +30,8 @@ jobs:
       - name: Correr persistencia y control
         env:
           CORRIDA: ${{ inputs.corrida }}
-        run: python earth2/correr_pod.py --modelo persistencia --horas 12 --control --salida /tmp/earth2_datos ${CORRIDA:+--corrida "$CORRIDA"}
+          CI: ${{ inputs.ci || 'auto' }}
+        run: python earth2/correr_pod.py --modelo persistencia --horas 12 --control --ci "$CI" --salida /tmp/earth2_datos ${CORRIDA:+--corrida "$CORRIDA"}
       - name: Mostrar resultados
         run: |
           head -5 verificacion/data/puntos_PERSISTENCIA_*.csv

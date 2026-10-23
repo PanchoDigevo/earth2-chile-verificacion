@@ -1,6 +1,6 @@
 # Lluvia pronosticada frente a lluvia medida
 
-Actualizado el 22-10-2026 22:52 (hora de Chile) por `estaciones/verificar_lluvia.py`. Bloques de 6 h del seguimiento
+Actualizado el 23-10-2026 04:54 (hora de Chile) por `estaciones/verificar_lluvia.py`. Bloques de 6 h del seguimiento
 horario (`hindcast/seguimiento/pronosticos.csv`) comparados con la estación DMC más cercana bajo 1.500 m
 (mensajes SYNOP, `estaciones/datos/synop/`). Un bloque cuenta como lluvioso desde 1 mm en 6 h.
 
@@ -13,15 +13,15 @@ Estación usada para cada punto:
 
 | Modelo | Plazo | Bloques | Bloques con lluvia medida | Avisados por el modelo | Falsas alarmas | Error medio (mm) | Lluvia medida / pronosticada |
 |---|---|---|---|---|---|---|---|
-| AIFS | hasta 24 h | 240 | 57 | 57 | 115 | +0,7 | 531,8 / 707,5 |
-| AIFS | hasta 48 h | 180 | 60 | 60 | 103 | +0,1 | 534,1 / 554,7 |
-| AIFS | hasta 72 h | 116 | 36 | 36 | 58 | -0,3 | 315,9 / 285,0 |
-| GFS | hasta 24 h | 244 | 60 | 59 | 118 | +0,8 | 536,0 / 726,8 |
-| GFS | hasta 48 h | 180 | 60 | 57 | 66 | -0,6 | 534,1 / 417,3 |
-| GFS | hasta 72 h | 116 | 36 | 35 | 13 | -1,4 | 315,9 / 151,5 |
-| IFS | hasta 24 h | 240 | 57 | 55 | 102 | +1,7 | 531,8 / 943,4 |
-| IFS | hasta 48 h | 180 | 60 | 59 | 90 | +1,6 | 534,1 / 827,7 |
-| IFS | hasta 72 h | 116 | 36 | 36 | 48 | +1,8 | 315,9 / 525,4 |
+| AIFS | hasta 24 h | 256 | 69 | 69 | 119 | +0,9 | 560,9 / 794,8 |
+| AIFS | hasta 48 h | 196 | 72 | 72 | 107 | +0,4 | 567,3 / 637,8 |
+| AIFS | hasta 72 h | 132 | 48 | 48 | 62 | +0,0 | 349,1 / 355,7 |
+| GFS | hasta 24 h | 260 | 72 | 71 | 122 | +0,9 | 569,2 / 807,3 |
+| GFS | hasta 48 h | 196 | 72 | 69 | 70 | -0,5 | 567,3 / 460,8 |
+| GFS | hasta 72 h | 132 | 48 | 47 | 17 | -1,1 | 349,1 / 206,6 |
+| IFS | hasta 24 h | 256 | 69 | 67 | 106 | +1,7 | 560,9 / 1006,1 |
+| IFS | hasta 48 h | 196 | 72 | 71 | 94 | +1,7 | 567,3 / 899,4 |
+| IFS | hasta 72 h | 132 | 48 | 48 | 52 | +2,5 | 349,1 / 685,4 |
 
 Los pluviómetros miden un punto; el modelo, el promedio de una celda de unos 25 km. Datos de estación provisorios,
 sin control de calidad. No es un aviso: las alertas oficiales son de la DMC y SENAPRED.

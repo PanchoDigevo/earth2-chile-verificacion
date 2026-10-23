@@ -1,0 +1,42 @@
+name: earth2-endpoint-prueba
+# Prueba con un clic de la función de Earth-2 en NVCF (secretos EARTH2_URL y EARTH2_API_KEY, variable EARTH2_MODELO):
+# la lanza, pregunta cada 20 s hasta recibir el netCDF y muestra los valores en algunos aeródromos. No sube nada al repo;
+# la verificación diaria (verificacion.yml) es la que guarda los pares. GitHub oculta los secretos en el registro.
+on:
+  workflow_dispatch:
+    inputs:
+      corrida:
+        description: "YYYY-MM-DDTHH (UTC); vacío = la última con 6 h de antigüedad"
+        default: ""
+permissions:
+  contents: read
+jobs:
+  probar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r verificacion/requirements.txt
+      - name: Llamar a la función
+        env:
+          EARTH2_URL: ${{ secrets.EARTH2_URL }}
+          EARTH2_API_KEY: ${{ secrets.EARTH2_API_KEY }}
+          EARTH2_MODELO: ${{ vars.EARTH2_MODELO }}
+          CORRIDA: ${{ inputs.corrida }}
+        run: |
+          if [ -z "$EARTH2_URL" ]; then echo "::error::Falta el secreto EARTH2_URL (dirección de la función con su function ID)"; exit 1; fi
+          if [ -z "$EARTH2_API_KEY" ]; then echo "::error::Falta el secreto EARTH2_API_KEY"; exit 1; fi
+          python earth2/endpoint.py ${CORRIDA:+--corrida "$CORRIDA"}
+      - name: Resumen
+        run: |
+          f=$(ls verificacion/data/puntos_*.csv | head -1)
+          python - "$f" <<'PY'
+          import sys, pandas as pd
+          d = pd.read_csv(sys.argv[1])
+          print(f"{d.modelo.iloc[0]}: {len(d)} valores, {d.icao.nunique()} aeródromos, plazos {sorted(d.lead_h.unique())}")
+          print(d[d.icao.isin(["SCEL", "SCTB", "SCAR", "SCCI"])].pivot_table(index="icao", columns="lead_h", values="t_fc").round(1).to_string())
+          PY

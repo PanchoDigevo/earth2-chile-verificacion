@@ -41,6 +41,21 @@ ESTACIONES = {
 # Modelos comparados, en orden de presentación. (nombre corto, tipo, centro)
 MODELOS = {"AIFS": ("AIFS", "Inteligencia artificial", "ECMWF"), "IFS": ("IFS", "Modelo físico", "ECMWF"), "GFS": ("GFS", "Modelo físico", "NOAA")}
 ORDEN = list(MODELOS)
+# Modelos de Earth-2 corridos por nosotros (earth2/endpoint.py o earth2/correr_pod.py). Solo entran a la comparación diaria,
+# no a las tablas históricas, y aparecen apenas tienen pares.
+EXTERNOS = {"FCN3": ("FCN3", "IA · FourCastNet 3", "NVIDIA Earth-2, en el POD de Santiago"),
+            "AIFS-POD": ("AIFS-POD", "IA · AIFS", "ECMWF, corrido en el POD de Santiago"),
+            "SFNO": ("SFNO", "IA · FourCastNet v2", "NVIDIA Earth-2, en el POD de Santiago")}
+
+
+def meta(m):
+    return MODELOS.get(m) or EXTERNOS.get(m) or (m, "IA", "Earth-2")
+
+
+def orden_diario(modelos):
+    """AIFS, IFS y GFS primero; después los modelos propios que tengan datos (nunca los de prueba)."""
+    extra = sorted(x for x in set(modelos) - set(ORDEN) if not str(x).endswith(("SIMULADO", "PRUEBA")) and x != "PERSISTENCIA")
+    return [m for m in ORDEN if m in set(modelos)] + extra
 
 # Una sola escala para todo el sitio (tarjetas, mapa, tablas y leyenda). Error medio de temperatura en °C.
 UMBRAL_T = (1.5, 3.0)
@@ -726,8 +741,8 @@ def bloque_ultimos_dias(pts):
     mae = lambda e: e.abs().mean()
     res = (pts.groupby(["modelo", "lead_h"]).agg(n=("t_err", "size"), t_bias=("t_err", "mean"), t_mae=("t_err", mae),
                                                  w_bias=("w_err", "mean"), w_mae=("w_err", mae)).reset_index().sort_values(["lead_h", "modelo"]))
-    presentes = [m for m in ORDEN if m in set(pts.modelo)]
-    leads = [set(res[res.modelo == m].lead_h) for m in presentes]
+    presentes = orden_diario(pts.modelo)
+    leads = [set(res[res.modelo == m].lead_h) for m in presentes if m in ORDEN] or [set(res[res.modelo == m].lead_h) for m in presentes]
     comunes = set.intersection(*leads) if leads else set()
     lead = 24 if 24 in comunes else (max(comunes) if comunes else None)
     if lead is None:
@@ -736,9 +751,10 @@ def bloque_ultimos_dias(pts):
     prelim = dias < DIAS_CONSOLIDADO
     cmp = {r.modelo: r for r in res[res.lead_h == lead].itertuples(index=False)}
     tarjetas = "".join(
-        f'<div class="modelo"><div class="tipo">{MODELOS[m][1]} · {MODELOS[m][2]}</div><div class="nombre">{m}</div>'
-        f'<div class="value">{num(cmp[m].t_mae, 1)}<small>°C</small></div><div class="foot">{entero(cmp[m].n)} comparaciones</div></div>'
-        for m in ORDEN if m in cmp)
+        f'<div class="modelo"><div class="tipo">{meta(m)[1]} · {meta(m)[2]}</div><div class="nombre">{m}</div>'
+        f'<div class="value">{num(cmp[m].t_mae, 1)}<small>°C</small></div><div class="foot">{entero(cmp[m].n)} comparaciones'
+        f'{" · pocas todavía" if cmp[m].n < MIN_PARES else ""}</div></div>'
+        for m in presentes if m in cmp)
     rotulo = (f'{chip("prelim")} Se consolida al cumplir {DIAS_CONSOLIDADO} días; mientras tanto, las cifras pueden cambiar bastante.'
               if prelim else "")
     bloque = f"""<section>
@@ -751,7 +767,7 @@ def bloque_ultimos_dias(pts):
     t_max = max(4.0, math.ceil(res.t_mae.max() + 0.01)); w_max = max(4.0, math.ceil(res.w_mae.max() + 0.01))
     filas = []
     for ld, grupo in res.groupby("lead_h", sort=True):
-        grupo = grupo.set_index("modelo").reindex([m for m in ORDEN if m in grupo.modelo.values])
+        grupo = grupo.set_index("modelo").reindex([m for m in presentes if m in grupo.modelo.values])
         mejor = grupo.t_mae.idxmin() if len(grupo) > 1 else None
         for i, (m, r) in enumerate(grupo.iterrows()):
             nt = nivel(r.t_mae)

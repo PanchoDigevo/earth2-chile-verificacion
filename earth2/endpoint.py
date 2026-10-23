@@ -79,6 +79,10 @@ def pedir_pronostico(url, clave, corrida, plazos):
                 b = r.read()
             if _es_netcdf(b):
                 return xr.open_dataset(io.BytesIO(b)).load()
+        if info.get("estado") == "error":                       # la función corrió y falló: mostrar el detalle completo
+            print("Earth-2: la función respondió error para la corrida", info.get("corrida"))
+            print(info.get("detalle", ""))
+            raise RuntimeError("Earth-2: la función de NVCF falló al correr el modelo (detalle arriba)")
         if st == 202 and h.get("nvcf-reqid"):
             base = url.split("/v2/nvcf/")[0] if "/v2/nvcf/" in url else "https://api.nvcf.nvidia.com"
             sondeo = f"{base}/v2/nvcf/pexec/status/{h['nvcf-reqid']}"

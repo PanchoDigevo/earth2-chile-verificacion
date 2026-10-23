@@ -4,6 +4,10 @@ Lo hecho, en orden inverso y en simple. Los commits automáticos (verificación,
 
 Sitio: https://panchodigevo.github.io/earth2-chile-verificacion/
 
+## 23-oct-2026
+
+- **Conector Earth-2 listo para la función de NVCF de Guillermo** (`earth2/endpoint.py`): manda la corrida, recibe `{"estado": "lanzada"}` y vuelve a preguntar cada 20 s hasta que llega el netCDF (tope 15 min). El paso del workflow tiene tope de 16 min y el entorno ya abre netCDF en memoria (`h5netcdf`, `h5py`, `scipy`). Se activa al cargar los secretos.
+
 ## 20-oct-2026
 
 - **Tarea 5 lista para el POD** (`earth2/correr_pod.py`, `earth2/pod/Dockerfile`, `earth2/workload_pod.md`): corre AIFS o FourCastNet v2 (SFNO) en una L40S, recorta Chile, deja el CSV por aeródromo y la ficha técnica para NVIDIA, y se compara con el AIFS de ECMWF. Probado sin GPU con persistencia (`earth2-pod-prueba.yml`). FourCastNet 3 pide ~80 GB y no cabe en una L40S. `endpoint.py` ya no inventa valores para aeródromos fuera del recorte.

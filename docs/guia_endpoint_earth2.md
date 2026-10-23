@@ -31,6 +31,13 @@ Un modelo nuevo solo tiene que entregar sus valores en esos mismos aeródromos. 
 4. **Lanzar el proceso en GitHub** (Actions → verificacion-diaria → *Run workflow*) y revisar en el registro el paso "Earth-2". Si falla, el resto del sitio sigue funcionando: ese paso no detiene la verificación.
 5. **Ver el modelo en el sitio.** Hoy las tablas y el selector del sitio muestran AIFS, IFS y GFS (`MODELOS` y `ORDEN` en `verificacion/render_site.py`). Para que el modelo nuevo aparezca como cuarta opción hay que agregarlo ahí. Conviene hacerlo cuando ya tenga unos días de datos, para no publicar cifras con pocas comparaciones.
 
+## Cómo se llama a la función (contrato con NVCF)
+
+- `POST` a `EARTH2_URL` con `Authorization: Bearer <EARTH2_API_KEY>` y el cuerpo `{"corrida": "2026-10-21T00", "horas": 48}`.
+- La corrida tarda ~60 s y el gateway de NVCF corta las conexiones largas. Por eso la primera llamada lanza la corrida y responde `{"estado": "lanzada"}`; `earth2/endpoint.py` repite la misma llamada cada 20 s (hasta 15 min) hasta que la respuesta es el netCDF.
+- También entiende las respuestas propias de NVCF: `202` con `NVCF-REQID` (consulta `/v2/nvcf/pexec/status/<id>`) y un resultado grande entregado como enlace (`Location` o `"url"` en el JSON).
+- Probado con un servidor que imita ese comportamiento; falta la primera llamada real.
+
 ## Qué condición inicial usar
 
 Para que la comparación sea justa, el endpoint debería partir de la misma hora de corrida que los otros modelos (00, 06, 12 o 18 UTC), y de una condición inicial abierta y reproducible: el análisis de GFS o el de IFS. Earth2Studio trae los conectores (`GFS`, `IFS`) para armarla.

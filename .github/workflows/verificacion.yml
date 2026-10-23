@@ -48,6 +48,7 @@ jobs:
           EARTH2_MODELO: ${{ vars.EARTH2_MODELO }}
         run: python ../earth2/endpoint.py
         continue-on-error: true
+        timeout-minutes: 16   # la función de NVCF tarda ~60 s; se le pregunta cada 20 s hasta un tope de 15 min
       - name: Verificar y generar sitio
         working-directory: verificacion
         run: python verify.py

@@ -10,9 +10,9 @@ Configuración (GitHub → Settings → Secrets and variables → Actions):
   secreto  EARTH2_API_KEY   clave (nunca en el código ni en el chat: el repo es público)
   variable EARTH2_MODELO    nombre corto que aparecerá en el sitio (por defecto "E2")
 
-Lo único que falta escribir es pedir_pronostico(): depende de qué devuelve el endpoint. Lo más simple es que devuelva
-un archivo netCDF o Zarr con el formato estándar de Earth2Studio (variables t2m, u10m, v10m; dimensiones lead_time,
-lat, lon). Con eso, el resto de este archivo ya funciona. Guía completa: docs/guia_endpoint_earth2.md.
+pedir_pronostico() sigue el contrato de la función de NVCF de Guillermo: se manda {"corrida": "YYYY-MM-DDTHH", "horas": N},
+la primera respuesta es {"estado": "lanzada"} y se repite la llamada cada 20 s hasta recibir el netCDF (formato estándar
+de Earth2Studio: t2m, u10m, v10m sobre lead_time, lat, lon). Guía completa: docs/guia_endpoint_earth2.md.
 
 Prueba local sin endpoint, con un archivo ya descargado:
   python earth2/endpoint.py --archivo salida.nc --corrida 2026-10-20T00"""
@@ -25,19 +25,72 @@ SALIDA = os.path.join(AQUI, "..", "verificacion", "data")
 PLAZOS = [0, 6, 12, 18, 24, 36, 48]
 
 
+ESPERA_S = 20            # Guillermo: la corrida tarda ~60 s y el gateway de NVCF corta conexiones largas
+TOPE_MIN = 15            # tope total de espera; el job de verificación tiene 30 min en total
+
+
+def _llamar(url, clave, cuerpo=None, metodo="POST"):
+    import json, urllib.error
+    datos = json.dumps(cuerpo).encode() if cuerpo is not None else None
+    h = {"Authorization": f"Bearer {clave}", "Accept": "application/x-netcdf, application/octet-stream, application/json"}
+    if datos is not None:
+        h["Content-Type"] = "application/json"
+    try:
+        with urllib.request.urlopen(urllib.request.Request(url, data=datos, headers=h, method=metodo), timeout=120) as r:
+            return r.status, dict(r.headers), r.read()
+    except urllib.error.HTTPError as e:
+        return e.code, dict(e.headers or {}), e.read()
+    except (urllib.error.URLError, TimeoutError, ConnectionError) as e:   # corte de red o del gateway: se reintenta
+        return 0, {}, str(e).encode()
+
+
+def _es_netcdf(b):
+    return b[:4] in (b"\x89HDF", b"CDF\x01", b"CDF\x02")
+
+
 def pedir_pronostico(url, clave, corrida, plazos):
-    """Pide al endpoint el pronóstico que parte en `corrida` (datetime UTC) para los `plazos` en horas.
+    """Pide al endpoint el pronóstico que parte en `corrida` (datetime UTC) y devuelve un xarray.Dataset con t2m (K),
+    u10m y v10m (m/s) sobre lead_time, lat y lon (la salida estándar de Earth2Studio).
 
-    Debe devolver un xarray.Dataset con t2m (K), u10m y v10m (m/s) y dimensiones lead_time (timedelta), lat y lon
-    (grados; lon de 0 a 360 o de −180 a 180). Esa es la salida estándar de Earth2Studio.
-
-    POR ESCRIBIR según la documentación del endpoint (qué condición inicial recibe, en qué formato responde).
-    Un ejemplo típico de llamada HTTP:
-        req = urllib.request.Request(url, data=json.dumps({...}).encode(), headers={"Authorization": f"Bearer {clave}"})
-        datos = urllib.request.urlopen(req, timeout=900).read()
-        return xarray.open_dataset(io.BytesIO(datos))
-    """
-    raise NotImplementedError("falta adaptar pedir_pronostico() al endpoint: ver docs/guia_endpoint_earth2.md")
+    Cómo responde la función de Guillermo en NVCF: la corrida tarda ~60 s y el gateway corta las conexiones largas, así
+    que la primera llamada la lanza y devuelve {"estado": "lanzada"}; se repite la MISMA llamada cada 20 s hasta que
+    llega el netCDF. También se aceptan las respuestas propias de NVCF: 202 con NVCF-REQID (se consulta
+    /v2/nvcf/pexec/status/<id>) y un resultado grande entregado como enlace (Location o "url" en el JSON)."""
+    import json, time, xarray as xr
+    cuerpo = {"corrida": corrida.strftime("%Y-%m-%dT%H"), "horas": max(plazos)}
+    t0, intento, sondeo = time.time(), 0, None
+    while time.time() - t0 < TOPE_MIN * 60:
+        intento += 1
+        st, h, b = _llamar(sondeo, clave, metodo="GET") if sondeo else _llamar(url, clave, cuerpo)
+        h = {k.lower(): v for k, v in h.items()}
+        if st == 200 and _es_netcdf(b):
+            print(f"Earth-2: netCDF recibido en el intento {intento} ({len(b) / 1e6:.1f} MB, {time.time() - t0:.0f} s)")
+            return xr.open_dataset(io.BytesIO(b)).load()
+        enlace = h.get("location")
+        info = {}
+        if b[:1] == b"{":
+            try:
+                info = json.loads(b)
+            except ValueError:
+                info = {}
+            enlace = enlace or info.get("url")
+        if enlace and st in (200, 302, 303):
+            with urllib.request.urlopen(enlace, timeout=300) as r:
+                b = r.read()
+            if _es_netcdf(b):
+                return xr.open_dataset(io.BytesIO(b)).load()
+        if st == 202 and h.get("nvcf-reqid"):
+            base = url.split("/v2/nvcf/")[0] if "/v2/nvcf/" in url else "https://api.nvcf.nvidia.com"
+            sondeo = f"{base}/v2/nvcf/pexec/status/{h['nvcf-reqid']}"
+        elif st in (200, 202) and (info.get("estado") in ("lanzada", "corriendo", "en_curso") or st == 202):
+            pass
+        elif st in (0, 429, 500, 502, 503, 504):
+            print(f"Earth-2: el endpoint respondió {st}; se reintenta")
+        else:
+            raise RuntimeError(f"Earth-2: respuesta inesperada {st}: {b[:200]!r}")
+        print(f"Earth-2: intento {intento}, estado {info.get('estado') or st}; espero {ESPERA_S} s")
+        time.sleep(ESPERA_S)
+    raise TimeoutError(f"Earth-2: sin netCDF después de {TOPE_MIN} min")
 
 
 def en_estaciones(ds, corrida, modelo, est):

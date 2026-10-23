@@ -15,7 +15,19 @@ BASE = "https://osdf-director.osg-htc.org/ncar/rda/d616000"
 PUNTOS = {"Arica": (-18.35, -70.34), "Las Condes": (-33.40, -70.55), "Punta Arenas": (-53.00, -70.85),
           "Puerto Williams": (-54.93, -67.62), "Cabo de Hornos": (-55.98, -67.27), "Antártica (Teniente Marsh)": (-62.19, -58.99)}
 CAJA = dict(lat_n=-17.4, lat_s=-56.2, lon_o=-76.5, lon_e=-66.0)    # Chile continental e insular cercano
-BUSCAR = ("T2", "Q2", "U10", "V10", "PSFC", "PREC_ACC_NC", "RAINNC", "RAINC", "PREC", "SWDOWN", "SNOW", "SNOWH", "SR", "LH", "HFX", "TSK")
+def bytes_en_caja(ds, f0, f1, c0, c1):
+    """Bytes comprimidos de los trozos (chunks) HDF5 que tocan la caja: lo que hay que bajar para leerla."""
+    tot = 0
+    for i in range(ds.id.get_num_chunks()):
+        ci = ds.id.get_chunk_info(i)
+        o = ci.chunk_offset; ch = ds.chunks
+        if o[-2] <= f1 and o[-2] + ch[-2] - 1 >= f0 and o[-1] <= c1 and o[-1] + ch[-1] - 1 >= c0:
+            tot += ci.size
+    return tot
+
+
+BUSCAR = ("T2", "Q2", "U10", "V10", "WSPD10MAX", "PSFC", "PREC_ACC_NC", "SNOW_ACC_NC", "SWDOWN", "SNOW", "SNOWH", "SR", "FZLEV", "TSK")
+CLAVE = ("T2", "U10", "V10", "WSPD10MAX", "PREC_ACC_NC", "SNOW_ACC_NC", "Q2", "SWDOWN")   # candidatas a salida de CorrDiff-Chile
 
 
 class Contador:
@@ -75,15 +87,19 @@ def main():
                        "todas": sorted(info)}
     leidas = {}
     for k in [x for x in BUSCAR if x in info]:
-        n0, s0 = f2.n, time.time()
-        v = h2[k][..., caja["filas"][0]:caja["filas"][1] + 1, caja["cols"][0]:caja["cols"][1] + 1]
-        leidas[k] = {"mb_bajados": round((f2.n - n0) / 1e6, 1), "segundos": round(time.time() - s0, 1),
+        s0 = time.time(); ds = h2[k]
+        v = ds[..., caja["filas"][0]:caja["filas"][1] + 1, caja["cols"][0]:caja["cols"][1] + 1]
+        leidas[k] = {"mb_bajados": round(bytes_en_caja(ds, caja["filas"][0], caja["filas"][1], caja["cols"][0], caja["cols"][1]) / 1e6, 2),
+                     "mb_variable_entera": round(sum(ds.id.get_chunk_info(i).size for i in range(ds.id.get_num_chunks())) / 1e6, 2),
+                     "segundos": round(time.time() - s0, 1),
                      "min": round(float(np.nanmin(v)), 3), "max": round(float(np.nanmax(v)), 3)}
     informe["lectura_caja_chile"] = leidas
     informe["hora"]["total_mb_bajados"] = round(f2.n / 1e6, 1)
     informe["segundos"] = round(time.time() - t0, 1)
-    mb = sum(x["mb_bajados"] for k, x in leidas.items() if k in ("T2", "U10", "V10", "PREC_ACC_NC", "RAINNC", "SWDOWN"))
-    informe["estimacion"] = {"mb_por_hora_variables_clave": round(mb, 1),
+    mb = sum(x["mb_bajados"] for k, x in leidas.items() if k in CLAVE)
+    seg = sum(x["segundos"] for k, x in leidas.items() if k in CLAVE)
+    informe["estimacion"] = {"variables_clave": [k for k in CLAVE if k in leidas], "mb_por_hora_variables_clave": round(mb, 1),
+                             "segundos_por_hora_un_proceso": round(seg, 1), "dias_10_anios_horario_32_procesos": round(seg * 8760 * 10 / 32 / 86400, 1),
                              "tb_10_anios_horario": round(mb * 8760 * 10 / 1e6, 2), "tb_10_anios_cada_3h": round(mb * 8760 * 10 / 3 / 1e6, 2),
                              "tb_si_se_bajaran_archivos_enteros_horario": round(736 * 8760 * 10 / 1e6, 1)}
     print(json.dumps(informe, ensure_ascii=False, indent=1))

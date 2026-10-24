@@ -1,9 +1,11 @@
 {
- "nombre": "Lluvia de verano en Chile central, 29 al 31 de enero de 2021",
- "desde_utc": "2021-01-29T12",
- "hasta_utc": "2021-01-31T12",
- "horas": 48,
- "horas_saag": 48,
+ "nombre": "La madrugada más fría del invierno de 2021 en Pudahuel: 28 de junio, 06:00",
+ "variable": "temp",
+ "unidad": "°C",
+ "desde_utc": "2021-06-28T10",
+ "hasta_utc": "2021-06-28T10",
+ "horas": 1,
+ "horas_saag": 1,
  "caja": [
   -32.9,
   -34.4,
@@ -11,66 +13,76 @@
   -69.8
  ],
  "niveles": [
+  -12,
+  -9,
+  -6,
+  -3,
   0,
-  1,
-  5,
-  10,
-  20,
-  30,
-  50,
-  75,
-  100,
-  150,
-  250
+  3,
+  6,
+  9,
+  12,
+  15,
+  18
  ],
  "colores": [
-  "#ffffff00",
-  "#e3eef9",
-  "#c6dbef",
-  "#9ecae1",
-  "#6baed6",
-  "#4292c6",
-  "#2171b5",
-  "#08519c",
   "#08306b",
-  "#041c42"
+  "#2171b5",
+  "#6baed6",
+  "#c6dbef",
+  "#f2f0f7",
+  "#fee6ce",
+  "#fdae6b",
+  "#f16913",
+  "#d94801",
+  "#7f2704"
  ],
- "max_4km": 150.8,
- "max_25km": 122.2,
+ "max_4km": 13.4,
+ "max_25km": 11.0,
+ "min_4km": -20.5,
+ "min_25km": -17.2,
  "puntos": [
   {
-   "nombre": "Valparaíso",
-   "mm_4km": 8.5,
-   "mm_25km": 42.5,
-   "altura_m": 221
+   "nombre": "Pudahuel (aeropuerto)",
+   "mm_4km": 0.5,
+   "mm_25km": -2.7,
+   "altura_m": 463,
+   "medido": -3.0,
+   "icao": "SCEL"
   },
   {
-   "nombre": "Santiago centro",
-   "mm_4km": 10.8,
-   "mm_25km": 50.5,
-   "altura_m": 532
+   "nombre": "Tobalaba (Las Condes)",
+   "mm_4km": 9.4,
+   "mm_25km": -8.0,
+   "altura_m": 723,
+   "medido": null,
+   "icao": "SCTB"
   },
   {
-   "nombre": "Las Condes (Apoquindo)",
-   "mm_4km": 16.8,
-   "mm_25km": 55.8,
-   "altura_m": 1189
+   "nombre": "Santo Domingo (costa)",
+   "mm_4km": 5.3,
+   "mm_25km": 0.3,
+   "altura_m": 87,
+   "medido": null,
+   "icao": "SCSN"
   },
   {
    "nombre": "San José de Maipo",
-   "mm_4km": 18.6,
-   "mm_25km": 70.7,
+   "mm_4km": 4.1,
+   "mm_25km": -13.2,
    "altura_m": 1425
   },
   {
    "nombre": "Farellones",
-   "mm_4km": 28.1,
-   "mm_25km": 74.7,
+   "mm_4km": 2.3,
+   "mm_25km": -11.8,
    "altura_m": 2194
   }
  ],
+ "observado": null,
  "fuentes": {
   "4km": "SAAG-WRF, NCAR RDA d616000 (Liu et al. 2025), CC BY 4.0",
-  "25km": "ERA5 de ECMWF/Copernicus (copia ARCO de Google), CC BY 4.0"
+  "25km": "ERA5 de ECMWF/Copernicus (copia ARCO de Google), CC BY 4.0",
+  "medido": "METAR de la DGAC, archivo de Iowa State University (IEM)"
  }
 }

@@ -1,0 +1,38 @@
+name: antes-despues
+# Arma las imágenes de la página "Por qué 4 km" (site/zoom.html): la lluvia de una tormenta real a 25 km (ERA5) y a 4 km
+# (SAAG-WRF). Sube solo las dos imágenes y un JSON chico a site/zoom/; la página la regenera la verificación diaria.
+on:
+  workflow_dispatch:
+    inputs:
+      desde:
+        description: "Inicio, YYYY-MM-DDTHH (UTC)"
+        default: "2021-01-29T12"
+      hasta:
+        description: "Fin, YYYY-MM-DDTHH (UTC)"
+        default: "2021-01-31T12"
+      nombre:
+        description: "Nombre del evento"
+        default: "Lluvia de verano en Chile central, 29 al 31 de enero de 2021"
+      caja:
+        description: "lat norte, lat sur, lon oeste, lon este"
+        default: "-32.9,-34.4,-71.9,-69.8"
+permissions:
+  contents: write
+jobs:
+  imagenes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy scipy h5py fsspec aiohttp requests "xarray>=2025.1" "zarr>=3" matplotlib
+      - name: Armar las imágenes
+        run: python entrenamiento/antes_despues.py --desde "${{ inputs.desde }}" --hasta "${{ inputs.hasta }}" --nombre "${{ inputs.nombre }}" --caja="${{ inputs.caja }}"
+      - name: Guardar
+        run: |
+          git config user.name "earth2-bot"; git config user.email "actions@users.noreply.github.com"
+          git add site/zoom
+          git diff --cached --quiet || git commit -m "antes y después: imágenes de ${{ inputs.desde }}"
+          for i in 1 2 3; do git pull --rebase -q origin main && git push -q origin HEAD:main && break; sleep 10; done

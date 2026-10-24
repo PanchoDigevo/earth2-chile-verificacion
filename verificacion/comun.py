@@ -236,7 +236,7 @@ ETAPAS = [
     ("Por entrenar", "pendiente",
      "CorrDiff-Chile, el zoom de 25 a 4 km. NVIDIA entrega la receta, pero los modelos ya entrenados solo existen para Estados Unidos y Taiwán "
      "y no sirven para Chile. Hay que entrenarlo con 22 años de simulación del clima chileno a 4 km (SAAG-WRF). Todavía no existe: nada de "
-     "lo que se ve hoy en el sitio usa CorrDiff."),
+     "lo que se ve hoy en el sitio usa CorrDiff. <a href=\"zoom.html\">Mira en una tormenta real qué cambia de 25 a 4 km</a>."),
 ]
 
 CSS_ETAPAS = """

@@ -981,6 +981,9 @@ def render_site(pts):
         render_historico.desde_csv()
         import envivo_pagina                 # pestaña En vivo: armazón; los datos los lee el navegador
         print(f"site/envivo.html ({envivo_pagina.pagina(head, escribir, ahora)} KB) listo")
+        import zoom_pagina                   # "Por qué 4 km": antes y después de una tormenta real
+        kb = zoom_pagina.pagina(head, escribir, ahora)
+        print(f"site/zoom.html ({kb} KB) listo" if kb else "site/zoom.html: faltan las imágenes (antes-despues.yml)")
     except Exception as e:
         print("AVISO: no se regeneraron Eventos y Método:", e)
 

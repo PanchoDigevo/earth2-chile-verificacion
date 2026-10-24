@@ -4,18 +4,24 @@ name: antes-despues
 on:
   workflow_dispatch:
     inputs:
+      variable:
+        description: "temp (temperatura a la hora 'desde') o lluvia (acumulada entre 'desde' y 'hasta')"
+        default: "temp"
       desde:
         description: "Inicio, YYYY-MM-DDTHH (UTC)"
-        default: "2021-01-29T12"
+        default: "2021-06-28T10"
       hasta:
         description: "Fin, YYYY-MM-DDTHH (UTC)"
-        default: "2021-01-31T12"
+        default: "2021-06-28T10"
       nombre:
         description: "Nombre del evento"
-        default: "Lluvia de verano en Chile central, 29 al 31 de enero de 2021"
+        default: "La madrugada más fría del invierno de 2021 en Pudahuel: 28 de junio, 06:00"
       caja:
         description: "lat norte, lat sur, lon oeste, lon este"
         default: "-32.9,-34.4,-71.9,-69.8"
+      observado:
+        description: 'Lo que midió una estación: "Nombre;lat;lon;mm;fuente" (opcional)'
+        default: ""
 permissions:
   contents: write
 jobs:
@@ -29,7 +35,7 @@ jobs:
           python-version: "3.11"
       - run: pip install numpy scipy h5py fsspec aiohttp requests "xarray>=2025.1" "zarr>=3" matplotlib
       - name: Armar las imágenes
-        run: python entrenamiento/antes_despues.py --desde "${{ inputs.desde }}" --hasta "${{ inputs.hasta }}" --nombre "${{ inputs.nombre }}" --caja="${{ inputs.caja }}"
+        run: python entrenamiento/antes_despues.py --desde "${{ inputs.desde }}" --hasta "${{ inputs.hasta }}" --nombre "${{ inputs.nombre }}" --variable "${{ inputs.variable }}" --caja="${{ inputs.caja }}" --observado="${{ inputs.observado }}"
       - name: Guardar
         run: |
           git config user.name "earth2-bot"; git config user.email "actions@users.noreply.github.com"

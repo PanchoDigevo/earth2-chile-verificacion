@@ -87,7 +87,8 @@ def main():
     glat, glon = e5.latitude.values, e5.longitude.values - 360
     print(f"SAAG {len(ok)}/{len(horas)} horas; ERA5 listo. Rango 4 km {fino.min():.1f} a {fino.max():.1f}; 25 km {grueso.min():.1f} a {grueso.max():.1f} {unidad}", flush=True)
 
-    cmap = ListedColormap(colores); norm = BoundaryNorm(niveles, cmap.N, extend="both" if a.variable == "temp" else "neither")
+    cmap = ListedColormap(colores); norm = BoundaryNorm(niveles, cmap.N)
+    fino_v = np.clip(fino, niveles[0], niveles[-1] - 1e-3); grueso_v = np.clip(grueso, niveles[0], niveles[-1] - 1e-3)   # fuera de escala: color del extremo
     anillos = json.load(open(CHILE))
     asp = 1 / np.cos(np.radians((ln + ls) / 2))
 
@@ -106,8 +107,8 @@ def main():
     dlat, dlon = abs(glat[1] - glat[0]), abs(glon[1] - glon[0])
     lat_b = np.concatenate([glat - dlat / 2 * np.sign(glat[1] - glat[0]), [glat[-1] + dlat / 2 * np.sign(glat[1] - glat[0])]])
     lon_b = np.concatenate([glon - dlon / 2, [glon[-1] + dlon / 2]])
-    mapa(os.path.join(SALIDA, "era5_25km.png"), lambda ax: ax.pcolormesh(lon_b, lat_b, grueso, cmap=cmap, norm=norm, shading="flat"))
-    mapa(os.path.join(SALIDA, "saag_4km.png"), lambda ax: ax.pcolormesh(xlon, xlat, fino, cmap=cmap, norm=norm, shading="nearest"))
+    mapa(os.path.join(SALIDA, "era5_25km.png"), lambda ax: ax.pcolormesh(lon_b, lat_b, grueso_v, cmap=cmap, norm=norm, shading="flat"))
+    mapa(os.path.join(SALIDA, "saag_4km.png"), lambda ax: ax.pcolormesh(xlon, xlat, fino_v, cmap=cmap, norm=norm, shading="nearest"))
 
     def en(la, lon_):
         i = np.unravel_index(((xlat - la) ** 2 + (xlon - lon_) ** 2).argmin(), xlat.shape)

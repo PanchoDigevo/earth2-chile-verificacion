@@ -37,10 +37,19 @@ def pagina(head, escribir, ahora):
         titulo = "La misma madrugada, a 25 km y a 4 km"
         lead = (f"{z['nombre']}. A la izquierda, la temperatura como la ve un pronóstico global, en cuadrados de 25 km. A la derecha, la misma hora a 4 km. "
                 "Mueve el control para comparar.")
-        cambia = (f"En 25 km caben el valle, la precordillera y la cordillera, y el modelo les da casi la misma temperatura. A 4 km aparece lo que importa en Chile: "
-                  f"la helada del valle, el frío de altura y la costa más templada. En esta zona, a 25 km la temperatura va de <strong>{v(z['min_25km'], 1)}</strong> a "
-                  f"<strong>{v(z['max_25km'], 1)}</strong>; a 4 km, de <strong>{v(z['min_4km'], 1)}</strong> a <strong>{v(z['max_4km'], 1)}</strong>. "
-                  "La columna «Medido» es lo que registró cada aeródromo a esa hora: es la misma diferencia que este sitio mide todos los días.")
+        P = {p["nombre"].split(" (")[0]: p for p in z["puntos"]}
+        med = next((p for p in z["puntos"] if p.get("medido") is not None), None)
+        partes = []
+        if "San José de Maipo" in P and "Tobalaba" in P:
+            sj, tb = P["San José de Maipo"], P["Tobalaba"]
+            partes.append(f"En 25 km caben el valle, la precordillera y la cordillera, y el modelo les reparte el frío de las cumbres: a esta hora pone "
+                          f"<strong>{v(sj['mm_25km'], 1)}</strong> en San José de Maipo y <strong>{v(tb['mm_25km'], 1)}</strong> en Tobalaba. "
+                          f"A 4 km la cordillera queda en su lugar y la precordillera se ve más templada ({v(sj['mm_4km'], 1)} y {v(tb['mm_4km'], 1)}).")
+        if med:
+            partes.append(f"La simulación de 4 km tampoco es perfecta: en {med['nombre'].split(' (')[0]} dio {v(med['mm_4km'], 1)}, el aeródromo midió "
+                          f"<strong>{v(med['medido'], 1)}</strong> y el cuadrado de 25 km, {v(med['mm_25km'], 1)}. El frío que se acumula en el fondo del valle "
+                          "en las noches despejadas cuesta incluso a 4 km. Por eso el zoom se combina con la corrección por estación, y todo se mide en este sitio.")
+        cambia = " ".join(partes)
         pie_img = "Temperatura a 2 m, en grados. Líneas grises: relieve cada 1.000 m. Puntos: los lugares de la tabla."
     else:
         filas = "".join(f"<tr><td class='l'>{p['nombre']}</td><td class='num'>{num(p['altura_m'], 0)} m</td>"

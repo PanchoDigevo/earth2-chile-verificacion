@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Por qué 4 km · Earth-2 Chile</title>
+<meta name="description" content="Un caso real de Chile visto a 25 km, como lo ve un pronóstico global, y a 4 km, como lo va a aprender CorrDiff-Chile.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Una columna de 1080 px; lo consolidado antes que lo preliminar; cada número con su explicación al lado.
+   Neutros fríos con leve sesgo azul (cielo y hielo), acento verde glaciar; semáforo fijo y siempre con texto. */
+:root{
+  --bg:#f4f6f8; --surface:#ffffff; --fg:#17212b; --muted:#5a6977; --line:#d8dfe6; --line-soft:#e9eef2;
+  --accent:#0e7c86; --accent-soft:#d7eef0; --tierra:#e3e9ee; --costa:#9fb0bd;
+  --bueno:#0ca30c; --medio:#c98500; --alto:#d03b3b; --sin:#8a99a6;
+  --font-display:"Sora",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-body:"Source Sans 3","Source Sans Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-data:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --radius:10px; color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111821; --surface:#19222c; --fg:#e7ecf1; --muted:#9fadba; --line:#2c3845; --line-soft:#232e3a;
+  --accent:#44bcc6; --accent-soft:#163b40; --tierra:#243040; --costa:#4f6071;
+  --bueno:#2fbf2f; --medio:#e0a428; --alto:#ee6a6a; --sin:#7d8c99; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111821; --surface:#19222c; --fg:#e7ecf1; --muted:#9fadba; --line:#2c3845; --line-soft:#232e3a;
+  --accent:#44bcc6; --accent-soft:#163b40; --tierra:#243040; --costa:#4f6071;
+  --bueno:#2fbf2f; --medio:#e0a428; --alto:#ee6a6a; --sin:#7d8c99; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
+a:focus-visible,button:focus-visible,summary:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:16px;padding-block:24px 56px;display:grid;gap:32px}
+@media (min-width:720px){.wrap{padding-inline:28px;padding-block:40px 72px;gap:44px}}
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(26px,3.8vw,40px);line-height:1.15;font-weight:600;max-width:26ch}
+h2{font-size:22px;font-weight:600}
+h3{font-size:17px;font-weight:600}
+p{margin:0;max-width:65ch}
+.eyebrow{font-family:var(--font-display);font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.muted{color:var(--muted)}
+.small{font-size:14.5px}
+header{display:grid;gap:12px}
+header .lead{font-size:19px;color:var(--muted);max-width:60ch}
+.aviso{border-left:3px solid var(--accent);padding:10px 14px;background:var(--accent-soft);border-radius:0 var(--radius) var(--radius) 0;max-width:72ch}
+.aviso p{max-width:none}
+section{display:grid;gap:14px}
+.sec-head{display:grid;gap:6px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;display:grid;gap:12px;min-width:0}
+/* cifras de la portada */
+.cifras{display:grid;gap:12px;grid-template-columns:1fr}
+@media (min-width:760px){.cifras{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.cifra{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;display:grid;gap:6px;align-content:start}
+.cifra .v{font-family:var(--font-display);font-size:42px;font-weight:600;line-height:1.05;letter-spacing:-.02em}
+.cifra .v small{font-size:18px;font-weight:500;color:var(--muted);margin-left:3px}
+.cifra .v .flecha{color:var(--muted);font-weight:400;margin:0 6px}
+.cifra p{font-size:15.5px}
+.cifra.principal{border-color:var(--accent)}
+/* puertas de entrada */
+.puertas{display:grid;gap:12px;grid-template-columns:1fr}
+@media (min-width:760px){.puertas{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.puerta{display:grid;gap:6px;align-content:start;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;color:var(--fg);text-decoration:none}
+.puerta:hover{border-color:var(--accent)}
+.puerta .q{font-family:var(--font-display);font-weight:600;font-size:18px}
+.puerta .ir{color:var(--accent);font-weight:600;font-size:15px}
+.puerta p{font-size:15.5px;color:var(--muted)}
+.confianza{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:14.5px;color:var(--muted)}
+/* controles */
+.controles{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center}
+.selector{display:flex;flex-wrap:wrap;gap:6px;border:0;padding:0;margin:0;align-items:center}
+.selector legend{float:left;margin-right:6px;padding:0}
+.selector label{position:relative;cursor:pointer;border:1px solid var(--line);border-radius:999px;padding:5px 13px;font-size:14.5px;font-weight:600;background:var(--bg)}
+.selector label .muted{font-weight:400;font-size:13px}
+.selector input{position:absolute;opacity:0;width:0;height:0;margin:0}
+.selector label:has(input:checked){background:var(--accent-soft);border-color:var(--accent)}
+.selector label:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+select{font:inherit;font-size:16px;padding:7px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg);max-width:100%}
+/* mapa */
+.mapa{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:flex-start;justify-content:center}
+.franja{margin:0;display:grid;gap:4px;justify-items:center}
+.franja svg{max-width:100%;height:auto;display:block;overflow:hidden}
+.franja figcaption{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.tierra{fill:var(--tierra);stroke:var(--costa);stroke-width:.6;vector-effect:non-scaling-stroke}
+.est{cursor:pointer;outline:none}
+.est .hit{fill:transparent}
+.est .pt{stroke:var(--surface);stroke-width:2;fill:var(--sin)}
+.est.bueno .pt{fill:var(--bueno)} .est.medio .pt{fill:var(--medio)} .est.alto .pt{fill:var(--alto)}
+.est .etq{display:none;font:600 10px var(--font-body);fill:var(--fg);paint-order:stroke;stroke:var(--surface);stroke-width:3px;stroke-linejoin:round}
+.est.con-etq .etq{display:block}
+.est.sel .pt{stroke:var(--fg);stroke-width:2.5;r:7}
+.est:focus-visible .pt{stroke:var(--accent);stroke-width:3}
+.est:hover .pt{r:7}
+.leyenda{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:14px;color:var(--muted);align-items:center}
+.leyenda span.item{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:2px 9px 2px 7px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--fg);white-space:nowrap}
+.chip i{width:8px;height:8px;border-radius:50%;background:var(--sin)}
+.chip.bueno i{background:var(--bueno)} .chip.medio i{background:var(--medio)} .chip.alto i{background:var(--alto)}
+.chip.sin{color:var(--muted)} .chip.prelim{color:var(--muted);border-style:dashed}
+/* tu zona */
+.zona{display:grid;gap:20px}
+@media (min-width:900px){.zona{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);align-items:start}}
+.ficha{position:relative}
+@media (min-width:900px){.ficha{position:sticky;top:72px}}
+.ficha-cab{display:grid;gap:2px}
+.antes-despues{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.antes-despues > div{display:grid;gap:2px;justify-items:start}
+.antes-despues .lbl{font-size:13px;color:var(--muted)}
+.antes-despues .v{font-family:var(--font-display);font-size:34px;font-weight:600;line-height:1.1}
+.antes-despues .v small{font-size:16px;font-weight:500;color:var(--muted);margin-left:2px}
+.antes-despues .flecha{font-size:24px;color:var(--muted)}
+/* tablas */
+.tabla{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line-soft);text-align:right;vertical-align:middle;white-space:nowrap}
+th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line)}
+th.l,td.l{text-align:left}
+td.num{font-family:var(--font-data);font-size:14px;font-variant-numeric:tabular-nums}
+td .region{display:block;font-size:13px;color:var(--muted)}
+tr.actual td{background:var(--accent-soft)}
+#tabla-est tbody tr,#tabla-lluvia tbody tr{cursor:pointer}
+#tabla-est tbody tr:hover td,#tabla-lluvia tbody tr:hover td{background:color-mix(in srgb,var(--accent) 8%,transparent)}
+.ficha h3{margin-top:6px}
+table.mini td.sel{background:var(--accent-soft)}
+.modelo .que{font-size:14.5px;margin-bottom:4px}
+table.mini{font-size:14.5px} table.mini th,table.mini td{padding:6px 8px}
+td.medida{min-width:9.5em}
+.medida-in{display:inline-grid;grid-template-columns:72px auto;gap:8px;align-items:center;justify-items:end}
+.bar{display:block;width:72px;height:8px;border-radius:4px;background:var(--line-soft);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:4px;background:var(--sin)}
+.bar.bueno i{background:var(--bueno)} .bar.medio i{background:var(--medio)} .bar.alto i{background:var(--alto)}
+td.plazo{font-weight:600;vertical-align:top} tr.sep td{border-top:1px solid var(--line)}
+td.modelo-nombre{font-weight:600} td.modelo-nombre .tipo{display:block;font-size:12px;color:var(--muted);font-weight:400}
+td.num.mejor{font-weight:700;color:var(--accent)}
+/* bloque preliminar */
+.prelim-bloque{border:1px dashed var(--line);border-radius:var(--radius);padding:16px;display:grid;gap:12px;background:var(--surface)}
+.modelos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.modelos{grid-template-columns:1fr}}
+.modelo{border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;display:grid;gap:2px;align-content:start;background:var(--bg)}
+.modelo .tipo{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.modelo .nombre{font-family:var(--font-display);font-size:18px;font-weight:600}
+.modelo .value{font-family:var(--font-display);font-size:28px;font-weight:600;line-height:1.1}
+.modelo .value small{font-size:15px;font-weight:500;color:var(--muted);margin-left:2px}
+.modelo .foot{font-size:13px;color:var(--muted)}
+/* narrativa y desplegables */
+.narrativa{display:grid;gap:12px;max-width:68ch}
+.narrativa p{max-width:none}
+.narrativa ol{margin:0;padding-left:1.25em;display:grid;gap:8px}
+details{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);padding:0}
+summary{cursor:pointer;padding:12px 16px;font-weight:600;font-family:var(--font-display);font-size:15.5px;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--muted);font-weight:400}
+details[open] summary::after{content:"–"}
+details .body{padding:0 16px 16px;display:grid;gap:12px}
+details .body p{max-width:72ch}
+footer{border-top:1px solid var(--line);padding-top:20px;display:grid;gap:8px;font-size:14px;color:var(--muted)}
+footer p{max-width:85ch}
+@media (max-width:600px){.cifra .v{font-size:36px}}
+@media (prefers-reduced-motion:no-preference){.est .pt{transition:r .15s ease}}
+
+.topnav{position:sticky;top:0;z-index:1100;background:var(--surface);border-bottom:1px solid var(--line)}
+.topnav .in{max-width:1400px;margin:0 auto;padding-inline:16px;display:flex;align-items:center;gap:16px;min-height:52px}
+.topnav .marca{font-family:var(--font-display);font-weight:600;font-size:15px;color:var(--fg);text-decoration:none;white-space:nowrap;letter-spacing:-.01em}
+.topnav .marca small{color:var(--muted);font-weight:500;font-size:13px;margin-left:8px}
+.topnav .tabs{display:flex;gap:2px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.topnav .tabs::-webkit-scrollbar{display:none}
+.topnav .tabs a{display:inline-flex;align-items:center;height:52px;padding:0 12px;color:var(--muted);text-decoration:none;font-weight:600;font-size:14.5px;border-bottom:3px solid transparent;white-space:nowrap}
+.topnav .tabs a:hover{color:var(--fg)}
+.topnav .tabs a.activa{color:var(--fg);border-bottom-color:var(--accent)}
+.topnav .tabs a:focus-visible{outline:2px solid var(--accent);outline-offset:-4px;border-radius:4px}
+.topnav .largo{margin-left:.3em}
+@media (max-width:1060px){
+  .topnav .in{flex-wrap:wrap;gap:0;padding-inline:0}
+  .topnav .marca{padding:10px 16px 2px;font-size:14px}
+  .topnav .marca small{display:none}
+  .topnav .tabs{margin-left:0;width:100%;padding-inline:6px}
+  .topnav .tabs a{height:42px;padding:0 10px;font-size:14px}
+  .topnav .largo{display:none}
+}
+@media (max-width:620px){
+  /* en teléfono las seis pestañas no caben: se desplazan y el borde derecho se desvanece como pista */
+  .topnav .tabs{-webkit-mask-image:linear-gradient(to right,#000 85%,transparent);mask-image:linear-gradient(to right,#000 85%,transparent);padding-right:28px}
+  .topnav .tabs a{padding:0 9px}
+}
+
+.def{all:unset;cursor:help;border-bottom:1.5px dotted currentColor;text-underline-offset:2px}
+.def:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+.def-pop{position:absolute;z-index:2000;max-width:min(320px,calc(100vw - 32px));background:var(--fg);color:var(--bg);
+  font:400 14.5px/1.45 var(--font-body);padding:10px 12px;border-radius:8px;box-shadow:0 6px 24px rgba(0,0,0,.18)}
+
+.etapas{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.etapas li{display:grid;grid-template-columns:8.5em 1fr;gap:4px 12px;align-items:start}
+.etapas .tag{justify-self:start}
+.etapas .tag{font:600 12px var(--font-body);letter-spacing:.02em;padding:3px 9px;border-radius:999px;border:1px solid var(--line);white-space:nowrap;margin-top:2px}
+.etapas .hecho .tag{background:var(--accent-soft);border-color:var(--accent);color:var(--fg)}
+.etapas .curso .tag{background:color-mix(in srgb,var(--medio) 14%,var(--surface));border-color:var(--medio);color:var(--fg)}
+.etapas .pendiente .tag{background:var(--surface);border-style:dashed;color:var(--muted)}
+.etapas p{margin:0}
+@media (max-width:560px){.etapas li{grid-template-columns:1fr}}
+
+.aviso-oficial{border:1px solid var(--medio);border-left:6px solid var(--medio);background:color-mix(in srgb,var(--medio) 12%,var(--surface));
+  border-radius:var(--radius);padding:14px 16px;display:grid;gap:6px}
+.aviso-oficial strong.t{font-family:var(--font-display);font-size:17px}
+.aviso-oficial p{max-width:80ch;margin:0}
+.aviso-oficial .enlaces{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:15px}
+
+:root{--calido:#d9622b;--frio:#2a78d6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--calido:#ef8a55;--frio:#5aa0f0}}
+:root[data-theme="dark"]{--calido:#ef8a55;--frio:#5aa0f0}
+.cambios{display:grid;gap:12px;grid-template-columns:1fr}
+@media (min-width:900px){.cambios{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}.cambios .cambio:nth-child(3){grid-column:1/-1}}
+.barras-mar{width:100%;max-width:560px;height:auto;display:block}
+.barras-mar .nom{font:14px var(--font-body);fill:var(--fg)}
+.barras-mar .val{font:600 12.5px var(--font-data);fill:var(--fg)}
+.barras-mar .eje{font:11.5px var(--font-data);fill:var(--muted)}
+.barras-mar .eje0{stroke:var(--line);stroke-width:1}
+.barras-mar .calido{fill:var(--calido)} .barras-mar .frio{fill:var(--frio)}
+.indices{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.indices > div{display:grid;gap:2px}
+.indices .lbl{font-size:13px;color:var(--muted)}
+.indices .v{font-family:var(--font-display);font-size:30px;font-weight:600;line-height:1.1}
+.indices .v small{font-size:15px;color:var(--muted);margin-left:2px}
+.serie-mini{width:100%;max-width:260px;height:auto}
+.serie-mini .cero{stroke:var(--line);stroke-width:1}
+.serie-mini .linea{fill:none;stroke:var(--calido);stroke-width:2;stroke-linejoin:round}
+.serie-mini .fin{fill:var(--calido);stroke:var(--surface);stroke-width:2}
+.lista-deriva{margin:0;padding-left:1.2em;display:grid;gap:6px;font-size:15.5px;max-width:80ch}
+.cambios .contexto{grid-column:1/-1}
+.lista-ctx{margin:0;padding-left:1.2em;display:grid;gap:7px;font-size:15.5px;max-width:90ch}
+.lista-ctx .fuente{color:var(--muted);font-size:14px}
+
+.comparar{position:relative;max-width:640px;margin:0 auto;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);
+  background:var(--tierra);touch-action:pan-y}
+.comparar img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none}
+.comparar .arriba{position:absolute;inset:0;clip-path:inset(0 calc(100% - var(--pos, 50%)) 0 0)}
+.comparar .linea{position:absolute;top:0;bottom:0;left:var(--pos, 50%);width:2px;background:var(--fg);transform:translateX(-1px);pointer-events:none}
+.comparar .etq{position:absolute;top:10px;font:600 13px var(--font-body);background:var(--surface);color:var(--fg);padding:4px 9px;border-radius:999px;border:1px solid var(--line)}
+.comparar .etq.izq{left:10px} .comparar .etq.der{right:10px}
+.deslizador{display:block;width:100%;max-width:640px;margin:10px auto 0;accent-color:var(--accent)}
+.escala{display:flex;flex-wrap:wrap;gap:2px;max-width:640px;margin:10px auto 0;font:12px var(--font-data);color:var(--muted)}
+.escala span{flex:1;min-width:34px;text-align:center;padding-top:16px;position:relative}
+.escala span i{position:absolute;top:0;left:0;right:0;height:12px;border-radius:2px;outline:1px solid var(--line-soft)}
+.botones{display:flex;gap:8px;justify-content:center;margin-top:8px}
+.botones button{font:600 13px var(--font-body);padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;min-height:44px}
+</style>
+</head>
+<body>
+<nav class="topnav" aria-label="Secciones del sitio"><div class="in"><a class="marca" href="./">Earth-2 Chile<small>verificación pública del pronóstico</small></a><div class="tabs"><a href="./">Resumen</a><a href="zona.html">Tu zona</a><a href="eventos.html">Eventos<span class="largo">2026</span></a><a href="quebradas.html">Quebradas</a><a href="escenarios.html">Escenarios</a><a href="envivo.html">En vivo</a><a href="metodo.html">Método</a></div></div></nav>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Por qué 4 km</div>
+  <h1>La misma madrugada, a 25 km y a 4 km</h1>
+  <p class="lead">La madrugada más fría del invierno de 2021 en Pudahuel: 28 de junio, 06:00. A la izquierda, la temperatura como la ve un pronóstico global, en cuadrados de 25 km. A la derecha, la misma hora a 4 km. Mueve el control para comparar.</p>
+</header>
+<section class="card">
+  <div class="comparar" id="comparar" style="--pos:50%">
+    <img src="zoom/saag_4km.png" alt="Mapa a 4 km sobre Chile central">
+    <img class="arriba" src="zoom/era5_25km.png" alt="Mapa a 25 km sobre Chile central">
+    <div class="linea" aria-hidden="true"></div>
+    <span class="etq izq">25 km · pronóstico global</span><span class="etq der">4 km</span>
+  </div>
+  <label class="small muted" for="pos" style="display:block;text-align:center;margin-top:8px">Mueve para comparar</label>
+  <input class="deslizador" id="pos" type="range" min="0" max="100" value="50" aria-label="Proporción de la imagen a 25 km">
+  <div class="botones"><button type="button" data-v="100">Ver 25 km</button><button type="button" data-v="0">Ver 4 km</button></div>
+  <div class="escala" aria-label="Escala de colores"><span><i style="background:#08306b"></i>−12</span><span><i style="background:#2171b5"></i>−9</span><span><i style="background:#6baed6"></i>−6</span><span><i style="background:#c6dbef"></i>−3</span><span><i style="background:#f2f0f7"></i>0</span><span><i style="background:#fee6ce"></i>3</span><span><i style="background:#fdae6b"></i>6</span><span><i style="background:#f16913"></i>9</span><span><i style="background:#d94801"></i>12</span><span><i style="background:#7f2704"></i>15</span></div>
+  <p class="small muted" style="text-align:center">Temperatura a 2 m, en grados. Líneas grises: relieve cada 1.000 m. Puntos: los lugares de la tabla.</p>
+</section>
+<section>
+  <div class="sec-head"><h2>Lo que cambia con la escala</h2>
+  <p>En 25 km caben el valle, la precordillera y la cordillera, y el modelo les reparte el frío de las cumbres: a esta hora pone <strong>−13,2 °C</strong> en San José de Maipo y <strong>−8,0 °C</strong> en Tobalaba. A 4 km la cordillera queda en su lugar y la precordillera se ve más templada (4,1 °C y 9,4 °C). La simulación de 4 km tampoco es perfecta: en Pudahuel dio 0,5 °C, el aeródromo midió <strong>−3,0 °C</strong> y el cuadrado de 25 km, −2,7 °C. El frío que se acumula en el fondo del valle en las noches despejadas cuesta incluso a 4 km. Por eso el zoom se combina con la corrección por estación, y todo se mide en este sitio.</p></div>
+  <div class="card tabla"><table><thead><tr><th class='l'>Lugar</th><th>Altura</th><th>A 25 km</th><th>A 4 km</th><th>Medido</th></tr></thead><tbody><tr><td class='l'>Pudahuel (aeropuerto)</td><td class='num'>463 m</td><td class='num'>−2,7 °C</td><td class='num'>0,5 °C</td><td class='num'><strong>−3,0 °C</strong></td></tr><tr><td class='l'>Tobalaba (Las Condes)</td><td class='num'>723 m</td><td class='num'>−8,0 °C</td><td class='num'>9,4 °C</td><td class='num'><strong>–</strong></td></tr><tr><td class='l'>Santo Domingo (costa)</td><td class='num'>87 m</td><td class='num'>0,3 °C</td><td class='num'>5,3 °C</td><td class='num'><strong>–</strong></td></tr><tr><td class='l'>San José de Maipo</td><td class='num'>1.425 m</td><td class='num'>−13,2 °C</td><td class='num'>4,1 °C</td><td class='num'><strong>–</strong></td></tr><tr><td class='l'>Farellones</td><td class='num'>2.194 m</td><td class='num'>−11,8 °C</td><td class='num'>2,3 °C</td><td class='num'><strong>–</strong></td></tr></tbody></table></div>
+</section>
+<section class="card">
+  <h2>Qué es y qué no es esta imagen</h2>
+  <p><strong>No es un pronóstico de CorrDiff-Chile</strong>: ese modelo todavía no existe y hay que entrenarlo. Las dos imágenes son reconstrucciones del pasado. La de 25 km es ERA5, el reanálisis de ECMWF, con el mismo tamaño de cuadrado que usan los pronósticos globales como AIFS o FourCastNet. La de 4 km es SAAG-WRF, una simulación de NCAR que reconstruyó el clima de Sudamérica hora a hora a 4 km entre 2001 y 2022.</p>
+  <p>CorrDiff-Chile va a aprender con miles de pares como este a pasar de la imagen de la izquierda a la de la derecha. Cuando exista, recibirá el pronóstico global y entregará el detalle a 4 km, y se medirá en este sitio contra las estaciones. La simulación a 4 km tampoco es perfecta: es la mejor referencia abierta que hay para enseñarle la geografía de Chile.</p>
+  <p class="small muted">Fuentes: SAAG-WRF, NCAR RDA d616000 (Liu et al. 2025), CC BY 4.0; ERA5 de ECMWF/Copernicus (copia ARCO de Google), CC BY 4.0; METAR de la DGAC, archivo de Iowa State University (IEM). Periodo: 2021-06-28T10 a 2021-06-28T10 UTC. Cómo se arma: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion/blob/main/entrenamiento/antes_despues.py" rel="noopener">entrenamiento/antes_despues.py</a>.</p>
+</section>
+<footer><p>Actualizado el 23 oct, 22:34 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
+</div>
+<script>
+(function(){
+  const c = document.getElementById('comparar'), r = document.getElementById('pos');
+  const poner = v => { c.style.setProperty('--pos', v + '%'); r.value = v; };
+  r.addEventListener('input', () => poner(r.value));
+  document.querySelectorAll('.botones button').forEach(b => b.addEventListener('click', () => poner(b.dataset.v)));
+  let arrastrando = false;
+  const mover = ev => { const x = (ev.touches ? ev.touches[0].clientX : ev.clientX) - c.getBoundingClientRect().left;
+    poner(Math.max(0, Math.min(100, Math.round(100 * x / c.clientWidth)))); };
+  c.addEventListener('pointerdown', ev => { arrastrando = true; mover(ev); });
+  window.addEventListener('pointermove', ev => { if (arrastrando) mover(ev); });
+  window.addEventListener('pointerup', () => arrastrando = false);
+})();
+</script>
+
+<script>
+(function(){
+  let pop=null, dueno=null;
+  function cerrar(){ if(pop){pop.remove();pop=null;} if(dueno){dueno.setAttribute('aria-expanded','false');dueno=null;} }
+  document.addEventListener('click',function(e){
+    const b=e.target.closest('.def');
+    if(!b){ if(pop && !e.target.closest('.def-pop')) cerrar(); return; }
+    e.preventDefault();
+    if(dueno===b){cerrar();return;}
+    cerrar(); dueno=b; b.setAttribute('aria-expanded','true');
+    pop=document.createElement('div'); pop.className='def-pop'; pop.setAttribute('role','tooltip'); pop.textContent=b.dataset.def;
+    document.body.appendChild(pop);
+    const r=b.getBoundingClientRect(), w=pop.offsetWidth;
+    let x=r.left+window.scrollX; x=Math.min(x, window.scrollX+document.documentElement.clientWidth-w-16); x=Math.max(16+window.scrollX,x);
+    pop.style.left=x+'px'; pop.style.top=(r.bottom+window.scrollY+6)+'px';
+  });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') cerrar(); });
+  window.addEventListener('resize',cerrar);
+})();
+</script>
+
+</body>
+</html>

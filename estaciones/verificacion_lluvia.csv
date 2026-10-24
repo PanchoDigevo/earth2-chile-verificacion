@@ -2551,3 +2551,7 @@ AIFS,2026-10-24 12:00,6,2026-10-24 09:00,2026-10-24 15:00,Q1,Quebrada de Apoquin
 AIFS,2026-10-24 12:00,6,2026-10-24 09:00,2026-10-24 15:00,Q3,Quebrada de Ramón,Aguas Andinas (La Florida),85565,13.4,2.6,0.0
 AIFS,2026-10-24 12:00,6,2026-10-24 09:00,2026-10-24 15:00,SCTB,Tobalaba (Las Condes),Aguas Andinas (La Florida),85565,9.9,2.6,0.0
 AIFS,2026-10-24 12:00,6,2026-10-24 09:00,2026-10-24 15:00,SCEL,Santiago (Pudahuel),Pudahuel (aeropuerto),85574,0.8,1.4,0.0
+IFS,2026-10-24 12:00,6,2026-10-24 09:00,2026-10-24 15:00,Q1,Quebrada de Apoquindo (San Carlos de Apoquindo),Aguas Andinas (La Florida),85565,16.7,1.5,0.0
+IFS,2026-10-24 12:00,6,2026-10-24 09:00,2026-10-24 15:00,Q3,Quebrada de Ramón,Aguas Andinas (La Florida),85565,13.4,1.5,0.0
+IFS,2026-10-24 12:00,6,2026-10-24 09:00,2026-10-24 15:00,SCTB,Tobalaba (Las Condes),Aguas Andinas (La Florida),85565,9.9,1.5,0.0
+IFS,2026-10-24 12:00,6,2026-10-24 09:00,2026-10-24 15:00,SCEL,Santiago (Pudahuel),Pudahuel (aeropuerto),85574,0.8,0.9,0.0

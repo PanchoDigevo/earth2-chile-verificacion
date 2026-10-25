@@ -1,6 +1,6 @@
 # Registro previo: 2026-10-20-rm
 
-Ventana del evento: 2026-10-20 00:00 a 2026-10-21 12:00 (hora de Chile). Resumen actualizado el 25-10-2026 16:54 (hora de Chile).
+Ventana del evento: 2026-10-20 00:00 a 2026-10-21 12:00 (hora de Chile). Resumen actualizado el 25-10-2026 19:44 (hora de Chile).
 Cada fila es una corrida de un modelo; las más nuevas, abajo. La fecha de cada registro está en la columna
 registrado_utc de hindcast/seguimiento/pronosticos.csv y en el historial de git.
 

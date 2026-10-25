@@ -2877,3 +2877,5 @@ IFS,2026-10-25 00:00,6,2026-10-24 21:00,2026-10-25 03:00,Q3,Quebrada de Ramón,A
 IFS,2026-10-25 00:00,6,2026-10-24 21:00,2026-10-25 03:00,SCTB,Tobalaba (Las Condes),Aguas Andinas (La Florida),85565,9.9,0.0,0.0
 IFS,2026-10-25 00:00,6,2026-10-24 21:00,2026-10-25 03:00,SCEL,Santiago (Pudahuel),Pudahuel (aeropuerto),85574,0.8,0.0,0.0
 IFS,2026-10-25 00:00,12,2026-10-25 03:00,2026-10-25 09:00,SCEL,Santiago (Pudahuel),Pudahuel (aeropuerto),85574,0.8,0.0,0.0
+AIFS,2026-10-25 06:00,6,2026-10-25 03:00,2026-10-25 09:00,SCEL,Santiago (Pudahuel),Pudahuel (aeropuerto),85574,0.8,0.0,0.0
+IFS,2026-10-25 06:00,6,2026-10-25 03:00,2026-10-25 09:00,SCEL,Santiago (Pudahuel),Pudahuel (aeropuerto),85574,0.8,0.0,0.0

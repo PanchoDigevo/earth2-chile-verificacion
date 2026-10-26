@@ -250,6 +250,33 @@ footer p{max-width:85ch}
 .lluvia-curso strong.t{font-family:var(--font-display);font-size:17px}
 .lluvia-curso p{margin:0;max-width:80ch}
 
+.dir{display:grid;gap:10px}
+.dir h2{margin:0}
+.dir form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.dir input[type=search]{min-width:0;width:100%;font:inherit;font-size:16px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg)}
+.dir input[type=search]:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.dir button{font:inherit;font-weight:600;font-size:15px;padding:10px 14px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;white-space:nowrap}
+.dir button.sec{background:var(--surface);color:var(--accent)}
+.dir button:disabled{opacity:.6;cursor:default}
+.dir .acciones{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.dir .estado{font-size:14px;color:var(--muted);margin:0;min-height:1.2em}
+.dir .sug{display:grid;gap:4px;margin:0;padding:0;list-style:none}
+.dir .sug button{text-align:left;background:var(--bg);color:var(--fg);border-color:var(--line);font-weight:500;white-space:normal}
+.dir-res{border-top:1px solid var(--line-soft);padding-top:10px;display:grid;gap:10px}
+.dir-res[hidden]{display:none}
+.dir-res .frase{font-size:17px;margin:0;line-height:1.4}
+.dir-res .frase strong.m{font-family:var(--font-display);font-size:24px}
+.dir-chips{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}
+.dir-chip{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:600;padding:3px 10px 3px 8px;border-radius:999px;border:1px solid var(--line);background:var(--bg)}
+.dir-chip i{width:8px;height:8px;border-radius:50%;background:var(--sin,var(--muted))}
+.dir-chip.n-bajo i{background:var(--bajo,var(--bueno))} .dir-chip.n-atencion i{background:var(--atencion,var(--medio))} .dir-chip.n-aviso i{background:var(--aviso,var(--alto))}
+.dir-chip.rayos i{background:var(--aviso,var(--alto))}
+.dir-escala{position:relative;height:10px;border-radius:5px;margin:4px 0 20px;background:linear-gradient(90deg,var(--aviso,var(--alto)) 0 25%,var(--atencion,var(--medio)) 25% 50%,var(--bajo,var(--bueno)) 50% 100%);opacity:.9}
+.dir-escala b{position:absolute;top:-5px;width:20px;height:20px;border-radius:50%;background:var(--surface);border:3px solid var(--fg);transform:translateX(-50%);box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.dir-escala span{position:absolute;top:14px;transform:translateX(-50%);font-size:11.5px;color:var(--muted);white-space:nowrap}
+.dir-res .nota{font-size:13px;color:var(--muted);margin:0}
+.dir-res .nota a{color:inherit}
+
 :root{--calido:#d9622b;--frio:#2a78d6}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--calido:#ef8a55;--frio:#5aa0f0}}
 :root[data-theme="dark"]{--calido:#ef8a55;--frio:#5aa0f0}
@@ -498,7 +525,7 @@ ul.limites{margin:0;padding-left:1.2em;display:grid;gap:6px;max-width:75ch}
   <div class="card tabla "><table><thead><tr><th class='l'>Modelo</th><th>Anticipación</th><th>Días comparados</th><th>Días con lluvia</th><th>Acertó cuando llovió</th><th>Avisó en falso</th></tr></thead><tbody><tr><td class='l'>AIFS</td><td class='num'>24 h</td><td class='num'>19.013</td><td class='num'>29 %</td><td class='num'>76 %</td><td class='num'>17 %</td></tr><tr><td class='l'>AIFS</td><td class='num'>48 h</td><td class='num'>18.988</td><td class='num'>29 %</td><td class='num'>75 %</td><td class='num'>19 %</td></tr><tr><td class='l'>AIFS</td><td class='num'>72 h</td><td class='num'>18.949</td><td class='num'>29 %</td><td class='num'>75 %</td><td class='num'>21 %</td></tr><tr><td class='l'>IFS</td><td class='num'>24 h</td><td class='num'>21.255</td><td class='num'>28 %</td><td class='num'>73 %</td><td class='num'>19 %</td></tr><tr><td class='l'>IFS</td><td class='num'>48 h</td><td class='num'>21.227</td><td class='num'>28 %</td><td class='num'>71 %</td><td class='num'>19 %</td></tr><tr><td class='l'>IFS</td><td class='num'>72 h</td><td class='num'>21.188</td><td class='num'>28 %</td><td class='num'>70 %</td><td class='num'>20 %</td></tr><tr><td class='l'>GFS</td><td class='num'>24 h</td><td class='num'>21.255</td><td class='num'>28 %</td><td class='num'>63 %</td><td class='num'>13 %</td></tr><tr><td class='l'>GFS</td><td class='num'>48 h</td><td class='num'>21.227</td><td class='num'>28 %</td><td class='num'>61 %</td><td class='num'>13 %</td></tr><tr><td class='l'>GFS</td><td class='num'>72 h</td><td class='num'>21.188</td><td class='num'>28 %</td><td class='num'>60 %</td><td class='num'>15 %</td></tr></tbody></table></div>
 </section>
 <div class="aviso"><p class="small">Apoyo a la decisión, no una alerta. Las alertas oficiales son de la <a href="https://www.meteochile.gob.cl/" rel="noopener">Dirección Meteorológica de Chile</a> y de <a href="https://www.senapred.cl/" rel="noopener">SENAPRED</a>.</p></div>
-<footer><p>Actualizado el 26 oct, 20:34 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
+<footer><p>Actualizado el 26 oct, 20:56 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
 </div>
 
 <script>

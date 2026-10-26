@@ -313,8 +313,30 @@ def contorno_path():
     return "".join(partes)
 
 
+def separar(puntos, dist=14.0, pasos=40):
+    """Aleja los puntos que se tapan (a menos de `dist` px) empujándolos de a poco; devuelve las posiciones corregidas."""
+    pos = [[x, y] for x, y in puntos]
+    for _ in range(pasos):
+        movio = False
+        for i in range(len(pos)):
+            for j in range(i + 1, len(pos)):
+                dx, dy = pos[j][0] - pos[i][0], pos[j][1] - pos[i][1]
+                d = math.hypot(dx, dy)
+                if d < dist:
+                    if d < 1e-6:
+                        dx, dy, d = 0.0, 1.0, 1.0
+                    e = (dist - d) / 2 + 0.3
+                    ux, uy = dx / d, dy / d
+                    pos[i][0] -= ux * e; pos[i][1] -= uy * e; pos[j][0] += ux * e; pos[j][1] += uy * e
+                    movio = True
+        if not movio:
+            break
+    return pos
+
+
 def mapa_svg(est):
-    """Las tres franjas con un punto por aeródromo. Cada punto es un botón (data-icao); el color lo pone el JS."""
+    """Las tres franjas con un punto por aeródromo. Cada punto es un botón (data-icao); el color lo pone el JS.
+    Los puntos que caerían uno sobre otro (Tobalaba y Pudahuel) se separan, con una línea fina a su lugar real."""
     path = contorno_path()
     if not path:
         return ""
@@ -322,17 +344,18 @@ def mapa_svg(est):
     for titulo, la0, la1, lo0, lo1 in FRANJAS:
         x0, y0 = proj(lo0, la0); x1, y1 = proj(lo1, la1)
         w, h = x1 - x0, y1 - y0
+        dentro = [e for e in est if la1 <= e["lat"] <= la0 and lo0 <= e["lon"] <= lo1]
+        reales = [proj(e["lon"], e["lat"]) for e in dentro]
+        corr = separar(reales)
         pts = []
-        for e in est:
-            if not (la1 <= e["lat"] <= la0 and lo0 <= e["lon"] <= lo1):
-                continue
-            x, y = proj(e["lon"], e["lat"])
+        for e, (xr, yr), (x, y) in zip(dentro, reales, corr):
             etq = e["nombre"].split(" (")[0]
             # la etiqueta va a la derecha del punto; si no cabe antes del borde de la franja, a la izquierda
             cabe = (x1 - x) > 8 * len(etq) + 12
             tx, ancla = (x + 9, "start") if cabe else (x - 9, "end")
+            guia = f'<line class="guia" x1="{xr:.1f}" y1="{yr:.1f}" x2="{x:.1f}" y2="{y:.1f}"/>' if math.hypot(x - xr, y - yr) > 1.5 else ""
             pts.append(f'<g class="est sin" data-icao="{e["icao"]}" tabindex="0" role="button" aria-label="{e["nombre"]}">'
-                       f'<title>{e["nombre"]}</title><circle class="hit" cx="{x:.1f}" cy="{y:.1f}" r="11"/>'
+                       f'<title>{e["nombre"]}</title>{guia}<circle class="hit" cx="{x:.1f}" cy="{y:.1f}" r="11"/>'
                        f'<circle class="pt" cx="{x:.1f}" cy="{y:.1f}" r="5"/>'
                        f'<text class="etq" x="{tx:.1f}" y="{y + 4:.1f}" text-anchor="{ancla}">{etq}</text></g>')
         figs.append(f'<figure class="franja"><svg viewBox="{x0:.1f} {y0:.1f} {w:.1f} {h:.1f}" width="{w:.0f}" height="{h:.0f}" '
@@ -544,6 +567,7 @@ select{font:inherit;font-size:16px;padding:7px 10px;border-radius:8px;border:1px
 .est{cursor:pointer;outline:none}
 .est .hit{fill:transparent}
 .est .pt{stroke:var(--surface);stroke-width:2;fill:var(--sin)}
+.est .guia{stroke:var(--muted);stroke-width:1;opacity:.7}
 .est.bueno .pt{fill:var(--bueno)} .est.medio .pt{fill:var(--medio)} .est.alto .pt{fill:var(--alto)}
 .est .etq{display:none;font:600 10px var(--font-body);fill:var(--fg);paint-order:stroke;stroke:var(--surface);stroke-width:3px;stroke-linejoin:round}
 .est.con-etq .etq{display:block}

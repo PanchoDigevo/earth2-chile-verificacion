@@ -96,7 +96,8 @@ def puntos_de(f, modelo):
 
 
 # 1. pronósticos en las estaciones ---------------------------------------------------------------
-nuevos = []
+import comunas_pron
+nuevos, comunas_nuevas = [], []
 for f in sorted(glob.glob("data/*_*.grib2")):
     pref = os.path.basename(f).split("_")[0]
     if pref not in MODELOS:
@@ -107,6 +108,10 @@ for f in sorted(glob.glob("data/*_*.grib2")):
         print("no se pudo leer", f, "->", type(e).__name__, e); continue
     print(f"{MODELOS[pref]}: {f} -> {len(filas)} valores en estaciones")
     nuevos += filas
+    try:                                      # el mismo GRIB, leído en las comunas y las estaciones de la DMC (pestaña Pronóstico)
+        comunas_nuevas.append(comunas_pron.extraer(f, MODELOS[pref]))
+    except Exception as e:
+        print("comunas: no se pudo leer", f, "->", type(e).__name__, e)
 # Modelos externos (por ejemplo un endpoint de Earth-2): entregan directamente los valores en las estaciones en
 # data/puntos_<modelo>_<corrida>.csv con columnas modelo, run, lead_h, icao, t_fc (°C), w_fc (m/s) y, si la tienen, tp_fc
 # (mm acumulados desde el inicio de la corrida). Ver earth2/endpoint.py.
@@ -128,6 +133,7 @@ pron = pron.drop_duplicates(subset=CLAVE, keep="last")
 ahora = pd.Timestamp.now("UTC").tz_localize(None)
 pron = pron[pron.valid >= ahora - pd.Timedelta(days=DIAS_PRON)].sort_values(["run", "modelo", "lead_h", "icao"])
 pron.to_csv(PRON, index=False, date_format=FMT_FECHA)
+print(f"pronósticos en comunas guardados: {comunas_pron.guardar(comunas_nuevas)} filas")
 print(f"pronósticos guardados: {len(pron)} filas ({pron.modelo.nunique()} modelos, {pron.run.nunique()} corridas)")
 
 # 2. emparejar con la observación más cercana (±31 min) ------------------------------------------

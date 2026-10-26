@@ -18,7 +18,7 @@ Faenas (escenarios/faenas.csv): con los mismos 50 escenarios, la probabilidad de
     6,5 °C por kilómetro de diferencia entre el terreno de la grilla (z del miembro de control) y la faena.
 Salidas: escenarios/data/actual.json y escenarios/data/historial.csv (para ver cómo cambia la probabilidad de un mismo día).
 Uso: python escenarios/escenarios.py [--fecha YYYY-MM-DD]"""
-import argparse, csv, datetime as dt, json, os, time, urllib.error, urllib.request
+import argparse, csv, datetime as dt, json, os, threading, time, urllib.error, urllib.request
 from concurrent.futures import ThreadPoolExecutor
 import sys
 import numpy as np
@@ -91,6 +91,25 @@ def mensajes(run, paso, campos=CAMPOS):
     return out
 
 
+_IDX = {}
+_CERROJO = threading.Lock()
+
+
+def indices(gid, puntos):
+    """Índice del punto de grilla más cercano a cada (lat, lon), calculado una vez por grilla y reutilizado en cada mensaje:
+    con cientos de puntos (las comunas), leer todo el arreglo y tomar índices es mucho más rápido que find_nearest."""
+    clave = (ec.codes_get(gid, "Ni"), ec.codes_get(gid, "Nj"), len(puntos))
+    with _CERROJO:
+        if clave not in _IDX:
+            glat = ec.codes_get_double_array(gid, "latitudes"); glon = ec.codes_get_double_array(gid, "longitudes")
+            out = np.empty(len(puntos), dtype=int)
+            for i, (la, lo) in enumerate(puntos):
+                lo = lo % 360 if glon.max() > 180 else lo
+                out[i] = int(np.argmin((glat - la) ** 2 + ((glon - lo + 180) % 360 - 180) ** 2 * np.cos(np.radians(la)) ** 2))
+            _IDX[clave] = out
+        return _IDX[clave]
+
+
 def valores(m, puntos):
     paso, miembro, param, url, rango = m
     datos = get(url, rango)
@@ -99,7 +118,7 @@ def valores(m, puntos):
     gid = ec.codes_new_from_message(datos)
     try:
         f = 1000.0 if ec.codes_get(gid, "units") == "m" else 1.0      # acumulados: kg m-2 = mm; si vinieran en m, a mm
-        return m[:3], [f * ec.codes_grib_find_nearest(gid, la, lo)[0].value for la, lo in puntos]
+        return m[:3], (f * ec.codes_get_values(gid)[indices(gid, puntos)]).tolist()
     finally:
         ec.codes_release(gid)
 
@@ -165,13 +184,46 @@ def guardar_historial_faenas(hist):
                 w.writerow(h)
 
 
+def quince_dias(run, chile, pch, fechas):
+    """site/datos/pronostico_15d.json: por comuna y día, máxima (18 UTC) y mínima (06 UTC) con el rango del ensamble,
+    lluvia del día (valor central, rango y probabilidad de 1 mm o más) y viento de la tarde."""
+    pct = lambda x, q: np.nanpercentile(x, q, axis=0)
+    t18 = pch["2t"] - 273.15; t06 = pch["2t_06"] - 273.15
+    vv = np.hypot(pch["10u"], pch["10v"]) * 3.6
+    lluvia = acumulado_diario(pch["tp"])
+    n = (~np.isnan(t18)).sum(axis=0)
+    p1 = 100 * np.nansum(lluvia >= 1, axis=0) / np.maximum(n, 1)
+    p5 = 100 * np.nansum(lluvia >= 5, axis=0) / np.maximum(n, 1)
+    q = lambda a, qs: [np.round(pct(a, k), 1) for k in qs]
+    tx = q(t18, (10, 50, 90)); tn = q(t06, (10, 50, 90)); ll = q(lluvia, (50, 90)); vi = q(vv, (50, 90))
+    def fila(j):
+        dias = []
+        for d, f in enumerate(fechas):
+            if n[d, j] == 0:
+                continue
+            tnv = [None if np.isnan(x[d, j]) else float(x[d, j]) for x in tn]
+            dias.append({"f": f.isoformat(), "tmax": [float(x[d, j]) for x in tx], "tmin": tnv,
+                         "ll": [float(x[d, j]) for x in ll], "p1": round(float(p1[d, j])), "p5": round(float(p5[d, j])),
+                         "v": [float(x[d, j]) for x in vi], "n": int(n[d, j])})
+        return dias
+    salida = {"corrida": f"{run:%Y-%m-%dT%H:%MZ}", "generado": dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%MZ"), "miembros": int(n.max()),
+              "nota": "máxima = 18 UTC, mínima = 06 UTC (aprox.); lluvia de 24 h hasta las 18 UTC; viento a las 18 UTC; "
+                      "los tres valores son los percentiles 10, 50 y 90 del ensamble (lluvia y viento: 50 y 90)",
+              "comunas": {c["id"]: fila(j) for j, c in enumerate(chile)}}
+    carpeta = os.path.join(AQUI, "..", "site", "datos"); os.makedirs(carpeta, exist_ok=True)
+    ruta = os.path.join(carpeta, "pronostico_15d.json")
+    json.dump(salida, open(ruta, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
+    print(f"{ruta}: {len(chile)} comunas, {len(fechas)} días, {os.path.getsize(ruta) // 1024} KB")
+
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--fecha")
     a = ap.parse_args()
     os.makedirs(DATA, exist_ok=True)
     comunas = list(csv.DictReader(open(os.path.join(AQUI, "comunas.csv"), encoding="utf-8")))
     faenas = list(csv.DictReader(open(os.path.join(AQUI, "faenas.csv"), encoding="utf-8")))
-    puntos = [(float(c["lat"]), float(c["lon"])) for c in comunas + faenas]
+    chile = list(csv.DictReader(open(os.path.join(AQUI, "..", "verificacion", "comunas.csv"), encoding="utf-8")))   # las 352 comunas
+    puntos = [(float(c["lat"]), float(c["lon"])) for c in comunas + faenas + chile]
     run = ultima_corrida(dt.date.fromisoformat(a.fecha) if a.fecha else None)
     PASOS, MADRUGADA = pasos(run, 18), pasos(run, 6)
     print("corrida AIFS-ENS:", run, flush=True)
@@ -194,8 +246,10 @@ def main():
                 arr["2t_06"][miembro - 1, fechas.index(f)] = v
         else:
             arr[param][miembro - 1, PASOS.index(paso)] = v
-    pf = {p: x[:, :, nc:] for p, x in arr.items()}         # faenas
-    arr = {p: x[:, :, :nc] for p, x in arr.items()}        # comunas
+    nf = len(faenas)
+    pf = {p: x[:, :, nc:nc + nf] for p, x in arr.items()}  # faenas
+    pch = {p: x[:, :, nc + nf:] for p, x in arr.items()}   # todas las comunas de Chile (pestaña Pronóstico)
+    arr = {p: x[:, :, :nc] for p, x in arr.items()}        # comunas prioritarias de incendio
     t = arr["2t"] - 273.15; td = arr["2d"] - 273.15
     hr = humedad(t, td)
     vv = np.hypot(arr["10u"], arr["10v"]) * 3.6
@@ -241,6 +295,7 @@ def main():
             if (h[0], h[1], h[2]) not in previas:
                 w.writerow(h)
     guardar_historial_faenas(hist_f)
+    quince_dias(run, chile, pch, fechas)
     for f in salida["faenas"]:
         print(f"{f['faena']}: grilla a {f['altura_grilla_m']} m; " + "; ".join(
             f"{k} máx. {max(x['p'][k] for x in f['dias'] if x['p'][k] is not None)} %" for k in ("viento", "nieve", "convectivo", "frio")))

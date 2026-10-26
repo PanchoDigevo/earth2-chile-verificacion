@@ -1,0 +1,62 @@
+name: salto-rayos-prueba
+# Prueba del salto de rayos (envivo/salto_rayos.py) sobre días con tormenta: un trabajo por día baja los rayos GOES-19 GLM
+# de la tarde y noche y guarda los saltos; el último junta todo en hindcast/salto_rayos/avisos.csv y resumen.csv.
+# Los días por defecto son los que tuvieron tormenta (TS) en el METAR de algún aeródromo entre Iquique y Concepción.
+on:
+  workflow_dispatch:
+    inputs:
+      dias:
+        description: "Días (YYYY-MM-DD) separados por espacio"
+        default: "2025-08-01 2026-01-25 2026-01-26 2026-01-30 2026-01-31 2026-03-22 2026-04-20 2026-05-06 2026-07-18 2026-08-14 2026-08-15 2026-08-27 2026-08-28 2026-08-29 2026-08-31 2026-09-10 2026-09-12 2026-09-27 2026-10-02 2026-10-08 2026-10-13 2026-10-14 2026-10-15 2026-10-20 2026-10-22 2026-10-24 2026-10-26"
+permissions:
+  contents: write
+jobs:
+  dias:
+    runs-on: ubuntu-latest
+    outputs:
+      lista: ${{ steps.l.outputs.lista }}
+    steps:
+      - id: l
+        run: echo "lista=$(python3 -c 'import json,sys; print(json.dumps(sys.argv[1].split()))' '${{ inputs.dias }}')" >> $GITHUB_OUTPUT
+  dia:
+    needs: dias
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        dia: ${{ fromJson(needs.dias.outputs.lista) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy netCDF4 pandas requests
+      - run: python hindcast/salto_rayos/prueba_dia.py --dia ${{ matrix.dia }} --salida salida
+      - uses: actions/upload-artifact@v4
+        with:
+          name: salto-${{ matrix.dia }}
+          path: salida/
+  juntar:
+    needs: dia
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy pandas
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: salto-*
+          path: salida
+          merge-multiple: true
+      - run: python hindcast/salto_rayos/juntar.py salida
+      - name: Guardar
+        run: |
+          git config user.name "earth2-bot"; git config user.email "actions@users.noreply.github.com"
+          git add hindcast/salto_rayos/avisos.csv hindcast/salto_rayos/resumen.csv
+          git diff --cached --quiet || git commit -m "salto de rayos: prueba sobre días con tormenta"
+          for i in 1 2 3; do git pull --rebase -q origin main && git push -q origin HEAD:main && break; sleep 10; done

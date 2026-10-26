@@ -16,19 +16,34 @@ Es apoyo a la decisión, no una alerta: las alertas son de SENAPRED y la DMC."""
 RAW = "https://raw.githubusercontent.com/PanchoDigevo/earth2-chile-verificacion/datos-en-vivo/envivo/lluvia.json"
 
 CSS = """
-.monitor{display:grid;gap:12px}
-.monitor .mon-ahora{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
-.monitor .mon-ahora div{display:grid;gap:2px}
-.monitor .mon-ahora .v{font-family:var(--font-display);font-size:24px;font-weight:600;line-height:1.15}
-.monitor .mon-ahora .l{font-size:13px;color:var(--muted)}
-.monitor h3{margin:6px 0 0;font-size:16px}
-.monitor ul.efectos{margin:0;padding-left:18px;display:grid;gap:6px}
-.monitor ul.efectos li.fuerte{font-weight:600}
-.monitor .q-fila{display:grid;gap:2px;padding:8px 0;border-top:1px solid var(--line-soft)}
-.monitor .barra{height:8px;border-radius:4px;background:var(--line-soft);overflow:hidden;position:relative}
-.monitor .barra i{position:absolute;inset:0 auto 0 0;background:var(--accent)}
-.monitor .barra b{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--medio)}
-.monitor .barra b.av{background:var(--alto)}
+.monitor{display:grid;gap:18px}
+.mon-estado{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;font-size:14.5px;color:var(--muted)}
+.mon-cifras{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.mon-cifra{border:1px solid var(--line-soft);border-radius:var(--radius);padding:12px 14px;display:grid;gap:2px;align-content:start}
+.mon-cifra .k{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.mon-cifra .v{font-family:var(--font-display);font-size:28px;font-weight:600;line-height:1.15}
+.mon-cifra .s{font-size:13px;color:var(--muted)}
+.mon-bloque{display:grid;gap:10px}
+.mon-bloque h3{margin:0;font-size:16px}
+.mon-qb{border:1px solid var(--line-soft);border-radius:var(--radius);padding:12px 14px;display:grid;gap:8px}
+.mon-qb .cab{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 12px}
+.mon-qb .cab strong{font-size:15.5px}
+.mon-qb .chips{display:flex;flex-wrap:wrap;gap:6px}
+.mon-escala{position:relative;height:10px;border-radius:5px;background:var(--line-soft);margin:4px 0 18px}
+.mon-escala .ll{position:absolute;inset:0 auto 0 0;border-radius:5px;background:var(--accent)}
+.mon-escala .um{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--medio)}
+.mon-escala .um.av{background:var(--alto)}
+.mon-escala .um span{position:absolute;top:16px;transform:translateX(-50%);font-size:11.5px;color:var(--muted);white-space:nowrap}
+.mon-qb p{margin:0;font-size:14px}
+.mon-rios td .mini{display:inline-block;width:54px;height:6px;border-radius:3px;background:var(--line-soft);vertical-align:middle;margin-right:6px;position:relative;overflow:hidden}
+.mon-rios td .mini i{position:absolute;inset:0 auto 0 0;background:var(--accent)}
+.mon-rios tr.crece td{background:color-mix(in srgb,var(--alto) 8%,transparent)}
+.mon-rios .mods{display:block;font-size:12px;color:var(--muted)}
+.mon-efectos{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.mon-efectos li{display:grid;grid-template-columns:12px 1fr;gap:10px;align-items:start;font-size:14.5px}
+.mon-efectos li::before{content:"";width:10px;height:10px;border-radius:50%;margin-top:6px;background:var(--medio)}
+.mon-efectos li.f::before{background:var(--alto)}
+.mon-pie{font-size:13px;color:var(--muted);margin:0}
 .lluvia-curso{border:1px solid var(--accent);border-left:6px solid var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--surface));
   border-radius:var(--radius);padding:12px 16px;display:grid;gap:4px}
 .lluvia-curso[hidden]{display:none}
@@ -90,37 +105,46 @@ JS_MONITOR = r"""<script>
 __COMUN__
 (async function(){
   const caja = document.getElementById('monitor'); if (!caja) return;
+  const nivelTxt = {bajo: 'bajo', atencion: 'atención', aviso: 'aviso'}, nivelCls = {bajo: 'bueno', atencion: 'medio', aviso: 'alto'};
+  const sinParen = s => s.replace(/\s*\(([^)]*)\)/, ', $1');
   async function pintar() {
     const {ll, cu, qb, ahora} = await MON.datos(), n = MON.n;
     const hora = s => new Date(s * 1000).toLocaleTimeString('es-CL', {timeZone: 'America/Santiago', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'});
-    let html = '';
-    // 1. lo que está pasando
-    const est = ll ? ll.estaciones.filter(e => e.km <= 45 && e.alt < 1500).map(e => ({e, h1: MON.medida(ll, e.wmo, 1, ahora), h3: MON.medida(ll, e.wmo, 3, ahora)})).filter(x => x.h3 != null) : [];
-    const max3 = est.sort((a, b) => b.h3 - a.h3)[0], iso = MON.isoAhora(ll);
-    html += `<div class="mon-ahora"><div><span class="v">${max3 ? n(max3.h3, 1) + ' mm' : '–'}</span><span class="l">lluvia en 3 h, la mayor medida cerca de Santiago${max3 ? ' (' + max3.e.nombre + ')' : ''}</span></div>
-      <div><span class="v">${iso ? n(iso.iso) + ' m' : '–'}</span><span class="l">isoterma 0 °C estimada ahora${iso ? ' (El Colorado, 2.750 m, ' + n(iso.temp, 1) + ' °C a las ' + hora(iso.t) + ')' : ''}</span></div></div>`;
-    // 2. quebradas: medido contra los umbrales del indicador
+    const est = ll ? ll.estaciones.filter(e => e.km <= 45 && e.alt < 1500).map(e => ({e, h3: MON.medida(ll, e.wmo, 3, ahora), h2: MON.medida(ll, e.wmo, 2, ahora)})).filter(x => x.h3 != null) : [];
+    const max3 = [...est].sort((a, b) => b.h3 - a.h3)[0], iso = MON.isoAhora(ll);
+    const llueve = max3 && max3.h3 >= 0.5;
+    let h = `<p class="mon-estado"><span class="chip ${llueve ? 'medio' : 'bueno'}"><i></i>${llueve ? 'Está lloviendo' : 'Sin lluvia importante en las últimas 3 h'}</span>${ll ? `<span>Estaciones leídas a las ${hora(ll.generado)}</span>` : ''}</p>`;
+    // tres cifras
+    const pr = qb ? Object.entries(qb.lluvia_prevista || {}).map(([m, v]) => [m, v.mm6]).filter(x => x[1] != null) : [];
+    const lo = pr.length ? Math.min(...pr.map(x => x[1])) : null, hi = pr.length ? Math.max(...pr.map(x => x[1])) : null;
+    h += `<div class="mon-cifras">
+      <div class="mon-cifra"><span class="k">Lluvia medida, 3 h</span><span class="v">${max3 ? n(max3.h3, 1) + ' mm' : '–'}</span><span class="s">${max3 ? 'La mayor cerca de Santiago: ' + sinParen(max3.e.nombre) : 'Sin estaciones con datos'}</span></div>
+      <div class="mon-cifra"><span class="k">Isoterma 0 °C ahora</span><span class="v">${iso ? n(iso.iso) + ' m' : '–'}</span><span class="s">${iso ? `Estimada con El Colorado (2.750 m): ${n(iso.temp, 1)} °C a las ${hora(iso.t)}` : 'Sin dato de El Colorado'}</span></div>
+      <div class="mon-cifra"><span class="k">Próximas 6 h, Santiago oriente</span><span class="v">${lo == null ? '–' : lo === hi ? n(lo, 1) + ' mm' : n(lo, 0) + '–' + n(hi, 0) + ' mm'}</span><span class="s">${pr.map(([m, v]) => m + ' ' + n(v, 1)).join(' · ') || 'Sin pronóstico'}</span></div></div>`;
+    // quebradas
     const qs = qb ? qb.cuencas.filter(c => c.nivel !== 'sin_quema') : [];
-    if (qs.length && est.length) {
-      const cerca = est.filter(x => x.e.km <= 25).map(x => ({e: x.e, m2: MON.medida(ll, x.e.wmo, 2, ahora) || 0})).sort((a, b) => b.m2 - a.m2)[0];
-      const m2 = cerca ? cerca.m2 : 0;
-      html += `<h3>Quebradas quemadas de Santiago oriente</h3>`;
-      qs.forEach(c => { const tope = c.mm_aviso * 1.4, w = x => Math.min(100, x / tope * 100);
-        html += `<div class="q-fila"><span><strong>${c.nombre}</strong> · pronóstico: nivel ${c.nivel === 'aviso' ? 'aviso' : c.nivel === 'atencion' ? 'atención' : 'bajo'} si la lluvia de las próximas 6 h (hasta ${n(qb.mm6, 1)} mm) cayera en 2 h</span>
-          <div class="barra" role="img" aria-label="${n(m2, 1)} mm medidos en 2 h; atención desde ${n(c.mm_atencion, 1)} mm, aviso desde ${n(c.mm_aviso, 1)} mm"><i style="width:${w(m2)}%"></i><b style="left:${w(c.mm_atencion)}%"></b><b class="av" style="left:${w(c.mm_aviso)}%"></b></div>
-          <span class="small muted">Medido: ${n(m2, 1)} mm en 2 h${cerca ? ' (' + cerca.e.nombre + ', la estación más lluviosa a menos de 25 km)' : ''}. Atención desde ${n(c.mm_atencion, 1)} mm en 2 h; aviso desde ${n(c.mm_aviso, 1)} mm. ${m2 >= c.mm_aviso ? '<strong>Ya superó el umbral de aviso.</strong>' : m2 >= c.mm_atencion ? '<strong>Ya superó el umbral de atención.</strong>' : 'Faltan ' + n(c.mm_atencion - m2, 1) + ' mm en 2 h para atención.'}</span></div>`; });
+    if (qs.length) {
+      const cerca = est.filter(x => x.e.km <= 25 && x.h2 != null).sort((a, b) => b.h2 - a.h2)[0], m2 = cerca ? cerca.h2 : 0;
+      h += `<div class="mon-bloque"><h3>Quebradas quemadas de Santiago oriente</h3>` + qs.map(c => {
+        const med = m2 >= c.mm_aviso ? 'aviso' : m2 >= c.mm_atencion ? 'atencion' : 'bajo', tope = Math.max(c.mm_aviso * 1.3, m2 * 1.1), w = x => Math.min(100, x / tope * 100);
+        return `<div class="mon-qb"><div class="cab"><strong>${c.nombre.replace(/\s*\(.*\)/, '')}</strong><span class="chips">
+            <span class="chip ${nivelCls[med]}"><i></i>Con lo medido: ${nivelTxt[med]}</span><span class="chip ${nivelCls[c.nivel]}"><i></i>Si cae lo previsto: ${nivelTxt[c.nivel]}</span></span></div>
+          <div class="mon-escala" role="img" aria-label="${n(m2, 1)} mm medidos en 2 h; atención desde ${n(c.mm_atencion, 1)} mm, aviso desde ${n(c.mm_aviso, 1)} mm">
+            <span class="ll" style="width:${w(m2)}%"></span><span class="um" style="left:${w(c.mm_atencion)}%"><span>atención ${n(c.mm_atencion, 1)}</span></span><span class="um av" style="left:${w(c.mm_aviso)}%"><span>aviso ${n(c.mm_aviso, 1)}</span></span></div>
+          <p><strong>${n(m2, 1)} mm</strong> en las últimas 2 h${cerca ? ' (' + sinParen(cerca.e.nombre) + ')' : ''}. ${med === 'aviso' ? 'Superó el umbral de aviso.' : med === 'atencion' ? 'Superó el umbral de atención.' : `Faltan ${n(c.mm_atencion - m2, 1)} mm en 2 h para atención.`}</p></div>`; }).join('') +
+        `<p class="mon-pie">Umbrales en milímetros en 2 horas del <a href="quebradas.html">indicador de quebradas</a>. «Si cae lo previsto»: si la lluvia que pronostican los modelos para las próximas 6 horas cayera concentrada en 2.</p></div>`;
     }
-    // 3. ríos y cordillera
+    // ríos y cordillera
     if (cu) {
       const filas = Object.entries(cu.cuencas).map(([id, c]) => ({id, c, r: MON.cuenca(c, ahora)}));
-      html += `<h3>Ríos y cordillera, próximas 24 horas</h3><div class="tabla"><table><thead><tr><th class="l">Cuenca</th><th>Lluvia</th><th>Línea de nieve</th><th>Cuenca con lluvia</th><th>Lluvia líquida</th></tr></thead><tbody>` +
-        filas.map(({c, r}) => `<tr class="${r.mm >= 5 && r.fr >= 0.5 ? 'lluvia' : ''}"><td class="l">${c.nombre}</td><td class="num">${n(r.mm)} mm<br><span class="small muted">${r.rango.map(([m, v]) => m + ' ' + n(v)).join(' · ')}</span></td>
-          <td class="num">${r.nieve == null ? '–' : n(r.nieve) + ' m'}</td><td class="num">${r.fr == null ? '–' : n(r.fr * 100) + ' %'}</td><td class="num">${n(r.hm3, r.hm3 < 10 ? 1 : 0)} mill. m³</td></tr>`).join('') + '</tbody></table></div>';
+      h += `<div class="mon-bloque"><h3>Ríos y cordillera, próximas 24 horas</h3><div class="tabla mon-rios"><table><thead><tr><th class="l">Cuenca</th><th>Lluvia</th><th>Nieve desde</th><th class="l">Recibe lluvia</th><th>Agua líquida</th></tr></thead><tbody>` +
+        filas.map(({c, r}) => `<tr class="${r.mm >= 5 && r.fr >= 0.5 ? 'crece' : ''}"><td class="l">${c.rio}</td><td class="num">${n(r.mm)} mm<span class="mods">${r.rango.map(([m, v]) => m + ' ' + n(v)).join(' · ')}</span></td>
+          <td class="num">${r.nieve == null ? '–' : n(r.nieve) + ' m'}</td><td class="l num">${r.fr == null ? '–' : `<span class="mini"><i style="width:${n(r.fr * 100)}%"></i></span>${n(r.fr * 100)} %`}</td><td class="num">${n(r.hm3, r.hm3 < 10 ? 1 : 0)} mill. m³</td></tr>`).join('') + '</tbody></table></div>';
       const ef = MON.efectos(filas);
-      html += `<h3>Posibles efectos</h3>` + (ef.length ? `<ul class="efectos">${ef.map(e => `<li class="${e.f ? 'fuerte' : ''}">${e.t}</li>`).join('')}</ul>` : '<p>Sin efectos esperables en las cuencas cordilleranas en las próximas 24 horas.</p>');
-      html += `<p class="small muted">Lluvia media sobre cada cuenca según GFS (corrida de las ${cu.corrida_gfs.slice(11, 16)}), con el total de cada modelo debajo; línea de nieve: ${cu.bajo_isoterma_m} m bajo la isoterma 0 °C; lluvia líquida: lluvia × área bajo la línea de nieve. Reglas y límites en <a href="metodo.html#cordillera">Método</a>. Las alertas oficiales son de SENAPRED y la DMC.</p>`;
+      h += `<h3>Posibles efectos</h3>` + (ef.length ? `<ul class="mon-efectos">${ef.map(e => `<li class="${e.f ? 'f' : ''}"><span>${e.t}</span></li>`).join('')}</ul>` : '<p>Sin efectos esperables en las cuencas cordilleranas en las próximas 24 horas.</p>');
+      h += `<p class="mon-pie">Lluvia media sobre cada cuenca alta según GFS (corrida de las ${cu.corrida_gfs.slice(11, 16)}), con el total de cada modelo debajo. «Nieve desde»: 300 m bajo la isoterma 0 °C. «Recibe lluvia»: parte de la cuenca bajo esa altura. «Agua líquida»: lluvia sobre esa parte. Reglas y límites en <a href="metodo.html#cordillera">Método</a>. Las alertas oficiales son de SENAPRED y la DMC.</p></div>`;
     }
-    caja.innerHTML = html || '<p>Sin datos todavía.</p>';
+    caja.innerHTML = h;
   }
   pintar(); setInterval(pintar, 5 * 60000);
 })();
@@ -148,7 +172,7 @@ __COMUN__
 
 def seccion():
     """Sección completa para En vivo."""
-    return ('<section class="card monitor" id="monitor-card"><h2>Qué está pasando y qué puede pasar</h2><div class="monitor" id="monitor" aria-live="polite">'
+    return ('<section class="card" id="monitor-card"><h2>Qué está pasando y qué puede pasar</h2><div class="monitor" id="monitor" aria-live="polite">'
             '<p>Cargando…</p></div></section>' + JS_MONITOR.replace("__COMUN__", JS_COMUN.replace("__RAW__", RAW)))
 
 

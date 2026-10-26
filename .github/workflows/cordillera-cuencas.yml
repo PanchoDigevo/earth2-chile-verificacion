@@ -1,0 +1,28 @@
+name: cordillera-cuencas
+# Cuencas cordilleranas de Chile central y su curva de alturas (cordillera/cuencas.py): base para saber qué parte de cada
+# cuenca recibe lluvia en vez de nieve según la isoterma 0 °C. Se corre a mano cuando cambia cordillera/salidas_rios.csv.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["cordillera/salidas_rios.csv", "cordillera/cuencas.py"]
+permissions:
+  contents: write
+jobs:
+  cuencas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r quebradas/requirements.txt
+      - run: python cordillera/cuencas.py
+      - name: Guardar
+        run: |
+          git config user.name "earth2-bot"; git config user.email "actions@users.noreply.github.com"
+          git add site/cordillera/cuencas.geojson
+          git diff --cached --quiet || git commit -m "cordillera: cuencas y curvas de altura"
+          for i in 1 2 3; do git pull --rebase -q origin main && git push -q origin HEAD:main && break; sleep 10; done

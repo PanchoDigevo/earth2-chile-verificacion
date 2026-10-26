@@ -1,0 +1,8 @@
+id,nombre,rio,estacion,region,lat,lon,area_ref_km2
+aconcagua,Aconcagua alto,Aconcagua,Aconcagua en Chacabuquito,Valparaíso,-32.850,-70.509,2113
+mapocho,Mapocho alto,Mapocho,Mapocho en Los Almendros,Metropolitana,-33.370,-70.453,638
+maipo,Maipo alto,Maipo,Maipo en El Manzano,Metropolitana,-33.594,-70.379,4839
+cachapoal,Cachapoal alto,Cachapoal,Cachapoal en Puente Termas de Cauquenes,O'Higgins,-34.253,-70.564,2457
+tinguiririca,Tinguiririca alto,Tinguiririca,Tinguiririca bajo Los Briones,O'Higgins,-34.719,-70.819,1447
+teno,Teno alto,Teno,Teno después de junta con Claro,Maule,-34.996,-70.821,1202
+maule,Maule alto,Maule,Maule en Armerillo,Maule,-35.705,-71.081,5450

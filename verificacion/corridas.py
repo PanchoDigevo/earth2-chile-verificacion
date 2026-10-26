@@ -5,7 +5,7 @@ y los clientes reintentan durante horas. Aquí se pregunta con HEAD (20 s) por e
 y del último plazo; si ambos responden 200, la corrida está completa."""
 import datetime as dt, sys, urllib.request
 
-STEPS = [0, 6, 12, 18, 24, 36, 48]
+STEPS = [0, 6, 12, 18, 24, 30, 36, 42, 48]   # cada 6 h hasta 48 h: el pronóstico de Tu zona muestra dos días completos
 
 
 def existe(url, timeout=20):

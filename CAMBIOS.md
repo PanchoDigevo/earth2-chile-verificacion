@@ -6,6 +6,7 @@ Sitio: https://panchodigevo.github.io/earth2-chile-verificacion/
 
 ## 26-oct-2026
 
+- **Pronóstico rediseñado en Tu zona:** "Pronóstico para …" con tarjetas por día (máxima, mínima, lluvia y cuántos modelos la anuncian, viento), un gráfico de 48 horas con la banda entre modelos y la lluvia, y una frase de confianza con el error de ese lugar en 2026. Es un solo pronóstico: el promedio de los modelos, cada uno ajustado con su error local del último mes. El detalle por modelo queda plegado. Plazos cada 6 h hasta 48 h (se agregaron 30 y 42 h) y tope de la verificación en 45 min.
 - **El antes y después, en la portada:** justo después de "Dónde se equivoca más", la madrugada fría a 25 km y a 4 km con su deslizador; enlaza al caso completo (`zoom.html`).
 
 ## 23-oct-2026

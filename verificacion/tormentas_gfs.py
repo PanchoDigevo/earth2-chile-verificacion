@@ -45,8 +45,10 @@ def leer(url, headers=None, intentos=4):
     return None
 
 
-def mensajes(run, f):
-    """{(var, nivel): bytes} de un plazo; para PRATE, el promedio del bloque (no el instantáneo)."""
+def mensajes(run, f, campos=None):
+    """{(var, nivel): bytes} de un plazo; para PRATE, el promedio del bloque (no el instantáneo).
+    campos: lista de (var, nivel); por omisión, los ingredientes de tormenta (CAMPOS)."""
+    campos = campos or CAMPOS
     base = f"{BASE}/gfs.{run:%Y%m%d}/{run:%H}/atmos/gfs.t{run:%H}z.pgrb2.0p25.f{f:03d}"
     idx = leer(base + ".idx")
     if not idx:
@@ -55,7 +57,7 @@ def mensajes(run, f):
     out = {}
     for i, c in enumerate(L[:-1]):
         k = (c[3], c[4])
-        if k not in CAMPOS or k in out:
+        if k not in campos or k in out:
             continue
         if c[3] == "PRATE" and "ave" not in c[5]:
             continue

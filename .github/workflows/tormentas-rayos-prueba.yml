@@ -1,7 +1,7 @@
 name: tormentas-rayos-prueba
 # Prueba del indicador de tormentas a 72 h contra los rayos del satélite GOES-19 en cada comuna de Chile central, un año:
 # un trabajo por quincena (hindcast/tormentas_gfs/prueba_rayos.py); el último mide y busca cortes (calibrar.py) y guarda
-# los resúmenes en hindcast/tormentas_gfs/. Los datos por comuna y bloque quedan como artefacto del workflow (90 días).
+# los resúmenes en hindcast/tormentas_gfs/. Máximo 10 trabajos a la vez, para no frenar la verificación ni En vivo. Los datos por comuna y bloque quedan como artefacto del workflow (90 días).
 on:
   workflow_dispatch:
     inputs:
@@ -24,7 +24,7 @@ jobs:
     timeout-minutes: 300
     strategy:
       fail-fast: false
-      max-parallel: 20
+      max-parallel: 10
       matrix:
         q: ${{ fromJson(needs.lista.outputs.m) }}
     steps:

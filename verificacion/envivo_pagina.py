@@ -6,6 +6,7 @@ La página es un armazón que se genera con el resto del sitio; los datos los le
 datos-en-vivo (envivo/actualizar.py, cada 10 minutos) y desde el seguimiento horario de pronósticos
 (hindcast/seguimiento/pronosticos.csv en main). No es un aviso: arriba va el aviso oficial vigente, si lo hay."""
 import aviso_oficial
+import tormenta_vivo
 from comun import JS_DEF, aviso, d, nav, pie
 
 RAW = "https://raw.githubusercontent.com/PanchoDigevo/earth2-chile-verificacion"
@@ -51,7 +52,7 @@ JS = r"""
   L.circle(APOQ, {radius: 30000, color: css("--accent"), weight: 1, dashArray: "4 4", fill: false, interactive: false}).addTo(mapa);
   fetch("quebradas/cuencas.geojson").then(r => r.json()).then(g => L.geoJSON(g, {interactive: false, style: f => {
     const q = (f.properties.prop_hm23 || 0) >= 0.01; return {color: css("--accent"), weight: q ? 2.5 : 0.8, fillOpacity: q ? 0.25 : 0.04}; }}).addTo(mapa)).catch(() => {});
-  const capa = L.layerGroup().addTo(mapa);
+  const capa = L.layerGroup().addTo(mapa), capaT = L.layerGroup().addTo(mapa);
   const hora = s => new Date(s * 1000).toLocaleTimeString("es-CL", {timeZone: "America/Santiago", hour: "2-digit", minute: "2-digit", hourCycle: "h23"});
   const dist = (a, b) => { const r = Math.PI / 180, dl = (b[0] - a[0]) * r, dn = (b[1] - a[1]) * r;
     const h = Math.sin(dl / 2) ** 2 + Math.cos(a[0] * r) * Math.cos(b[0] * r) * Math.sin(dn / 2) ** 2; return 12742 * Math.asin(Math.sqrt(h)); };
@@ -101,7 +102,14 @@ JS = r"""
 
   async function actualizar() {
     const ahora = Date.now() / 1000;
-    const [ry, mt, sg, ll] = await Promise.all([j(RAW + "/datos-en-vivo/envivo/rayos.json"), j(RAW + "/datos-en-vivo/envivo/metar.json"), j(RAW + "/main/hindcast/seguimiento/pronosticos.csv"), j(RAW + "/datos-en-vivo/envivo/lluvia.json")]);
+    const [ry, mt, sg, ll, tm] = await Promise.all([j(RAW + "/datos-en-vivo/envivo/rayos.json"), j(RAW + "/datos-en-vivo/envivo/metar.json"), j(RAW + "/main/hindcast/seguimiento/pronosticos.csv"), j(RAW + "/datos-en-vivo/envivo/lluvia.json"), j(RAW + "/datos-en-vivo/envivo/tormentas.json")]);
+    if (tm) { const d = await tm.json(); capaT.clearLayers();
+      const act = (d.activas || []).filter(g => ahora - g.ultimo <= d.activa_min * 60);
+      act.forEach(g => L.circle([g.lat, g.lon], {radius: 15000, color: css("--alto"), weight: 3, fill: false})
+        .bindTooltip(`Tormenta intensificándose cerca de ${g.comuna}: salto de rayos a las ${hora(g.inicio)}, hasta ${Math.round(g.tasa_max)} rayos/min`).addTo(capaT));
+      const hoy = (d.registro || []).filter(r => ahora - r.inicio < 24 * 3600).reverse();
+      document.querySelector("#saltos tbody").innerHTML = hoy.map(r => `<tr class="${act.some(g => g.comuna === r.comuna) ? "lluvia" : ""}"><td class="l num">${hora(r.inicio)}</td><td class="l">${r.comuna} <span class="small muted">· ${r.region}</span></td><td class="num">${Math.round(r.tasa_max)}</td></tr>`).join("")
+        || `<tr><td class="l" colspan="3">Ninguna tormenta se intensificó en las últimas 24 horas.</td></tr>`; }
     let gen = [], medido = null;
     if (ll) { const d = await ll.json(); medido = lluvia(d, ahora); }
     if (ry) { const d = await ry.json(); gen.push(d.generado);
@@ -154,6 +162,7 @@ def pagina(head, escribir, ahora):
 {nav("envivo")}
 <div class="wrap">
 {aviso_oficial.html()}
+{tormenta_vivo.html()}
 <header>
   <div class="eyebrow">En vivo</div>
   <h1>Dónde hay tormenta ahora en la zona central</h1>
@@ -167,6 +176,9 @@ def pagina(head, escribir, ahora):
       <div class="cifras-vivo"><div><span class="v" id="r10">–</span><span class="l">últimos 10 min</span></div><div><span class="v" id="r30">–</span><span class="l">últimos 30 min</span></div><div><span class="v" id="r90">–</span><span class="l">últimos 90 min</span></div></div>
       <p class="small muted">A menos de 30 km de la Quebrada de Apoquindo (círculo punteado). En toda la zona del mapa: <strong id="rtot">–</strong> rayos en 90 minutos. La lluvia sin tormenta eléctrica no aparece en el mapa.</p>
       <div class="ley-vivo"><span><i style="background:var(--r10)"></i>hace 0 a 10 min</span><span><i style="background:var(--r30)"></i>10 a 30 min</span><span><i style="background:var(--r90)"></i>30 a 90 min</span></div></div>
+    <div class="card"><h2>Tormentas que se intensificaron</h2>
+      <div class="tabla"><table id="saltos"><thead><tr><th class="l">Hora</th><th class="l">Cerca de</th><th>Rayos/min</th></tr></thead><tbody><tr><td class="l" colspan="3">Cargando…</td></tr></tbody></table></div>
+      <p class="small muted">Últimas 24 horas en la zona del mapa. Se marca un {d("salto de rayos", definicion="Aumento brusco de la cantidad de rayos de una tormenta: al menos 10 por minuto y una subida mayor que 2 desviaciones estándar de los 10 minutos previos (Schultz et al., 2009 y 2011). Suele anteceder en 10 a 30 minutos granizo, rachas fuertes o, rara vez, un tornado. En EE.UU. acertó 79 % de los eventos severos y 1 de cada 3 marcas no trajo daño.")} cuando la tasa de rayos de una tormenta se dispara; en el mapa, con un anillo rojo mientras dura (30 minutos). Los umbrales son los publicados en EE.UU., no ajustados a un evento chileno: cuántas marcas traen daño en Chile se está midiendo (<a href="eventos.html">Eventos</a>). No es una alerta oficial.</p></div>
     <div class="card"><h2>Lluvia medida cerca de las quebradas</h2>
       <div class="tabla"><table id="lluvia"><thead><tr><th class="l">Estación</th><th>Última hora</th><th>6 h</th><th>24 h</th><th class="l">Hasta</th></tr></thead><tbody><tr><td class="l" colspan="5">Cargando…</td></tr></tbody></table></div>
       <p class="iso-vivo" id="iso-vivo"></p>

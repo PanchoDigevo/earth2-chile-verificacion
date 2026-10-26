@@ -34,6 +34,7 @@ jobs:
             git fetch -q origin datos-en-vivo
             git show origin/datos-en-vivo:envivo/rayos.json > datos/envivo/rayos.json 2>/dev/null || true
             git show origin/datos-en-vivo:envivo/lluvia.json > datos/envivo/lluvia.json 2>/dev/null || rm -f datos/envivo/lluvia.json
+            git show origin/datos-en-vivo:envivo/tormentas.json > datos/envivo/tormentas.json 2>/dev/null || rm -f datos/envivo/tormentas.json
           fi
       - name: Actualizar rayos y METAR cada 5 minutos
         env:

@@ -4,6 +4,9 @@ en un solo aviso, le pone la comuna más cercana y escribe avisos.csv y resumen.
 Cada aviso queda con la columna "que_paso" vacía: se llena a mano con lo que informen SENAPRED, la DMC o la prensa
 (granizo, rachas, tornado, nada). Con eso se calcula cuántos avisos tuvieron daño y cuántos fueron falsa alarma.
 
+Las tormentas a más de 25 km de toda comuna (casi siempre en Argentina: la caja de En vivo llega a 68° W) no cuentan
+como aviso, igual que en En vivo; se informan aparte en resumen.csv.
+
 Uso: python hindcast/salto_rayos/juntar.py salida/"""
 import datetime as dt, glob, json, os, sys
 import numpy as np, pandas as pd
@@ -36,11 +39,13 @@ def main(d):
         dist = np.array([km(a["pos0"], (la, lo)) for la, lo in zip(com.lat, com.lon)])
         c = com.iloc[int(dist.argmin())]
         filas.append({"inicio_utc": a["inicio"].strftime("%Y-%m-%d %H:%M"),
-                      "hora_chile": (a["inicio"] - pd.Timedelta(hours=3)).strftime("%Y-%m-%d %H:%M"),
+                      "hora_chile": a["inicio"].tz_localize("UTC").tz_convert("America/Santiago").strftime("%Y-%m-%d %H:%M"),
                       "lat": a["pos0"][0], "lon": a["pos0"][1], "comuna_cercana": c.nombre, "region": c.region,
                       "km_a_comuna": round(float(dist.min())), "saltos": a["saltos"], "tasa_max_por_min": a["tasa_max"],
                       "que_paso": ""})
     av = pd.DataFrame(filas)
+    fuera = av[av.km_a_comuna > 25].assign(dia=lambda z: z.inicio_utc.str[:10]).groupby("dia").size().rename("fuera_de_chile")
+    av = av[av.km_a_comuna <= 25].reset_index(drop=True)
     previo = os.path.join(AQUI, "avisos.csv")
     if os.path.exists(previo):                            # no pisar lo anotado a mano
         old = pd.read_csv(previo, dtype=str).fillna("")
@@ -50,6 +55,7 @@ def main(d):
     av["dia"] = av.inicio_utc.str[:10]
     res = res.merge(av.groupby("dia").size().rename("avisos").reset_index(), on="dia", how="left").fillna({"avisos": 0})
     res["avisos"] = res.avisos.astype(int)
+    res = res.merge(fuera.reset_index(), on="dia", how="left").fillna({"fuera_de_chile": 0}).astype({"fuera_de_chile": int})
     res.to_csv(os.path.join(AQUI, "resumen.csv"), index=False)
     print(res.to_string(index=False))
     print(f"\n{len(av)} avisos en {len(res)} días; días con al menos uno: {(res.avisos > 0).sum()}")

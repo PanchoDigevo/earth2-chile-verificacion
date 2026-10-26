@@ -1,0 +1,62 @@
+name: tormentas-gfs-prueba
+# Prueba del indicador de tormentas a 72 h (verificacion/tormentas_gfs.py) contra los METAR que informan tormenta en 11
+# aeródromos de Chile central y sur: un trabajo por mes; el último junta todo en hindcast/tormentas_gfs/resumen.csv.
+on:
+  workflow_dispatch:
+    inputs:
+      meses:
+        description: "Meses (YYYY-MM) separados por espacio"
+        default: "2025-10 2025-11 2025-12 2026-01 2026-02 2026-03 2026-04 2026-05 2026-06 2026-07 2026-08 2026-09 2026-10"
+permissions:
+  contents: write
+jobs:
+  meses:
+    runs-on: ubuntu-latest
+    outputs:
+      lista: ${{ steps.l.outputs.lista }}
+    steps:
+      - id: l
+        run: echo "lista=$(python3 -c 'import json,sys; print(json.dumps(sys.argv[1].split()))' '${{ inputs.meses }}')" >> $GITHUB_OUTPUT
+  mes:
+    needs: meses
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      max-parallel: 13
+      matrix:
+        mes: ${{ fromJson(needs.meses.outputs.lista) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r verificacion/requirements.txt
+      - run: python hindcast/tormentas_gfs/prueba_mes.py ${{ matrix.mes }} salida
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tormentas-${{ matrix.mes }}
+          path: salida/
+  juntar:
+    needs: mes
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pandas
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: tormentas-*
+          path: salida
+          merge-multiple: true
+      - run: python hindcast/tormentas_gfs/juntar.py salida
+      - name: Guardar
+        run: |
+          git config user.name "earth2-bot"; git config user.email "actions@users.noreply.github.com"
+          git add hindcast/tormentas_gfs/resumen.csv hindcast/tormentas_gfs/pares.csv
+          git diff --cached --quiet || git commit -m "tormentas a 72 h: prueba contra los METAR con tormenta"
+          for i in 1 2 3; do git pull --rebase -q origin main && git push -q origin HEAD:main && break; sleep 10; done

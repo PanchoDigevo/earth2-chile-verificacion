@@ -69,6 +69,17 @@ def sesgos(pts, ahora_n):
     return sg, coords
 
 
+def tormentas(ahora_n):
+    """{id: DataFrame(valid, nivel)} de data/tormentas_comunas.csv (tormentas_gfs.py), desde ahora hasta 72 h."""
+    try:
+        t = pd.read_csv(os.path.join(AQUI, "data", "tormentas_comunas.csv"))
+    except Exception:
+        return {}
+    t["valid"] = pd.to_datetime(t.valid, format="mixed")
+    t = t[(t.valid > ahora_n - pd.Timedelta(hours=3)) & (t.valid <= ahora_n + pd.Timedelta(hours=72))]
+    return {k: g[["valid", "nivel"]] for k, g in t.groupby("id")}
+
+
 def datos_48h(est, pts, ahora):
     ahora_n = ahora.tz_localize(None) if ahora.tzinfo else ahora
     com = pd.read_csv(os.path.join(AQUI, "comunas.csv"))
@@ -106,6 +117,7 @@ def datos_48h(est, pts, ahora):
     pr["aj"] = pr.sesgo.notna()
     pr["tc"] = pr.t_fc - pr.sesgo.fillna(0.0)
 
+    torm = tormentas(ahora_n)
     obs = observaciones_ahora(ahora_n)
     olat = np.array([o["lat"] for o in obs]); olon = np.array([o["lon"] for o in obs])
     pasos_por_id = {}
@@ -119,12 +131,22 @@ def datos_48h(est, pts, ahora):
                           "ph": None if x.ph.dropna().empty else int(x.ph.dropna().max()),
                           "w": None if x.w_fc.dropna().empty else round(float(x.w_fc.mean()) * 3.6), "aj": int(x.aj.sum()),
                           "nb": None if x.nub_fc.dropna().empty else int(round(float(x.nub_fc.mean())))})
+            tr = torm.get(k)
+            if tr is not None:                    # nivel de tormenta en el bloque de 6 h que termina en este paso
+                n = tr[(tr.valid > t - pd.Timedelta(hours=6)) & (tr.valid <= t)].nivel
+                if len(n) and n.max() > 0:
+                    pasos[-1]["tr"] = int(n.max())
         pasos_por_id[k] = pasos
     salida = {}
     for c in com.itertuples(index=False):
         if c.id not in pasos_por_id:
             continue
         d = {"n": c.nombre, "r": c.region, "pasos": pasos_por_id[c.id]}
+        tr = torm.get(c.id)
+        if tr is not None and (tr.nivel > 0).any():   # resumen de 72 h por día de Chile: nivel máximo y entre qué horas
+            x = tr[tr.nivel > 0].assign(cl=lambda z: z.valid.map(a_chile))
+            d["tr72"] = [{"f": f, "n": int(g.nivel.max()), "desde": int(g.cl.min().hour), "hasta": int(g.cl.max().hour)}
+                         for f, g in x.groupby(x.cl.map(lambda z: z.strftime("%Y-%m-%d")))]
         if c.id in cerca:
             icao, dist = cerca[c.id]; e = est_por_icao.get(icao, {})
             m = (e.get("m") or {}).get("AIFS", {})
@@ -152,6 +174,8 @@ ICONOS_JS = r"""
     if (nb < 85) return {k: 'nube', t: 'Mayormente nublado'};
     return {k: 'nubes', t: 'Nublado'};
   };
+  // Con tormentas posibles en el bloque (ingredientes de GFS, tormentas_gfs.py), el ícono es de tormenta.
+  const CIELO_P = (p, h) => p.tr ? {k: p.tr >= 2 ? 'tormenta-f' : 'tormenta', t: p.tr >= 2 ? 'Tormentas fuertes posibles' : 'Tormentas posibles'} : CIELO(p.nb, p.p, h);
   const SVG = {
     sol: '<circle cx="12" cy="12" r="4.2" class="i-sol"/><path class="i-sol" d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/>',
     luna: '<path class="i-luna" d="M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5z"/>',
@@ -160,7 +184,9 @@ ICONOS_JS = r"""
     'sol-nube': '<circle cx="8.5" cy="8.5" r="3.2" class="i-sol"/><path class="i-sol" d="M8.5 2.5v1.5M2.5 8.5H4M4.3 4.3l1 1M12.7 4.3l-1 1"/><path class="i-nube" d="M9 19h9a3 3 0 0 0 .3-6 4.7 4.7 0 0 0-8.9-.8A3.4 3.4 0 0 0 9 19z"/>',
     'luna-nube': '<path class="i-luna" d="M13 6.2A5 5 0 0 1 6.2 13 5 5 0 1 0 13 6.2z"/><path class="i-nube" d="M9 19h9a3 3 0 0 0 .3-6 4.7 4.7 0 0 0-8.9-.8A3.4 3.4 0 0 0 9 19z"/>',
     llovizna: '<path class="i-nube" d="M7 14.5h10.5a3.5 3.5 0 0 0 .4-7A5.5 5.5 0 0 0 7.3 6.5 4 4 0 0 0 7 14.5z"/><path class="i-gota" d="M10 17.5v1.5M14 17.5v1.5"/>',
-    lluvia: '<path class="i-nube" d="M7 13.5h10.5a3.5 3.5 0 0 0 .4-7A5.5 5.5 0 0 0 7.3 5.5 4 4 0 0 0 7 13.5z"/><path class="i-gota" d="M8.5 16l-1 3M12.5 16l-1 3M16.5 16l-1 3"/>'
+    lluvia: '<path class="i-nube" d="M7 13.5h10.5a3.5 3.5 0 0 0 .4-7A5.5 5.5 0 0 0 7.3 5.5 4 4 0 0 0 7 13.5z"/><path class="i-gota" d="M8.5 16l-1 3M12.5 16l-1 3M16.5 16l-1 3"/>',
+    tormenta: '<path class="i-nube i-gris" d="M7 13.5h10.5a3.5 3.5 0 0 0 .4-7A5.5 5.5 0 0 0 7.3 5.5 4 4 0 0 0 7 13.5z"/><path class="i-rayo" d="M12.5 13l-2.5 4.5h3l-2 4.5"/>',
+    'tormenta-f': '<path class="i-nube i-gris" d="M7 13.5h10.5a3.5 3.5 0 0 0 .4-7A5.5 5.5 0 0 0 7.3 5.5 4 4 0 0 0 7 13.5z"/><path class="i-rayo i-fuerte" d="M12.5 13l-2.5 4.5h3l-2 4.5"/>'
   };
   const icono = (c, tam) => c ? `<svg class="cielo" viewBox="0 0 24 24" width="${tam || 26}" height="${tam || 26}" role="img" aria-label="${c.t}"><title>${c.t}</title>${SVG[c.k]}</svg>` : '';
 """
@@ -171,6 +197,10 @@ CSS_ICONOS = """
 .cielo .i-luna{stroke:var(--muted);fill:color-mix(in srgb,var(--muted) 18%,transparent)}
 .cielo .i-nube{stroke:var(--muted);fill:var(--surface)} .cielo .i-gris{fill:color-mix(in srgb,var(--muted) 22%,var(--surface))}
 .cielo .i-gota{stroke:var(--lluvia);stroke-width:2}
+.cielo .i-rayo{stroke:var(--medio);stroke-width:2.2} .cielo .i-fuerte{stroke:var(--alto)}
+.tormenta-72{margin:4px 0 0;padding:8px 12px;border-left:4px solid var(--medio);background:color-mix(in srgb,var(--medio) 10%,var(--surface));border-radius:6px;font-size:15px}
+.tormenta-72.fuerte{border-left-color:var(--alto);background:color-mix(in srgb,var(--alto) 10%,var(--surface))}
+.tormenta-72[hidden]{display:none}
 :root{--sol:#e0a100}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--sol:#f2c14e}}
 :root[data-theme="dark"]{--sol:#f2c14e}
@@ -307,7 +337,7 @@ JS = r"""
   function pintarAhora(c, d) {
     const o = d && d.obs, ds = d ? diasDe(d.pasos) : [], hoy = ds.find(x => x.dif === 0) || ds[0] || null, q = quinceHoy();
     $('ahora-temp').innerHTML = o ? `${n(o.t)}<small>°C</small>` : (hoy ? `${n(hoy.max)}<small>° máx.</small>` : '–');
-    const p0 = d && d.pasos.length ? d.pasos[0] : null, c0 = p0 ? CIELO(p0.nb, p0.p, fecha(p0.c).h) : null;
+    const p0 = d && d.pasos.length ? d.pasos[0] : null, c0 = p0 ? CIELO_P(p0, fecha(p0.c).h) : null;
     $('ahora-cielo').innerHTML = c0 ? `${icono(c0, 34)}<span>${c0.t}</span>` : '';
     $('ahora-fuente').textContent = o ? `Medido a las ${o.hora} en ${o.nombre}${o.km > 2 ? ', a ' + n(o.km) + ' km' : ''}` : 'Sin estación cerca que mida ahora; se muestra el pronóstico';
     const max = q ? q.tmax[1] : (hoy ? hoy.max : null), min = q ? q.tmin[1] : (hoy ? hoy.min : null);
@@ -316,13 +346,26 @@ JS = r"""
     $('hoy-lluvia').className = mm >= 1 ? 'llueve' : '';
     $('hoy-lluvia').innerHTML = ICO.gota + (mm >= 1 ? `<strong>${n(mm, mm < 10 ? 1 : 0)} mm</strong> hoy` + (prob != null ? ` · ${n(prob)} % de probabilidad` : (hoy && hoy.pn ? ` · lo anuncian ${hoy.pn} de ${hoy.nm} modelos` : '')) : 'Sin lluvia importante hoy');
     $('hoy-viento').innerHTML = ICO.viento + `Viento hasta ${n(hoy ? hoy.w : (q ? q.v[1] : null))} km/h`;
+    pintarTormenta(d);
+  }
+  // Tormentas en las próximas 72 h: por día, desde los ingredientes de GFS (inestabilidad, tapa, disparador y cizalle).
+  function pintarTormenta(d) {
+    const box = $('tormenta-72'), tr = (d && d.tr72) || []; box.hidden = !tr.length; if (!tr.length) return;
+    const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+    const dia = x => { const f = new Date(x.f + 'T12:00'), k = Math.round((f - hoy) / 864e5) ; return k === 0 ? 'hoy' : k === 1 ? 'mañana' : DIA3[f.getDay()].toLowerCase() + ' ' + f.getDate(); };
+    const franja = x => x.desde === x.hasta ? `cerca de las ${x.desde} h` : `entre las ${x.desde} y las ${x.hasta} h`;
+    const fuerte = tr.some(x => x.n >= 2);
+    box.className = 'tormenta-72' + (fuerte ? ' fuerte' : '');
+    box.innerHTML = `${icono({k: fuerte ? 'tormenta-f' : 'tormenta', t: 'Tormentas'}, 22)} <strong>${fuerte ? 'Tormentas, algunas fuertes, posibles' : 'Tormentas posibles'}</strong>: ` +
+      tr.map(x => `${dia(x)} ${franja(x)}${x.n >= 2 ? ' (fuertes posibles)' : ''}`).join('; ') +
+      `. <span class="muted">Es el ambiente que ve el modelo a 25 km, no el lugar exacto de cada tormenta; si se forma una, el satélite la sigue en <a href="envivo.html">En vivo</a>. <a href="metodo.html#tormentas">Cómo se calcula</a>.</span>`;
   }
   function pintarHoras(d) {
     const box = $('horas');
     if (!d || !d.pasos.length) { box.innerHTML = '<p class="vacio">Sin pronóstico de 48 horas para esta comuna todavía.</p>'; return; }
     let ultDia = '';
     box.innerHTML = d.pasos.map(p => { const f = fecha(p.c), nuevo = f.f !== ultDia; ultDia = f.f;
-      return `<div class="hora"><div class="d">${nuevo ? DIA3[f.d.getDay()] + ' ' + f.d.getDate() : '&nbsp;'}</div><div class="h">${String(f.h).padStart(2, '0')}:00</div><div class="ic">${icono(CIELO(p.nb, p.p, f.h))}</div>
+      return `<div class="hora"><div class="d">${nuevo ? DIA3[f.d.getDay()] + ' ' + f.d.getDate() : '&nbsp;'}</div><div class="h">${String(f.h).padStart(2, '0')}:00</div><div class="ic">${icono(CIELO_P(p, f.h))}</div>
         <div class="t">${n(p.t)}°</div><div class="ll ${p.p >= 0.5 ? 'si' : ''}">${p.p == null ? '' : p.p >= 0.5 ? n(p.p, 1) + ' mm' : 'seco'}</div><div class="v">${p.w == null ? '' : n(p.w) + ' km/h'}</div></div>`; }).join('');
   }
   function pintarGrafico(d) {
@@ -447,6 +490,7 @@ def pagina(head, escribir, est, pts, ahora):
     <div class="mm"><span>Hoy</span><span><b id="hoy-max">–</b> <span class="muted">máx.</span> &nbsp; <b id="hoy-min">–</b> <span class="muted">mín.</span></span></div></div>
   <p class="fuente" id="ahora-fuente"></p>
   <div class="hoy"><span id="hoy-lluvia"></span><span id="hoy-viento"></span></div>
+  <p class="tormenta-72" id="tormenta-72" hidden></p>
 </section>
 
 <section class="card">

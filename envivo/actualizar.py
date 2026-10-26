@@ -26,6 +26,7 @@ RADIO_KM = 45                 # estaciones de lluvia que se muestran: hasta esta
 CADA_MIN = 15                 # los SYNOP llegan cada hora: no hace falta pedirlos a Ogimet cada 5 minutos
 COMUNAS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "verificacion", "comunas.csv")
 ACTIVA_MIN = 30               # una tormenta con salto en los últimos 30 minutos se muestra como "intensificándose"
+KM_CHILE = 25                 # tormentas a más de 25 km de toda comuna (casi siempre del lado argentino) no se marcan
 REGISTRO_DIAS = 30
 
 
@@ -100,6 +101,8 @@ def tormentas(ruta_rayos, ruta):
         c = min(com, key=lambda c: salto_rayos.km(g["pos"], (c[2], c[3])))
         g.update(lat=g["pos"][0], lon=g["pos"][1], comuna=c[0], region=c[1], km=round(salto_rayos.km(g["pos"], (c[2], c[3]))))
         del g["pos"]
+        if g["km"] > KM_CHILE:
+            continue
         # si la misma tormenta ya está en el registro (otra vuelta de 5 minutos), se actualiza en vez de repetirla
         r = next((r for r in registro if salto_rayos.km((g["lat"], g["lon"]), (r["lat"], r["lon"])) <= 40
                   and g["inicio"] - r["ultimo"] <= 1800 and g["ultimo"] >= r["inicio"]), None)
@@ -107,7 +110,7 @@ def tormentas(ruta_rayos, ruta):
             r.update(ultimo=max(r["ultimo"], g["ultimo"]), tasa_max=max(r["tasa_max"], g["tasa_max"]), lat=g["lat"], lon=g["lon"])
         else:
             registro.append({k: g[k] for k in ("inicio", "ultimo", "lat", "lon", "comuna", "region", "km", "tasa_max")})
-    activas = [g for g in grupos if ahora - g["ultimo"] <= ACTIVA_MIN * 60]
+    activas = [g for g in grupos if ahora - g["ultimo"] <= ACTIVA_MIN * 60 and g["km"] <= KM_CHILE]
     json.dump({"generado": int(ahora), "activa_min": ACTIVA_MIN,
                "metodo": "Salto de rayos, algoritmo 2σ de Schultz et al. (2009, 2011): tasa de al menos 10 rayos/min y aumento mayor que 2 desviaciones estándar de los 10 minutos previos",
                "activas": sorted(activas, key=lambda g: -g["ultimo"]), "registro": sorted(registro, key=lambda r: r["inicio"])},

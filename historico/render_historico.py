@@ -378,6 +378,22 @@ def pagina_metodo(r, n_pares, n_corridas, n_est, ahora):
   </ul>
 </section>
 {seccion_lluvia_mm()}
+<section class="card" id="tormentas">
+  <div class="sec-head"><h2>Tormentas: el ambiente a 72 horas y el salto de rayos</h2></div>
+  <p>Hay dos avisos de tormenta, uno para planificar y otro para reaccionar. Los dos usan umbrales publicados, no ajustados a ningún evento chileno: si se calibraran con un caso raro como el tornado de Requínoa del 26 de octubre de 2026, lo marcarían por construcción y no sabríamos cuántas falsas alarmas dan. Los eventos de 2026 solo sirven de prueba.</p>
+  <h3>Próximas 72 horas: el ambiente</h3>
+  <p>Cada corrida de GFS (NOAA), cada 3 horas hasta 72 h, en el cuadrado de 25 km de cada comuna. <strong>Tormentas posibles</strong>: inestabilidad (CAPE de 100 J/kg o más, la mayor entre la de superficie y la de la capa de 180 hPa), sin tapa que la frene (CIN de −50 J/kg o más) y lluvia prevista de al menos 0,1 mm por hora en el bloque, en el cuadrado o en los vecinos, como señal de que algo la dispara. <strong>Tormentas fuertes posibles</strong>: además, CAPE de 250 J/kg o más y cizalle de 35 nudos o más entre 10 m y 500 hPa (unos 5,5 km), el criterio de ambientes de poca inestabilidad y mucho cizalle de Sherburn y Parker (2014), donde se dan buena parte de los tornados y rachas dañinas fuera de las Grandes Llanuras de EE.UU. El código está en <code>verificacion/tormentas_gfs.py</code>.</p>
+  <h3>Ahora: el salto de rayos</h3>
+  <p>Cada 5 minutos, con los rayos del sensor GLM del satélite GOES-19, se busca una tormenta cuya tasa de rayos se dispare: el algoritmo «2σ» de Schultz, Petersen y Carey (2009 y 2011). Con intervalos de 2 minutos, hay salto cuando la tasa es de al menos 10 rayos por minuto y su aumento supera 2 desviaciones estándar de los 10 minutos previos. En EE.UU. antecedió en promedio 20 a 30 minutos al granizo, las rachas dañinas o un tornado, acertó el 79 % de esos eventos y 1 de cada 3 marcas no trajo daño. Las tormentas se aproximan con cuadros de unos 30 km; las que quedan a más de 25 km de toda comuna, casi siempre en Argentina, no se marcan. El código está en <code>envivo/salto_rayos.py</code>.</p>
+  <h3>Cómo se mide en Chile</h3>
+  <p>Chile no tiene un registro sistemático de granizo, rachas y tornados como el de EE.UU. Por eso se prueba el salto de rayos sobre los días con tormenta en algún aeródromo desde abril de 2025 (<code>hindcast/salto_rayos/</code>) y cada marca se contrasta con lo que informaron SENAPRED, la DMC y la prensa. El indicador de 72 horas se contrasta con las tormentas que informan los METAR. Lo que se encuentre se publica aquí, salga bien o mal.</p>
+  <h3>Límites</h3>
+  <ul class="limites">
+    <li>A 25 km el modelo ve el ambiente, no la tormenta: dice dónde pueden formarse, no dónde caerá cada una. Un tornado no se pronostica con un modelo global.</li>
+    <li>El GLM ve menos rayos que las redes en tierra de los estudios originales, así que el umbral de 10 por minuto es exigente.</li>
+    <li>Un salto de rayos no distingue granizo de racha o tornado: dice que la tormenta se está intensificando.</li>
+  </ul>
+</section>
 <section class="card">
   <div class="sec-head"><h2>Límites que conocemos</h2></div>
   <ul class="limites">

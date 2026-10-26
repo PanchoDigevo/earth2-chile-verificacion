@@ -37,6 +37,11 @@ jobs:
         working-directory: verificacion
         continue-on-error: true
         run: python fetch_gfs.py
+      - name: Tormentas a 72 h por comuna (ingredientes de GFS)
+        working-directory: verificacion
+        continue-on-error: true
+        timeout-minutes: 10
+        run: python tormentas_gfs.py
       - name: Indicador de quebradas (lluvia prevista y observada)
         run: python quebradas/indicador.py
         continue-on-error: true

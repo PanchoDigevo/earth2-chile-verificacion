@@ -655,7 +655,7 @@ def head(titulo, descripcion):
 <meta name="description" content="{descripcion}">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
-<style>{CSS}{CSS_NAV}{CSS_DEF}{CSS_ETAPAS}{aviso_oficial.CSS}{cambio.CSS_CAMBIO}{zoom_pagina.CSS}{pronostico_pagina.CSS}</style>
+<style>{CSS}{CSS_NAV}{CSS_DEF}{CSS_ETAPAS}{aviso_oficial.CSS}{cambio.CSS_CAMBIO}{zoom_pagina.CSS}{pronostico_pagina.CSS}{CSS_PORTADA}</style>
 </head>"""
 
 
@@ -667,96 +667,181 @@ def escribir(nombre_archivo, html):
 
 
 # ---------- página: Resumen ----------
+CSS_PORTADA = """
+.hero{display:grid;gap:22px;align-items:start}
+@media (min-width:960px){.hero{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:36px}}
+.hero h1{font-size:clamp(32px,4.4vw,52px);line-height:1.04;letter-spacing:-.025em;margin:6px 0 14px}
+.hero .lead{font-size:18.5px;max-width:52ch;margin:0 0 20px}
+.hero .buscar{max-width:none}
+.hero .buscar input{font-size:18px;padding:15px 16px 15px 44px}
+.hero .sugeridas{margin-top:12px}
+.vivo{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:18px;padding:20px 22px;
+  background:linear-gradient(160deg,color-mix(in srgb,var(--accent) 16%,var(--surface)),var(--surface) 70%);display:grid;gap:12px;min-height:260px}
+.vivo .lugar{font-family:var(--font-display);font-weight:600;font-size:20px}
+.vivo .lugar small{display:block;font:13px var(--font-body);color:var(--muted);font-weight:400}
+.vivo .grande{font-family:var(--font-display);font-size:84px;font-weight:600;line-height:.95;letter-spacing:-.04em}
+.vivo .grande small{font-size:30px;color:var(--muted);font-weight:500;letter-spacing:0}
+.vivo .mm{font-size:15px;display:flex;gap:16px;flex-wrap:wrap}
+.vivo .mm b{font-family:var(--font-display);font-size:19px}
+.vivo .prox{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;border-top:1px solid var(--line-soft);padding-top:12px}
+.vivo .prox div{text-align:center;display:grid;gap:2px}
+.vivo .prox .h{font:12px var(--font-data);color:var(--muted)}
+.vivo .prox .t{font-family:var(--font-display);font-weight:600;font-size:18px}
+.vivo .prox .l{font-size:11.5px;color:var(--lluvia);min-height:14px}
+.vivo .fuente{font-size:12.5px;color:var(--muted)}
+.vivo a.ir{font-weight:600;text-decoration:none}
+.banda-cifras{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 0}
+.banda-cifras div{display:grid;gap:4px}
+.banda-cifras .v{font-family:var(--font-display);font-size:34px;font-weight:600;letter-spacing:-.02em;line-height:1}
+.banda-cifras .v small{font-size:16px;color:var(--muted);font-weight:500}
+.banda-cifras p{margin:0;font-size:14px;color:var(--muted);max-width:30ch}
+.prueba .mapa{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.prueba .mapa svg{width:100%;height:auto}
+.prueba{display:grid;gap:16px}
+@media (min-width:1050px){.prueba{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}}
+.prueba .card h2{font-size:22px}
+.puerta-mini{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.puerta-mini a{display:grid;gap:6px;padding:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);text-decoration:none;color:var(--fg)}
+.puerta-mini a:hover{border-color:var(--accent)}
+.puerta-mini .q{font-family:var(--font-display);font-weight:600;font-size:17px}
+.puerta-mini p{margin:0;font-size:14px;color:var(--muted)}
+.puerta-mini .ir{font-size:14px;font-weight:600;color:var(--accent)}
+.sec-titulo{display:grid;gap:4px}
+.sec-titulo h2{font-size:clamp(24px,2.6vw,32px)}
+"""
+
+
+JS_PORTADA = r"""
+<script>
+(function(){
+  const L = window.COMUNAS || [], DIA3 = ['dom','lun','mar','mié','jue','vie','sáb'];
+  const n = (v, d=0) => v == null ? '–' : Number(v).toLocaleString('es-CL', {minimumFractionDigits:d, maximumFractionDigits:d}).replace('-', '−');
+  const sinT = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  const $ = id => document.getElementById(id);
+  const ir = id => { try { localStorage.setItem('comuna', id); } catch (e) {} location.href = 'pronostico.html#' + id; };
+  const inp = $('h-buscar'), ul = $('h-res'); let hits = [], act = -1;
+  const pinta = () => { ul.innerHTML = hits.map((c, i) => `<li role="option" aria-selected="${i === act}" data-id="${c.id}"><span>${c.n}</span><span class="r">${c.r}</span></li>`).join(''); ul.hidden = !hits.length; inp.setAttribute('aria-expanded', String(!!hits.length)); };
+  inp.addEventListener('input', () => { const q = sinT(inp.value.trim());
+    hits = q ? L.filter(c => sinT(c.n).includes(q) || sinT(c.r).includes(q)).sort((a, b) => (sinT(b.n).startsWith(q) - sinT(a.n).startsWith(q)) || (b.p - a.p)).slice(0, 7) : [];
+    act = hits.length ? 0 : -1; pinta(); });
+  inp.addEventListener('keydown', ev => {
+    if (ev.key === 'ArrowDown') { act = Math.min(act + 1, hits.length - 1); pinta(); ev.preventDefault(); }
+    else if (ev.key === 'ArrowUp') { act = Math.max(act - 1, 0); pinta(); ev.preventDefault(); }
+    else if (ev.key === 'Enter' && hits[act]) { ir(hits[act].id); }
+    else if (ev.key === 'Escape') { ul.hidden = true; } });
+  ul.addEventListener('mousedown', ev => { const li = ev.target.closest('li'); if (li) { ir(li.dataset.id); ev.preventDefault(); } });
+  document.addEventListener('click', ev => { if (!ev.target.closest('.buscar')) ul.hidden = true; });
+  document.querySelectorAll('.hero .sugeridas button').forEach(b => b.addEventListener('click', () => ir(b.dataset.id)));
+  let id = 'Q188002'; try { id = localStorage.getItem('comuna') || id; } catch (e) {}
+  const c = L.find(x => x.id === id) || L.find(x => x.id === 'Q188002');
+  if (!c) return;
+  $('v-lugar').innerHTML = `${c.n}<small>${c.r}</small>`; $('v-ir').href = 'pronostico.html#' + c.id;
+  Promise.all([fetch('datos/pronostico_48h.json?t=' + Math.floor(Date.now() / 3e5)).then(r => r.ok ? r.json() : null).catch(() => null),
+               fetch('datos/pronostico_15d.json?t=' + Math.floor(Date.now() / 36e5)).then(r => r.ok ? r.json() : null).catch(() => null)]).then(([a, b]) => {
+    const d = a && a.comunas[c.id], q = b && b.comunas[c.id], hoy = new Date();
+    const f = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
+    const qh = q ? q.find(x => x.f === f) : null, deHoy = d ? d.pasos.filter(p => p.c.slice(0, 10) === f) : [];
+    if (d && d.obs) { $('v-temp').innerHTML = `${n(d.obs.t)}<small>°</small>`; $('v-fuente').textContent = `Ahora: medido a las ${d.obs.hora} en ${d.obs.nombre}. Máxima y mínima: pronóstico.`; }
+    else if (d && d.pasos.length) { $('v-temp').innerHTML = `${n(d.pasos[0].t)}<small>°</small>`; $('v-fuente').textContent = 'Pronóstico: no hay una estación cerca que mida ahora'; }
+    const mx = qh ? qh.tmax[1] : (deHoy.length ? Math.max(...deHoy.map(p => p.t)) : null);
+    const mn = qh && qh.tmin[1] != null ? qh.tmin[1] : (deHoy.length ? Math.min(...deHoy.map(p => p.t)) : null);
+    const mm = deHoy.reduce((s, p) => s + (p.p || 0), 0);
+    $('v-mm').innerHTML = `<span>Hoy, máx. <b>${n(mx)}°</b></span><span>mín. <b>${n(mn)}°</b></span><span>${mm >= 1 ? `Lluvia <b>${n(mm, mm < 10 ? 1 : 0)} mm</b>` + (qh ? ` · ${n(qh.p1)} %` : '') : 'Sin lluvia importante'}</span>`;
+    if (d) $('v-prox').innerHTML = d.pasos.slice(0, 4).map(p => { const h = p.c.slice(11, 13), dd = new Date(p.c.slice(0, 10) + 'T12:00');
+      return `<div><span class="h">${p.c.slice(0, 10) === f ? '' : DIA3[dd.getDay()] + ' '}${h}h</span><span class="t">${n(p.t)}°</span><span class="l">${p.p >= 0.5 ? n(p.p, 1) + ' mm' : ''}</span></div>`; }).join('');
+  });
+})();
+</script>"""
+
+
 def pagina_resumen(est, ahora, ll=None):
     c = cifras_portada(est)
     ev = eventos_destacado()
     q = quebradas_hoy()
     narr_html, narr_aviso = narrativa()
     n_est = len(est)
+    com = pd.read_csv(os.path.join(AQUI, "comunas.csv"))
+    lista = json.dumps([{"id": r.id, "n": r.nombre, "r": r.region, "p": int(r.pob)} for r in com.itertuples(index=False)], ensure_ascii=False)
+    sugeridas = "".join(f'<button type="button" data-id="{r.id}">{r.nombre}</button>' for r in com.sort_values("pob", ascending=False).head(6).itertuples(index=False))
 
-    tarjetas = []
+    franja = []
     if "aifs_g" in c:
-        tarjetas.append(f'<div class="cifra principal"><div class="v">{num(c["aifs_g"], 2)}<small>°C</small></div>'
-                        f'<p>de {d("error medio")} de la IA de ECMWF ({d("AIFS")}) al pronosticar la temperatura de mañana en '
-                        f'{n_est} aeródromos, durante 2026. Los modelos físicos se equivocan más: '
-                        f'IFS {num(c["g"].get("IFS"), 2)} °C y GFS {num(c["g"].get("GFS"), 2)} °C.</p></div>')
+        franja.append(f'<div><span class="v">{num(c["aifs_g"], 1)}<small> °C</small></span><p>{d("error medio")} de la mejor IA global ({d("AIFS")}) al pronosticar mañana, en 2026</p></div>')
     if "mejora_min" in c:
-        tarjetas.append(f'<div class="cifra"><div class="v">{num(c["mejora_min"], 0)} a {num(c["mejora_max"], 0)}<small>% menos</small></div>'
-                        f'<p>de error con la {d("corrección por estación")}: cada aeródromo corrige su error típico, aprendido en 2025 '
-                        f'y probado en 2026. Es la primera capa chilena.</p></div>')
-    if "ejemplo" in c:
-        x = c["ejemplo"]["m"]["AIFS"]
-        tarjetas.append(f'<div class="cifra"><div class="v">{num(x["g"], 1)}<span class="flecha">→</span>{num(x["c"], 1)}<small>°C</small></div>'
-                        f'<p>{c["ejemplo"]["nombre"]}: el error de la IA antes y después de corregir. Ahí la grilla de {d("25 km")} '
-                        f'mezcla mar, costa y cerro en un mismo cuadrado.</p></div>')
+        franja.append(f'<div><span class="v">{num(c["mejora_min"], 0)}–{num(c["mejora_max"], 0)}<small> %</small></span><p>menos error con el {d("corrección por estación", "ajuste chileno")}, aprendido en 2025 y probado en 2026</p></div>')
+    franja.append(f'<div><span class="v">{n_est}</span><p>aeródromos, de Arica a Punta Arenas, contra los que se mide cada pronóstico cuatro veces al día</p></div>')
+    franja.append(f'<div><span class="v">{len(com)}</span><p>comunas con pronóstico a 48 horas y 15 días, con su margen de duda</p></div>')
 
-    puertas = [f'<a class="puerta" href="pronostico.html"><span class="q">¿Qué tiempo viene en tu comuna?</span>'
-               f'<p>Ahora, 48 horas y 15 días, con el margen de duda a la vista.</p><span class="ir">Ver el pronóstico →</span></a>',
-               f'<a class="puerta" href="zona.html"><span class="q">¿Cuánto se equivoca en tu zona?</span>'
-               f'<p>Elige un aeródromo y compara los tres modelos, con y sin corrección.</p><span class="ir">Ver Tu zona →</span></a>']
-    if ev:
-        corto = EVENTOS.get(ev["evento"], (ev["evento"], ev["evento"]))[1]
-        puertas.append(f'<a class="puerta" href="eventos.html#{ev["evento"]}"><span class="q">¿Lo vieron venir?</span>'
-                       f'<p>En {corto}, la IA marcó lluvia 72 horas antes en {ev["aciertos"]} de los {ev["total"]} casos en que llovió.</p>'
-                       f'<span class="ir">Ver los eventos de 2026 →</span></a>')
+    puertas = []
     if q:
         k = q["cuenta"]
-        estado = (f'{k["aviso"]} en aviso y {k["atencion"]} en atención' if (k["aviso"] or k["atencion"])
-                  else "todas en nivel bajo")
-        lluvia = "sin lluvia prevista en las próximas 24 horas" if q["mm24"] < 1 else f"{num(q['mm24'], 1)} mm previstos en 24 horas"
-        cerca = (f' {q["mas_cerca"]["nombre"].split(" (")[0]} pasaría a atención con unos {num(q["mas_cerca"]["mm_atencion"], 0)} mm en 2 horas.'
-                 if q["mas_cerca"] else "")
-        puertas.append(f'<a class="puerta" href="quebradas.html"><span class="q">Quebradas de Santiago oriente hoy</span>'
-                       f'<p>{q["n_quemadas"]} quebradas con laderas quemadas: {estado}, {lluvia}.{cerca}</p>'
-                       f'<span class="ir">Ver el mapa de quebradas →</span></a>')
+        estado = (f'{k["aviso"]} en aviso y {k["atencion"]} en atención' if (k["aviso"] or k["atencion"]) else "todas en nivel bajo")
+        puertas.append(f'<a href="quebradas.html"><span class="q">Quebradas de Santiago oriente</span><p>{q["n_quemadas"]} quebradas con laderas quemadas: {estado}.</p><span class="ir">Ver el mapa →</span></a>')
+    puertas.append('<a href="envivo.html"><span class="q">En vivo</span><p>Rayos del satélite GOES-19 y lluvia medida en las estaciones, cada pocos minutos.</p><span class="ir">Ver ahora →</span></a>')
+    if ev:
+        corto = EVENTOS.get(ev["evento"], (ev["evento"], ev["evento"]))[1]
+        puertas.append(f'<a href="eventos.html#{ev["evento"]}"><span class="q">¿Lo vieron venir?</span><p>En {corto}, la IA marcó lluvia 72 horas antes en {ev["aciertos"]} de los {ev["total"]} casos.</p><span class="ir">Ver los eventos →</span></a>')
+    puertas.append('<a href="escenarios.html"><span class="q">Escenarios a 15 días</span><p>Probabilidad de tiempo de incendio por comuna y riesgos de faena en Collahuasi.</p><span class="ir">Ver escenarios →</span></a>')
 
+    narr = (f'<details><summary>Por qué hacemos esto</summary><div class="body narrativa">{narr_html}</div></details>' if narr_html else '')
     datos_js = json.dumps({"est": est, "modelo": "AIFS", "navegar": True, "ficha": False}, ensure_ascii=False)
-    html = f"""{head("Earth-2 Chile", "Medimos en público cuánto se equivoca el pronóstico global en Chile y cómo lo corrige una capa chilena. Datos abiertos, actualizados cuatro veces al día.")}
+    html = f"""{head("Earth-2 Chile", "El pronóstico del tiempo de tu comuna, con su margen de duda a la vista y verificado todos los días contra lo que miden las estaciones de Chile. Datos abiertos.")}
 <body>
 {nav("resumen")}
 <div class="wrap">
 {aviso_oficial.html('<p>Para las quebradas quemadas de Santiago oriente, mire también <a href="quebradas.html">cuánta lluvia las acercaría a un umbral</a>.</p>')}
 
-<header>
-  <div class="eyebrow">Verificación pública del pronóstico del tiempo en Chile</div>
-  <h1>El pronóstico global ve Chile en cuadrados de 25 km. Medimos cuánto se equivoca y cómo corregirlo.</h1>
-  <p class="lead">Comparamos los tres mejores modelos globales con lo que de verdad marcan {n_est} aeródromos del país, de Arica a Punta Arenas, y publicamos el resultado aquí, todos los días.</p>
+<header class="hero">
+  <div>
+    <div class="eyebrow">Pronóstico del tiempo para Chile · verificado en público</div>
+    <h1>El tiempo de tu comuna, con la duda a la vista y la prueba de cuánto acierta.</h1>
+    <p class="lead">Combinamos los mejores modelos globales, los corregimos con lo que de verdad se mide en Chile y publicamos todos los días cuánto se equivocan.</p>
+    <div class="buscar"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="h-buscar" type="search" placeholder="Escribe tu comuna" autocomplete="off" aria-label="Buscar comuna" role="combobox" aria-controls="h-res" aria-expanded="false">
+      <ul id="h-res" role="listbox" hidden></ul></div>
+    <div class="sugeridas" aria-label="Comunas más pobladas">{sugeridas}</div>
+  </div>
+  <aside class="vivo" aria-live="polite" aria-label="El tiempo ahora">
+    <div class="lugar" id="v-lugar">Santiago</div>
+    <div class="grande" id="v-temp">–</div>
+    <div class="mm" id="v-mm"></div>
+    <div class="prox" id="v-prox"></div>
+    <div class="fuente" id="v-fuente"></div>
+    <a class="ir" id="v-ir" href="pronostico.html">Ver 48 horas y 15 días →</a>
+  </aside>
 </header>
 
-<section aria-label="Cifras principales">
-  <div class="cifras">{''.join(tarjetas)}</div>
-</section>
+<section class="banda-cifras" aria-label="Cifras principales">{''.join(franja)}</section>
 
-<section class="card">
-  <div class="sec-head"><h2>Dónde se equivoca más</h2>
-  <p class="muted small">Error medio de la IA (AIFS) al pronosticar la temperatura de mañana, por aeródromo, en 2026. Cambia a "corregido" para ver la primera capa chilena. Toca un punto para ver su detalle.</p></div>
-  <div class="controles"><fieldset class="selector"><legend class="eyebrow">Mostrar</legend>
-    <label><input type="radio" name="estado" value="g" checked>Sin corregir</label>
-    <label><input type="radio" name="estado" value="c">Corregido por estación</label></fieldset></div>
-  {mapa_svg(est)}
-  {leyenda()}
-</section>
+<section class="sec-titulo"><div class="eyebrow">La prueba</div><h2>Por qué Chile necesita su propio pronóstico</h2>
+  <p class="muted" style="max-width:62ch">El pronóstico global ve el país en cuadrados de 25 km: mezcla mar, valle y cordillera. Lo medimos todos los días, y así se ve.</p></section>
+<div class="prueba">
+  {zoom_pagina.seccion_portada()}
+  <section class="card">
+    <div class="sec-head"><h2>Dónde se equivoca más</h2>
+    <p class="muted small">Error de la IA (AIFS) al pronosticar la temperatura de mañana, por aeródromo, en 2026. Cambia a "Corregido" para ver el ajuste chileno. Toca un punto.</p></div>
+    <div class="controles"><fieldset class="selector"><legend class="eyebrow">Mostrar</legend>
+      <label><input type="radio" name="estado" value="g" checked>Sin corregir</label>
+      <label><input type="radio" name="estado" value="c">Corregido</label></fieldset></div>
+    {mapa_svg(est)}
+    {leyenda()}
+    <p class="small"><a href="zona.html">Ver cada aeródromo y modelo en Tu zona →</a></p>
+  </section>
+</div>
 
-{zoom_pagina.seccion_portada()}
-
-{cambio.seccion(est)}
-
-{seccion_lluvia(ll)}
-
-<section aria-label="Explorar">
-  <div class="puertas">{''.join(puertas)}</div>
-  <p class="confianza"><span>Datos al {hora_chile(ahora)}</span><span>Se actualiza cuatro veces al día</span><span><a href="metodo.html">Cómo se calcula</a></span><span><a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">Código y datos abiertos</a></span></p>
-  {aviso()}
-</section>
+<section class="sec-titulo"><div class="eyebrow">Más</div><h2>Lo que también puedes ver</h2></section>
+<nav class="puerta-mini" aria-label="Otras secciones">{''.join(puertas)}</nav>
 
 {etapas()}
 
-{f'''<details><summary>Por qué hacemos esto</summary><div class="body narrativa">{narr_html}</div></details>''' if narr_html else ''}
-
+<p class="confianza"><span>Datos al {hora_chile(ahora)}</span><span>Se actualiza cuatro veces al día</span><span><a href="metodo.html">Cómo se calcula</a></span><span><a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">Código y datos abiertos</a></span></p>
+{narr}
+{aviso()}
 {pie(ahora)}
 </div>
-<script>window.ZONA = {datos_js};</script>
+<script>window.ZONA = {datos_js}; window.COMUNAS = {lista};</script>
 {JS_MAPA}
+{JS_PORTADA}
 {zoom_pagina.JS_COMPARAR}
 {JS_DEF}
 </body>
@@ -878,6 +963,8 @@ def pagina_zona(est, pts, ahora, ll=None):
 </section>
 
 {tabla_lluvia(ll)}
+
+{cambio.seccion(est)}
 
 {ultimos}
 

@@ -25,6 +25,10 @@ El pronóstico global, incluso el de IA, ve Chile en cuadrados de 25 km. En la c
 - Ver qué decían los modelos antes de los eventos de 2026.
 - Probar un escenario ("¿y si cayeran 30 mm en dos horas?") y ver qué cambia.
 
+## La portada (desde el 26-oct-2026)
+
+Producto primero: el visitante busca su comuna y ve el tiempo de ahora y de hoy sin bajar. Debajo, la confianza (cifras cortas) y la prueba (25 contra 4 km y el mapa del error). Todo lo demás es una puerta a su pestaña. El estándar a superar es la app del tiempo del teléfono; lo que la supera aquí es la duda a la vista y la verificación pública.
+
 ## Reglas que no se negocian
 
 - Lenguaje de **aviso** o **indicador**, nunca "alerta". Las alertas oficiales son de la DMC y de SENAPRED, y siempre se enlazan.

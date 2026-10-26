@@ -79,7 +79,7 @@ def seccion_portada():
                f"<strong>{num(sj['mm_25km'], 0)} {u}</strong> en San José de Maipo y <strong>{num(tb['mm_25km'], 0)} {u}</strong> en Tobalaba. "
                f"A 4 km, la cordillera queda en su lugar. Eso es lo que va a aprender CorrDiff-Chile, el modelo que estamos por entrenar.")
     return f"""<section class="card" aria-labelledby="zoom-t">
-  <div class="sec-head"><h2 id="zoom-t">Por qué 25 km no alcanza: la misma madrugada, a 25 km y a 4 km</h2>
+  <div class="sec-head"><h2 id="zoom-t">La misma madrugada, a 25 y a 4 km</h2>
   <p class="muted">{txt}</p></div>
   {comparador(z, "pos-portada")}
   <p class="small"><a href="zoom.html">Ver el caso completo, con lo que midieron los aeródromos y dónde falla también la simulación de 4 km →</a></p>

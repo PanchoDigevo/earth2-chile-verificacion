@@ -181,6 +181,10 @@ CSS = """
 .rango .amplio{background:var(--accent-soft)} .rango .centro{background:var(--accent)}
 .q-pie{font-size:13px;color:var(--muted)}
 .confianza-txt{margin:0;padding:10px 12px;border-radius:8px;background:var(--accent-soft);font-size:14.5px}
+.estado{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;color:var(--muted);margin:0}
+.estado span::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--bueno);margin-right:6px;vertical-align:1px}
+.estado span.atrasado{color:var(--fg);font-weight:600} .estado span.atrasado::before{background:var(--medio)}
+.estado span.sin::before{background:var(--sin)}
 .vacio{color:var(--muted)}
 :root{--lluvia:#3b7dd8}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--lluvia:#6fa6f0}}
@@ -236,7 +240,7 @@ JS = r"""
     const c = LISTA.find(x => x.id === sel); if (!c) return;
     $('c-nombre').textContent = c.n; $('c-region').textContent = c.r;
     const d = D48 && D48.comunas[sel];
-    pintarAhora(c, d); pintarHoras(d); pintarGrafico(d); pintarConfianza(d); pintarQuince(d);
+    pintarAhora(c, d); pintarHoras(d); pintarGrafico(d); pintarConfianza(d); pintarQuince(d); estado();
   }
   function diasDe(pasos) {
     const hoy = new Date(); hoy.setHours(0, 0, 0, 0); const g = {};
@@ -332,6 +336,20 @@ JS = r"""
       `La probabilidad de lluvia es la parte de los escenarios con 1 mm o más en el día.` + (bx || bn ? ' Máximas y mínimas ajustadas con el error local de la tarde y la madrugada.' : '');
   }
 
+  // ---- estado: a qué hora es cada dato, y en ámbar si está atrasado ----
+  function estado() {
+    const d = D48 && D48.comunas[sel], ahora = Date.now(), partes = [];
+    const edad = s => { const [f, h] = s.split('T'); const [a, m, dd] = f.split('-').map(Number); const [hh, mi] = h.split(':').map(Number); return (ahora - new Date(a, m - 1, dd, hh, mi)) / 36e5; };
+    const hace = e => e < 1 ? `hace ${Math.round(e * 60)} min` : `hace ${n(e, e < 10 ? 1 : 0)} h`;
+    if (d && d.obs) partes.push(`<span>Medición: ${d.obs.hora} en ${d.obs.nombre}</span>`);
+    else partes.push('<span class="sin">Sin medición cercana reciente</span>');
+    if (D48) { const e = edad(D48.generado); partes.push(`<span class="${e > 8 ? 'atrasado' : ''}">Pronóstico 48 h: ${D48.generado.slice(11)} (${hace(e)})${e > 8 ? ' · atrasado' : ''}</span>`); }
+    else partes.push('<span class="sin">Pronóstico 48 h: sin datos</span>');
+    if (D15) { const c = D15.corrida.replace('Z', ''); const e = (ahora - new Date(c + 'Z')) / 36e5; partes.push(`<span class="${e > 36 ? 'atrasado' : ''}">15 días: corrida del ${c.slice(8, 10)}/${c.slice(5, 7)} ${c.slice(11, 16)} UTC${e > 36 ? ' · atrasada' : ''}</span>`); }
+    else partes.push('<span class="sin">15 días: sin datos</span>');
+    $('estado').innerHTML = partes.join('');
+  }
+
   // ---- arranque ----
   const inicial = location.hash.slice(1) || (function(){ try { return localStorage.getItem('comuna'); } catch (e) { return null; } })() || 'Q188002';
   sel = LISTA.find(x => x.id === inicial) ? inicial : 'Q188002';
@@ -364,6 +382,8 @@ def pagina(head, escribir, est, pts, ahora):
     <ul id="resultados" role="listbox" hidden></ul></div>
   <div class="sugeridas" aria-label="Comunas más consultadas">{sugeridas}</div>
 </header>
+
+<p class="estado" id="estado" aria-live="polite"><span class="sin">Cargando…</span></p>
 
 <section class="card ahora" aria-live="polite">
   <div><h2 id="c-nombre"></h2><p class="muted" id="c-region"></p></div>

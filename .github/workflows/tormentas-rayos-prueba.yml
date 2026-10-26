@@ -1,0 +1,69 @@
+name: tormentas-rayos-prueba
+# Prueba del indicador de tormentas a 72 h contra los rayos del satélite GOES-19 en cada comuna de Chile central, un año:
+# un trabajo por quincena (hindcast/tormentas_gfs/prueba_rayos.py); el último mide y busca cortes (calibrar.py) y guarda
+# los resúmenes en hindcast/tormentas_gfs/. Los datos por comuna y bloque quedan como artefacto del workflow (90 días).
+on:
+  workflow_dispatch:
+    inputs:
+      meses:
+        description: "Meses (YYYY-MM) separados por espacio"
+        default: "2025-10 2025-11 2025-12 2026-01 2026-02 2026-03 2026-04 2026-05 2026-06 2026-07 2026-08 2026-09 2026-10"
+permissions:
+  contents: write
+jobs:
+  lista:
+    runs-on: ubuntu-latest
+    outputs:
+      m: ${{ steps.l.outputs.m }}
+    steps:
+      - id: l
+        run: echo "m=$(python3 -c 'import json,sys; print(json.dumps([f"{m} {p}" for m in sys.argv[1].split() for p in "12"]))' '${{ inputs.meses }}')" >> $GITHUB_OUTPUT
+  quincena:
+    needs: lista
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        q: ${{ fromJson(needs.lista.outputs.m) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r verificacion/requirements.txt netCDF4
+      - run: python hindcast/tormentas_gfs/prueba_rayos.py ${{ matrix.q }} salida
+      - id: n
+        run: echo "n=$(echo '${{ matrix.q }}' | tr ' ' '_')" >> $GITHUB_OUTPUT
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rayos-${{ steps.n.outputs.n }}
+          path: salida/
+  calibrar:
+    needs: quincena
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy pandas
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: rayos-*
+          path: salida
+          merge-multiple: true
+      - run: python hindcast/tormentas_gfs/calibrar.py salida
+      - uses: actions/upload-artifact@v4
+        with:
+          name: todos-los-bloques
+          path: salida/
+      - name: Guardar
+        run: |
+          git config user.name "earth2-bot"; git config user.email "actions@users.noreply.github.com"
+          git add hindcast/tormentas_gfs/rayos_*.csv
+          git diff --cached --quiet || git commit -m "tormentas a 72 h: prueba contra los rayos del satélite"
+          for i in 1 2 3; do git pull --rebase -q origin main && git push -q origin HEAD:main && break; sleep 10; done

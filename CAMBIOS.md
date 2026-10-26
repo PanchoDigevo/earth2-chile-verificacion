@@ -4,6 +4,10 @@ Lo hecho, en orden inverso y en simple. Los commits automáticos (verificación,
 
 Sitio: https://panchodigevo.github.io/earth2-chile-verificacion/
 
+## 26-oct-2026
+
+- **El antes y después, en la portada:** justo después de "Dónde se equivoca más", la madrugada fría a 25 km y a 4 km con su deslizador; enlaza al caso completo (`zoom.html`).
+
 ## 23-oct-2026
 
 - **Página "Por qué 4 km"** (`zoom.html`, enlazada desde "En qué etapa estamos"): la madrugada más fría de 2021 en Chile central a 25 km (ERA5) y a 4 km (SAAG-WRF), con deslizador y lo medido en Pudahuel. Se ve cómo 25 km reparte el frío de la cordillera sobre la precordillera, y también que 4 km no es perfecto en el fondo del valle. Se descartó una tormenta de enero de 2021 porque la simulación la desplazó al sur. No es CorrDiff-Chile: es lo que va a aprender.

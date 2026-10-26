@@ -14,6 +14,7 @@ Diseño: docs/brief_sitio.md. Lenguaje de aviso/indicador, nunca "alerta"."""
 import json, math, os, re
 import pandas as pd
 import aviso_oficial
+import zoom_pagina
 import cambio
 from comun import (CSS_ETAPAS, CSS_NAV, CSS_DEF, JS_DEF, etapas, EVENTOS, GLOSARIO, MESES, a_chile, aviso, d, entero, fecha, hora_chile, nav, num, pie, signo)
 
@@ -628,7 +629,7 @@ def head(titulo, descripcion):
 <meta name="description" content="{descripcion}">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
-<style>{CSS}{CSS_NAV}{CSS_DEF}{CSS_ETAPAS}{aviso_oficial.CSS}{cambio.CSS_CAMBIO}</style>
+<style>{CSS}{CSS_NAV}{CSS_DEF}{CSS_ETAPAS}{aviso_oficial.CSS}{cambio.CSS_CAMBIO}{zoom_pagina.CSS}</style>
 </head>"""
 
 
@@ -708,6 +709,8 @@ def pagina_resumen(est, ahora, ll=None):
   {leyenda()}
 </section>
 
+{zoom_pagina.seccion_portada()}
+
 {cambio.seccion(est)}
 
 {seccion_lluvia(ll)}
@@ -726,6 +729,7 @@ def pagina_resumen(est, ahora, ll=None):
 </div>
 <script>window.ZONA = {datos_js};</script>
 {JS_MAPA}
+{zoom_pagina.JS_COMPARAR}
 {JS_DEF}
 </body>
 </html>

@@ -23,10 +23,72 @@ CSS = """
 """
 
 
-def pagina(head, escribir, ahora):
+JS_COMPARAR = """<script>
+(function(){
+  document.querySelectorAll('[data-comparar]').forEach(caja => {
+    const c = caja.querySelector('.comparar'), r = caja.querySelector('input[type=range]');
+    const poner = v => { c.style.setProperty('--pos', v + '%'); r.value = v; };
+    r.addEventListener('input', () => poner(r.value));
+    caja.querySelectorAll('.botones button').forEach(b => b.addEventListener('click', () => poner(b.dataset.v)));
+    let arrastrando = false;
+    const mover = ev => { const x = ev.clientX - c.getBoundingClientRect().left; poner(Math.max(0, Math.min(100, Math.round(100 * x / c.clientWidth)))); };
+    c.addEventListener('pointerdown', ev => { arrastrando = true; mover(ev); });
+    window.addEventListener('pointermove', ev => { if (arrastrando) mover(ev); });
+    window.addEventListener('pointerup', () => arrastrando = false);
+  });
+})();
+</script>"""
+
+
+def leer():
     try:
-        z = json.load(open(DATOS, encoding="utf-8"))
+        return json.load(open(DATOS, encoding="utf-8"))
     except Exception:
+        return None
+
+
+def comparador(z, id_):
+    niveles, colores = z["niveles"], z["colores"]
+    escala = "".join(f'<span><i style="background:{c}"></i>{num(niveles[i], 0)}</span>' for i, c in enumerate(colores))
+    que = "temperatura" if z.get("variable") == "temp" else "lluvia"
+    return f"""<div data-comparar>
+  <div class="comparar" style="--pos:50%">
+    <img src="zoom/saag_4km.png" alt="Mapa de {que} a 4 km sobre Chile central">
+    <img class="arriba" src="zoom/era5_25km.png" alt="Mapa de {que} a 25 km sobre Chile central">
+    <div class="linea" aria-hidden="true"></div>
+    <span class="etq izq">25 km · pronóstico global</span><span class="etq der">4 km</span>
+  </div>
+  <label class="small muted" for="{id_}" style="display:block;text-align:center;margin-top:8px">Mueve para comparar</label>
+  <input class="deslizador" id="{id_}" type="range" min="0" max="100" value="50" aria-label="Proporción de la imagen a 25 km">
+  <div class="botones"><button type="button" data-v="100">Ver 25 km</button><button type="button" data-v="0">Ver 4 km</button></div>
+  <div class="escala" aria-label="Escala de colores">{escala}</div>
+</div>"""
+
+
+def seccion_portada():
+    """Bloque para la portada: el comparador y dos frases, con enlace a la página completa."""
+    z = leer()
+    if not z:
+        return ""
+    P = {p["nombre"].split(" (")[0]: p for p in z["puntos"]}
+    u = z.get("unidad", "°C")
+    txt = ""
+    if z.get("variable") == "temp" and "San José de Maipo" in P and "Tobalaba" in P:
+        sj, tb = P["San José de Maipo"], P["Tobalaba"]
+        txt = (f"La madrugada más fría de 2021 en Santiago. A 25 km, el frío de las cumbres se reparte sobre la precordillera: "
+               f"<strong>{num(sj['mm_25km'], 0)} {u}</strong> en San José de Maipo y <strong>{num(tb['mm_25km'], 0)} {u}</strong> en Tobalaba. "
+               f"A 4 km, la cordillera queda en su lugar. Eso es lo que va a aprender CorrDiff-Chile, el modelo que estamos por entrenar.")
+    return f"""<section class="card" aria-labelledby="zoom-t">
+  <div class="sec-head"><h2 id="zoom-t">Por qué 25 km no alcanza: la misma madrugada, a 25 km y a 4 km</h2>
+  <p class="muted">{txt}</p></div>
+  {comparador(z, "pos-portada")}
+  <p class="small"><a href="zoom.html">Ver el caso completo, con lo que midieron los aeródromos y dónde falla también la simulación de 4 km →</a></p>
+</section>"""
+
+
+def pagina(head, escribir, ahora):
+    z = leer()
+    if not z:
         return 0
     temp = z.get("variable") == "temp"; u = z.get("unidad", "mm")
     v = lambda x, dec=0: "–" if x is None else f"{num(x, dec)} {u}"
@@ -61,8 +123,6 @@ def pagina(head, escribir, ahora):
         cambia = (f"En 25 km caben el valle y la cordillera, y el modelo tiene que darles a todos la misma lluvia. A 4 km aparece cuánto más llueve en la "
                   f"precordillera que en el valle. Máximo en esta zona: <strong>{v(z['max_25km'])} a 25 km</strong> y <strong>{v(z['max_4km'])} a 4 km</strong>.")
         pie_img = f"Milímetros en {z['horas']} horas. Líneas grises: relieve cada 1.000 m. Puntos rojos: los lugares de la tabla."
-    niveles, colores = z["niveles"], z["colores"]
-    escala = "".join(f'<span><i style="background:{c}"></i>{num(niveles[i], 0)}</span>' for i, c in enumerate(colores))
     html = f"""{head("Por qué 4 km · Earth-2 Chile", "Un caso real de Chile visto a 25 km, como lo ve un pronóstico global, y a 4 km, como lo va a aprender CorrDiff-Chile.")}
 <body>
 {nav("")}
@@ -73,16 +133,7 @@ def pagina(head, escribir, ahora):
   <p class="lead">{lead}</p>
 </header>
 <section class="card">
-  <div class="comparar" id="comparar" style="--pos:50%">
-    <img src="zoom/saag_4km.png" alt="Mapa a 4 km sobre Chile central">
-    <img class="arriba" src="zoom/era5_25km.png" alt="Mapa a 25 km sobre Chile central">
-    <div class="linea" aria-hidden="true"></div>
-    <span class="etq izq">25 km · pronóstico global</span><span class="etq der">4 km</span>
-  </div>
-  <label class="small muted" for="pos" style="display:block;text-align:center;margin-top:8px">Mueve para comparar</label>
-  <input class="deslizador" id="pos" type="range" min="0" max="100" value="50" aria-label="Proporción de la imagen a 25 km">
-  <div class="botones"><button type="button" data-v="100">Ver 25 km</button><button type="button" data-v="0">Ver 4 km</button></div>
-  <div class="escala" aria-label="Escala de colores">{escala}</div>
+  {comparador(z, "pos")}
   <p class="small muted" style="text-align:center">{pie_img}</p>
 </section>
 <section>
@@ -98,22 +149,9 @@ def pagina(head, escribir, ahora):
 </section>
 {pie(ahora)}
 </div>
-<script>
-(function(){{
-  const c = document.getElementById('comparar'), r = document.getElementById('pos');
-  const poner = v => {{ c.style.setProperty('--pos', v + '%'); r.value = v; }};
-  r.addEventListener('input', () => poner(r.value));
-  document.querySelectorAll('.botones button').forEach(b => b.addEventListener('click', () => poner(b.dataset.v)));
-  let arrastrando = false;
-  const mover = ev => {{ const x = (ev.touches ? ev.touches[0].clientX : ev.clientX) - c.getBoundingClientRect().left;
-    poner(Math.max(0, Math.min(100, Math.round(100 * x / c.clientWidth)))); }};
-  c.addEventListener('pointerdown', ev => {{ arrastrando = true; mover(ev); }});
-  window.addEventListener('pointermove', ev => {{ if (arrastrando) mover(ev); }});
-  window.addEventListener('pointerup', () => arrastrando = false);
-}})();
-</script>
+{JS_COMPARAR}
 {JS_DEF}
 </body>
 </html>
 """
-    return escribir("zoom.html", html.replace("</style>", CSS + "</style>", 1))
+    return escribir("zoom.html", html)

@@ -22,6 +22,7 @@ REPO = "https://github.com/PanchoDigevo/earth2-chile-verificacion"
 # Las secciones responden a las preguntas del visitante, no al origen de los datos.
 SECCIONES = [
     ("resumen", "./", "Resumen"),
+    ("pronostico", "pronostico.html", "Pronóstico"),
     ("zona", "zona.html", "Tu zona"),
     ("eventos", "eventos.html", 'Eventos<span class="largo">2026</span>'),
     ("quebradas", "quebradas.html", "Quebradas"),

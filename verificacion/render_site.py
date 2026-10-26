@@ -14,6 +14,7 @@ Diseño: docs/brief_sitio.md. Lenguaje de aviso/indicador, nunca "alerta"."""
 import json, math, os, re
 import pandas as pd
 import aviso_oficial
+import pronostico_pagina
 import zoom_pagina
 import cambio
 from comun import (CSS_ETAPAS, CSS_NAV, CSS_DEF, JS_DEF, etapas, EVENTOS, GLOSARIO, MESES, a_chile, aviso, d, entero, fecha, hora_chile, nav, num, pie, signo)
@@ -541,7 +542,8 @@ section{display:grid;gap:14px}
 .cifra.principal{border-color:var(--accent)}
 /* puertas de entrada */
 .puertas{display:grid;gap:12px;grid-template-columns:1fr}
-@media (min-width:760px){.puertas{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (min-width:760px){.puertas{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:1100px){.puertas{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .puerta{display:grid;gap:6px;align-content:start;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;color:var(--fg);text-decoration:none}
 .puerta:hover{border-color:var(--accent)}
 .puerta .q{font-family:var(--font-display);font-weight:600;font-size:18px}
@@ -653,7 +655,7 @@ def head(titulo, descripcion):
 <meta name="description" content="{descripcion}">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
-<style>{CSS}{CSS_NAV}{CSS_DEF}{CSS_ETAPAS}{aviso_oficial.CSS}{cambio.CSS_CAMBIO}{zoom_pagina.CSS}{CSS_PRONOSTICO}</style>
+<style>{CSS}{CSS_NAV}{CSS_DEF}{CSS_ETAPAS}{aviso_oficial.CSS}{cambio.CSS_CAMBIO}{zoom_pagina.CSS}{pronostico_pagina.CSS}</style>
 </head>"""
 
 
@@ -688,7 +690,9 @@ def pagina_resumen(est, ahora, ll=None):
                         f'<p>{c["ejemplo"]["nombre"]}: el error de la IA antes y después de corregir. Ahí la grilla de {d("25 km")} '
                         f'mezcla mar, costa y cerro en un mismo cuadrado.</p></div>')
 
-    puertas = [f'<a class="puerta" href="zona.html"><span class="q">¿Cuánto se equivoca en tu zona?</span>'
+    puertas = [f'<a class="puerta" href="pronostico.html"><span class="q">¿Qué tiempo viene en tu comuna?</span>'
+               f'<p>Ahora, 48 horas y 15 días, con el margen de duda a la vista.</p><span class="ir">Ver el pronóstico →</span></a>',
+               f'<a class="puerta" href="zona.html"><span class="q">¿Cuánto se equivoca en tu zona?</span>'
                f'<p>Elige un aeródromo y compara los tres modelos, con y sin corrección.</p><span class="ir">Ver Tu zona →</span></a>']
     if ev:
         corto = EVENTOS.get(ev["evento"], (ev["evento"], ev["evento"]))[1]
@@ -832,237 +836,12 @@ def tabla_lluvia(ll):
 </section>"""
 
 
-DIAS_SESGO = 30          # ventana de la corrección móvil del pronóstico que viene
-MIN_SESGO = 10           # pares mínimos por modelo, aeródromo y hora del día para corregir
-
-
-def pronostico_js(est, pts, ahora):
-    """Pronóstico de las próximas 48 h por aeródromo, armado como lo vería un usuario.
-    Nuestro pronóstico = promedio de los modelos (AIFS, IFS, GFS y los propios de Earth-2 cuando existan), cada uno ajustado
-    con su error medio en ese aeródromo a esa hora del día en los últimos DIAS_SESGO días (si tiene MIN_SESGO pares; si no,
-    entra sin ajuste). El rango entre modelos mide la incertidumbre. Lluvia: promedio de los modelos por bloque de 6 h."""
-    try:
-        pr = pd.read_csv(os.path.join(AQUI, "data", "pronostico_puntos.csv"))
-    except Exception:
-        return {}
-    for c in ("run", "valid"):
-        pr[c] = pd.to_datetime(pr[c], format="mixed")
-    pr = pr[pr.modelo.isin(orden_diario(pr.modelo))]
-    ahora_n = ahora.tz_localize(None) if ahora.tzinfo else ahora
-    ult = pr.groupby("modelo").run.max()
-    pr = pr[pr.run == pr.modelo.map(ult)].sort_values(["modelo", "icao", "lead_h"]).copy()
-    pr["p6"] = pr.groupby(["modelo", "icao"]).tp_fc.diff().clip(lower=0)
-    pr["ph"] = pr.groupby(["modelo", "icao"]).lead_h.diff()
-    pr = pr[(pr.valid >= ahora_n - pd.Timedelta(hours=2)) & (pr.valid <= ahora_n + pd.Timedelta(hours=50))]
-    pr["h"] = pr.valid.dt.hour
-    if pts is not None and not pts.empty:
-        v = pts[pts.valid >= ahora_n - pd.Timedelta(days=DIAS_SESGO)].dropna(subset=["t_err"]).copy()
-        v["h"] = v.valid.dt.hour
-        sg = v.groupby(["modelo", "icao", "h"]).t_err.agg(["mean", "size"]).reset_index()
-        sg = sg[sg["size"] >= MIN_SESGO].rename(columns={"mean": "sesgo"})[["modelo", "icao", "h", "sesgo"]]
-        pr = pr.merge(sg, on=["modelo", "icao", "h"], how="left")
-    else:
-        pr["sesgo"] = np.nan
-    pr["ajustado"] = pr.sesgo.notna()
-    pr["tc"] = pr.t_fc - pr.sesgo.fillna(0.0)
-    nombres = {e["icao"] for e in est}
-    out = {}
-    for icao, g in pr.groupby("icao"):
-        if icao not in nombres:
-            continue
-        pasos = []
-        for t, x in g.groupby("valid"):
-            lluvia = x.p6.dropna()
-            pasos.append({"chile": a_chile(t).strftime("%Y-%m-%dT%H:%M"),
-                          "t": round(float(x.tc.mean()), 1), "tmin": round(float(x.tc.min()), 1), "tmax": round(float(x.tc.max()), 1),
-                          "p": None if lluvia.empty else round(float(lluvia.mean()), 1),
-                          "pn": int((lluvia >= 1).sum()), "nm": int(len(x)),
-                          "ph": None if x.ph.dropna().empty else int(x.ph.dropna().max()),
-                          "w": None if x.w_fc.dropna().empty else round(float(x.w_fc.mean()) * 3.6),
-                          "aj": int(x.ajustado.sum())})
-        modelos = {m: [{"chile": a_chile(r.valid).strftime("%Y-%m-%dT%H:%M"), "t": round(float(r.t_fc), 1), "tc": round(float(r.tc), 1)}
-                       for r in gm.itertuples(index=False)] for m, gm in g.groupby("modelo")}
-        out[icao] = {"pasos": pasos, "modelos": modelos,
-                     "corridas": {m: a_chile(t).strftime("%Y-%m-%dT%H:%M") for m, t in ult.items()}}
-    return out
-
-
-def seccion_pronostico():
-    return """<section class="card prono" id="pronostico" aria-labelledby="pr-titulo" hidden>
-  <div class="prono-cab">
-    <div class="eyebrow">Próximas 48 horas</div>
-    <h2 id="pr-titulo">Pronóstico para <span id="pr-nombre"></span></h2>
-    <p class="muted">Combinamos los modelos globales y a cada uno le restamos el error que ha tenido en este lugar, a esa hora del día, en el último mes.</p>
-  </div>
-  <div class="dias" id="pr-dias"></div>
-  <figure class="prono-graf">
-    <figcaption class="small muted">Temperatura hora a hora. La banda muestra entre qué valores quedan los distintos modelos: cuanto más ancha, más dudoso.</figcaption>
-    <div id="pr-graf"></div>
-  </figure>
-  <p class="confianza-txt" id="pr-confianza"></p>
-  <details><summary>Cómo se arma y qué dice cada modelo</summary><div class="body">
-    <p class="small muted" id="pr-como"></p>
-    <div class="tabla"><table id="pr-tabla"><thead></thead><tbody></tbody></table></div>
-  </div></details>
-</section>"""
-
-
-CSS_PRONOSTICO = """
-.prono{display:grid;gap:16px}
-.prono-cab h2{margin:2px 0 4px}
-.dias{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
-.dia{border:1px solid var(--line);border-radius:var(--radius);padding:14px;display:grid;gap:8px;background:var(--surface)}
-.dia h3{margin:0;font:600 15px var(--font-body);color:var(--fg)}
-.dia .temps{display:flex;align-items:baseline;gap:10px;font-family:var(--font-display)}
-.dia .temps .max{font-size:30px;font-weight:600;color:var(--fg)}
-.dia .temps .min{font-size:20px;color:var(--muted)}
-.dia .temps small{font:12px var(--font-body);color:var(--muted);display:block}
-.dia .linea{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--fg)}
-.dia .linea svg{flex:none;width:18px;height:18px;stroke:var(--muted);fill:none;stroke-width:1.8}
-.dia .linea.llueve svg{stroke:var(--lluvia)}
-.dia .nota{font-size:12.5px;color:var(--muted)}
-.prono-graf{margin:0}
-.prono-graf svg{width:100%;height:auto;display:block;overflow:visible}
-.prono-graf .eje{font:11px var(--font-data);fill:var(--muted)}
-.prono-graf .grid{stroke:var(--line-soft)}
-.prono-graf .dia-sep{stroke:var(--line)}
-.prono-graf .banda{fill:var(--accent-soft)}
-.prono-graf .lin{fill:none;stroke:var(--accent);stroke-width:2}
-.prono-graf .pt{fill:var(--accent);stroke:var(--surface);stroke-width:2}
-.prono-graf .barra{fill:var(--lluvia)}
-.prono-graf .etq{font:600 12px var(--font-data);fill:var(--fg)}
-.prono-graf .hit{fill:transparent;cursor:crosshair}
-.prono-graf .guia{stroke:var(--muted);stroke-dasharray:3 3}
-.prono-tip{position:absolute;pointer-events:none;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;
-  font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,.12);min-width:150px;z-index:5}
-.prono-tip b{display:block;margin-bottom:2px}
-.confianza-txt{margin:0;padding:10px 12px;border-radius:8px;background:var(--accent-soft);font-size:14.5px}
-@media (max-width:560px){.dias{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px}
-  .dia{min-width:68%;scroll-snap-align:start}}
-:root{--lluvia:#3b7dd8}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--lluvia:#6fa6f0}}
-:root[data-theme="dark"]{--lluvia:#6fa6f0}
-"""
-
-
-JS_PRONOSTICO = r"""
-<script>
-(function(){
-  const Z = window.ZONA || {}, P = Z.prono || {}, E = {}; (Z.est || []).forEach(e => E[e.icao] = e);
-  const sec = document.getElementById('pronostico'); if (!sec) return;
-  const DIA = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
-  const n = (v, d=0) => v == null ? '–' : Number(v).toLocaleString('es-CL', {minimumFractionDigits:d, maximumFractionDigits:d}).replace('-', '−');
-  const fecha = s => { const [f, h] = s.split('T'); const [a, m, d] = f.split('-').map(Number); return {f, h: Number(h.slice(0, 2)), d: new Date(a, m - 1, d)}; };
-  const ICO = {
-    gota: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5c3.2 4.3 5.5 7.4 5.5 10.2a5.5 5.5 0 0 1-11 0c0-2.8 2.3-5.9 5.5-10.2z"/></svg>',
-    viento: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h11a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M3 16h8"/></svg>'
-  };
-  function nombreDia(f, hoy) {
-    const dif = Math.round((f.d - hoy) / 864e5);
-    return dif === 0 ? 'Hoy' : dif === 1 ? 'Mañana' : DIA[f.d.getDay()][0].toUpperCase() + DIA[f.d.getDay()].slice(1);
-  }
-  function dias(pasos) {
-    const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
-    const g = {};
-    pasos.forEach(p => { const f = fecha(p.chile); (g[f.f] = g[f.f] || {f, pasos: []}).pasos.push(p); });
-    return Object.values(g).sort((a, b) => a.f.d - b.f.d).map(x => {
-      const ts = x.pasos.map(p => p.t), ll = x.pasos.filter(p => p.p != null);
-      const mm = ll.reduce((s, p) => s + p.p, 0), conLluvia = ll.filter(p => p.pn > 0);
-      const nm = Math.max(...x.pasos.map(p => p.nm)), acuerdo = conLluvia.length ? Math.max(...conLluvia.map(p => p.pn)) + ' de ' + nm : '';
-      const ws = x.pasos.map(p => p.w).filter(v => v != null);
-      const hoyEs = Math.round((x.f.d - hoy) / 864e5) === 0, uno = x.pasos.length === 1 ? fecha(x.pasos[0].chile).h : null;
-      return {nombre: nombreDia(x.f, hoy), fechaTxt: x.f.d.getDate() + '/' + (x.f.d.getMonth() + 1), max: Math.max(...ts), min: Math.min(...ts),
-              mm, acuerdo, w: ws.length ? Math.max(...ws) : null, nPasos: x.pasos.length, hoyEs, uno};
-    });
-  }
-  function tarjetas(ds) {
-    return ds.map(d => `<article class="dia">
-      <h3>${d.nombre} <span class="muted" style="font-weight:400">${d.fechaTxt}</span></h3>
-      ${d.uno != null
-        ? `<div class="temps"><div><span class="max">${n(d.max)}°</span><small>a las ${String(d.uno).padStart(2, '0')}:00</small></div></div>`
-        : `<div class="temps"><div><span class="max">${n(d.max)}°</span><small>máxima</small></div><div><span class="min">${n(d.min)}°</span><small>mínima</small></div></div>`}
-      <div class="linea ${d.mm >= 1 ? 'llueve' : ''}">${ICO.gota}<span>${d.mm >= 1 ? `<strong>${n(d.mm, d.mm < 10 ? 1 : 0)} mm</strong> de lluvia` : 'Sin lluvia importante'}</span></div>
-      ${d.mm >= 1 && d.acuerdo ? `<div class="nota">La anuncian ${d.acuerdo} modelos</div>` : ''}
-      <div class="linea">${ICO.viento}<span>Viento hasta ${n(d.w)} km/h</span></div>
-      ${d.nPasos < 3 ? `<div class="nota">${d.hoyEs ? 'Lo que queda del día' : 'El pronóstico llega solo hasta esa hora'}</div>` : ''}
-    </article>`).join('');
-  }
-  function grafico(pasos) {
-    const W = 720, H = 268, ml = 34, mr = 10, mt = 22, hT = 150, gap = 40, hP = 48;
-    const xs = pasos.map(p => fecha(p.chile)), t0 = xs[0].d.getTime() + xs[0].h * 36e5, t1 = xs[xs.length - 1].d.getTime() + xs[xs.length - 1].h * 36e5;
-    const X = i => ml + (W - ml - mr) * ((xs[i].d.getTime() + xs[i].h * 36e5 - t0) / Math.max(t1 - t0, 1));
-    const lo = Math.floor(Math.min(...pasos.map(p => p.tmin)) - 1), hi = Math.ceil(Math.max(...pasos.map(p => p.tmax)) + 1);
-    const Y = v => mt + hT * (1 - (v - lo) / Math.max(hi - lo, 1));
-    const pmax = Math.max(5, ...pasos.map(p => p.p || 0)); const yP0 = mt + hT + gap + hP, YP = v => yP0 - hP * v / pmax;
-    let o = '';
-    const paso = (hi - lo) > 12 ? 5 : (hi - lo) > 6 ? 2 : 1;
-    for (let v = Math.ceil(lo / paso) * paso; v <= hi; v += paso) o += `<line class="grid" x1="${ml}" x2="${W - mr}" y1="${Y(v)}" y2="${Y(v)}"/><text class="eje" x="${ml - 6}" y="${Y(v) + 4}" text-anchor="end">${n(v)}°</text>`;
-    xs.forEach((f, i) => { if (f.h <= 5 && i > 0 && xs[i - 1].f !== f.f) o += `<line class="dia-sep" x1="${X(i)}" x2="${X(i)}" y1="${mt - 14}" y2="${yP0}"/>`; });
-    const dsTxt = {}; xs.forEach((f, i) => { if (!(f.f in dsTxt)) dsTxt[f.f] = i; });
-    Object.entries(dsTxt).forEach(([k, i]) => { const f = xs[i]; o += `<text class="eje" x="${X(i) + 4}" y="${mt - 6}">${DIA[f.d.getDay()].slice(0, 3)} ${f.d.getDate()}</text>`; });
-    o += `<path class="banda" d="M${pasos.map((p, i) => `${X(i)},${Y(p.tmax)}`).join('L')}L${pasos.map((p, i) => `${X(i)},${Y(p.tmin)}`).reverse().join('L')}Z"/>`;
-    o += `<path class="lin" d="M${pasos.map((p, i) => `${X(i)},${Y(p.t)}`).join('L')}"/>`;
-    pasos.forEach((p, i) => o += `<circle class="pt" cx="${X(i)}" cy="${Y(p.t)}" r="3.5"/>`);
-    const iMax = pasos.reduce((a, p, i) => p.t > pasos[a].t ? i : a, 0), iMin = pasos.reduce((a, p, i) => p.t < pasos[a].t ? i : a, 0);
-    [iMax, iMin].forEach(i => o += `<text class="etq" x="${X(i)}" y="${Y(pasos[i].t) + (i === iMax ? -9 : 18)}" text-anchor="middle">${n(pasos[i].t)}°</text>`);
-    o += `<text class="eje" x="${ml - 6}" y="${yP0 - hP + 4}" text-anchor="end">${n(pmax)}</text><text class="eje" x="${ml - 6}" y="${yP0 + 4}" text-anchor="end">0</text>`;
-    o += `<text class="eje" x="${ml}" y="${yP0 - hP - 10}">Lluvia, en mm cada 6 h</text><line class="grid" x1="${ml}" x2="${W - mr}" y1="${yP0}" y2="${yP0}"/>`;
-    const bw = Math.max(6, (W - ml - mr) / Math.max(pasos.length, 1) * 0.5);
-    pasos.forEach((p, i) => { if (p.p > 0.05) o += `<rect class="barra" x="${X(i) - bw / 2}" y="${YP(p.p)}" width="${bw}" height="${yP0 - YP(p.p)}" rx="3"/>`; });
-    pasos.forEach((p, i) => { const f = xs[i];
-      o += `<text class="eje" x="${X(i)}" y="${yP0 + 14}" text-anchor="middle">${String(f.h).padStart(2, '0')}h</text>`;
-      const a = i ? (X(i) + X(i - 1)) / 2 : ml, b = i < pasos.length - 1 ? (X(i) + X(i + 1)) / 2 : W - mr;
-      o += `<rect class="hit" data-i="${i}" x="${a}" y="${mt}" width="${b - a}" height="${yP0 - mt}"/>`; });
-    o += `<line class="guia" id="pr-guia" x1="0" x2="0" y1="${mt}" y2="${yP0}" visibility="hidden"/>`;
-    return `<svg viewBox="0 0 ${W} ${H + 8}" role="img" aria-label="Temperatura y lluvia de las próximas 48 horas">${o}</svg>`;
-  }
-  function tip(caja, pasos) {
-    const svg = caja.querySelector('svg'), t = document.createElement('div'); t.className = 'prono-tip'; t.hidden = true; caja.style.position = 'relative'; caja.appendChild(t);
-    const guia = svg.querySelector('#pr-guia');
-    svg.querySelectorAll('.hit').forEach(r => {
-      const mostrar = () => { const i = +r.dataset.i, p = pasos[i], f = fecha(p.chile), x = +r.getAttribute('x') + +r.getAttribute('width') / 2;
-        guia.setAttribute('x1', svg.querySelectorAll('.pt')[i].getAttribute('cx')); guia.setAttribute('x2', guia.getAttribute('x1')); guia.setAttribute('visibility', 'visible');
-        t.innerHTML = `<b>${DIA[f.d.getDay()]} ${f.d.getDate()}, ${String(f.h).padStart(2, '0')}:00</b>${n(p.t, 1)} °C <span class="muted">(modelos: ${n(p.tmin, 1)} a ${n(p.tmax, 1)})</span><br>` +
-          (p.p != null ? `Lluvia: ${n(p.p, 1)} mm${p.ph ? ' en ' + p.ph + ' h' : ''}<br>` : '') + (p.w != null ? `Viento: ${n(p.w)} km/h` : '');
-        t.hidden = false; const bw = caja.clientWidth, px = x / 720 * bw; t.style.left = Math.min(Math.max(px - 80, 0), bw - 170) + 'px'; t.style.top = '0px'; };
-      r.addEventListener('mouseenter', mostrar); r.addEventListener('click', mostrar);
-      r.addEventListener('mouseleave', () => { t.hidden = true; guia.setAttribute('visibility', 'hidden'); });
-    });
-  }
-  document.addEventListener('zona:sel', ev => {
-    const {icao} = ev.detail, p = P[icao], e = E[icao];
-    if (!p || !p.pasos || p.pasos.length < 2) { sec.hidden = true; return; }
-    sec.hidden = false;
-    document.getElementById('pr-nombre').textContent = e ? e.nombre : icao;
-    document.getElementById('pr-dias').innerHTML = tarjetas(dias(p.pasos));
-    const caja = document.getElementById('pr-graf'); caja.innerHTML = grafico(p.pasos); tip(caja, p.pasos);
-    const m = e && e.m ? e.m : {}, a = m.AIFS || {};
-    document.getElementById('pr-confianza').innerHTML = a.g != null
-      ? `<strong>Qué tan confiable es aquí:</strong> en 2026, el pronóstico de temperatura para el día siguiente se equivocó en promedio ${n(a.g, 1)} °C en este lugar` +
-        (a.c != null ? ` y ${n(a.c, 1)} °C con el ajuste local.` : '.') + (a.g >= 2.5 ? ' Es de los lugares donde más se equivocan los modelos globales: tómalo con cautela.' : '')
-      : 'Todavía no hay suficientes datos para decir qué tan confiable es el pronóstico en este lugar.';
-    const ajustados = p.pasos.reduce((s, x) => s + x.aj, 0), total = p.pasos.reduce((s, x) => s + x.nm, 0);
-    document.getElementById('pr-como').textContent = `Usa la última corrida de ${Object.keys(p.corridas).join(', ')}. ` +
-      `Cada modelo se ajusta restando su error medio en este aeródromo a esa hora del día en los últimos 30 días; ` +
-      `esta vez se pudo ajustar ${ajustados} de ${total} valores (los demás entran sin ajuste, por falta de comparaciones). ` +
-      `La máxima y la mínima salen de pronósticos cada 6 horas, así que son aproximadas. No es un aviso: las alertas oficiales son de la DMC y SENAPRED.`;
-    const mods = Object.keys(p.modelos), horas = p.pasos.map(x => x.chile);
-    document.querySelector('#pr-tabla thead').innerHTML = '<tr><th class="l">Hora</th><th>Nuestro pronóstico</th>' + mods.map(x => `<th>${x}</th>`).join('') + '</tr>';
-    document.querySelector('#pr-tabla tbody').innerHTML = p.pasos.map(x => { const f = fecha(x.chile);
-      return `<tr><td class="l">${DIA[f.d.getDay()].slice(0, 3)} ${f.d.getDate()}, ${String(f.h).padStart(2, '0')}:00</td><td class="num"><strong>${n(x.t, 1)} °C</strong></td>` +
-        mods.map(mm => { const r = p.modelos[mm].find(y => y.chile === x.chile); return `<td class="num">${r ? n(r.t, 1) + ' → ' + n(r.tc, 1) : '–'}</td>`; }).join('') + '</tr>'; }).join('');
-  });
-})();
-</script>"""
-
-
 def pagina_zona(est, pts, ahora, ll=None):
     c = cifras_portada(est)
     inicial = c["ejemplo"]["icao"] if "ejemplo" in c else (est[0]["icao"] if est else "")
     opciones = "".join(f'<option value="{e["icao"]}">{e["nombre"]} · {e["region"]}</option>' for e in est)
     ultimos, tecnico = bloque_ultimos_dias(pts)
-    datos_js = json.dumps({"est": est, "modelo": "AIFS", "navegar": False, "ficha": True, "inicial": inicial, "lluvia": lluvia_js(ll),
-                           "prono": pronostico_js(est, pts, ahora)}, ensure_ascii=False)
+    datos_js = json.dumps({"est": est, "modelo": "AIFS", "navegar": False, "ficha": True, "inicial": inicial, "lluvia": lluvia_js(ll)}, ensure_ascii=False)
     html = f"""{head("Tu zona · Earth-2 Chile", "Elige un aeródromo de Chile y mira cuánto se equivocan los modelos de pronóstico al predecir la temperatura de mañana, con y sin corrección local.")}
 <body>
 {nav("zona")}
@@ -1092,8 +871,6 @@ def pagina_zona(est, pts, ahora, ll=None):
   </div>
 </section>
 
-{seccion_pronostico()}
-
 <section>
   <div class="sec-head"><h2>Todos los aeródromos, de mayor a menor error</h2>
   <p class="muted">Modelo <strong id="tabla-modelo">AIFS</strong>, error medio a 24 h en 2026. Toca una fila para ver su ficha.</p></div>
@@ -1110,7 +887,6 @@ def pagina_zona(est, pts, ahora, ll=None):
 {pie(ahora)}
 </div>
 <script>window.ZONA = {datos_js};</script>
-{JS_PRONOSTICO}
 {JS_MAPA}
 {JS_DEF}
 </body>
@@ -1140,6 +916,7 @@ def render_site(pts):
         render_historico.desde_csv()
         import envivo_pagina                 # pestaña En vivo: armazón; los datos los lee el navegador
         print(f"site/envivo.html ({envivo_pagina.pagina(head, escribir, ahora)} KB) listo")
+        print(f"site/pronostico.html ({pronostico_pagina.pagina(head, escribir, est, pts, ahora)} KB) listo")
         import zoom_pagina                   # "Por qué 4 km": antes y después de una tormenta real
         kb = zoom_pagina.pagina(head, escribir, ahora)
         print(f"site/zoom.html ({kb} KB) listo" if kb else "site/zoom.html: faltan las imágenes (antes-despues.yml)")

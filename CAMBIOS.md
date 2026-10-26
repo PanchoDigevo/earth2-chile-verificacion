@@ -6,6 +6,8 @@ Sitio: https://panchodigevo.github.io/earth2-chile-verificacion/
 
 ## 26-oct-2026
 
+- **Nueva pestaña Pronóstico, por comuna** (`pronostico.html`): buscador de las 352 comunas, temperatura de ahora medida en la estación más cercana, próximas 48 horas cada 6 h (un solo pronóstico: los modelos combinados y ajustados con el error del aeródromo más cercano, con la banda entre modelos) y 15 días con los 50 escenarios de ECMWF (máxima, mínima, probabilidad de lluvia y rango). El bloque de pronóstico sale de Tu zona, que queda como la evidencia. Datos: `verificacion/comunas_pron.py` (48 h) y `escenarios/escenarios.py` (15 días), en `site/datos/`.
+- **Mapa de aeródromos:** los puntos que caían uno sobre otro (Tobalaba y Pudahuel) se separan, con una línea a su lugar real.
 - **Pronóstico rediseñado en Tu zona:** "Pronóstico para …" con tarjetas por día (máxima, mínima, lluvia y cuántos modelos la anuncian, viento), un gráfico de 48 horas con la banda entre modelos y la lluvia, y una frase de confianza con el error de ese lugar en 2026. Es un solo pronóstico: el promedio de los modelos, cada uno ajustado con su error local del último mes. El detalle por modelo queda plegado. Plazos cada 6 h hasta 48 h (se agregaron 30 y 42 h) y tope de la verificación en 45 min.
 - **El antes y después, en la portada:** justo después de "Dónde se equivoca más", la madrugada fría a 25 km y a 4 km con su deslizador; enlaza al caso completo (`zoom.html`).
 

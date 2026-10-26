@@ -1,5 +1,5 @@
 """Descarga GFS (NOAA, dominio público) desde el bucket público noaa-gfs-bdp-pds en S3: TMP 2 m,
-UGRD/VGRD 10 m y APCP a 0,25°, plazos 0-48 h.
+UGRD/VGRD 10 m, APCP y nubosidad total (TCDC) a 0,25°, plazos 0-48 h.
 Uso: python fetch_gfs.py              -> última corrida completa disponible
      python fetch_gfs.py 2026-10-13 6 -> corrida específica (fecha, hora UTC)
 
@@ -11,7 +11,8 @@ from corridas import STEPS, corrida_pedida
 
 BASE = "https://noaa-gfs-bdp-pds.s3.amazonaws.com"
 # (variable, nivel) tal como aparecen en el .idx de NCEP.
-CAMPOS = [("TMP", "2 m above ground"), ("UGRD", "10 m above ground"), ("VGRD", "10 m above ground"), ("APCP", "surface")]
+CAMPOS = [("TMP", "2 m above ground"), ("UGRD", "10 m above ground"), ("VGRD", "10 m above ground"), ("APCP", "surface"),
+          ("TCDC", "entire atmosphere")]   # nubosidad total, para el ícono del pronóstico (solo la instantánea, no el promedio de 6 h)
 os.makedirs("data", exist_ok=True)
 
 
@@ -43,7 +44,7 @@ def rangos(idx_texto):
     for i, campos in enumerate(lineas):
         if len(campos) < 6:
             continue
-        if (campos[3], campos[4]) in CAMPOS:
+        if (campos[3], campos[4]) in CAMPOS and not (campos[3] == "TCDC" and "ave" in campos[5]):
             inicio = int(campos[1])
             fin = int(lineas[i + 1][1]) - 1 if i + 1 < len(lineas) else None
             out.append((inicio, fin))

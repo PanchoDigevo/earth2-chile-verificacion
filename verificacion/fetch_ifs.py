@@ -10,7 +10,7 @@ import os, time
 from ecmwf.opendata import Client
 from corridas import STEPS, corrida_pedida
 
-PARAMS = ["2t", "10u", "10v", "tp"]
+PARAMS = ["2t", "10u", "10v", "tp", "tcc"]   # tcc: nubosidad total, para el ícono del pronóstico
 BASE = "https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com"
 os.makedirs("data", exist_ok=True)
 

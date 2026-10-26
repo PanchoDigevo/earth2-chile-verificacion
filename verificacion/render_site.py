@@ -681,6 +681,8 @@ CSS_PORTADA = """
 .vivo .lugar small{display:block;font:13px var(--font-body);color:var(--muted);font-weight:400}
 .vivo .grande{font-family:var(--font-display);font-size:84px;font-weight:600;line-height:.95;letter-spacing:-.04em}
 .vivo .grande small{font-size:30px;color:var(--muted);font-weight:500;letter-spacing:0}
+.vivo .v-cab{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.vivo .cielo-txt{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:600}
 .vivo .mm{font-size:15px;display:flex;gap:16px;flex-wrap:wrap}
 .vivo .mm b{font-family:var(--font-display);font-size:19px}
 .vivo .prox{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;border-top:1px solid var(--line-soft);padding-top:12px}
@@ -715,6 +717,7 @@ JS_PORTADA = r"""
 <script>
 (function(){
   const L = window.COMUNAS || [], DIA3 = ['dom','lun','mar','mié','jue','vie','sáb'];
+""" + pronostico_pagina.ICONOS_JS + r"""
   const n = (v, d=0) => v == null ? '–' : Number(v).toLocaleString('es-CL', {minimumFractionDigits:d, maximumFractionDigits:d}).replace('-', '−');
   const sinT = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
   const $ = id => document.getElementById(id);
@@ -741,6 +744,8 @@ JS_PORTADA = r"""
     const d = a && a.comunas[c.id], q = b && b.comunas[c.id], hoy = new Date();
     const f = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
     const qh = q ? q.find(x => x.f === f) : null, deHoy = d ? d.pasos.filter(p => p.c.slice(0, 10) === f) : [];
+    const p0 = d && d.pasos.length ? d.pasos[0] : null, c0 = p0 ? CIELO(p0.nb, p0.p, Number(p0.c.slice(11, 13))) : null;
+    if (c0) $('v-cielo').innerHTML = `${icono(c0, 30)}<span>${c0.t}</span>`;
     if (d && d.obs) { $('v-temp').innerHTML = `${n(d.obs.t)}<small>°</small>`; $('v-fuente').textContent = `Ahora: medido a las ${d.obs.hora} en ${d.obs.nombre}. Máxima y mínima: pronóstico.`; }
     else if (d && d.pasos.length) { $('v-temp').innerHTML = `${n(d.pasos[0].t)}<small>°</small>`; $('v-fuente').textContent = 'Pronóstico: no hay una estación cerca que mida ahora'; }
     const mx = qh ? qh.tmax[1] : (deHoy.length ? Math.max(...deHoy.map(p => p.t)) : null);
@@ -748,7 +753,7 @@ JS_PORTADA = r"""
     const mm = deHoy.reduce((s, p) => s + (p.p || 0), 0);
     $('v-mm').innerHTML = `<span>Hoy, máx. <b>${n(mx)}°</b></span><span>mín. <b>${n(mn)}°</b></span><span>${mm >= 1 ? `Lluvia <b>${n(mm, mm < 10 ? 1 : 0)} mm</b>` + (qh ? ` · ${n(qh.p1)} %` : '') : 'Sin lluvia importante'}</span>`;
     if (d) $('v-prox').innerHTML = d.pasos.slice(0, 4).map(p => { const h = p.c.slice(11, 13), dd = new Date(p.c.slice(0, 10) + 'T12:00');
-      return `<div><span class="h">${p.c.slice(0, 10) === f ? '' : DIA3[dd.getDay()] + ' '}${h}h</span><span class="t">${n(p.t)}°</span><span class="l">${p.p >= 0.5 ? n(p.p, 1) + ' mm' : ''}</span></div>`; }).join('');
+      return `<div><span class="h">${p.c.slice(0, 10) === f ? '' : DIA3[dd.getDay()] + ' '}${h}h</span><span>${icono(CIELO(p.nb, p.p, Number(h)), 22)}</span><span class="t">${n(p.t)}°</span><span class="l">${p.p >= 0.5 ? n(p.p, 1) + ' mm' : ''}</span></div>`; }).join('');
   });
 })();
 </script>"""
@@ -803,7 +808,7 @@ def pagina_resumen(est, ahora, ll=None):
   </div>
   <aside class="vivo" aria-live="polite" aria-label="El tiempo ahora">
     <div class="lugar" id="v-lugar">Santiago</div>
-    <div class="grande" id="v-temp">–</div>
+    <div class="v-cab"><div class="grande" id="v-temp">–</div><div class="cielo-txt" id="v-cielo"></div></div>
     <div class="mm" id="v-mm"></div>
     <div class="prox" id="v-prox"></div>
     <div class="fuente" id="v-fuente"></div>

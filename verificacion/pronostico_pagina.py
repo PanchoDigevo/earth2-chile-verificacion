@@ -84,6 +84,8 @@ def datos_48h(est, pts, ahora):
     pr["ph"] = pr.groupby(["modelo", "id"]).lead_h.diff()
     pr = pr[(pr.valid >= ahora_n - pd.Timedelta(hours=2)) & (pr.valid <= ahora_n + pd.Timedelta(hours=50))]
     pr["h"] = pr.valid.dt.hour
+    if "nub_fc" not in pr.columns:
+        pr["nub_fc"] = np.nan
 
     sg, coords = sesgos(pts, ahora_n)
     est_por_icao = {e["icao"]: e for e in est}
@@ -114,7 +116,8 @@ def datos_48h(est, pts, ahora):
                           "tmin": round(float(x.tc.min()), 1), "tmax": round(float(x.tc.max()), 1),
                           "p": None if ll.empty else round(float(ll.mean()), 1), "pn": int((ll >= 1).sum()), "nm": int(len(x)),
                           "ph": None if x.ph.dropna().empty else int(x.ph.dropna().max()),
-                          "w": None if x.w_fc.dropna().empty else round(float(x.w_fc.mean()) * 3.6), "aj": int(x.aj.sum())})
+                          "w": None if x.w_fc.dropna().empty else round(float(x.w_fc.mean()) * 3.6), "aj": int(x.aj.sum()),
+                          "nb": None if x.nub_fc.dropna().empty else int(round(float(x.nub_fc.mean())))})
         pasos_por_id[k] = pasos
     salida = {}
     for c in com.itertuples(index=False):
@@ -134,6 +137,43 @@ def datos_48h(est, pts, ahora):
         salida[c.id] = d
     return {"generado": a_chile(ahora_n).strftime("%Y-%m-%dT%H:%M"), "corridas": {m: a_chile(t).strftime("%Y-%m-%dT%H:%M") for m, t in ult.items()},
             "modelos": sorted(ult.index), "comunas": salida}
+
+
+ICONOS_JS = r"""
+  // Ícono del cielo, sin inventar: sale de la nubosidad total de los modelos (%) y de la lluvia prevista (mm).
+  const CIELO = (nb, mm, h) => {
+    const noche = h != null && (h >= 21 || h < 7);
+    if (mm != null && mm >= 1) return {k: 'lluvia', t: 'Lluvia'};
+    if (mm != null && mm >= 0.2) return {k: 'llovizna', t: 'Llovizna'};
+    if (nb == null) return null;
+    if (nb < 25) return {k: noche ? 'luna' : 'sol', t: 'Despejado'};
+    if (nb < 60) return {k: noche ? 'luna-nube' : 'sol-nube', t: 'Parcial'};
+    if (nb < 85) return {k: 'nube', t: 'Mayormente nublado'};
+    return {k: 'nubes', t: 'Nublado'};
+  };
+  const SVG = {
+    sol: '<circle cx="12" cy="12" r="4.2" class="i-sol"/><path class="i-sol" d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/>',
+    luna: '<path class="i-luna" d="M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5z"/>',
+    nube: '<path class="i-nube" d="M7 18h10.5a3.5 3.5 0 0 0 .4-7A5.5 5.5 0 0 0 7.3 10 4 4 0 0 0 7 18z"/>',
+    nubes: '<path class="i-nube i-gris" d="M7 18h10.5a3.5 3.5 0 0 0 .4-7A5.5 5.5 0 0 0 7.3 10 4 4 0 0 0 7 18z"/><path class="i-nube" d="M9 8.5A4.5 4.5 0 0 1 17.6 7"/>',
+    'sol-nube': '<circle cx="8.5" cy="8.5" r="3.2" class="i-sol"/><path class="i-sol" d="M8.5 2.5v1.5M2.5 8.5H4M4.3 4.3l1 1M12.7 4.3l-1 1"/><path class="i-nube" d="M9 19h9a3 3 0 0 0 .3-6 4.7 4.7 0 0 0-8.9-.8A3.4 3.4 0 0 0 9 19z"/>',
+    'luna-nube': '<path class="i-luna" d="M13 6.2A5 5 0 0 1 6.2 13 5 5 0 1 0 13 6.2z"/><path class="i-nube" d="M9 19h9a3 3 0 0 0 .3-6 4.7 4.7 0 0 0-8.9-.8A3.4 3.4 0 0 0 9 19z"/>',
+    llovizna: '<path class="i-nube" d="M7 14.5h10.5a3.5 3.5 0 0 0 .4-7A5.5 5.5 0 0 0 7.3 6.5 4 4 0 0 0 7 14.5z"/><path class="i-gota" d="M10 17.5v1.5M14 17.5v1.5"/>',
+    lluvia: '<path class="i-nube" d="M7 13.5h10.5a3.5 3.5 0 0 0 .4-7A5.5 5.5 0 0 0 7.3 5.5 4 4 0 0 0 7 13.5z"/><path class="i-gota" d="M8.5 16l-1 3M12.5 16l-1 3M16.5 16l-1 3"/>'
+  };
+  const icono = (c, tam) => c ? `<svg class="cielo" viewBox="0 0 24 24" width="${tam || 26}" height="${tam || 26}" role="img" aria-label="${c.t}"><title>${c.t}</title>${SVG[c.k]}</svg>` : '';
+"""
+
+CSS_ICONOS = """
+.cielo{display:inline-block;vertical-align:middle;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
+.cielo .i-sol{stroke:var(--sol);fill:none} .cielo circle.i-sol{fill:color-mix(in srgb,var(--sol) 35%,transparent)}
+.cielo .i-luna{stroke:var(--muted);fill:color-mix(in srgb,var(--muted) 18%,transparent)}
+.cielo .i-nube{stroke:var(--muted);fill:var(--surface)} .cielo .i-gris{fill:color-mix(in srgb,var(--muted) 22%,var(--surface))}
+.cielo .i-gota{stroke:var(--lluvia);stroke-width:2}
+:root{--sol:#e0a100}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--sol:#f2c14e}}
+:root[data-theme="dark"]{--sol:#f2c14e}
+"""
 
 
 CSS = """
@@ -174,7 +214,7 @@ CSS = """
 .tip{position:absolute;pointer-events:none;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,.12);min-width:150px;z-index:5}
 .tip b{display:block;margin-bottom:2px}
 .quince{display:grid;gap:0}
-.q-fila{display:grid;grid-template-columns:5.2em 3.6em 3em 1fr 3em 4.2em;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--line-soft);font-size:15px}
+.q-fila{display:grid;grid-template-columns:5.2em 30px 3.6em 3em 1fr 3em 4.2em;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--line-soft);font-size:15px}
 .q-fila:first-child{border-top:0}
 .q-fila .dia{font-weight:600} .q-fila .dia small{display:block;font-weight:400;color:var(--muted);font-size:12px}
 .q-fila .pl{font:12.5px var(--font-data);color:var(--muted);display:flex;align-items:center;gap:3px}
@@ -194,8 +234,14 @@ CSS = """
 :root{--lluvia:#3b7dd8}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--lluvia:#6fa6f0}}
 :root[data-theme="dark"]{--lluvia:#6fa6f0}
-@media (max-width:560px){.ahora .temp{font-size:58px} .q-fila{grid-template-columns:4.4em 3.2em 2.6em 1fr 2.6em;font-size:14px} .q-fila .vi{display:none}}
+.ahora .cielo-txt{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:600}
+.hora .ic{display:flex;justify-content:center;min-height:26px}
+.q-fila .ic{display:flex;justify-content:center}
+@media (max-width:560px){.ahora .temp{font-size:58px} .q-fila{grid-template-columns:4.2em 26px 3em 2.4em 1fr 2.4em;font-size:14px} .q-fila .vi{display:none}}
 """
+
+CSS = CSS + CSS_ICONOS
+
 
 JS = r"""
 <script>
@@ -208,6 +254,7 @@ JS = r"""
                viento: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h11a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M3 16h8"/></svg>',
                sol: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>'};
   let D48 = null, D15 = null, sel = null;
+""" + ICONOS_JS + r"""
   const $ = id => document.getElementById(id);
 
   // ---- buscador ----
@@ -259,6 +306,8 @@ JS = r"""
   function pintarAhora(c, d) {
     const o = d && d.obs, ds = d ? diasDe(d.pasos) : [], hoy = ds.find(x => x.dif === 0) || ds[0] || null, q = quinceHoy();
     $('ahora-temp').innerHTML = o ? `${n(o.t)}<small>°C</small>` : (hoy ? `${n(hoy.max)}<small>° máx.</small>` : '–');
+    const p0 = d && d.pasos.length ? d.pasos[0] : null, c0 = p0 ? CIELO(p0.nb, p0.p, fecha(p0.c).h) : null;
+    $('ahora-cielo').innerHTML = c0 ? `${icono(c0, 34)}<span>${c0.t}</span>` : '';
     $('ahora-fuente').textContent = o ? `Medido a las ${o.hora} en ${o.nombre}${o.km > 2 ? ', a ' + n(o.km) + ' km' : ''}` : 'Sin estación cerca que mida ahora; se muestra el pronóstico';
     const max = q ? q.tmax[1] : (hoy ? hoy.max : null), min = q ? q.tmin[1] : (hoy ? hoy.min : null);
     $('hoy-max').textContent = n(max) + '°'; $('hoy-min').textContent = n(min) + '°';
@@ -272,7 +321,7 @@ JS = r"""
     if (!d || !d.pasos.length) { box.innerHTML = '<p class="vacio">Sin pronóstico de 48 horas para esta comuna todavía.</p>'; return; }
     let ultDia = '';
     box.innerHTML = d.pasos.map(p => { const f = fecha(p.c), nuevo = f.f !== ultDia; ultDia = f.f;
-      return `<div class="hora"><div class="d">${nuevo ? DIA3[f.d.getDay()] + ' ' + f.d.getDate() : '&nbsp;'}</div><div class="h">${String(f.h).padStart(2, '0')}:00</div>
+      return `<div class="hora"><div class="d">${nuevo ? DIA3[f.d.getDay()] + ' ' + f.d.getDate() : '&nbsp;'}</div><div class="h">${String(f.h).padStart(2, '0')}:00</div><div class="ic">${icono(CIELO(p.nb, p.p, f.h))}</div>
         <div class="t">${n(p.t)}°</div><div class="ll ${p.p >= 0.5 ? 'si' : ''}">${p.p == null ? '' : p.p >= 0.5 ? n(p.p, 1) + ' mm' : 'seco'}</div><div class="v">${p.w == null ? '' : n(p.w) + ' km/h'}</div></div>`; }).join('');
   }
   function pintarGrafico(d) {
@@ -326,13 +375,13 @@ JS = r"""
     const box = $('quince'), q = D15 && D15.comunas[sel];
     if (!q || !q.length) { box.innerHTML = '<p class="vacio">Los 15 días se calculan una vez al día; todavía no están para esta comuna.</p>'; $('quince-pie').textContent = ''; return; }
     const aj = d && d.aj15 ? d.aj15 : {}, bx = aj.tmax || 0, bn = aj.tmin || 0;
-    const dias = q.map(x => ({f: fecha(x.f), tx: x.tmax.map(v => v - bx), tn: x.tmin[1] == null ? null : x.tmin.map(v => v - bn), p1: x.p1, ll: x.ll, v: x.v}));
+    const dias = q.map(x => ({f: fecha(x.f), tx: x.tmax.map(v => v - bx), tn: x.tmin[1] == null ? null : x.tmin.map(v => v - bn), p1: x.p1, ll: x.ll, v: x.v, nub: x.nub}));
     const lo = Math.floor(Math.min(...dias.map(x => x.tn ? x.tn[0] : x.tx[0]))), hi = Math.ceil(Math.max(...dias.map(x => x.tx[2])));
     const pos = v => 100 * (v - lo) / Math.max(hi - lo, 1);
     const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
     box.innerHTML = dias.map(x => { const dif = Math.round((x.f.d - hoy) / 864e5), nom = dif === 0 ? 'Hoy' : dif === 1 ? 'Mañana' : DIA3[x.f.d.getDay()][0].toUpperCase() + DIA3[x.f.d.getDay()].slice(1);
       const a = x.tn ? x.tn[0] : x.tx[0], b = x.tx[2], a2 = x.tn ? x.tn[1] : x.tx[1], b2 = x.tx[1];
-      return `<div class="q-fila"><div class="dia">${nom}<small>${x.f.d.getDate()}/${x.f.d.getMonth() + 1}</small></div>
+      return `<div class="q-fila"><div class="dia">${nom}<small>${x.f.d.getDate()}/${x.f.d.getMonth() + 1}</small></div><div class="ic">${icono(CIELO(x.nub, x.ll[0], 15), 22)}</div>
         <div class="pl ${x.p1 >= 30 ? 'si' : ''}">${x.p1 >= 10 ? ICO.gota + n(x.p1) + '%' : ''}</div>
         <div class="mn">${x.tn ? n(x.tn[1]) + '°' : '–'}</div>
         <div class="rango" title="Entre ${n(a)} y ${n(b)} °C en el 80 % de los escenarios"><i class="amplio" style="left:${pos(a)}%;right:${100 - pos(b)}%"></i><i class="centro" style="left:${pos(a2)}%;right:${100 - pos(b2)}%"></i></div>
@@ -392,7 +441,7 @@ def pagina(head, escribir, est, pts, ahora):
 
 <section class="card ahora" aria-live="polite">
   <div><h2 id="c-nombre"></h2><p class="muted" id="c-region"></p></div>
-  <div class="top"><div class="temp" id="ahora-temp">–</div>
+  <div class="top"><div class="temp" id="ahora-temp">–</div><div class="cielo-txt" id="ahora-cielo"></div>
     <div class="mm"><span>Hoy</span><span><b id="hoy-max">–</b> <span class="muted">máx.</span> &nbsp; <b id="hoy-min">–</b> <span class="muted">mín.</span></span></div></div>
   <p class="fuente" id="ahora-fuente"></p>
   <div class="hoy"><span id="hoy-lluvia"></span><span id="hoy-viento"></span></div>

@@ -29,7 +29,7 @@ AQUI = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(AQUI, "data")
 B = "https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com"
 UA = {"User-Agent": "earth2-chile-verificacion/escenarios"}
-CAMPOS = ("2t", "2d", "10u", "10v", "tp", "sf", "cp")
+CAMPOS = ("2t", "2d", "10u", "10v", "tp", "sf", "cp", "tcc")   # tcc: nubosidad de la tarde, para el ícono de 15 días
 F_VIENTO, F_NIEVE, F_CONV, F_FRIO = 50.0, 2.0, 2.0, -10.0   # km/h, mm de agua, mm, °C
 GRADIENTE = 6.5                                              # °C por km
 
@@ -196,6 +196,8 @@ def quince_dias(run, chile, pch, fechas):
     p5 = 100 * np.nansum(lluvia >= 5, axis=0) / np.maximum(n, 1)
     q = lambda a, qs: [np.round(pct(a, k), 1) for k in qs]
     tx = q(t18, (10, 50, 90)); tn = q(t06, (10, 50, 90)); ll = q(lluvia, (50, 90)); vi = q(vv, (50, 90))
+    nub = pch["tcc"] * (100.0 if np.nanmax(pch["tcc"]) <= 1.0001 else 1.0)
+    nb = np.round(pct(nub, 50))
     def fila(j):
         dias = []
         for d, f in enumerate(fechas):
@@ -204,7 +206,7 @@ def quince_dias(run, chile, pch, fechas):
             tnv = [None if np.isnan(x[d, j]) else float(x[d, j]) for x in tn]
             dias.append({"f": f.isoformat(), "tmax": [float(x[d, j]) for x in tx], "tmin": tnv,
                          "ll": [float(x[d, j]) for x in ll], "p1": round(float(p1[d, j])), "p5": round(float(p5[d, j])),
-                         "v": [float(x[d, j]) for x in vi], "n": int(n[d, j])})
+                         "v": [float(x[d, j]) for x in vi], "nub": None if np.isnan(nb[d, j]) else int(nb[d, j]), "n": int(n[d, j])})
         return dias
     salida = {"corrida": f"{run:%Y-%m-%dT%H:%MZ}", "generado": dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%MZ"), "miembros": int(n.max()),
               "nota": "máxima = 18 UTC, mínima = 06 UTC (aprox.); lluvia de 24 h hasta las 18 UTC; viento a las 18 UTC; "

@@ -40,7 +40,8 @@ def _indices(gid, lat, lon):
 
 
 def leer_grib(f):
-    """{(shortName, lead_h): valores en los puntos} para 2t, 10u, 10v y tp (tp en mm, el acumulado mayor en cada plazo)."""
+    """{(shortName, lead_h): valores en los puntos} para 2t, 10u, 10v, tp (mm, el acumulado mayor en cada plazo) y tcc
+    (nubosidad total en %, solo la instantánea; AIFS e IFS la dan de 0 a 1 o en %, GFS en %)."""
     import eccodes as ec
     p = puntos(); idx = None; out = {}; run = None
     with open(f, "rb") as fh:
@@ -50,7 +51,9 @@ def leer_grib(f):
                 break
             try:
                 sn = ec.codes_get(gid, "shortName")
-                if sn not in ("2t", "10u", "10v", "tp"):
+                if sn not in ("2t", "10u", "10v", "tp", "tcc"):
+                    continue
+                if sn == "tcc" and ec.codes_get(gid, "stepType") != "instant":
                     continue
                 if idx is None:
                     idx = _indices(gid, p.lat.values, p.lon.values)
@@ -60,6 +63,8 @@ def leer_grib(f):
                 if sn == "tp":
                     v = v * (1000.0 if ec.codes_get(gid, "units") == "m" else 1.0)
                     out[(sn, lead)] = np.maximum(out.get((sn, lead), 0.0), v)
+                elif sn == "tcc":
+                    out[(sn, lead)] = np.clip(v * (100.0 if np.nanmax(v) <= 1.0001 else 1.0), 0, 100)
                 else:
                     out[(sn, lead)] = v
             finally:
@@ -76,8 +81,10 @@ def extraer(f, modelo):
         t = v[("2t", lead)] - 273.15
         w = np.hypot(v.get(("10u", lead), np.nan), v.get(("10v", lead), np.nan))
         tp = v.get(("tp", lead), np.full(len(p), 0.0 if lead == 0 else np.nan))
+        nub = v.get(("tcc", lead), np.full(len(p), np.nan))
         filas.append(pd.DataFrame({"modelo": modelo, "run": run, "lead_h": lead, "valid": run + pd.Timedelta(hours=lead),
-                                   "id": p.id.values, "t_fc": np.round(t, 2), "w_fc": np.round(w, 2), "tp_fc": np.round(tp, 2)}))
+                                   "id": p.id.values, "t_fc": np.round(t, 2), "w_fc": np.round(w, 2), "tp_fc": np.round(tp, 2),
+                                   "nub_fc": np.round(nub, 0)}))
     return pd.concat(filas, ignore_index=True)
 
 

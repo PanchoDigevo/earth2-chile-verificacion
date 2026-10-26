@@ -28,6 +28,7 @@ Lectura: desde 33 h antes, ambiente inestable para Chile central, sin tapa (CIN 
 
 - **Requínoa:** salto a las 20:10, 20:12 y 20:14 UTC (17:10–17:14 de Chile), 34 a 38 minutos antes del primer video. Otro a las 20:46 y 21:02, ya hacia Rengo.
 - **Las Condes:** sin salto. Ahí se oyó un trueno y se vio un relámpago a eso de las 17:10–17:20 de Chile; el satélite contó unos 80 rayos a menos de 20 km en esos 20 minutos (cuenta también los rayos entre nubes, que no se oyen), pero la tormenta no llegó a 10 rayos por minuto. Es el caso que no debe marcar. Registro en `rayos_glm_las_condes_100km.csv`.
+- **Las Condes, segunda tormenta (18:10–19:00 de Chile):** Pancho la sintió en Las Condes cerca de las 19:00. El satélite la ubicó encima, a unos 3 km, con 12 a 16 rayos cada 10 minutos a menos de 20 km (menos de 2 por minuto). Sin salto, así que sin aviso. Es otra tormenta común que no debe marcar, salvo que aparezcan reportes de daño.
 - **Cauquenes (Maule):** salto a las 19:58–20:18 UTC. No sabemos si hizo daño; si no, es una falsa alarma.
 
 Cuántas veces marca en días de tormenta comunes se mide en `hindcast/salto_rayos/` (27 días con tormenta en algún aeródromo desde abril de 2025).

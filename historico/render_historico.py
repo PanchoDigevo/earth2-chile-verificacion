@@ -378,6 +378,19 @@ def pagina_metodo(r, n_pares, n_corridas, n_est, ahora):
   </ul>
 </section>
 {seccion_lluvia_mm()}
+<section class="card" id="cordillera">
+  <div class="sec-head"><h2>Cordillera: isoterma 0 °C, lluvia y nieve en cada cuenca</h2></div>
+  <p>La misma lluvia hace mucho más daño cuando la isoterma 0 °C está alta: en la cordillera llueve en vez de nevar, y el agua baja de inmediato por ríos y quebradas en vez de quedar guardada como nieve. Por eso, para siete cuencas cordilleranas (Aconcagua, Mapocho, Maipo, Cachapoal, Tinguiririca, Teno y Maule, cada una hasta una estación fluviométrica de la DGA, delimitadas con el modelo de terreno Copernicus de 90 m), se calcula cada 3 horas y hasta 72 h: la isoterma 0 °C media de GFS sobre la cuenca, la línea de nieve (300 m bajo la isoterma, un valor típico de Chile central), qué parte de la cuenca queda bajo esa línea según su curva de alturas, la lluvia media sobre la cuenca y la lluvia líquida en millones de m³ (lluvia × área bajo la línea de nieve). Debajo va la lluvia de AIFS e IFS, para ver cuánto difieren los modelos. El código está en <code>cordillera/</code>.</p>
+  <p>La isoterma de ahora se estima con la temperatura de la estación El Colorado (2.750 m) y el gradiente estándar de 6,5 °C por kilómetro.</p>
+  <h3>Posibles efectos</h3>
+  <p>Son reglas simples, a la vista: <strong>lluvia en la cordillera</strong> cuando caen 5 mm o más en 24 h sobre la cuenca con la mitad o más de ella bajo la línea de nieve (crecida probable y agua más turbia; en el Maipo y el Mapocho, el agua potable de Santiago); <strong>nieve en caminos</strong> cuando llueve con la línea de nieve bajo 2.500 m; <strong>deshielo acelerado</strong> con la isoterma sobre 3.500 m. Para las quebradas quemadas de Santiago oriente se compara la lluvia medida en 2 horas con los umbrales del indicador de quebradas.</p>
+  <h3>Límites</h3>
+  <ul class="limites">
+    <li>Estas reglas todavía no se han verificado contra caudales: la red en tiempo real de la DGA pide captcha y hay que pedir acceso. Hasta entonces, son efectos posibles, no pronosticados.</li>
+    <li>GFS a 25 km suaviza la cordillera; la isoterma real cambia de un valle a otro.</li>
+    <li>No se modela la nieve acumulada: la lluvia sobre nieve puede derretirla y sumar agua.</li>
+  </ul>
+</section>
 <section class="card" id="tormentas">
   <div class="sec-head"><h2>Tormentas: el ambiente a 72 horas y el salto de rayos</h2></div>
   <p>Hay dos avisos de tormenta, uno para planificar y otro para reaccionar. Los dos usan umbrales publicados, no ajustados a ningún evento chileno: si se calibraran con un caso raro como el tornado de Requínoa del 26 de octubre de 2026, lo marcarían por construcción y no sabríamos cuántas falsas alarmas dan. Los eventos de 2026 solo sirven de prueba.</p>

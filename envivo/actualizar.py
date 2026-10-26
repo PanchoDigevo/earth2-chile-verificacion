@@ -1,6 +1,7 @@
 """Datos de la pestaña "En vivo": rayos GOES-19 (sensor GLM, NOAA) de los últimos 90 minutos sobre la zona central
 las tormentas que se intensifican (salto de rayos, tormentas.json),
-METAR de las últimas 12 horas de Tobalaba, Pudahuel, Santo Domingo y Viña del Mar, y la lluvia horaria de las
+METAR de las últimas 12 horas, la lluvia de las estaciones dentro de las cuencas cordilleranas
+(site/cordillera/cuencas.geojson) de Tobalaba, Pudahuel, Santo Domingo y Viña del Mar, y la lluvia horaria de las
 últimas 26 horas en las estaciones DMC cercanas a las quebradas (mensajes SYNOP, estaciones/synop.py).
 
 Corre cada 10 minutos en GitHub Actions (envivo.yml) y escribe rayos.json, metar.json y lluvia.json en la carpeta indicada,
@@ -11,6 +12,7 @@ raw.githubusercontent.com. No es un aviso; las alertas oficiales son de la DMC y
 Uso: python envivo/actualizar.py --salida datos/envivo"""
 import argparse, datetime as dt, json, math, os, re, sys, urllib.request
 import netCDF4, numpy as np
+from shapely.geometry import Point
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "estaciones"))
 import synop  # noqa: E402
@@ -24,6 +26,7 @@ UA = {"User-Agent": "earth2-chile-verificacion/envivo"}
 APOQ = (-33.40, -70.51)
 RADIO_KM = 45                 # estaciones de lluvia que se muestran: hasta esta distancia de Apoquindo, más El Colorado
 CADA_MIN = 15                 # los SYNOP llegan cada hora: no hace falta pedirlos a Ogimet cada 5 minutos
+CUENCAS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "site", "cordillera", "cuencas.geojson")
 COMUNAS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "verificacion", "comunas.csv")
 ACTIVA_MIN = 30               # una tormenta con salto en los últimos 30 minutos se muestra como "intensificándose"
 KM_CHILE = 25                 # tormentas a más de 25 km de toda comuna (casi siempre del lado argentino) no se marcan
@@ -133,6 +136,16 @@ def metar(ruta):
     print(f"metar: {len(obs)} reportes", flush=True)
 
 
+def cuencas_cordillera():
+    """[(id, polígono con 10 km de margen)] de site/cordillera/cuencas.geojson; vacío si no existe."""
+    try:
+        from shapely.geometry import shape
+        f = json.load(open(CUENCAS, encoding="utf-8"))["features"]
+        return [(x["properties"]["id"], shape(x["geometry"]).buffer(0.1)) for x in f]
+    except Exception:
+        return []
+
+
 def lluvia(ruta):
     try:
         previo = json.load(open(ruta, encoding="utf-8"))
@@ -143,10 +156,13 @@ def lluvia(ruta):
     r = math.pi / 180
     km = lambda la, lo: 111.2 * math.hypot(la - APOQ[0], (lo - APOQ[1]) * math.cos(APOQ[0] * r))
     est = []
+    cuencas = cuencas_cordillera()
     for w, e in synop.estaciones().items():
         d = km(float(e["lat"]), float(e["lon"]))
-        if d <= RADIO_KM or w == "85594":
-            est.append({"wmo": w, "nombre": e["nombre"], "lat": float(e["lat"]), "lon": float(e["lon"]), "alt": int(e["altura_m"]), "km": round(d, 1)})
+        en = [i for i, g in cuencas if g.contains(Point(float(e["lon"]), float(e["lat"])))]
+        if d <= RADIO_KM or w == "85594" or en:
+            est.append({"wmo": w, "nombre": e["nombre"], "lat": float(e["lat"]), "lon": float(e["lon"]), "alt": int(e["altura_m"]), "km": round(d, 1),
+                        "cuencas": en})
     filas = synop.recientes(26)
     if not filas:
         print("lluvia: Ogimet no entregó datos; se mantiene la lectura anterior", flush=True); return

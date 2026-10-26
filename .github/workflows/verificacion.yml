@@ -42,6 +42,11 @@ jobs:
         continue-on-error: true
         timeout-minutes: 10
         run: python tormentas_gfs.py
+      - name: Isoterma y lluvia por cuenca cordillerana (72 h)
+        working-directory: verificacion
+        continue-on-error: true
+        timeout-minutes: 8
+        run: python ../cordillera/pronostico.py
       - name: Indicador de quebradas (lluvia prevista y observada)
         run: python quebradas/indicador.py
         continue-on-error: true

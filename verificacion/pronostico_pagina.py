@@ -12,6 +12,7 @@ Escribe site/datos/pronostico_48h.json (lo lee el navegador) y site/pronostico.h
 import glob, json, os
 import numpy as np, pandas as pd
 import tormenta_vivo
+import monitor_lluvia
 from comun import JS_DEF, a_chile, aviso, nav, num, pie
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
@@ -472,6 +473,7 @@ def pagina(head, escribir, est, pts, ahora):
 {nav("pronostico")}
 <div class="wrap">
 {tormenta_vivo.html()}
+{monitor_lluvia.aviso()}
 <header>
   <div class="eyebrow">Pronóstico</div>
   <h1>¿Qué tiempo viene en tu comuna?</h1>

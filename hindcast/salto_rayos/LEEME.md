@@ -17,7 +17,7 @@ Días probados: los que tuvieron tormenta (TS) en el METAR de algún aeródromo 
 
 - **13-oct, ~16:30, Estación Central:** tornado EF0 (preliminar de la DMC). El aviso más cercano fue Colina, a ~33 km.
 - **28 y 29-ago, Biobío, Ñuble, costa:** 16 tornados y trombas en 48 h. Ningún aviso esos días: son tormentas de invierno, bajas y con pocos rayos, que el salto de rayos casi no ve. Para esas, el aviso útil es el ambiente a 72 h (`hindcast/tormentas_gfs/`).
-- **21-oct, ~14:00, Retiro (Maule):** tornado EF0/EF1. Ese día no estaba en la prueba porque ningún aeródromo informó tormenta; se prueba aparte.
+- **21-oct, ~14:00, Retiro (Maule):** tornado EF0/EF1. Ese día no estaba en la lista de días con tormenta en un aeródromo; probado aparte, tampoco hubo aviso a esa hora (solo uno cerca de Chimbarongo a las 21:38).
 
 **Qué decía el indicador de 72 h en esos casos** (GFS de las 00 UTC del mismo día, `verificacion/tormentas_gfs.py`):
 Estación Central 13-oct 15-18 h: tormentas posibles (CAPE 544-665 J/kg, cizalle 25-33 kt). Retiro 21-oct 12-15 h: tormentas

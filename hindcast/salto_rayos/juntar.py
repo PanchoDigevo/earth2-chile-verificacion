@@ -16,6 +16,11 @@ sys.path.insert(0, os.path.join(AQUI, "..", "..", "envivo"))
 from salto_rayos import km  # noqa: E402
 
 
+def dia_de(serie):
+    """Día de la prueba al que pertenece cada hora UTC: la prueba de un día va de sus 12 UTC a las 06 UTC del siguiente."""
+    return (pd.to_datetime(serie) - pd.Timedelta(hours=12)).dt.strftime("%Y-%m-%d")
+
+
 def main(d):
     com = pd.read_csv(os.path.join(AQUI, "..", "..", "verificacion", "comunas.csv"))
     res = pd.DataFrame([json.load(open(f)) for f in sorted(glob.glob(os.path.join(d, "resumen_*.json")))])
@@ -44,7 +49,7 @@ def main(d):
                       "km_a_comuna": round(float(dist.min())), "saltos": a["saltos"], "tasa_max_por_min": a["tasa_max"],
                       "que_paso": ""})
     av = pd.DataFrame(filas)
-    fuera = av[av.km_a_comuna > 25].assign(dia=lambda z: z.inicio_utc.str[:10]).groupby("dia").size().rename("fuera_de_chile")
+    fuera = av[av.km_a_comuna > 25].assign(dia=lambda z: dia_de(z.inicio_utc)).groupby("dia").size().rename("fuera_de_chile")
     av = av[av.km_a_comuna <= 25].reset_index(drop=True)
     previo = os.path.join(AQUI, "avisos.csv")
     dias = set(res.dia)
@@ -52,11 +57,11 @@ def main(d):
         old = pd.read_csv(previo, dtype=str).fillna("")
         nota = dict(zip(old.inicio_utc + old.comuna_cercana, old.que_paso))
         av["que_paso"] = [nota.get(i + c, "") for i, c in zip(av.inicio_utc, av.comuna_cercana)]
-        old = old[~old.inicio_utc.str[:10].isin(dias)]
+        old = old[~dia_de(old.inicio_utc).isin(dias)]
         av = pd.concat([old, av.astype(str)], ignore_index=True).sort_values("inicio_utc")
     av.to_csv(previo, index=False)
-    av = av[av.inicio_utc.str[:10].isin(dias)]
-    av["dia"] = av.inicio_utc.str[:10]
+    av = av[dia_de(av.inicio_utc).isin(dias)]
+    av["dia"] = dia_de(av.inicio_utc)
     res = res.merge(av.groupby("dia").size().rename("avisos").reset_index(), on="dia", how="left").fillna({"avisos": 0})
     res["avisos"] = res.avisos.astype(int)
     res = res.merge(fuera.reset_index(), on="dia", how="left").fillna({"fuera_de_chile": 0}).astype({"fuera_de_chile": int})

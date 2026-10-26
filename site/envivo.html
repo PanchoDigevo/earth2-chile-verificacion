@@ -60,7 +60,8 @@ section{display:grid;gap:14px}
 .cifra.principal{border-color:var(--accent)}
 /* puertas de entrada */
 .puertas{display:grid;gap:12px;grid-template-columns:1fr}
-@media (min-width:760px){.puertas{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (min-width:760px){.puertas{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:1100px){.puertas{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .puerta{display:grid;gap:6px;align-content:start;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;color:var(--fg);text-decoration:none}
 .puerta:hover{border-color:var(--accent)}
 .puerta .q{font-family:var(--font-display);font-weight:600;font-size:18px}
@@ -245,40 +246,64 @@ footer p{max-width:85ch}
 .botones{display:flex;gap:8px;justify-content:center;margin-top:8px}
 .botones button{font:600 13px var(--font-body);padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;min-height:44px}
 
-.prono{display:grid;gap:16px}
-.prono-cab h2{margin:2px 0 4px}
-.dias{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
-.dia{border:1px solid var(--line);border-radius:var(--radius);padding:14px;display:grid;gap:8px;background:var(--surface)}
-.dia h3{margin:0;font:600 15px var(--font-body);color:var(--fg)}
-.dia .temps{display:flex;align-items:baseline;gap:10px;font-family:var(--font-display)}
-.dia .temps .max{font-size:30px;font-weight:600;color:var(--fg)}
-.dia .temps .min{font-size:20px;color:var(--muted)}
-.dia .temps small{font:12px var(--font-body);color:var(--muted);display:block}
-.dia .linea{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--fg)}
-.dia .linea svg{flex:none;width:18px;height:18px;stroke:var(--muted);fill:none;stroke-width:1.8}
-.dia .linea.llueve svg{stroke:var(--lluvia)}
-.dia .nota{font-size:12.5px;color:var(--muted)}
-.prono-graf{margin:0}
-.prono-graf svg{width:100%;height:auto;display:block;overflow:visible}
-.prono-graf .eje{font:11px var(--font-data);fill:var(--muted)}
-.prono-graf .grid{stroke:var(--line-soft)}
-.prono-graf .dia-sep{stroke:var(--line)}
-.prono-graf .banda{fill:var(--accent-soft)}
-.prono-graf .lin{fill:none;stroke:var(--accent);stroke-width:2}
-.prono-graf .pt{fill:var(--accent);stroke:var(--surface);stroke-width:2}
-.prono-graf .barra{fill:var(--lluvia)}
-.prono-graf .etq{font:600 12px var(--font-data);fill:var(--fg)}
-.prono-graf .hit{fill:transparent;cursor:crosshair}
-.prono-graf .guia{stroke:var(--muted);stroke-dasharray:3 3}
-.prono-tip{position:absolute;pointer-events:none;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;
-  font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,.12);min-width:150px;z-index:5}
-.prono-tip b{display:block;margin-bottom:2px}
+.buscar{position:relative;max-width:520px}
+.buscar input{width:100%;font:17px var(--font-body);padding:12px 14px 12px 40px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--fg)}
+.buscar input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.buscar svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;stroke:var(--muted);fill:none;stroke-width:2}
+.buscar ul{position:absolute;left:0;right:0;top:calc(100% + 6px);margin:0;padding:6px;list-style:none;background:var(--surface);border:1px solid var(--line);
+  border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.14);max-height:320px;overflow:auto;z-index:20}
+.buscar li{padding:10px 12px;border-radius:8px;cursor:pointer;display:flex;justify-content:space-between;gap:12px}
+.buscar li:hover,.buscar li[aria-selected="true"]{background:var(--accent-soft)}
+.buscar li .r{color:var(--muted);font-size:13px}
+.sugeridas{display:flex;flex-wrap:wrap;gap:8px}
+.sugeridas button{font:14px var(--font-body);padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;min-height:38px}
+.ahora{display:grid;gap:14px}
+.ahora .top{display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px 28px}
+.ahora .temp{font-family:var(--font-display);font-size:72px;font-weight:600;line-height:1;letter-spacing:-.03em}
+.ahora .temp small{font-size:28px;font-weight:500;color:var(--muted);letter-spacing:0}
+.ahora .mm{display:grid;gap:3px;font-size:15px}
+.ahora .mm b{font-size:22px;font-family:var(--font-display);font-weight:600}
+.ahora .fuente{font-size:13px;color:var(--muted)}
+.hoy{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:15px}
+.hoy span svg{width:16px;height:16px;vertical-align:-3px;stroke:var(--muted);fill:none;stroke-width:1.8;margin-right:4px}
+.hoy span.llueve svg{stroke:var(--lluvia)}
+.horas{display:flex;gap:4px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x proximity}
+.hora{flex:0 0 76px;scroll-snap-align:start;display:grid;gap:5px;text-align:center;padding:10px 4px;border-radius:10px;border:1px solid var(--line-soft)}
+.hora .h{font:12px var(--font-data);color:var(--muted)}
+.hora .d{font:600 11px var(--font-body);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.hora .t{font-family:var(--font-display);font-size:20px;font-weight:600}
+.hora .ll{font-size:12.5px;color:var(--muted);min-height:16px}
+.hora .ll.si{color:var(--lluvia);font-weight:600}
+.hora .v{font-size:12px;color:var(--muted)}
+.graf svg{width:100%;height:auto;display:block;overflow:visible}
+.graf .eje{font:11px var(--font-data);fill:var(--muted)} .graf .grid{stroke:var(--line-soft)} .graf .sep{stroke:var(--line)}
+.graf .banda{fill:var(--accent-soft)} .graf .lin{fill:none;stroke:var(--accent);stroke-width:2}
+.graf .pt{fill:var(--accent);stroke:var(--surface);stroke-width:2} .graf .barra{fill:var(--lluvia)} .graf .etq{font:600 12px var(--font-data);fill:var(--fg)}
+.graf .hit{fill:transparent;cursor:crosshair} .graf .guia{stroke:var(--muted);stroke-dasharray:3 3}
+.tip{position:absolute;pointer-events:none;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,.12);min-width:150px;z-index:5}
+.tip b{display:block;margin-bottom:2px}
+.quince{display:grid;gap:0}
+.q-fila{display:grid;grid-template-columns:5.2em 3.6em 3em 1fr 3em 4.2em;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--line-soft);font-size:15px}
+.q-fila:first-child{border-top:0}
+.q-fila .dia{font-weight:600} .q-fila .dia small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.q-fila .pl{font:12.5px var(--font-data);color:var(--muted);display:flex;align-items:center;gap:3px}
+.q-fila .pl.si{color:var(--lluvia);font-weight:600} .q-fila .pl svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.8}
+.q-fila .mn{text-align:right;color:var(--muted);font-family:var(--font-data)} .q-fila .mx{font-family:var(--font-data);font-weight:600}
+.q-fila .vi{font:12.5px var(--font-data);color:var(--muted);text-align:right}
+.rango{position:relative;height:10px;border-radius:5px;background:var(--line-soft)}
+.rango i{position:absolute;top:0;bottom:0;border-radius:5px}
+.rango .amplio{background:var(--accent-soft)} .rango .centro{background:var(--accent)}
+.q-pie{font-size:13px;color:var(--muted)}
 .confianza-txt{margin:0;padding:10px 12px;border-radius:8px;background:var(--accent-soft);font-size:14.5px}
-@media (max-width:560px){.dias{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px}
-  .dia{min-width:68%;scroll-snap-align:start}}
+.estado{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;color:var(--muted);margin:0}
+.estado span::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--bueno);margin-right:6px;vertical-align:1px}
+.estado span.atrasado{color:var(--fg);font-weight:600} .estado span.atrasado::before{background:var(--medio)}
+.estado span.sin::before{background:var(--sin)}
+.vacio{color:var(--muted)}
 :root{--lluvia:#3b7dd8}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--lluvia:#6fa6f0}}
 :root[data-theme="dark"]{--lluvia:#6fa6f0}
+@media (max-width:560px){.ahora .temp{font-size:58px} .q-fila{grid-template-columns:4.4em 3.2em 2.6em 1fr 2.6em;font-size:14px} .q-fila .vi{display:none}}
 
 .vivo{display:grid;gap:14px}
 @media (min-width:1000px){.vivo{grid-template-columns:minmax(0,1fr) 420px;align-items:start}}
@@ -308,7 +333,7 @@ td.parcial{color:var(--muted)}
 </style><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 </head>
 <body>
-<nav class="topnav" aria-label="Secciones del sitio"><div class="in"><a class="marca" href="./">Earth-2 Chile<small>verificación pública del pronóstico</small></a><div class="tabs"><a href="./">Resumen</a><a href="zona.html">Tu zona</a><a href="eventos.html">Eventos<span class="largo">2026</span></a><a href="quebradas.html">Quebradas</a><a href="escenarios.html">Escenarios</a><a href="envivo.html" class="activa" aria-current="page">En vivo</a><a href="metodo.html">Método</a></div></div></nav>
+<nav class="topnav" aria-label="Secciones del sitio"><div class="in"><a class="marca" href="./">Earth-2 Chile<small>verificación pública del pronóstico</small></a><div class="tabs"><a href="./">Resumen</a><a href="pronostico.html">Pronóstico</a><a href="zona.html">Tu zona</a><a href="eventos.html">Eventos<span class="largo">2026</span></a><a href="quebradas.html">Quebradas</a><a href="escenarios.html">Escenarios</a><a href="envivo.html" class="activa" aria-current="page">En vivo</a><a href="metodo.html">Método</a></div></div></nav>
 <div class="wrap">
 
 <header>
@@ -337,7 +362,7 @@ td.parcial{color:var(--muted)}
   </div>
 </div>
 <div class="aviso"><p class="small">Apoyo a la decisión, no una alerta. Las alertas oficiales son de la <a href="https://www.meteochile.gob.cl/" rel="noopener">Dirección Meteorológica de Chile</a> y de <a href="https://www.senapred.cl/" rel="noopener">SENAPRED</a>.</p></div>
-<footer><p>Actualizado el 26 oct, 14:06 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
+<footer><p>Actualizado el 26 oct, 14:25 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>

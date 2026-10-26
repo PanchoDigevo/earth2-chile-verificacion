@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Pronóstico · Earth-2 Chile</title>
+<meta name="description" content="El tiempo que viene en tu comuna: ahora, las próximas 48 horas y 15 días, con los modelos globales ajustados con lo que se mide en Chile y con su margen de duda a la vista.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Una columna de 1080 px; lo consolidado antes que lo preliminar; cada número con su explicación al lado.
+   Neutros fríos con leve sesgo azul (cielo y hielo), acento verde glaciar; semáforo fijo y siempre con texto. */
+:root{
+  --bg:#f4f6f8; --surface:#ffffff; --fg:#17212b; --muted:#5a6977; --line:#d8dfe6; --line-soft:#e9eef2;
+  --accent:#0e7c86; --accent-soft:#d7eef0; --tierra:#e3e9ee; --costa:#9fb0bd;
+  --bueno:#0ca30c; --medio:#c98500; --alto:#d03b3b; --sin:#8a99a6;
+  --font-display:"Sora",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-body:"Source Sans 3","Source Sans Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-data:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --radius:10px; color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111821; --surface:#19222c; --fg:#e7ecf1; --muted:#9fadba; --line:#2c3845; --line-soft:#232e3a;
+  --accent:#44bcc6; --accent-soft:#163b40; --tierra:#243040; --costa:#4f6071;
+  --bueno:#2fbf2f; --medio:#e0a428; --alto:#ee6a6a; --sin:#7d8c99; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111821; --surface:#19222c; --fg:#e7ecf1; --muted:#9fadba; --line:#2c3845; --line-soft:#232e3a;
+  --accent:#44bcc6; --accent-soft:#163b40; --tierra:#243040; --costa:#4f6071;
+  --bueno:#2fbf2f; --medio:#e0a428; --alto:#ee6a6a; --sin:#7d8c99; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
+a:focus-visible,button:focus-visible,summary:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:16px;padding-block:24px 56px;display:grid;gap:32px}
+@media (min-width:720px){.wrap{padding-inline:28px;padding-block:40px 72px;gap:44px}}
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(26px,3.8vw,40px);line-height:1.15;font-weight:600;max-width:26ch}
+h2{font-size:22px;font-weight:600}
+h3{font-size:17px;font-weight:600}
+p{margin:0;max-width:65ch}
+.eyebrow{font-family:var(--font-display);font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.muted{color:var(--muted)}
+.small{font-size:14.5px}
+header{display:grid;gap:12px}
+header .lead{font-size:19px;color:var(--muted);max-width:60ch}
+.aviso{border-left:3px solid var(--accent);padding:10px 14px;background:var(--accent-soft);border-radius:0 var(--radius) var(--radius) 0;max-width:72ch}
+.aviso p{max-width:none}
+section{display:grid;gap:14px}
+.sec-head{display:grid;gap:6px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;display:grid;gap:12px;min-width:0}
+/* cifras de la portada */
+.cifras{display:grid;gap:12px;grid-template-columns:1fr}
+@media (min-width:760px){.cifras{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.cifra{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;display:grid;gap:6px;align-content:start}
+.cifra .v{font-family:var(--font-display);font-size:42px;font-weight:600;line-height:1.05;letter-spacing:-.02em}
+.cifra .v small{font-size:18px;font-weight:500;color:var(--muted);margin-left:3px}
+.cifra .v .flecha{color:var(--muted);font-weight:400;margin:0 6px}
+.cifra p{font-size:15.5px}
+.cifra.principal{border-color:var(--accent)}
+/* puertas de entrada */
+.puertas{display:grid;gap:12px;grid-template-columns:1fr}
+@media (min-width:760px){.puertas{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:1100px){.puertas{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.puerta{display:grid;gap:6px;align-content:start;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;color:var(--fg);text-decoration:none}
+.puerta:hover{border-color:var(--accent)}
+.puerta .q{font-family:var(--font-display);font-weight:600;font-size:18px}
+.puerta .ir{color:var(--accent);font-weight:600;font-size:15px}
+.puerta p{font-size:15.5px;color:var(--muted)}
+.confianza{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:14.5px;color:var(--muted)}
+/* controles */
+.controles{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center}
+.selector{display:flex;flex-wrap:wrap;gap:6px;border:0;padding:0;margin:0;align-items:center}
+.selector legend{float:left;margin-right:6px;padding:0}
+.selector label{position:relative;cursor:pointer;border:1px solid var(--line);border-radius:999px;padding:5px 13px;font-size:14.5px;font-weight:600;background:var(--bg)}
+.selector label .muted{font-weight:400;font-size:13px}
+.selector input{position:absolute;opacity:0;width:0;height:0;margin:0}
+.selector label:has(input:checked){background:var(--accent-soft);border-color:var(--accent)}
+.selector label:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+select{font:inherit;font-size:16px;padding:7px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg);max-width:100%}
+/* mapa */
+.mapa{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:flex-start;justify-content:center}
+.franja{margin:0;display:grid;gap:4px;justify-items:center}
+.franja svg{max-width:100%;height:auto;display:block;overflow:hidden}
+.franja figcaption{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.tierra{fill:var(--tierra);stroke:var(--costa);stroke-width:.6;vector-effect:non-scaling-stroke}
+.est{cursor:pointer;outline:none}
+.est .hit{fill:transparent}
+.est .pt{stroke:var(--surface);stroke-width:2;fill:var(--sin)}
+.est .guia{stroke:var(--muted);stroke-width:1;opacity:.7}
+.est.bueno .pt{fill:var(--bueno)} .est.medio .pt{fill:var(--medio)} .est.alto .pt{fill:var(--alto)}
+.est .etq{display:none;font:600 10px var(--font-body);fill:var(--fg);paint-order:stroke;stroke:var(--surface);stroke-width:3px;stroke-linejoin:round}
+.est.con-etq .etq{display:block}
+.est.sel .pt{stroke:var(--fg);stroke-width:2.5;r:7}
+.est:focus-visible .pt{stroke:var(--accent);stroke-width:3}
+.est:hover .pt{r:7}
+.leyenda{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:14px;color:var(--muted);align-items:center}
+.leyenda span.item{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:2px 9px 2px 7px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--fg);white-space:nowrap}
+.chip i{width:8px;height:8px;border-radius:50%;background:var(--sin)}
+.chip.bueno i{background:var(--bueno)} .chip.medio i{background:var(--medio)} .chip.alto i{background:var(--alto)}
+.chip.sin{color:var(--muted)} .chip.prelim{color:var(--muted);border-style:dashed}
+/* tu zona */
+.zona{display:grid;gap:20px}
+@media (min-width:900px){.zona{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);align-items:start}}
+.ficha{position:relative}
+@media (min-width:900px){.ficha{position:sticky;top:72px}}
+.ficha-cab{display:grid;gap:2px}
+.antes-despues{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.antes-despues > div{display:grid;gap:2px;justify-items:start}
+.antes-despues .lbl{font-size:13px;color:var(--muted)}
+.antes-despues .v{font-family:var(--font-display);font-size:34px;font-weight:600;line-height:1.1}
+.antes-despues .v small{font-size:16px;font-weight:500;color:var(--muted);margin-left:2px}
+.antes-despues .flecha{font-size:24px;color:var(--muted)}
+/* tablas */
+.tabla{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line-soft);text-align:right;vertical-align:middle;white-space:nowrap}
+th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line)}
+th.l,td.l{text-align:left}
+td.num{font-family:var(--font-data);font-size:14px;font-variant-numeric:tabular-nums}
+td .region{display:block;font-size:13px;color:var(--muted)}
+tr.actual td{background:var(--accent-soft)}
+#tabla-est tbody tr,#tabla-lluvia tbody tr{cursor:pointer}
+#tabla-est tbody tr:hover td,#tabla-lluvia tbody tr:hover td{background:color-mix(in srgb,var(--accent) 8%,transparent)}
+.ficha h3{margin-top:6px}
+table.mini td.sel{background:var(--accent-soft)}
+.modelo .que{font-size:14.5px;margin-bottom:4px}
+table.mini{font-size:14.5px} table.mini th,table.mini td{padding:6px 8px}
+td.medida{min-width:9.5em}
+.medida-in{display:inline-grid;grid-template-columns:72px auto;gap:8px;align-items:center;justify-items:end}
+.bar{display:block;width:72px;height:8px;border-radius:4px;background:var(--line-soft);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:4px;background:var(--sin)}
+.bar.bueno i{background:var(--bueno)} .bar.medio i{background:var(--medio)} .bar.alto i{background:var(--alto)}
+td.plazo{font-weight:600;vertical-align:top} tr.sep td{border-top:1px solid var(--line)}
+td.modelo-nombre{font-weight:600} td.modelo-nombre .tipo{display:block;font-size:12px;color:var(--muted);font-weight:400}
+td.num.mejor{font-weight:700;color:var(--accent)}
+/* bloque preliminar */
+.prelim-bloque{border:1px dashed var(--line);border-radius:var(--radius);padding:16px;display:grid;gap:12px;background:var(--surface)}
+.modelos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.modelos{grid-template-columns:1fr}}
+.modelo{border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;display:grid;gap:2px;align-content:start;background:var(--bg)}
+.modelo .tipo{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.modelo .nombre{font-family:var(--font-display);font-size:18px;font-weight:600}
+.modelo .value{font-family:var(--font-display);font-size:28px;font-weight:600;line-height:1.1}
+.modelo .value small{font-size:15px;font-weight:500;color:var(--muted);margin-left:2px}
+.modelo .foot{font-size:13px;color:var(--muted)}
+/* narrativa y desplegables */
+.narrativa{display:grid;gap:12px;max-width:68ch}
+.narrativa p{max-width:none}
+.narrativa ol{margin:0;padding-left:1.25em;display:grid;gap:8px}
+details{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);padding:0}
+summary{cursor:pointer;padding:12px 16px;font-weight:600;font-family:var(--font-display);font-size:15.5px;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--muted);font-weight:400}
+details[open] summary::after{content:"–"}
+details .body{padding:0 16px 16px;display:grid;gap:12px}
+details .body p{max-width:72ch}
+footer{border-top:1px solid var(--line);padding-top:20px;display:grid;gap:8px;font-size:14px;color:var(--muted)}
+footer p{max-width:85ch}
+@media (max-width:600px){.cifra .v{font-size:36px}}
+@media (prefers-reduced-motion:no-preference){.est .pt{transition:r .15s ease}}
+
+.topnav{position:sticky;top:0;z-index:1100;background:var(--surface);border-bottom:1px solid var(--line)}
+.topnav .in{max-width:1400px;margin:0 auto;padding-inline:16px;display:flex;align-items:center;gap:16px;min-height:52px}
+.topnav .marca{font-family:var(--font-display);font-weight:600;font-size:15px;color:var(--fg);text-decoration:none;white-space:nowrap;letter-spacing:-.01em}
+.topnav .marca small{color:var(--muted);font-weight:500;font-size:13px;margin-left:8px}
+.topnav .tabs{display:flex;gap:2px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.topnav .tabs::-webkit-scrollbar{display:none}
+.topnav .tabs a{display:inline-flex;align-items:center;height:52px;padding:0 12px;color:var(--muted);text-decoration:none;font-weight:600;font-size:14.5px;border-bottom:3px solid transparent;white-space:nowrap}
+.topnav .tabs a:hover{color:var(--fg)}
+.topnav .tabs a.activa{color:var(--fg);border-bottom-color:var(--accent)}
+.topnav .tabs a:focus-visible{outline:2px solid var(--accent);outline-offset:-4px;border-radius:4px}
+.topnav .largo{margin-left:.3em}
+@media (max-width:1060px){
+  .topnav .in{flex-wrap:wrap;gap:0;padding-inline:0}
+  .topnav .marca{padding:10px 16px 2px;font-size:14px}
+  .topnav .marca small{display:none}
+  .topnav .tabs{margin-left:0;width:100%;padding-inline:6px}
+  .topnav .tabs a{height:42px;padding:0 10px;font-size:14px}
+  .topnav .largo{display:none}
+}
+@media (max-width:620px){
+  /* en teléfono las seis pestañas no caben: se desplazan y el borde derecho se desvanece como pista */
+  .topnav .tabs{-webkit-mask-image:linear-gradient(to right,#000 85%,transparent);mask-image:linear-gradient(to right,#000 85%,transparent);padding-right:28px}
+  .topnav .tabs a{padding:0 9px}
+}
+
+.def{all:unset;cursor:help;border-bottom:1.5px dotted currentColor;text-underline-offset:2px}
+.def:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+.def-pop{position:absolute;z-index:2000;max-width:min(320px,calc(100vw - 32px));background:var(--fg);color:var(--bg);
+  font:400 14.5px/1.45 var(--font-body);padding:10px 12px;border-radius:8px;box-shadow:0 6px 24px rgba(0,0,0,.18)}
+
+.etapas{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.etapas li{display:grid;grid-template-columns:8.5em 1fr;gap:4px 12px;align-items:start}
+.etapas .tag{justify-self:start}
+.etapas .tag{font:600 12px var(--font-body);letter-spacing:.02em;padding:3px 9px;border-radius:999px;border:1px solid var(--line);white-space:nowrap;margin-top:2px}
+.etapas .hecho .tag{background:var(--accent-soft);border-color:var(--accent);color:var(--fg)}
+.etapas .curso .tag{background:color-mix(in srgb,var(--medio) 14%,var(--surface));border-color:var(--medio);color:var(--fg)}
+.etapas .pendiente .tag{background:var(--surface);border-style:dashed;color:var(--muted)}
+.etapas p{margin:0}
+@media (max-width:560px){.etapas li{grid-template-columns:1fr}}
+
+.aviso-oficial{border:1px solid var(--medio);border-left:6px solid var(--medio);background:color-mix(in srgb,var(--medio) 12%,var(--surface));
+  border-radius:var(--radius);padding:14px 16px;display:grid;gap:6px}
+.aviso-oficial strong.t{font-family:var(--font-display);font-size:17px}
+.aviso-oficial p{max-width:80ch;margin:0}
+.aviso-oficial .enlaces{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:15px}
+
+:root{--calido:#d9622b;--frio:#2a78d6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--calido:#ef8a55;--frio:#5aa0f0}}
+:root[data-theme="dark"]{--calido:#ef8a55;--frio:#5aa0f0}
+.cambios{display:grid;gap:12px;grid-template-columns:1fr}
+@media (min-width:900px){.cambios{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}.cambios .cambio:nth-child(3){grid-column:1/-1}}
+.barras-mar{width:100%;max-width:560px;height:auto;display:block}
+.barras-mar .nom{font:14px var(--font-body);fill:var(--fg)}
+.barras-mar .val{font:600 12.5px var(--font-data);fill:var(--fg)}
+.barras-mar .eje{font:11.5px var(--font-data);fill:var(--muted)}
+.barras-mar .eje0{stroke:var(--line);stroke-width:1}
+.barras-mar .calido{fill:var(--calido)} .barras-mar .frio{fill:var(--frio)}
+.indices{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.indices > div{display:grid;gap:2px}
+.indices .lbl{font-size:13px;color:var(--muted)}
+.indices .v{font-family:var(--font-display);font-size:30px;font-weight:600;line-height:1.1}
+.indices .v small{font-size:15px;color:var(--muted);margin-left:2px}
+.serie-mini{width:100%;max-width:260px;height:auto}
+.serie-mini .cero{stroke:var(--line);stroke-width:1}
+.serie-mini .linea{fill:none;stroke:var(--calido);stroke-width:2;stroke-linejoin:round}
+.serie-mini .fin{fill:var(--calido);stroke:var(--surface);stroke-width:2}
+.lista-deriva{margin:0;padding-left:1.2em;display:grid;gap:6px;font-size:15.5px;max-width:80ch}
+.cambios .contexto{grid-column:1/-1}
+.lista-ctx{margin:0;padding-left:1.2em;display:grid;gap:7px;font-size:15.5px;max-width:90ch}
+.lista-ctx .fuente{color:var(--muted);font-size:14px}
+
+.comparar{position:relative;max-width:640px;margin:0 auto;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);
+  background:var(--tierra);touch-action:pan-y}
+.comparar img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none}
+.comparar .arriba{position:absolute;inset:0;clip-path:inset(0 calc(100% - var(--pos, 50%)) 0 0)}
+.comparar .linea{position:absolute;top:0;bottom:0;left:var(--pos, 50%);width:2px;background:var(--fg);transform:translateX(-1px);pointer-events:none}
+.comparar .etq{position:absolute;top:10px;font:600 13px var(--font-body);background:var(--surface);color:var(--fg);padding:4px 9px;border-radius:999px;border:1px solid var(--line)}
+.comparar .etq.izq{left:10px} .comparar .etq.der{right:10px}
+.deslizador{display:block;width:100%;max-width:640px;margin:10px auto 0;accent-color:var(--accent)}
+.escala{display:flex;flex-wrap:wrap;gap:2px;max-width:640px;margin:10px auto 0;font:12px var(--font-data);color:var(--muted)}
+.escala span{flex:1;min-width:34px;text-align:center;padding-top:16px;position:relative}
+.escala span i{position:absolute;top:0;left:0;right:0;height:12px;border-radius:2px;outline:1px solid var(--line-soft)}
+.botones{display:flex;gap:8px;justify-content:center;margin-top:8px}
+.botones button{font:600 13px var(--font-body);padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;min-height:44px}
+
+.buscar{position:relative;max-width:520px}
+.buscar input{width:100%;font:17px var(--font-body);padding:12px 14px 12px 40px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--fg)}
+.buscar input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.buscar svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;stroke:var(--muted);fill:none;stroke-width:2}
+.buscar ul{position:absolute;left:0;right:0;top:calc(100% + 6px);margin:0;padding:6px;list-style:none;background:var(--surface);border:1px solid var(--line);
+  border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.14);max-height:320px;overflow:auto;z-index:20}
+.buscar li{padding:10px 12px;border-radius:8px;cursor:pointer;display:flex;justify-content:space-between;gap:12px}
+.buscar li:hover,.buscar li[aria-selected="true"]{background:var(--accent-soft)}
+.buscar li .r{color:var(--muted);font-size:13px}
+.sugeridas{display:flex;flex-wrap:wrap;gap:8px}
+.sugeridas button{font:14px var(--font-body);padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;min-height:38px}
+.ahora{display:grid;gap:14px}
+.ahora .top{display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px 28px}
+.ahora .temp{font-family:var(--font-display);font-size:72px;font-weight:600;line-height:1;letter-spacing:-.03em}
+.ahora .temp small{font-size:28px;font-weight:500;color:var(--muted);letter-spacing:0}
+.ahora .mm{display:grid;gap:3px;font-size:15px}
+.ahora .mm b{font-size:22px;font-family:var(--font-display);font-weight:600}
+.ahora .fuente{font-size:13px;color:var(--muted)}
+.hoy{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:15px}
+.hoy span svg{width:16px;height:16px;vertical-align:-3px;stroke:var(--muted);fill:none;stroke-width:1.8;margin-right:4px}
+.hoy span.llueve svg{stroke:var(--lluvia)}
+.horas{display:flex;gap:4px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x proximity}
+.hora{flex:0 0 76px;scroll-snap-align:start;display:grid;gap:5px;text-align:center;padding:10px 4px;border-radius:10px;border:1px solid var(--line-soft)}
+.hora .h{font:12px var(--font-data);color:var(--muted)}
+.hora .d{font:600 11px var(--font-body);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.hora .t{font-family:var(--font-display);font-size:20px;font-weight:600}
+.hora .ll{font-size:12.5px;color:var(--muted);min-height:16px}
+.hora .ll.si{color:var(--lluvia);font-weight:600}
+.hora .v{font-size:12px;color:var(--muted)}
+.graf svg{width:100%;height:auto;display:block;overflow:visible}
+.graf .eje{font:11px var(--font-data);fill:var(--muted)} .graf .grid{stroke:var(--line-soft)} .graf .sep{stroke:var(--line)}
+.graf .banda{fill:var(--accent-soft)} .graf .lin{fill:none;stroke:var(--accent);stroke-width:2}
+.graf .pt{fill:var(--accent);stroke:var(--surface);stroke-width:2} .graf .barra{fill:var(--lluvia)} .graf .etq{font:600 12px var(--font-data);fill:var(--fg)}
+.graf .hit{fill:transparent;cursor:crosshair} .graf .guia{stroke:var(--muted);stroke-dasharray:3 3}
+.tip{position:absolute;pointer-events:none;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,.12);min-width:150px;z-index:5}
+.tip b{display:block;margin-bottom:2px}
+.quince{display:grid;gap:0}
+.q-fila{display:grid;grid-template-columns:5.2em 3.6em 3em 1fr 3em 4.2em;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--line-soft);font-size:15px}
+.q-fila:first-child{border-top:0}
+.q-fila .dia{font-weight:600} .q-fila .dia small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.q-fila .pl{font:12.5px var(--font-data);color:var(--muted);display:flex;align-items:center;gap:3px}
+.q-fila .pl.si{color:var(--lluvia);font-weight:600} .q-fila .pl svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.8}
+.q-fila .mn{text-align:right;color:var(--muted);font-family:var(--font-data)} .q-fila .mx{font-family:var(--font-data);font-weight:600}
+.q-fila .vi{font:12.5px var(--font-data);color:var(--muted);text-align:right}
+.rango{position:relative;height:10px;border-radius:5px;background:var(--line-soft)}
+.rango i{position:absolute;top:0;bottom:0;border-radius:5px}
+.rango .amplio{background:var(--accent-soft)} .rango .centro{background:var(--accent)}
+.q-pie{font-size:13px;color:var(--muted)}
+.confianza-txt{margin:0;padding:10px 12px;border-radius:8px;background:var(--accent-soft);font-size:14.5px}
+.estado{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;color:var(--muted);margin:0}
+.estado span::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--bueno);margin-right:6px;vertical-align:1px}
+.estado span.atrasado{color:var(--fg);font-weight:600} .estado span.atrasado::before{background:var(--medio)}
+.estado span.sin::before{background:var(--sin)}
+.vacio{color:var(--muted)}
+:root{--lluvia:#3b7dd8}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--lluvia:#6fa6f0}}
+:root[data-theme="dark"]{--lluvia:#6fa6f0}
+@media (max-width:560px){.ahora .temp{font-size:58px} .q-fila{grid-template-columns:4.4em 3.2em 2.6em 1fr 2.6em;font-size:14px} .q-fila .vi{display:none}}
+</style>
+</head>
+<body>
+<nav class="topnav" aria-label="Secciones del sitio"><div class="in"><a class="marca" href="./">Earth-2 Chile<small>verificación pública del pronóstico</small></a><div class="tabs"><a href="./">Resumen</a><a href="pronostico.html" class="activa" aria-current="page">Pronóstico</a><a href="zona.html">Tu zona</a><a href="eventos.html">Eventos<span class="largo">2026</span></a><a href="quebradas.html">Quebradas</a><a href="escenarios.html">Escenarios</a><a href="envivo.html">En vivo</a><a href="metodo.html">Método</a></div></div></nav>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Pronóstico</div>
+  <h1>¿Qué tiempo viene en tu comuna?</h1>
+  <p class="lead">Las próximas 48 horas y 15 días, con los modelos globales ajustados con lo que se mide en Chile. Y, a diferencia de otros pronósticos, te decimos cuánta duda hay.</p>
+  <div class="buscar"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="buscar" type="search" placeholder="Escribe tu comuna" autocomplete="off" aria-label="Buscar comuna" aria-controls="resultados" role="combobox" aria-expanded="false">
+    <ul id="resultados" role="listbox" hidden></ul></div>
+  <div class="sugeridas" aria-label="Comunas más consultadas"><button type="button" data-id="Q188011">Santo Domingo</button><button type="button" data-id="Q51594">Puente Alto</button><button type="button" data-id="Q16918">Maipú</button><button type="button" data-id="Q188002">Santiago</button><button type="button" data-id="Q14460">La Florida</button><button type="button" data-id="Q56136">San Bernardo</button><button type="button" data-id="Q14484">Las Condes</button><button type="button" data-id="Q41997">Talcahuano</button></div>
+</header>
+
+<p class="estado" id="estado" aria-live="polite"><span class="sin">Cargando…</span></p>
+
+<section class="card ahora" aria-live="polite">
+  <div><h2 id="c-nombre"></h2><p class="muted" id="c-region"></p></div>
+  <div class="top"><div class="temp" id="ahora-temp">–</div>
+    <div class="mm"><span>Hoy</span><span><b id="hoy-max">–</b> <span class="muted">máx.</span> &nbsp; <b id="hoy-min">–</b> <span class="muted">mín.</span></span></div></div>
+  <p class="fuente" id="ahora-fuente"></p>
+  <div class="hoy"><span id="hoy-lluvia"></span><span id="hoy-viento"></span></div>
+</section>
+
+<section class="card">
+  <div class="sec-head"><h2>Próximas 48 horas</h2><p class="muted">Cada 6 horas, en hora de Chile. Es nuestro pronóstico: la combinación de los modelos, cada uno corregido con su error reciente en el aeródromo más cercano.</p></div>
+  <div class="horas" id="horas"></div>
+  <figure class="graf" style="margin:0"><figcaption class="small muted">La banda muestra entre qué valores quedan los distintos modelos: cuanto más ancha, más dudoso.</figcaption><div id="graf"></div></figure>
+  <p class="confianza-txt" id="confianza"></p>
+</section>
+
+<section class="card">
+  <div class="sec-head"><h2>15 días</h2><p class="muted">Con los 50 escenarios del ensamble de IA de ECMWF. Cada día trae su margen: no un número seco, sino entre qué valores puede quedar.</p></div>
+  <div class="quince" id="quince"></div>
+  <p class="q-pie" id="quince-pie"></p>
+</section>
+
+<details><summary>Cómo se arma este pronóstico</summary><div class="body">
+  <p>Cada comuna recibe el valor del cuadrado de 25 km que la contiene en los modelos globales (AIFS, IFS y GFS; y los modelos de Earth-2 que corramos nosotros, cuando los haya). A cada modelo le restamos el error que tuvo en los últimos 30 días en el aeródromo más cercano, a esa misma hora del día, y promediamos. El rango entre modelos es la banda de duda. Para 15 días usamos los 50 escenarios de AIFS-ENS: la máxima es la temperatura de las 15 h de Chile y la mínima la de las 03 h, así que son aproximadas.</p>
+  <p>Lo que no sabe este pronóstico: la diferencia de altura entre tu comuna y el cuadrado de 25 km (en cordillera y costa puede ser grande), el viento de quebradas y laderas, y la nubosidad. Es lo que va a aprender el zoom a 4 km que estamos por entrenar. Este pronóstico se mide todos los días en <a href="zona.html">Tu zona</a>.</p>
+  <p class="small muted" id="actualizado"></p>
+</div></details>
+<div class="aviso"><p class="small">Apoyo a la decisión, no una alerta. Las alertas oficiales son de la <a href="https://www.meteochile.gob.cl/" rel="noopener">Dirección Meteorológica de Chile</a> y de <a href="https://www.senapred.cl/" rel="noopener">SENAPRED</a>.</p></div>
+<footer><p>Actualizado el 26 oct, 14:25 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
+</div>
+<script>window.COMUNAS = [{"id": "Q23660303", "n": "Antofagasta", "r": "Antofagasta", "p": 0}, {"id": "Q23660534", "n": "Calama", "r": "Antofagasta", "p": 0}, {"id": "Q16923", "n": "María Elena", "r": "Antofagasta", "p": 6457}, {"id": "Q16928", "n": "Mejillones", "r": "Antofagasta", "p": 14084}, {"id": "Q23660235", "n": "Ollagüe", "r": "Antofagasta", "p": 0}, {"id": "Q23660231", "n": "San Pedro de Atacama", "r": "Antofagasta", "p": 0}, {"id": "Q188027", "n": "Sierra Gorda", "r": "Antofagasta", "p": 0}, {"id": "Q188049", "n": "Taltal", "r": "Antofagasta", "p": 12100}, {"id": "Q23660225", "n": "Tocopilla", "r": "Antofagasta", "p": 0}, {"id": "Q23660598", "n": "Arica", "r": "Arica y Parinacota", "p": 0}, {"id": "Q3729", "n": "Comuna de Camarones", "r": "Arica y Parinacota", "p": 0}, {"id": "Q13065", "n": "General Lagos", "r": "Arica y Parinacota", "p": 0}, {"id": "Q51605", "n": "Putre", "r": "Arica y Parinacota", "p": 0}, {"id": "Q2215", "n": "Alto del Carmen", "r": "Atacama", "p": 5299}, {"id": "Q3708", "n": "Caldera", "r": "Atacama", "p": 16150}, {"id": "Q23660220", "n": "Chañaral", "r": "Atacama", "p": 0}, {"id": "Q23660229", "n": "Copiapó", "r": "Atacama", "p": 0}, {"id": "Q13033", "n": "Diego de Almagro", "r": "Atacama", "p": 13925}, {"id": "Q13051", "n": "Freirina", "r": "Atacama", "p": 6038}, {"id": "Q14422", "n": "Huasco", "r": "Atacama", "p": 8977}, {"id": "Q188142", "n": "Tierra Amarilla", "r": "Atacama", "p": 14019}, {"id": "Q23660268", "n": "Vallenar", "r": "Atacama", "p": 0}, {"id": "Q3651", "n": "Aysén", "r": "Aysén", "p": 22353}, {"id": "Q23660552", "n": "Chile Chico", "r": "Aysén", "p": 0}, {"id": "Q3793", "n": "Cisnes", "r": "Aysén", "p": 0}, {"id": "Q23660615", "n": "Cochrane", "r": "Aysén", "p": 0}, {"id": "Q23660241", "n": "Coyhaique", "r": "Aysén", "p": 0}, {"id": "Q13069", "n": "Guaitecas", "r": "Aysén", "p": 0}, {"id": "Q14471", "n": "Lago Verde", "r": "Aysén", "p": 0}, {"id": "Q51051", "n": "O'Higgins", "r": "Aysén", "p": 0}, {"id": "Q56129", "n": "Río Ibáñez", "r": "Aysén", "p": 0}, {"id": "Q2390232", "n": "Tortel", "r": "Aysén", "p": 0}, {"id": "Q2213", "n": "Alto Biobío", "r": "Biobío", "p": 0}, {"id": "Q3619", "n": "Antuco", "r": "Biobío", "p": 0}, {"id": "Q3632", "n": "Arauco", "r": "Biobío", "p": 17597}, {"id": "Q23660149", "n": "Arauco", "r": "Biobío", "p": 0}, {"id": "Q3678", "n": "Cabrero", "r": "Biobío", "p": 0}, {"id": "Q3753", "n": "Cañete", "r": "Biobío", "p": 34537}, {"id": "Q3765", "n": "Chiguayante", "r": "Biobío", "p": 85863}, {"id": "Q1880", "n": "Concepción", "r": "Biobío", "p": 217537}, {"id": "Q23659675", "n": "Concepción", "r": "Biobío", "p": 0}, {"id": "Q3864", "n": "Contulmo", "r": "Biobío", "p": 5581}, {"id": "Q3873", "n": "Coronel", "r": "Biobío", "p": 116262}, {"id": "Q3892", "n": "Curanilahue", "r": "Biobío", "p": 32288}, {"id": "Q13048", "n": "Florida", "r": "Biobío", "p": 0}, {"id": "Q13077", "n": "Hualpén", "r": "Biobío", "p": 91773}, {"id": "Q13079", "n": "Hualqui", "r": "Biobío", "p": 24333}, {"id": "Q14475", "n": "Laja", "r": "Biobío", "p": 0}, {"id": "Q23660283", "n": "Lebu", "r": "Biobío", "p": 0}, {"id": "Q16909", "n": "Los Álamos", "r": "Biobío", "p": 19494}, {"id": "Q31921981", "n": "Los Ángeles", "r": "Biobío", "p": 0}, {"id": "Q16910", "n": "Los Ángeles", "r": "Biobío", "p": 143023}, {"id": "Q23660628", "n": "Lota", "r": "Biobío", "p": 0}, {"id": "Q16911", "n": "Lota", "r": "Biobío", "p": 43272}, {"id": "Q51036", "n": "Mulchén", "r": "Biobío", "p": 27557}, {"id": "Q51039", "n": "Nacimiento", "r": "Biobío", "p": 0}, {"id": "Q51046", "n": "Negrete", "r": "Biobío", "p": 0}, {"id": "Q51093", "n": "Penco", "r": "Biobío", "p": 47367}, {"id": "Q51610", "n": "Quilaco", "r": "Biobío", "p": 0}, {"id": "Q56107", "n": "Quilleco", "r": "Biobío", "p": 0}, {"id": "Q19344", "n": "San Pedro de la Paz", "r": "Biobío", "p": 131808}, {"id": "Q22137", "n": "San Rosendo", "r": "Biobío", "p": 3398}, {"id": "Q187961", "n": "Santa Bárbara", "r": "Biobío", "p": 13773}, {"id": "Q187974", "n": "Santa Juana", "r": "Biobío", "p": 13228}, {"id": "Q41997", "n": "Talcahuano", "r": "Biobío", "p": 270000}, {"id": "Q23659669", "n": "Talcahuano", "r": "Biobío", "p": 0}, {"id": "Q188183", "n": "Tirúa", "r": "Biobío", "p": 0}, {"id": "Q200934", "n": "Tomé", "r": "Biobío", "p": 42312}, {"id": "Q23660282", "n": "Tomé", "r": "Biobío", "p": 0}, {"id": "Q200965", "n": "Tucapel", "r": "Biobío", "p": 0}, {"id": "Q201050", "n": "Yumbel", "r": "Biobío", "p": 0}, {"id": "Q3602", "n": "Andacollo", "r": "Coquimbo", "p": 11044}, {"id": "Q3735", "n": "Canela", "r": "Coquimbo", "p": 0}, {"id": "Q3850", "n": "Combarbalá", "r": "Coquimbo", "p": 13322}, {"id": "Q23660214", "n": "Coquimbo", "r": "Coquimbo", "p": 0}, {"id": "Q23660296", "n": "Illapel", "r": "Coquimbo", "p": 0}, {"id": "Q14462", "n": "La Higuera", "r": "Coquimbo", "p": 0}, {"id": "Q23660215", "n": "La Serena", "r": "Coquimbo", "p": 0}, {"id": "Q16908", "n": "Los Vilos", "r": "Coquimbo", "p": 21382}, {"id": "Q51034", "n": "Monte Patria", "r": "Coquimbo", "p": 30056}, {"id": "Q23660217", "n": "Ovalle", "r": "Coquimbo", "p": 0}, {"id": "Q51064", "n": "Paihuano", "r": "Coquimbo", "p": 0}, {"id": "Q51598", "n": "Punitaqui", "r": "Coquimbo", "p": 10956}, {"id": "Q56128", "n": "Río Hurtado", "r": "Coquimbo", "p": 0}, {"id": "Q56134", "n": "Salamanca", "r": "Coquimbo", "p": 29359}, {"id": "Q201007", "n": "Vicuña", "r": "Coquimbo", "p": 0}, {"id": "Q23660240", "n": "Angol", "r": "La Araucanía", "p": 0}, {"id": "Q3736", "n": "Carahue", "r": "La Araucanía", "p": 25696}, {"id": "Q3785", "n": "Cholchol", "r": "La Araucanía", "p": 11611}, {"id": "Q3843", "n": "Collipulli", "r": "La Araucanía", "p": 23321}, {"id": "Q3878", "n": "Cunco", "r": "La Araucanía", "p": 19063}, {"id": "Q13025", "n": "Curarrehue", "r": "La Araucanía", "p": 7489}, {"id": "Q13044", "n": "Ercilla", "r": "La Araucanía", "p": 0}, {"id": "Q13049", "n": "Freire", "r": "La Araucanía", "p": 24606}, {"id": "Q13063", "n": "Galvarino", "r": "La Araucanía", "p": 11996}, {"id": "Q13067", "n": "Gorbea", "r": "La Araucanía", "p": 0}, {"id": "Q14486", "n": "Lautaro", "r": "La Araucanía", "p": 0}, {"id": "Q16900", "n": "Loncoche", "r": "La Araucanía", "p": 21458}, {"id": "Q16902", "n": "Lonquimay", "r": "La Araucanía", "p": 10251}, {"id": "Q16907", "n": "Los Sauces", "r": "La Araucanía", "p": 0}, {"id": "Q16914", "n": "Lumaco", "r": "La Araucanía", "p": 0}, {"id": "Q49076", "n": "Melipeuco", "r": "La Araucanía", "p": 0}, {"id": "Q51050", "n": "Nueva Imperial", "r": "La Araucanía", "p": 31632}, {"id": "Q51063", "n": "Padre Las Casas", "r": "La Araucanía", "p": 76126}, {"id": "Q15076", "n": "Perquenco", "r": "La Araucanía", "p": 0}, {"id": "Q51115", "n": "Pitrufquén", "r": "La Araucanía", "p": 0}, {"id": "Q51590", "n": "Pucón", "r": "La Araucanía", "p": 28923}, {"id": "Q51602", "n": "Purén", "r": "La Araucanía", "p": 12868}, {"id": "Q56118", "n": "Renaico", "r": "La Araucanía", "p": 0}, {"id": "Q56132", "n": "Saavedra", "r": "La Araucanía", "p": 0}, {"id": "Q23660141", "n": "Temuco", "r": "La Araucanía", "p": 0}, {"id": "Q188135", "n": "Teodoro Schmidt", "r": "La Araucanía", "p": 0}, {"id": "Q17107613", "n": "Toltén", "r": "La Araucanía", "p": 0}, {"id": "Q200961", "n": "Traiguén", "r": "La Araucanía", "p": 0}, {"id": "Q200999", "n": "Victoria", "r": "La Araucanía", "p": 34890}, {"id": "Q1643896", "n": "Vilcún", "r": "La Araucanía", "p": 31575}, {"id": "Q201019", "n": "Villarrica", "r": "La Araucanía", "p": 55478}, {"id": "Q3880", "n": "Curacautín", "r": "La Araucanía", "p": 16508}, {"id": "Q23660274", "n": "Ancud", "r": "Los Lagos", "p": 0}, {"id": "Q23660261", "n": "Calbuco", "r": "Los Lagos", "p": 0}, {"id": "Q23660569", "n": "Castro", "r": "Los Lagos", "p": 46997}, {"id": "Q3759", "n": "Chaitén", "r": "Los Lagos", "p": 5071}, {"id": "Q23660568", "n": "Chonchi", "r": "Los Lagos", "p": 0}, {"id": "Q3797", "n": "Cochamó", "r": "Los Lagos", "p": 3908}, {"id": "Q23660566", "n": "Curaco de Vélez", "r": "Los Lagos", "p": 0}, {"id": "Q85867165", "n": "Dalcahue", "r": "Los Lagos", "p": 13762}, {"id": "Q23660584", "n": "Fresia", "r": "Los Lagos", "p": 0}, {"id": "Q23660602", "n": "Frutillar", "r": "Los Lagos", "p": 0}, {"id": "Q23660561", "n": "Futaleufú", "r": "Los Lagos", "p": 0}, {"id": "Q13072", "n": "Hualaihué", "r": "Los Lagos", "p": 0}, {"id": "Q14500", "n": "Llanquihue", "r": "Los Lagos", "p": 0}, {"id": "Q16906", "n": "Los Muermos", "r": "Los Lagos", "p": 16132}, {"id": "Q16927", "n": "Maullín", "r": "Los Lagos", "p": 0}, {"id": "Q22451496", "n": "Osorno", "r": "Los Lagos", "p": 0}, {"id": "Q23660618", "n": "Palena", "r": "Los Lagos", "p": 0}, {"id": "Q23660601", "n": "Puerto Montt", "r": "Los Lagos", "p": 0}, {"id": "Q51595", "n": "Puerto Octay", "r": "Los Lagos", "p": 8999}, {"id": "Q23660278", "n": "Puerto Varas", "r": "Los Lagos", "p": 0}, {"id": "Q2118779", "n": "Puqueldón", "r": "Los Lagos", "p": 560}, {"id": "Q51601", "n": "Purranque", "r": "Los Lagos", "p": 20949}, {"id": "Q15084", "n": "Puyehue", "r": "Los Lagos", "p": 0}, {"id": "Q51607", "n": "Queilén", "r": "Los Lagos", "p": 0}, {"id": "Q51608", "n": "Quellón", "r": "Los Lagos", "p": 0}, {"id": "Q51609", "n": "Quemchi", "r": "Los Lagos", "p": 0}, {"id": "Q56111", "n": "Quinchao", "r": "Los Lagos", "p": 8088}, {"id": "Q56130", "n": "Río Negro", "r": "Los Lagos", "p": 0}, {"id": "Q187856", "n": "San Juan de la Costa", "r": "Los Lagos", "p": 0}, {"id": "Q187873", "n": "San Pablo", "r": "Los Lagos", "p": 0}, {"id": "Q3875", "n": "Corral", "r": "Los Ríos", "p": 3469}, {"id": "Q13062", "n": "Futrono", "r": "Los Ríos", "p": 15670}, {"id": "Q23660622", "n": "La Unión", "r": "Los Ríos", "p": 39447}, {"id": "Q14470", "n": "Lago Ranco", "r": "Los Ríos", "p": 9896}, {"id": "Q64972453", "n": "Lanco", "r": "Los Ríos", "p": 0}, {"id": "Q16905", "n": "Los Lagos", "r": "Los Ríos", "p": 0}, {"id": "Q51038", "n": "Máfil", "r": "Los Ríos", "p": 0}, {"id": "Q16922", "n": "Mariquina", "r": "Los Ríos", "p": 21278}, {"id": "Q51069", "n": "Paillaco", "r": "Los Ríos", "p": 0}, {"id": "Q23660623", "n": "Panguipulli", "r": "Los Ríos", "p": 0}, {"id": "Q23660621", "n": "Río Bueno", "r": "Los Ríos", "p": 0}, {"id": "Q23660540", "n": "Valdivia", "r": "Los Ríos", "p": 0}, {"id": "Q3673", "n": "Cabo de Hornos", "r": "Magallanes", "p": 0}, {"id": "Q14474", "n": "Laguna Blanca", "r": "Magallanes", "p": 0}, {"id": "Q51043", "n": "Natales", "r": "Magallanes", "p": 21477}, {"id": "Q51120", "n": "Porvenir", "r": "Magallanes", "p": 6801}, {"id": "Q51586", "n": "Primavera", "r": "Magallanes", "p": 1158}, {"id": "Q20530729", "n": "Punta Arenas", "r": "Magallanes", "p": 131592}, {"id": "Q56131", "n": "Río Verde", "r": "Magallanes", "p": 0}, {"id": "Q187816", "n": "San Gregorio", "r": "Magallanes", "p": 0}, {"id": "Q188177", "n": "Timaukel", "r": "Magallanes", "p": 0}, {"id": "Q200948", "n": "Torres del Paine", "r": "Magallanes", "p": 0}, {"id": "Q3749", "n": "Cauquenes", "r": "Maule", "p": 40441}, {"id": "Q3762", "n": "Chanco", "r": "Maule", "p": 0}, {"id": "Q3836", "n": "Colbún", "r": "Maule", "p": 20765}, {"id": "Q3862", "n": "Constitución", "r": "Maule", "p": 0}, {"id": "Q13026", "n": "Curepto", "r": "Maule", "p": 0}, {"id": "Q23660294", "n": "Curicó", "r": "Maule", "p": 0}, {"id": "Q13042", "n": "Empedrado", "r": "Maule", "p": 0}, {"id": "Q13074", "n": "Hualañé", "r": "Maule", "p": 9657}, {"id": "Q14490", "n": "Licantén", "r": "Maule", "p": 0}, {"id": "Q23660288", "n": "Linares", "r": "Maule", "p": 0}, {"id": "Q16901", "n": "Longaví", "r": "Maule", "p": 28499}, {"id": "Q16926", "n": "Maule", "r": "Maule", "p": 0}, {"id": "Q51033", "n": "Molina", "r": "Maule", "p": 0}, {"id": "Q51083", "n": "Parral", "r": "Maule", "p": 39404}, {"id": "Q51085", "n": "Pelarco", "r": "Maule", "p": 0}, {"id": "Q51086", "n": "Pelluhue", "r": "Maule", "p": 7202}, {"id": "Q51091", "n": "Pencahue", "r": "Maule", "p": 0}, {"id": "Q56116", "n": "Rauco", "r": "Maule", "p": 0}, {"id": "Q56122", "n": "Retiro", "r": "Maule", "p": 0}, {"id": "Q56127", "n": "Río Claro", "r": "Maule", "p": 0}, {"id": "Q56124", "n": "Romeral", "r": "Maule", "p": 15187}, {"id": "Q56133", "n": "Sagrada Familia", "r": "Maule", "p": 0}, {"id": "Q56138", "n": "San Clemente", "r": "Maule", "p": 43269}, {"id": "Q23660142", "n": "San Javier", "r": "Maule", "p": 0}, {"id": "Q187898", "n": "San Rafael", "r": "Maule", "p": 0}, {"id": "Q31947291", "n": "Talca", "r": "Maule", "p": 0}, {"id": "Q2383688", "n": "Teno", "r": "Maule", "p": 0}, {"id": "Q200992", "n": "Vichuquén", "r": "Maule", "p": 0}, {"id": "Q201015", "n": "Villa Alegre", "r": "Maule", "p": 0}, {"id": "Q201046", "n": "Yerbas Buenas", "r": "Maule", "p": 0}, {"id": "Q2208", "n": "Alhué", "r": "Metropolitana", "p": 4435}, {"id": "Q3656", "n": "Buin", "r": "Metropolitana", "p": 96614}, {"id": "Q3725", "n": "Calera de Tango", "r": "Metropolitana", "p": 0}, {"id": "Q3755", "n": "Cerrillos", "r": "Metropolitana", "p": 80832}, {"id": "Q3756", "n": "Cerro Navia", "r": "Metropolitana", "p": 127250}, {"id": "Q3841", "n": "Colina", "r": "Metropolitana", "p": 146209}, {"id": "Q3851", "n": "Conchalí", "r": "Metropolitana", "p": 0}, {"id": "Q3885", "n": "Curacaví", "r": "Metropolitana", "p": 34337}, {"id": "Q13036", "n": "El Bosque", "r": "Metropolitana", "p": 0}, {"id": "Q13038", "n": "El Monte", "r": "Metropolitana", "p": 0}, {"id": "Q13045", "n": "Estación Central", "r": "Metropolitana", "p": 147041}, {"id": "Q14433", "n": "Huechuraba", "r": "Metropolitana", "p": 74070}, {"id": "Q14437", "n": "Independencia", "r": "Metropolitana", "p": 0}, {"id": "Q14445", "n": "Isla de Maipo", "r": "Metropolitana", "p": 36219}, {"id": "Q14456", "n": "La Cisterna", "r": "Metropolitana", "p": 0}, {"id": "Q14460", "n": "La Florida", "r": "Metropolitana", "p": 366916}, {"id": "Q14461", "n": "La Granja", "r": "Metropolitana", "p": 116571}, {"id": "Q14464", "n": "La Pintana", "r": "Metropolitana", "p": 177335}, {"id": "Q14466", "n": "La Reina", "r": "Metropolitana", "p": 92787}, {"id": "Q14477", "n": "Lampa", "r": "Metropolitana", "p": 102034}, {"id": "Q14484", "n": "Las Condes", "r": "Metropolitana", "p": 294838}, {"id": "Q14502", "n": "Lo Barnechea", "r": "Metropolitana", "p": 105833}, {"id": "Q14503", "n": "Lo Espejo", "r": "Metropolitana", "p": 101615}, {"id": "Q14504", "n": "Lo Prado", "r": "Metropolitana", "p": 96249}, {"id": "Q16916", "n": "Macul", "r": "Metropolitana", "p": 0}, {"id": "Q16918", "n": "Maipú", "r": "Metropolitana", "p": 521627}, {"id": "Q16925", "n": "María Pinto", "r": "Metropolitana", "p": 10343}, {"id": "Q51032", "n": "Melipilla", "r": "Metropolitana", "p": 148899}, {"id": "Q201076", "n": "Ñuñoa", "r": "Metropolitana", "p": 0}, {"id": "Q51062", "n": "Padre Hurtado", "r": "Metropolitana", "p": 0}, {"id": "Q51070", "n": "Paine", "r": "Metropolitana", "p": 0}, {"id": "Q51084", "n": "Pedro Aguirre Cerda", "r": "Metropolitana", "p": 0}, {"id": "Q51098", "n": "Peñaflor", "r": "Metropolitana", "p": 90201}, {"id": "Q51100", "n": "Peñalolén", "r": "Metropolitana", "p": 0}, {"id": "Q51113", "n": "Pirque", "r": "Metropolitana", "p": 0}, {"id": "Q51587", "n": "Providencia", "r": "Metropolitana", "p": 120874}, {"id": "Q51591", "n": "Pudahuel", "r": "Metropolitana", "p": 0}, {"id": "Q51594", "n": "Puente Alto", "r": "Metropolitana", "p": 573935}, {"id": "Q51612", "n": "Quilicura", "r": "Metropolitana", "p": 0}, {"id": "Q56113", "n": "Quinta Normal", "r": "Metropolitana", "p": 93904}, {"id": "Q56117", "n": "Recoleta", "r": "Metropolitana", "p": 0}, {"id": "Q56119", "n": "Renca", "r": "Metropolitana", "p": 0}, {"id": "Q56136", "n": "San Bernardo", "r": "Metropolitana", "p": 301313}, {"id": "Q187838", "n": "San Joaquín", "r": "Metropolitana", "p": 94492}, {"id": "Q187847", "n": "San José de Maipo", "r": "Metropolitana", "p": 13376}, {"id": "Q187862", "n": "San Miguel", "r": "Metropolitana", "p": 107954}, {"id": "Q187885", "n": "San Pedro", "r": "Metropolitana", "p": 9726}, {"id": "Q187919", "n": "San Ramón", "r": "Metropolitana", "p": 0}, {"id": "Q188002", "n": "Santiago", "r": "Metropolitana", "p": 404495}, {"id": "Q188038", "n": "Talagante", "r": "Metropolitana", "p": 59805}, {"id": "Q188170", "n": "Tiltil", "r": "Metropolitana", "p": 14755}, {"id": "Q201036", "n": "Vitacura", "r": "Metropolitana", "p": 85384}, {"id": "Q3663", "n": "Bulnes", "r": "Ñuble", "p": 20595}, {"id": "Q23660244", "n": "Chillán", "r": "Ñuble", "p": 0}, {"id": "Q3779", "n": "Chillán Viejo", "r": "Ñuble", "p": 27359}, {"id": "Q23660634", "n": "Chillán Viejo", "r": "Ñuble", "p": 0}, {"id": "Q3796", "n": "Cobquecura", "r": "Ñuble", "p": 0}, {"id": "Q3807", "n": "Coelemu", "r": "Ñuble", "p": 15995}, {"id": "Q3814", "n": "Coihueco", "r": "Ñuble", "p": 23583}, {"id": "Q13037", "n": "El Carmen", "r": "Ñuble", "p": 12044}, {"id": "Q51048", "n": "Ninhue", "r": "Ñuble", "p": 0}, {"id": "Q201070", "n": "Ñiquén", "r": "Ñuble", "p": 0}, {"id": "Q51090", "n": "Pemuco", "r": "Ñuble", "p": 0}, {"id": "Q51106", "n": "Pinto", "r": "Ñuble", "p": 55}, {"id": "Q51119", "n": "Portezuelo", "r": "Ñuble", "p": 0}, {"id": "Q56109", "n": "Quillón", "r": "Ñuble", "p": 0}, {"id": "Q56115", "n": "Quirihue", "r": "Ñuble", "p": 0}, {"id": "Q56125", "n": "Ránquil", "r": "Ñuble", "p": 0}, {"id": "Q56137", "n": "San Carlos", "r": "Ñuble", "p": 32529}, {"id": "Q187795", "n": "San Fabián", "r": "Ñuble", "p": 4308}, {"id": "Q187824", "n": "San Ignacio", "r": "Ñuble", "p": 0}, {"id": "Q187866", "n": "San Nicolás", "r": "Ñuble", "p": 12414}, {"id": "Q200963", "n": "Treguaco", "r": "Ñuble", "p": 0}, {"id": "Q201056", "n": "Yungay", "r": "Ñuble", "p": 0}, {"id": "Q3790", "n": "Chépica", "r": "O'Higgins", "p": 15037}, {"id": "Q3782", "n": "Chimbarongo", "r": "O'Higgins", "p": 33446}, {"id": "Q3804", "n": "Codegua", "r": "O'Higgins", "p": 12495}, {"id": "Q3833", "n": "Coinco", "r": "O'Higgins", "p": 0}, {"id": "Q3847", "n": "Coltauco", "r": "O'Higgins", "p": 21373}, {"id": "Q13035", "n": "Doñihue", "r": "O'Higgins", "p": 18764}, {"id": "Q13068", "n": "Graneros", "r": "O'Higgins", "p": 35938}, {"id": "Q14458", "n": "La Estrella", "r": "O'Higgins", "p": 0}, {"id": "Q14480", "n": "Las Cabras", "r": "O'Higgins", "p": 24640}, {"id": "Q14496", "n": "Litueche", "r": "O'Higgins", "p": 0}, {"id": "Q16899", "n": "Lolol", "r": "O'Higgins", "p": 0}, {"id": "Q16915", "n": "Machalí", "r": "O'Higgins", "p": 42572}, {"id": "Q16919", "n": "Malloa", "r": "O'Higgins", "p": 0}, {"id": "Q16921", "n": "Marchigüe", "r": "O'Higgins", "p": 0}, {"id": "Q51035", "n": "Mostazal", "r": "O'Higgins", "p": 0}, {"id": "Q51042", "n": "Nancagua", "r": "O'Higgins", "p": 0}, {"id": "Q51045", "n": "Navidad", "r": "O'Higgins", "p": 0}, {"id": "Q51053", "n": "Olivar", "r": "O'Higgins", "p": 0}, {"id": "Q51074", "n": "Palmilla", "r": "O'Higgins", "p": 11844}, {"id": "Q51082", "n": "Paredones", "r": "O'Higgins", "p": 0}, {"id": "Q51095", "n": "Peralillo", "r": "O'Higgins", "p": 0}, {"id": "Q51097", "n": "Peumo", "r": "O'Higgins", "p": 14313}, {"id": "Q51104", "n": "Pichidegua", "r": "O'Higgins", "p": 19714}, {"id": "Q23660186", "n": "Pichilemu", "r": "O'Higgins", "p": 0}, {"id": "Q51117", "n": "Placilla", "r": "O'Higgins", "p": 0}, {"id": "Q2098355", "n": "Pumanque", "r": "O'Higgins", "p": 3421}, {"id": "Q56112", "n": "Quinta de Tilcoco", "r": "O'Higgins", "p": 0}, {"id": "Q23660166", "n": "Rancagua", "r": "O'Higgins", "p": 0}, {"id": "Q56120", "n": "Rengo", "r": "O'Higgins", "p": 0}, {"id": "Q56121", "n": "Requínoa", "r": "O'Higgins", "p": 0}, {"id": "Q23660251", "n": "San Fernando", "r": "O'Higgins", "p": 0}, {"id": "Q187936", "n": "San Vicente de Tagua Tagua", "r": "O'Higgins", "p": 44046}, {"id": "Q187969", "n": "Santa Cruz", "r": "O'Higgins", "p": 0}, {"id": "Q2217", "n": "Alto Hospicio", "r": "Tarapacá", "p": 108375}, {"id": "Q3731", "n": "Camiña", "r": "Tarapacá", "p": 1250}, {"id": "Q3839", "n": "Colchane", "r": "Tarapacá", "p": 1649}, {"id": "Q13081", "n": "Huara", "r": "Tarapacá", "p": 3510}, {"id": "Q23660233", "n": "Iquique", "r": "Tarapacá", "p": 0}, {"id": "Q51102", "n": "Pica", "r": "Tarapacá", "p": 9296}, {"id": "Q23660626", "n": "Pozo Almonte", "r": "Tarapacá", "p": 0}, {"id": "Q2206", "n": "Algarrobo", "r": "Valparaíso", "p": 0}, {"id": "Q3668", "n": "Cabildo", "r": "Valparaíso", "p": 19388}, {"id": "Q3728", "n": "Calle Larga", "r": "Valparaíso", "p": 13366}, {"id": "Q3738", "n": "Cartagena", "r": "Valparaíso", "p": 22738}, {"id": "Q3742", "n": "Casablanca", "r": "Valparaíso", "p": 21874}, {"id": "Q3747", "n": "Catemu", "r": "Valparaíso", "p": 0}, {"id": "Q3860", "n": "Concón", "r": "Valparaíso", "p": 42152}, {"id": "Q13040", "n": "El Quisco", "r": "Valparaíso", "p": 11329}, {"id": "Q13041", "n": "El Tabo", "r": "Valparaíso", "p": 13286}, {"id": "Q13071", "n": "Hijuelas", "r": "Valparaíso", "p": 17988}, {"id": "Q9009773", "n": "Isla de Pascua", "r": "Valparaíso", "p": 0}, {"id": "Q14454", "n": "Juan Fernández", "r": "Valparaíso", "p": 926}, {"id": "Q3713", "n": "La Calera", "r": "Valparaíso", "p": 50554}, {"id": "Q14457", "n": "La Cruz", "r": "Valparaíso", "p": 22098}, {"id": "Q23660206", "n": "La Ligua", "r": "Valparaíso", "p": 0}, {"id": "Q14493", "n": "Limache", "r": "Valparaíso", "p": 0}, {"id": "Q14498", "n": "Llay-Llay", "r": "Valparaíso", "p": 0}, {"id": "Q23660195", "n": "Los Andes", "r": "Valparaíso", "p": 0}, {"id": "Q51049", "n": "Nogales", "r": "Valparaíso", "p": 22120}, {"id": "Q51058", "n": "Olmué", "r": "Valparaíso", "p": 0}, {"id": "Q51078", "n": "Panquehue", "r": "Valparaíso", "p": 0}, {"id": "Q51079", "n": "Papudo", "r": "Valparaíso", "p": 6356}, {"id": "Q51096", "n": "Petorca", "r": "Valparaíso", "p": 0}, {"id": "Q23660192", "n": "Puchuncaví", "r": "Valparaíso", "p": 0}, {"id": "Q51604", "n": "Putaendo", "r": "Valparaíso", "p": 0}, {"id": "Q31936374", "n": "Quillota", "r": "Valparaíso", "p": 0}, {"id": "Q23660236", "n": "Quilpué", "r": "Valparaíso", "p": 0}, {"id": "Q56114", "n": "Quintero", "r": "Valparaíso", "p": 31923}, {"id": "Q56123", "n": "Rinconada", "r": "Valparaíso", "p": 10207}, {"id": "Q23660190", "n": "San Antonio", "r": "Valparaíso", "p": 0}, {"id": "Q187784", "n": "San Esteban", "r": "Valparaíso", "p": 0}, {"id": "Q23660221", "n": "San Felipe", "r": "Valparaíso", "p": 0}, {"id": "Q187991", "n": "Santa María", "r": "Valparaíso", "p": 0}, {"id": "Q188011", "n": "Santo Domingo", "r": "Valparaíso", "p": 1029110}, {"id": "Q23660191", "n": "Valparaíso", "r": "Valparaíso", "p": 0}, {"id": "Q23660271", "n": "Villa Alemana", "r": "Valparaíso", "p": 0}, {"id": "Q23660201", "n": "Viña del Mar", "r": "Valparaíso", "p": 0}, {"id": "Q23660193", "n": "Zapallar", "r": "Valparaíso", "p": 7339}];</script>
+
+<script>
+(function(){
+  const LISTA = window.COMUNAS, DIA = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'], DIA3 = ['dom','lun','mar','mié','jue','vie','sáb'];
+  const n = (v, d=0) => v == null ? '–' : Number(v).toLocaleString('es-CL', {minimumFractionDigits:d, maximumFractionDigits:d}).replace('-', '−');
+  const sinTilde = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  const fecha = s => { const [f, h] = s.split('T'); const [a, m, d] = f.split('-').map(Number); return {f, h: Number((h || '00').slice(0, 2)), d: new Date(a, m - 1, d)}; };
+  const ICO = {gota: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5c3.2 4.3 5.5 7.4 5.5 10.2a5.5 5.5 0 0 1-11 0c0-2.8 2.3-5.9 5.5-10.2z"/></svg>',
+               viento: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h11a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M3 16h8"/></svg>',
+               sol: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>'};
+  let D48 = null, D15 = null, sel = null;
+  const $ = id => document.getElementById(id);
+
+  // ---- buscador ----
+  const inp = $('buscar'), ul = $('resultados');
+  let activo = -1, hits = [];
+  function render() {
+    ul.innerHTML = hits.map((c, i) => `<li role="option" aria-selected="${i === activo}" data-id="${c.id}"><span>${c.n}</span><span class="r">${c.r}</span></li>`).join('');
+    ul.hidden = !hits.length;
+  }
+  inp.addEventListener('input', () => {
+    const q = sinTilde(inp.value.trim());
+    hits = q ? LISTA.filter(c => sinTilde(c.n).includes(q) || sinTilde(c.r).includes(q)).sort((a, b) => (sinTilde(b.n).startsWith(q) - sinTilde(a.n).startsWith(q)) || (b.p - a.p)).slice(0, 8) : [];
+    activo = hits.length ? 0 : -1; render();
+  });
+  inp.addEventListener('keydown', ev => {
+    if (ev.key === 'ArrowDown') { activo = Math.min(activo + 1, hits.length - 1); render(); ev.preventDefault(); }
+    else if (ev.key === 'ArrowUp') { activo = Math.max(activo - 1, 0); render(); ev.preventDefault(); }
+    else if (ev.key === 'Enter' && hits[activo]) { elegir(hits[activo].id); ev.preventDefault(); }
+    else if (ev.key === 'Escape') { ul.hidden = true; }
+  });
+  ul.addEventListener('mousedown', ev => { const li = ev.target.closest('li'); if (li) { elegir(li.dataset.id); ev.preventDefault(); } });
+  document.addEventListener('click', ev => { if (!ev.target.closest('.buscar')) ul.hidden = true; });
+  document.querySelectorAll('.sugeridas button').forEach(b => b.addEventListener('click', () => elegir(b.dataset.id)));
+
+  function elegir(id) {
+    const c = LISTA.find(x => x.id === id); if (!c) return;
+    sel = id; inp.value = ''; ul.hidden = true; hits = [];
+    try { localStorage.setItem('comuna', id); } catch (e) {}
+    if (location.hash.slice(1) !== id) history.replaceState(null, '', '#' + id);
+    pintar();
+  }
+
+  // ---- pintar ----
+  function pintar() {
+    const c = LISTA.find(x => x.id === sel); if (!c) return;
+    $('c-nombre').textContent = c.n; $('c-region').textContent = c.r;
+    const d = D48 && D48.comunas[sel];
+    pintarAhora(c, d); pintarHoras(d); pintarGrafico(d); pintarConfianza(d); pintarQuince(d); estado();
+  }
+  function diasDe(pasos) {
+    const hoy = new Date(); hoy.setHours(0, 0, 0, 0); const g = {};
+    pasos.forEach(p => { const f = fecha(p.c); (g[f.f] = g[f.f] || {f, pasos: []}).pasos.push(p); });
+    return Object.values(g).sort((a, b) => a.f.d - b.f.d).map(x => {
+      const ts = x.pasos.map(p => p.t), ll = x.pasos.filter(p => p.p != null), mm = ll.reduce((s, p) => s + p.p, 0);
+      return {dif: Math.round((x.f.d - hoy) / 864e5), max: Math.max(...ts), min: Math.min(...ts), mm, nm: Math.max(...x.pasos.map(p => p.nm)),
+              pn: Math.max(0, ...ll.map(p => p.pn)), w: x.pasos.some(p => p.w != null) ? Math.max(...x.pasos.map(p => p.w || 0)) : null, n: x.pasos.length};
+    });
+  }
+  function pintarAhora(c, d) {
+    const o = d && d.obs, ds = d ? diasDe(d.pasos) : [], hoy = ds.find(x => x.dif === 0) || ds[0] || null, q = quinceHoy();
+    $('ahora-temp').innerHTML = o ? `${n(o.t)}<small>°C</small>` : (hoy ? `${n(hoy.max)}<small>° máx.</small>` : '–');
+    $('ahora-fuente').textContent = o ? `Medido a las ${o.hora} en ${o.nombre}${o.km > 2 ? ', a ' + n(o.km) + ' km' : ''}` : 'Sin estación cerca que mida ahora; se muestra el pronóstico';
+    const max = q ? q.tmax[1] : (hoy ? hoy.max : null), min = q ? q.tmin[1] : (hoy ? hoy.min : null);
+    $('hoy-max').textContent = n(max) + '°'; $('hoy-min').textContent = n(min) + '°';
+    const mm = hoy ? hoy.mm : (q ? q.ll[0] : 0), prob = q ? q.p1 : null;
+    $('hoy-lluvia').className = mm >= 1 ? 'llueve' : '';
+    $('hoy-lluvia').innerHTML = ICO.gota + (mm >= 1 ? `<strong>${n(mm, mm < 10 ? 1 : 0)} mm</strong> hoy` + (prob != null ? ` · ${n(prob)} % de probabilidad` : (hoy && hoy.pn ? ` · lo anuncian ${hoy.pn} de ${hoy.nm} modelos` : '')) : 'Sin lluvia importante hoy');
+    $('hoy-viento').innerHTML = ICO.viento + `Viento hasta ${n(hoy ? hoy.w : (q ? q.v[1] : null))} km/h`;
+  }
+  function pintarHoras(d) {
+    const box = $('horas');
+    if (!d || !d.pasos.length) { box.innerHTML = '<p class="vacio">Sin pronóstico de 48 horas para esta comuna todavía.</p>'; return; }
+    let ultDia = '';
+    box.innerHTML = d.pasos.map(p => { const f = fecha(p.c), nuevo = f.f !== ultDia; ultDia = f.f;
+      return `<div class="hora"><div class="d">${nuevo ? DIA3[f.d.getDay()] + ' ' + f.d.getDate() : '&nbsp;'}</div><div class="h">${String(f.h).padStart(2, '0')}:00</div>
+        <div class="t">${n(p.t)}°</div><div class="ll ${p.p >= 0.5 ? 'si' : ''}">${p.p == null ? '' : p.p >= 0.5 ? n(p.p, 1) + ' mm' : 'seco'}</div><div class="v">${p.w == null ? '' : n(p.w) + ' km/h'}</div></div>`; }).join('');
+  }
+  function pintarGrafico(d) {
+    const caja = $('graf'); caja.innerHTML = ''; if (!d || d.pasos.length < 2) return;
+    const pasos = d.pasos, W = 720, H = 268, ml = 34, mr = 10, mt = 22, hT = 150, gap = 40, hP = 48;
+    const xs = pasos.map(p => fecha(p.c)), T = f => f.d.getTime() + f.h * 36e5, t0 = T(xs[0]), t1 = T(xs[xs.length - 1]);
+    const X = i => ml + (W - ml - mr) * ((T(xs[i]) - t0) / Math.max(t1 - t0, 1));
+    const lo = Math.floor(Math.min(...pasos.map(p => p.tmin)) - 1), hi = Math.ceil(Math.max(...pasos.map(p => p.tmax)) + 1);
+    const Y = v => mt + hT * (1 - (v - lo) / Math.max(hi - lo, 1));
+    const pmax = Math.max(5, ...pasos.map(p => p.p || 0)), yP0 = mt + hT + gap + hP, YP = v => yP0 - hP * v / pmax;
+    let o = ''; const paso = (hi - lo) > 12 ? 5 : (hi - lo) > 6 ? 2 : 1;
+    for (let v = Math.ceil(lo / paso) * paso; v <= hi; v += paso) o += `<line class="grid" x1="${ml}" x2="${W - mr}" y1="${Y(v)}" y2="${Y(v)}"/><text class="eje" x="${ml - 6}" y="${Y(v) + 4}" text-anchor="end">${n(v)}°</text>`;
+    const primeros = {}; xs.forEach((f, i) => { if (!(f.f in primeros)) primeros[f.f] = i; });
+    Object.values(primeros).forEach(i => { const f = xs[i]; if (i > 0) o += `<line class="sep" x1="${X(i)}" x2="${X(i)}" y1="${mt - 14}" y2="${yP0}"/>`; o += `<text class="eje" x="${X(i) + 4}" y="${mt - 6}">${DIA3[f.d.getDay()]} ${f.d.getDate()}</text>`; });
+    o += `<path class="banda" d="M${pasos.map((p, i) => `${X(i)},${Y(p.tmax)}`).join('L')}L${pasos.map((p, i) => `${X(i)},${Y(p.tmin)}`).reverse().join('L')}Z"/>`;
+    o += `<path class="lin" d="M${pasos.map((p, i) => `${X(i)},${Y(p.t)}`).join('L')}"/>`;
+    pasos.forEach((p, i) => o += `<circle class="pt" cx="${X(i)}" cy="${Y(p.t)}" r="3.5"/>`);
+    const iMax = pasos.reduce((a, p, i) => p.t > pasos[a].t ? i : a, 0), iMin = pasos.reduce((a, p, i) => p.t < pasos[a].t ? i : a, 0);
+    [iMax, iMin].forEach(i => o += `<text class="etq" x="${X(i)}" y="${Y(pasos[i].t) + (i === iMax ? -9 : 18)}" text-anchor="middle">${n(pasos[i].t)}°</text>`);
+    o += `<text class="eje" x="${ml - 6}" y="${yP0 - hP + 4}" text-anchor="end">${n(pmax)}</text><text class="eje" x="${ml - 6}" y="${yP0 + 4}" text-anchor="end">0</text>`;
+    o += `<text class="eje" x="${ml}" y="${yP0 - hP - 10}">Lluvia, en mm cada 6 h</text><line class="grid" x1="${ml}" x2="${W - mr}" y1="${yP0}" y2="${yP0}"/>`;
+    const bw = Math.max(6, (W - ml - mr) / pasos.length * 0.5);
+    pasos.forEach((p, i) => { if (p.p > 0.05) o += `<rect class="barra" x="${X(i) - bw / 2}" y="${YP(p.p)}" width="${bw}" height="${yP0 - YP(p.p)}" rx="3"/>`; });
+    pasos.forEach((p, i) => { o += `<text class="eje" x="${X(i)}" y="${yP0 + 14}" text-anchor="middle">${String(xs[i].h).padStart(2, '0')}h</text>`;
+      const a = i ? (X(i) + X(i - 1)) / 2 : ml, b = i < pasos.length - 1 ? (X(i) + X(i + 1)) / 2 : W - mr;
+      o += `<rect class="hit" data-i="${i}" x="${a}" y="${mt}" width="${b - a}" height="${yP0 - mt}"/>`; });
+    o += `<line class="guia" id="guia" x1="0" x2="0" y1="${mt}" y2="${yP0}" visibility="hidden"/>`;
+    caja.innerHTML = `<svg viewBox="0 0 ${W} ${H + 8}" role="img" aria-label="Temperatura y lluvia de las próximas 48 horas">${o}</svg>`;
+    const svg = caja.querySelector('svg'), t = document.createElement('div'); t.className = 'tip'; t.hidden = true; caja.style.position = 'relative'; caja.appendChild(t);
+    const guia = svg.querySelector('#guia');
+    svg.querySelectorAll('.hit').forEach(r => {
+      const mostrar = () => { const i = +r.dataset.i, p = pasos[i], f = xs[i], x = +r.getAttribute('x') + +r.getAttribute('width') / 2;
+        guia.setAttribute('x1', X(i)); guia.setAttribute('x2', X(i)); guia.setAttribute('visibility', 'visible');
+        t.innerHTML = `<b>${DIA[f.d.getDay()]} ${f.d.getDate()}, ${String(f.h).padStart(2, '0')}:00</b>${n(p.t, 1)} °C <span class="muted">(modelos: ${n(p.tmin, 1)} a ${n(p.tmax, 1)})</span><br>` +
+          (p.p != null ? `Lluvia: ${n(p.p, 1)} mm${p.ph ? ' en ' + p.ph + ' h' : ''}<br>` : '') + (p.w != null ? `Viento: ${n(p.w)} km/h` : '');
+        t.hidden = false; const bw2 = caja.clientWidth, px = x / W * bw2; t.style.left = Math.min(Math.max(px - 80, 0), bw2 - 170) + 'px'; t.style.top = '0px'; };
+      r.addEventListener('mouseenter', mostrar); r.addEventListener('click', mostrar);
+      r.addEventListener('mouseleave', () => { t.hidden = true; guia.setAttribute('visibility', 'hidden'); });
+    });
+  }
+  function pintarConfianza(d) {
+    const e = d && d.est, box = $('confianza');
+    if (!e) { box.innerHTML = '<strong>Qué tan confiable es aquí:</strong> no hay un aeródromo a menos de 35 km que permita medirlo, así que este pronóstico va sin ajuste local.'; return; }
+    const aj = d.pasos.reduce((s, x) => s + x.aj, 0), tot = d.pasos.reduce((s, x) => s + x.nm, 0);
+    box.innerHTML = `<strong>Qué tan confiable es aquí:</strong> se ajusta con lo medido en ${e.nombre}, a ${n(e.km)} km` +
+      (e.g != null ? `, donde en 2026 el pronóstico de temperatura para el día siguiente se equivocó en promedio ${n(e.g, 1)} °C` + (e.c != null ? ` y ${n(e.c, 1)} °C con el ajuste.` : '.') : '.') +
+      (aj < tot ? ` Esta vez se pudo ajustar ${aj} de ${tot} valores.` : '') + (e.g >= 2.5 ? ' Es de los lugares donde más se equivocan los modelos globales: tómalo con cautela.' : '');
+  }
+  function quinceHoy() { const q = D15 && D15.comunas[sel]; if (!q) return null; const hoy = new Date(); const f = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`; return q.find(x => x.f === f) || null; }
+  function pintarQuince(d) {
+    const box = $('quince'), q = D15 && D15.comunas[sel];
+    if (!q || !q.length) { box.innerHTML = '<p class="vacio">Los 15 días se calculan una vez al día; todavía no están para esta comuna.</p>'; $('quince-pie').textContent = ''; return; }
+    const aj = d && d.aj15 ? d.aj15 : {}, bx = aj.tmax || 0, bn = aj.tmin || 0;
+    const dias = q.map(x => ({f: fecha(x.f), tx: x.tmax.map(v => v - bx), tn: x.tmin[1] == null ? null : x.tmin.map(v => v - bn), p1: x.p1, ll: x.ll, v: x.v}));
+    const lo = Math.floor(Math.min(...dias.map(x => x.tn ? x.tn[0] : x.tx[0]))), hi = Math.ceil(Math.max(...dias.map(x => x.tx[2])));
+    const pos = v => 100 * (v - lo) / Math.max(hi - lo, 1);
+    const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+    box.innerHTML = dias.map(x => { const dif = Math.round((x.f.d - hoy) / 864e5), nom = dif === 0 ? 'Hoy' : dif === 1 ? 'Mañana' : DIA3[x.f.d.getDay()][0].toUpperCase() + DIA3[x.f.d.getDay()].slice(1);
+      const a = x.tn ? x.tn[0] : x.tx[0], b = x.tx[2], a2 = x.tn ? x.tn[1] : x.tx[1], b2 = x.tx[1];
+      return `<div class="q-fila"><div class="dia">${nom}<small>${x.f.d.getDate()}/${x.f.d.getMonth() + 1}</small></div>
+        <div class="pl ${x.p1 >= 30 ? 'si' : ''}">${x.p1 >= 10 ? ICO.gota + n(x.p1) + '%' : ''}</div>
+        <div class="mn">${x.tn ? n(x.tn[1]) + '°' : '–'}</div>
+        <div class="rango" title="Entre ${n(a)} y ${n(b)} °C en el 80 % de los escenarios"><i class="amplio" style="left:${pos(a)}%;right:${100 - pos(b)}%"></i><i class="centro" style="left:${pos(a2)}%;right:${100 - pos(b2)}%"></i></div>
+        <div class="mx">${n(x.tx[1])}°</div><div class="vi">${n(x.v[1])} km/h</div></div>`; }).join('');
+    $('quince-pie').textContent = `Corrida del ensamble: ${D15.corrida.replace('T', ' ').replace('Z', ' UTC')}. Cada barra va de la mínima a la máxima; la parte clara muestra entre qué valores quedan el 80 % de los ${D15.miembros} escenarios. ` +
+      `La probabilidad de lluvia es la parte de los escenarios con 1 mm o más en el día.` + (bx || bn ? ' Máximas y mínimas ajustadas con el error local de la tarde y la madrugada.' : '');
+  }
+
+  // ---- estado: a qué hora es cada dato, y en ámbar si está atrasado ----
+  function estado() {
+    const d = D48 && D48.comunas[sel], ahora = Date.now(), partes = [];
+    const edad = s => { const [f, h] = s.split('T'); const [a, m, dd] = f.split('-').map(Number); const [hh, mi] = h.split(':').map(Number); return (ahora - new Date(a, m - 1, dd, hh, mi)) / 36e5; };
+    const hace = e => e < 1 ? `hace ${Math.round(e * 60)} min` : `hace ${n(e, e < 10 ? 1 : 0)} h`;
+    if (d && d.obs) partes.push(`<span>Medición: ${d.obs.hora} en ${d.obs.nombre}</span>`);
+    else partes.push('<span class="sin">Sin medición cercana reciente</span>');
+    if (D48) { const e = edad(D48.generado); partes.push(`<span class="${e > 8 ? 'atrasado' : ''}">Pronóstico 48 h: ${D48.generado.slice(11)} (${hace(e)})${e > 8 ? ' · atrasado' : ''}</span>`); }
+    else partes.push('<span class="sin">Pronóstico 48 h: sin datos</span>');
+    if (D15) { const c = D15.corrida.replace('Z', ''); const e = (ahora - new Date(c + 'Z')) / 36e5; partes.push(`<span class="${e > 36 ? 'atrasado' : ''}">15 días: corrida del ${c.slice(8, 10)}/${c.slice(5, 7)} ${c.slice(11, 16)} UTC${e > 36 ? ' · atrasada' : ''}</span>`); }
+    else partes.push('<span class="sin">15 días: sin datos</span>');
+    $('estado').innerHTML = partes.join('');
+  }
+
+  // ---- arranque ----
+  const inicial = location.hash.slice(1) || (function(){ try { return localStorage.getItem('comuna'); } catch (e) { return null; } })() || 'Q188002';
+  sel = LISTA.find(x => x.id === inicial) ? inicial : 'Q188002';
+  pintar();
+  fetch('datos/pronostico_48h.json?t=' + Math.floor(Date.now() / 3e5)).then(r => r.ok ? r.json() : null).then(j => { D48 = j; if (j) $('actualizado').textContent = `Pronóstico del ${j.generado.replace('T', ' ')} (hora de Chile), con la última corrida de ${j.modelos.join(', ')}.`; pintar(); }).catch(() => {});
+  fetch('datos/pronostico_15d.json?t=' + Math.floor(Date.now() / 36e5)).then(r => r.ok ? r.json() : null).then(j => { D15 = j; pintar(); }).catch(() => {});
+  window.addEventListener('hashchange', () => { const id = location.hash.slice(1); if (LISTA.find(x => x.id === id)) { sel = id; pintar(); } });
+})();
+</script>
+
+<script>
+(function(){
+  let pop=null, dueno=null;
+  function cerrar(){ if(pop){pop.remove();pop=null;} if(dueno){dueno.setAttribute('aria-expanded','false');dueno=null;} }
+  document.addEventListener('click',function(e){
+    const b=e.target.closest('.def');
+    if(!b){ if(pop && !e.target.closest('.def-pop')) cerrar(); return; }
+    e.preventDefault();
+    if(dueno===b){cerrar();return;}
+    cerrar(); dueno=b; b.setAttribute('aria-expanded','true');
+    pop=document.createElement('div'); pop.className='def-pop'; pop.setAttribute('role','tooltip'); pop.textContent=b.dataset.def;
+    document.body.appendChild(pop);
+    const r=b.getBoundingClientRect(), w=pop.offsetWidth;
+    let x=r.left+window.scrollX; x=Math.min(x, window.scrollX+document.documentElement.clientWidth-w-16); x=Math.max(16+window.scrollX,x);
+    pop.style.left=x+'px'; pop.style.top=(r.bottom+window.scrollY+6)+'px';
+  });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') cerrar(); });
+  window.addEventListener('resize',cerrar);
+})();
+</script>
+
+</body>
+</html>

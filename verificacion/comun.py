@@ -2,7 +2,7 @@
 aviso oficial, pie de página y definiciones que se abren al tocar un término.
 
 Se importa desde render_site.py (Resumen y Tu zona, cada corrida) y render_historico.py (Eventos y Método).
-site/quebradas.html es estática: lleva copiados la barra (nav("quebradas")) y CSS_NAV/CSS_DEF/JS_DEF.
+site/quebradas.html es estática: lleva copiados la barra (nav("quebradas")), CSS_NAV/CSS_DEF/JS_DEF y la respuesta por dirección (direccion.py).
 Si cambias algo aquí, corre `python verificacion/comun.py` para actualizar quebradas.html.
 Brief de diseño: docs/brief_sitio.md."""
 import datetime as dt
@@ -218,6 +218,10 @@ def actualizar_quebradas():
     s = re.sub(r'<nav class="topnav".*?</nav>', nav("quebradas"), s, count=1, flags=re.S)
     s = re.sub(r"/\* comun:css \*/.*?/\* /comun:css \*/", "/* comun:css */" + CSS_NAV + CSS_DEF + "/* /comun:css */", s, count=1, flags=re.S)
     s = re.sub(r"<!-- comun:js -->.*?<!-- /comun:js -->", "<!-- comun:js -->" + JS_DEF + "<!-- /comun:js -->", s, count=1, flags=re.S)
+    import direccion
+    s = re.sub(r"<!-- direccion:html -->.*?<!-- /direccion:html -->", "<!-- direccion:html -->" + direccion.html() + "<!-- /direccion:html -->", s, count=1, flags=re.S)
+    s = re.sub(r"/\* direccion:css \*/.*?/\* /direccion:css \*/", "/* direccion:css */" + direccion.CSS + "/* /direccion:css */", s, count=1, flags=re.S)
+    s = re.sub(r"<!-- direccion:js -->.*?<!-- /direccion:js -->", lambda m: "<!-- direccion:js -->" + direccion.js() + "<!-- /direccion:js -->", s, count=1, flags=re.S)
     open(ruta, "w", encoding="utf-8").write(s)
     print("quebradas.html: barra y bloques comunes actualizados")
 

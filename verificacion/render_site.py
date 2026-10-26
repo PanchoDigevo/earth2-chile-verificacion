@@ -16,6 +16,7 @@ import pandas as pd
 import aviso_oficial
 import tormenta_vivo
 import monitor_lluvia
+import direccion
 import pronostico_pagina
 import zoom_pagina
 import cambio
@@ -657,7 +658,7 @@ def head(titulo, descripcion):
 <meta name="description" content="{descripcion}">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
-<style>{CSS}{CSS_NAV}{CSS_DEF}{CSS_ETAPAS}{aviso_oficial.CSS}{tormenta_vivo.CSS}{monitor_lluvia.CSS}{cambio.CSS_CAMBIO}{zoom_pagina.CSS}{pronostico_pagina.CSS}{CSS_PORTADA}</style>
+<style>{CSS}{CSS_NAV}{CSS_DEF}{CSS_ETAPAS}{aviso_oficial.CSS}{tormenta_vivo.CSS}{monitor_lluvia.CSS}{direccion.CSS}{cambio.CSS_CAMBIO}{zoom_pagina.CSS}{pronostico_pagina.CSS}{CSS_PORTADA}</style>
 </head>"""
 
 

@@ -8,6 +8,7 @@ datos-en-vivo (envivo/actualizar.py, cada 10 minutos) y desde el seguimiento hor
 import aviso_oficial
 import tormenta_vivo
 import monitor_lluvia
+import direccion
 from comun import JS_DEF, aviso, d, nav, pie
 
 RAW = "https://raw.githubusercontent.com/PanchoDigevo/earth2-chile-verificacion"
@@ -152,6 +153,7 @@ JS = r"""
       : `Datos de las ${hora(g)} (hora de Chile). Se actualizan cada unos 5 minutos; esta página vuelve a leerlos cada minuto.`;
   }
   actualizar(); setInterval(actualizar, 60000);
+  window.MAPA_VIVO = mapa;
 })();
 </script>
 """
@@ -170,6 +172,7 @@ def pagina(head, escribir, ahora):
   <p class="lead">Los rayos que detecta el satélite GOES-19 muestran dónde hay tormentas en este momento. Junto a ellos, la lluvia que miden las estaciones más cercanas y lo que pronostican los modelos para la Quebrada de Apoquindo.</p>
   <p class="estado-vivo" id="estado-vivo" aria-live="polite">Cargando los datos en vivo…</p>
 </header>
+{direccion.html()}
 {monitor_lluvia.seccion()}
 <div class="vivo">
   <div id="mapa-vivo" role="img" aria-label="Mapa de rayos de los últimos 90 minutos en la zona central, con las quebradas de Santiago oriente"></div>
@@ -197,6 +200,7 @@ def pagina(head, escribir, ahora):
 {pie(ahora)}
 </div>
 {JS.replace("__RAW__", RAW)}
+{direccion.js()}
 {JS_DEF}
 </body>
 </html>

@@ -1,0 +1,5 @@
+escala,nivel,casos,tormentas_metar,marcados,aciertos,falsas_alarmas,no_marcadas,detecta_pct,falsa_alarma_pct,frecuencia_base_pct
+bloque de 3 h,1,22143,60,809,38,771,22,63,95,0.3
+bloque de 3 h,2,22143,60,146,8,138,52,13,95,0.3
+día,1,3806,39,368,31,337,8,79,92,1.0
+día,2,3806,39,92,11,81,28,28,88,1.0

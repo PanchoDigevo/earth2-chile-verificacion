@@ -10,10 +10,14 @@ Reglas de los efectos (simples, explicadas en Método, todavía sin verificar co
 - isoterma de ahora: El Colorado (2.750 m) más su temperatura dividida por 6,5 °C/km (gradiente estándar);
 - parte de la cuenca con lluvia: bajo la línea de nieve (300 m bajo la isoterma), con la curva de alturas;
 - "lluvia en la cordillera": 5 mm o más en 24 h sobre la cuenca y la mitad o más de ella bajo la línea de nieve;
-- nieve en caminos: lluvia con línea de nieve bajo 2.500 m; deshielo acelerado: isoterma sobre 3.500 m.
+- nieve en caminos: lluvia con línea de nieve bajo 2.500 m; deshielo acelerado: isoterma sobre 3.500 m;
+- tormenta encima de una quebrada: rayos del GOES-19 a menos de 8 km de su centro en los últimos 30 minutos. Es una señal,
+  no un umbral: donde hay una celda de tormenta, la lluvia en la quebrada puede ser mucho mayor que la que miden las
+  estaciones del valle (26-oct-2026: quebradas activadas en Las Condes y Lo Barnechea con menos de 1 mm en el valle).
 Es apoyo a la decisión, no una alerta: las alertas son de SENAPRED y la DMC."""
 
 RAW = "https://raw.githubusercontent.com/PanchoDigevo/earth2-chile-verificacion/datos-en-vivo/envivo/lluvia.json"
+RAW_RAYOS = "https://raw.githubusercontent.com/PanchoDigevo/earth2-chile-verificacion/datos-en-vivo/envivo/rayos.json"
 
 CSS = """
 .monitor{display:grid;gap:18px}
@@ -44,6 +48,8 @@ CSS = """
 .mon-efectos li::before{content:"";width:10px;height:10px;border-radius:50%;margin-top:6px;background:var(--medio)}
 .mon-efectos li.f::before{background:var(--alto)}
 .mon-pie{font-size:13px;color:var(--muted);margin:0}
+.mon-rayos{border-left:4px solid var(--alto);background:color-mix(in srgb,var(--alto) 8%,var(--surface));border-radius:6px;padding:10px 12px;display:grid;gap:4px;font-size:14.5px}
+.mon-rayos span{color:var(--muted);font-size:13.5px}
 .lluvia-curso{border:1px solid var(--accent);border-left:6px solid var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--surface));
   border-radius:var(--radius);padding:12px 16px;display:grid;gap:4px}
 .lluvia-curso[hidden]{display:none}
@@ -56,8 +62,22 @@ const MON = (function(){
   const n = (v, d) => v == null || isNaN(v) ? '–' : Number(v).toLocaleString('es-CL', {maximumFractionDigits: d || 0, minimumFractionDigits: d || 0});
   async function j(u) { try { const r = await fetch(u + (u.includes('?') ? '&' : '?') + 't=' + Date.now()); return r.ok ? await r.json() : null; } catch (e) { return null; } }
   async function datos() {
-    const [ll, cu, qb] = await Promise.all([j('__RAW__'), j('datos/cuencas_72h.json'), j('quebradas/indicador.json')]);
-    return {ll, cu, qb, ahora: Date.now() / 1000};
+    const [ll, cu, qb, ry, gq] = await Promise.all([j('__RAW__'), j('datos/cuencas_72h.json'), j('quebradas/indicador.json'), j('__RAYOS__'), j('quebradas/cuencas.geojson')]);
+    const ahora = Date.now() / 1000;
+    return {ll, cu, qb, ahora, encima: encima(ry, gq, ahora)};
+  }
+  // rayos de los últimos 30 min a menos de 8 km del centro de cada quebrada: {id: {nombre, n}} (solo las que tienen alguno)
+  function encima(ry, gq, ahora) {
+    const out = {};
+    if (!ry || !gq || ahora - ry.generado > 30 * 60) return out;
+    const rec = ry.rayos.filter(r => ahora - r[2] <= 30 * 60), cos = Math.cos(-33.4 * Math.PI / 180);
+    gq.features.forEach(f => {
+      const anillo = f.geometry.type === 'Polygon' ? f.geometry.coordinates[0] : f.geometry.coordinates[0][0];
+      const lo = anillo.reduce((s, p) => s + p[0], 0) / anillo.length, la = anillo.reduce((s, p) => s + p[1], 0) / anillo.length;
+      const k = rec.filter(r => 111.2 * Math.hypot(r[0] - la, (r[1] - lo) * cos) <= 8).length;
+      if (k) out[f.properties.id] = {nombre: f.properties.nombre, corto: f.properties.nombre.replace(/^Quebrada (de |del )?/, '').replace(/\s*\(ramal.*\)/, ''), n: k};
+    });
+    return out;
   }
   // lluvia medida en las últimas h horas en una estación (suma de las horarias; null si faltan)
   function medida(ll, wmo, h, ahora) {
@@ -97,7 +117,13 @@ const MON = (function(){
     if (calorSolo.length) out.push({t: `Isoterma sobre 3.500 m en los próximos 3 días en ${lista(calorSolo)}: deshielo acelerado, los ríos crecen en las tardes.`});
     return out;
   }
-  return {n, datos, medida, isoAhora, cuenca, efectos};
+  // las quebradas con más rayos, sin repetir nombre: "El Quisco (48), Los Carboneros (47) y Los Chanchos (45)"
+  function masRayos(lista, k) {
+    const vistos = new Set(), top = [];
+    for (const x of lista) { if (!vistos.has(x.corto)) { vistos.add(x.corto); top.push(`${x.corto} (${x.n})`); } if (top.length === k) break; }
+    return top.length === 1 ? top[0] : top.slice(0, -1).join(', ') + ' y ' + top[top.length - 1];
+  }
+  return {n, datos, medida, isoAhora, cuenca, efectos, masRayos};
 })();
 """
 
@@ -108,7 +134,7 @@ __COMUN__
   const nivelTxt = {bajo: 'bajo', atencion: 'atención', aviso: 'aviso'}, nivelCls = {bajo: 'bueno', atencion: 'medio', aviso: 'alto'};
   const sinParen = s => s.replace(/\s*\(([^)]*)\)/, ', $1');
   async function pintar() {
-    const {ll, cu, qb, ahora} = await MON.datos(), n = MON.n;
+    const {ll, cu, qb, ahora, encima} = await MON.datos(), n = MON.n;
     const hora = s => new Date(s * 1000).toLocaleTimeString('es-CL', {timeZone: 'America/Santiago', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'});
     const est = ll ? ll.estaciones.filter(e => e.km <= 45 && e.alt < 1500).map(e => ({e, h3: MON.medida(ll, e.wmo, 3, ahora), h2: MON.medida(ll, e.wmo, 2, ahora)})).filter(x => x.h3 != null) : [];
     const max3 = [...est].sort((a, b) => b.h3 - a.h3)[0], iso = MON.isoAhora(ll);
@@ -123,16 +149,19 @@ __COMUN__
       <div class="mon-cifra"><span class="k">Próximas 6 h, Santiago oriente</span><span class="v">${lo == null ? '–' : lo === hi ? n(lo, 1) + ' mm' : n(lo, 0) + '–' + n(hi, 0) + ' mm'}</span><span class="s">${pr.map(([m, v]) => m + ' ' + n(v, 1)).join(' · ') || 'Sin pronóstico'}</span></div></div>`;
     // quebradas
     const qs = qb ? qb.cuencas.filter(c => c.nivel !== 'sin_quema') : [];
-    if (qs.length) {
+    const conRayos = Object.values(encima).sort((a, b) => b.n - a.n);
+    if (qs.length || conRayos.length) {
       const cerca = est.filter(x => x.e.km <= 25 && x.h2 != null).sort((a, b) => b.h2 - a.h2)[0], m2 = cerca ? cerca.h2 : 0;
-      h += `<div class="mon-bloque"><h3>Quebradas quemadas de Santiago oriente</h3>` + qs.map(c => {
+      h += `<div class="mon-bloque"><h3>Quebradas de Santiago oriente</h3>` + (conRayos.length ? `<div class="mon-rayos"><strong>Tormenta eléctrica encima de ${conRayos.length === 1 ? 'una quebrada' : conRayos.length + ' quebradas'} en los últimos 30 minutos</strong> Más rayos a menos de 8 km: ${MON.masRayos(conRayos, 3)}.
+          <span>Donde hay una celda de tormenta, la lluvia en la quebrada puede ser mucho mayor que la que miden las estaciones del valle: el 26 de octubre se activaron quebradas en Las Condes y Lo Barnechea con menos de 1 mm medido en el valle.</span></div>` : '') + qs.map(c => {
+        const ray = encima[c.id];
         const med = m2 >= c.mm_aviso ? 'aviso' : m2 >= c.mm_atencion ? 'atencion' : 'bajo', tope = Math.max(c.mm_aviso * 1.3, m2 * 1.1), w = x => Math.min(100, x / tope * 100);
         return `<div class="mon-qb"><div class="cab"><strong>${c.nombre.replace(/\s*\(.*\)/, '')}</strong><span class="chips">
-            <span class="chip ${nivelCls[med]}"><i></i>Con lo medido: ${nivelTxt[med]}</span><span class="chip ${nivelCls[c.nivel]}"><i></i>Si cae lo previsto: ${nivelTxt[c.nivel]}</span></span></div>
+            ${ray ? `<span class="chip alto"><i></i>Tormenta encima: ${ray.n} ${ray.n === 1 ? 'rayo' : 'rayos'} en 30 min</span>` : ''}<span class="chip ${nivelCls[med]}"><i></i>Con lo medido${ray ? ' en el valle' : ''}: ${nivelTxt[med]}</span><span class="chip ${nivelCls[c.nivel]}"><i></i>Si cae lo previsto: ${nivelTxt[c.nivel]}</span></span></div>
           <div class="mon-escala" role="img" aria-label="${n(m2, 1)} mm medidos en 2 h; atención desde ${n(c.mm_atencion, 1)} mm, aviso desde ${n(c.mm_aviso, 1)} mm">
             <span class="ll" style="width:${w(m2)}%"></span><span class="um" style="left:${w(c.mm_atencion)}%"><span>atención ${n(c.mm_atencion, 1)}</span></span><span class="um av" style="left:${w(c.mm_aviso)}%"><span>aviso ${n(c.mm_aviso, 1)}</span></span></div>
           <p><strong>${n(m2, 1)} mm</strong> en las últimas 2 h${cerca ? ' (' + sinParen(cerca.e.nombre) + ')' : ''}. ${med === 'aviso' ? 'Superó el umbral de aviso.' : med === 'atencion' ? 'Superó el umbral de atención.' : `Faltan ${n(c.mm_atencion - m2, 1)} mm en 2 h para atención.`}</p></div>`; }).join('') +
-        `<p class="mon-pie">Umbrales en milímetros en 2 horas del <a href="quebradas.html">indicador de quebradas</a>. «Si cae lo previsto»: si la lluvia que pronostican los modelos para las próximas 6 horas cayera concentrada en 2.</p></div>`;
+        `<p class="mon-pie">Fichas: las quebradas con laderas quemadas. Umbrales en milímetros en 2 horas del <a href="quebradas.html">indicador de quebradas</a>. Tormenta encima: rayos del satélite GOES-19 a menos de 8 km del centro de la quebrada. «Si cae lo previsto»: si la lluvia que pronostican los modelos para las próximas 6 horas cayera concentrada en 2.</p></div>`;
     }
     // ríos y cordillera
     if (cu) {
@@ -154,17 +183,19 @@ JS_AVISO = r"""<script>
 __COMUN__
 (async function(){
   const caja = document.getElementById('lluvia-curso'); if (!caja) return;
-  const {ll, cu, qb, ahora} = await MON.datos(), n = MON.n;
+  const {ll, cu, qb, ahora, encima} = await MON.datos(), n = MON.n;
   const est = ll && ahora - ll.generado < 3 * 3600 ? ll.estaciones.filter(e => e.km <= 45 && e.alt < 1500).map(e => ({e, h3: MON.medida(ll, e.wmo, 3, ahora)})).filter(x => x.h3 != null) : [];
   const llueve = est.filter(x => x.h3 >= 0.5).sort((a, b) => b.h3 - a.h3);
   const cord = cu ? Object.entries(cu.cuencas).map(([id, c]) => ({c, r: MON.cuenca(c, ahora)})).filter(x => x.r.mm >= 5 && x.r.fr >= 0.5) : [];
   const qbs = qb ? qb.cuencas.filter(c => c.nivel === 'aviso' || c.nivel === 'atencion') : [];
-  if (!llueve.length && !cord.length && !qbs.length) return;
+  const conRayos = Object.values(encima).sort((a, b) => b.n - a.n);
+  if (!llueve.length && !cord.length && !qbs.length && !conRayos.length) return;
   const partes = [];
+  if (conRayos.length) partes.push(`hay tormenta eléctrica encima de ${conRayos.length === 1 ? 'la ' + conRayos[0].nombre : conRayos.length + ' quebradas de Santiago oriente (más rayos: ' + MON.masRayos(conRayos, 2) + ')'}; ahí la lluvia puede ser mucho mayor que la medida en el valle`);
   if (llueve.length) partes.push(`está lloviendo en la zona de Santiago: ${n(llueve[0].h3, 1)} mm en 3 h en ${llueve[0].e.nombre}`);
   if (cord.length) partes.push(`en las próximas 24 h llueve (no nieva) en buena parte de la cordillera del ${cord.map(x => x.c.rio).join(', ')}`);
   if (qbs.length) partes.push(`las quebradas quemadas de Santiago oriente están en ${qbs.some(c => c.nivel === 'aviso') ? 'aviso' : 'atención'} si la lluvia prevista se concentrara`);
-  caja.innerHTML = `<strong class="t">Lluvia en curso</strong><p>${partes.join('; ').replace(/^./, s => s.toUpperCase())}. <a href="envivo.html#monitor">Ver qué está pasando y qué puede pasar →</a></p>`;
+  caja.innerHTML = `<strong class="t">${conRayos.length ? 'Tormenta sobre las quebradas de Santiago oriente' : 'Lluvia en curso'}</strong><p>${partes.join('; ').replace(/^./, s => s.toUpperCase())}. <a href="envivo.html#monitor">Ver qué está pasando y qué puede pasar →</a></p>`;
   caja.hidden = false;
 })();
 </script>"""
@@ -173,9 +204,9 @@ __COMUN__
 def seccion():
     """Sección completa para En vivo."""
     return ('<section class="card" id="monitor-card"><h2>Qué está pasando y qué puede pasar</h2><div class="monitor" id="monitor" aria-live="polite">'
-            '<p>Cargando…</p></div></section>' + JS_MONITOR.replace("__COMUN__", JS_COMUN.replace("__RAW__", RAW)))
+            '<p>Cargando…</p></div></section>' + JS_MONITOR.replace("__COMUN__", JS_COMUN.replace("__RAW__", RAW).replace("__RAYOS__", RAW_RAYOS)))
 
 
 def aviso():
     """Aviso corto para la portada y Pronóstico (oculto si no llueve ni viene lluvia en la cordillera)."""
-    return '<section class="lluvia-curso" id="lluvia-curso" role="status" hidden></section>' + JS_AVISO.replace("__COMUN__", JS_COMUN.replace("__RAW__", RAW))
+    return '<section class="lluvia-curso" id="lluvia-curso" role="status" hidden></section>' + JS_AVISO.replace("__COMUN__", JS_COMUN.replace("__RAW__", RAW).replace("__RAYOS__", RAW_RAYOS))

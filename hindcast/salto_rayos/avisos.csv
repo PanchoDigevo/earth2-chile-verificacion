@@ -1,24 +1,24 @@
 inicio_utc,hora_chile,lat,lon,comuna_cercana,region,km_a_comuna,saltos,tasa_max_por_min,que_paso
-2026-01-30 15:04,2026-01-30 12:04,-37.75,-72.35,Mulchén,Biobío,11,1,10.0,
-2026-01-30 16:00,2026-01-30 13:00,-37.95,-71.35,Alto Biobío,Biobío,11,8,23.5,
-2026-01-31 20:52,2026-01-31 17:52,-33.35,-70.55,Lo Barnechea,Metropolitana,3,4,12.0,
-2026-01-31 21:58,2026-01-31 18:58,-34.15,-70.65,Machalí,O'Higgins,4,8,22.0,
-2026-01-31 22:16,2026-01-31 19:16,-33.55,-70.85,Padre Hurtado,Metropolitana,2,6,15.0,
-2026-01-31 23:02,2026-01-31 20:02,-34.35,-70.75,Requínoa,O'Higgins,11,4,10.0,
-2026-08-27 20:24,2026-08-27 16:24,-34.45,-70.65,Rengo,O'Higgins,20,1,10.5,
-2026-09-11 04:32,2026-09-11 01:32,-34.75,-70.95,Chimbarongo,O'Higgins,9,2,10.0,
-2026-10-02 22:58,2026-10-02 19:58,-33.55,-70.65,San Ramón,Metropolitana,1,20,19.5,
-2026-10-08 19:36,2026-10-08 16:36,-33.35,-70.65,Huechuraba,Metropolitana,2,4,13.5,
-2026-10-13 18:52,2026-10-13 15:52,-33.15,-70.65,Colina,Metropolitana,6,7,27.5,
-2026-10-13 19:14,2026-10-13 16:14,-35.75,-71.55,Yerbas Buenas,Maule,3,2,10.5,
-2026-10-13 20:00,2026-10-13 17:00,-33.85,-71.05,Isla de Maipo,Metropolitana,18,5,15.5,
-2026-10-13 20:46,2026-10-13 17:46,-34.55,-71.15,Placilla,O'Higgins,10,4,14.5,
-2026-10-13 21:08,2026-10-13 18:08,-35.35,-71.25,Río Claro,Maule,8,3,10.5,
-2026-10-14 22:16,2026-10-14 19:16,-37.45,-72.35,Los Ángeles,Biobío,2,6,11.5,
-2026-10-20 15:08,2026-10-20 12:08,-32.95,-71.15,Olmué,Valparaíso,7,4,10.5,
-2026-10-20 16:16,2026-10-20 13:16,-33.25,-70.95,Lampa,Metropolitana,6,4,11.0,
-2026-10-20 18:00,2026-10-20 15:00,-32.75,-70.65,Santa María,Valparaíso,2,2,15.0,
-2026-10-26 18:34,2026-10-26 15:34,-35.45,-71.95,Pencahue,Maule,13,9,20.5,
-2026-10-26 19:42,2026-10-26 16:42,-35.95,-72.15,Cauquenes,Maule,15,3,14.0,
-2026-10-26 20:10,2026-10-26 17:10,-34.35,-70.75,Requínoa,O'Higgins,11,3,22.5,
-2026-10-26 20:46,2026-10-26 17:46,-34.35,-70.75,Requínoa,O'Higgins,11,2,22.0,
+2026-01-30 15:04,2026-01-30 12:04,-37.75,-72.35,Mulchén,Biobío,11,1,10.0,probable: rayo cerca de viviendas (13:25) e incendio de pastizal por rayo en Santa Bárbara (~30 km); hora aproximada
+2026-01-30 16:00,2026-01-30 13:00,-37.95,-71.35,Alto Biobío,Biobío,11,8,23.5,"probable: aluviones y cortes de camino, incendio y antena dañada por rayos; hora no precisada"
+2026-01-31 20:52,2026-01-31 17:52,-33.35,-70.55,Lo Barnechea,Metropolitana,3,4,12.0,severo: deslizamiento en la G-21 (20 personas aisladas) y granizo
+2026-01-31 21:58,2026-01-31 18:58,-34.15,-70.65,Machalí,O'Higgins,4,8,22.0,sin reportes
+2026-01-31 22:16,2026-01-31 19:16,-33.55,-70.85,Padre Hurtado,Metropolitana,2,6,15.0,"severo: granizo e inundaciones en Maipú, 7.356 clientes sin luz, 17,4 mm en 1 h"
+2026-01-31 23:02,2026-01-31 20:02,-34.35,-70.75,Requínoa,O'Higgins,11,4,10.0,sin reportes
+2026-08-27 20:24,2026-08-27 16:24,-34.45,-70.65,Rengo,O'Higgins,20,1,10.5,sin reportes
+2026-09-11 04:32,2026-09-11 01:32,-34.75,-70.95,Chimbarongo,O'Higgins,9,2,10.0,sin reportes
+2026-10-02 22:58,2026-10-02 19:58,-33.55,-70.65,San Ramón,Metropolitana,1,20,19.5,severo sin daño: granizo en el sur de Santiago (~20:20)
+2026-10-08 19:36,2026-10-08 16:36,-33.35,-70.65,Huechuraba,Metropolitana,2,4,13.5,"severo: aluvión de San Carlos de Apoquindo a las 17:00, a ~14 km"
+2026-10-13 18:52,2026-10-13 15:52,-33.15,-70.65,Colina,Metropolitana,6,7,27.5,probable: granizo con daño en techo en Chicureo; hora no precisada
+2026-10-13 19:14,2026-10-13 16:14,-35.75,-71.55,Yerbas Buenas,Maule,3,2,10.5,"probable: rayo en subestación de Linares, corte en 4 comunas; hora no precisada"
+2026-10-13 20:00,2026-10-13 17:00,-33.85,-71.05,Isla de Maipo,Metropolitana,18,5,15.5,no atribuible: crecida del Mapocho en Talagante (~19:00)
+2026-10-13 20:46,2026-10-13 17:46,-34.55,-71.15,Placilla,O'Higgins,10,4,14.5,sin reportes
+2026-10-13 21:08,2026-10-13 18:08,-35.35,-71.25,Río Claro,Maule,8,3,10.5,sin reportes (granizo en frutales de Curicó sin fecha)
+2026-10-14 22:16,2026-10-14 19:16,-37.45,-72.35,Los Ángeles,Biobío,2,6,11.5,severo sin daño confirmado: granizo de gran tamaño
+2026-10-20 15:08,2026-10-20 12:08,-32.95,-71.15,Olmué,Valparaíso,7,4,10.5,sin reportes confirmados
+2026-10-20 16:16,2026-10-20 13:16,-33.25,-70.95,Lampa,Metropolitana,6,4,11.0,"no atribuible: viviendas dañadas por el frente, sin hora"
+2026-10-20 18:00,2026-10-20 15:00,-32.75,-70.65,Santa María,Valparaíso,2,2,15.0,sin reportes
+2026-10-26 18:34,2026-10-26 15:34,-35.45,-71.95,Pencahue,Maule,13,9,20.5,"severo: granizo, inundaciones y 20.812 clientes sin luz en Talca (~25 km)"
+2026-10-26 19:42,2026-10-26 16:42,-35.95,-72.15,Cauquenes,Maule,15,3,14.0,sin reportes
+2026-10-26 20:10,2026-10-26 17:10,-34.35,-70.75,Requínoa,O'Higgins,11,3,22.5,"severo: tornado Requínoa-Rengo (EF-2 preliminar), colegio dañado; primer video 17:48"
+2026-10-26 20:46,2026-10-26 17:46,-34.35,-70.75,Requínoa,O'Higgins,11,2,22.0,"severo: mismo tornado, ya en curso"

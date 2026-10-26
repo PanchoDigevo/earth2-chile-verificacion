@@ -47,16 +47,23 @@ def main(d):
     fuera = av[av.km_a_comuna > 25].assign(dia=lambda z: z.inicio_utc.str[:10]).groupby("dia").size().rename("fuera_de_chile")
     av = av[av.km_a_comuna <= 25].reset_index(drop=True)
     previo = os.path.join(AQUI, "avisos.csv")
-    if os.path.exists(previo):                            # no pisar lo anotado a mano
+    dias = set(res.dia)
+    if os.path.exists(previo):                            # no pisar lo anotado a mano ni los días de otras corridas
         old = pd.read_csv(previo, dtype=str).fillna("")
         nota = dict(zip(old.inicio_utc + old.comuna_cercana, old.que_paso))
         av["que_paso"] = [nota.get(i + c, "") for i, c in zip(av.inicio_utc, av.comuna_cercana)]
+        old = old[~old.inicio_utc.str[:10].isin(dias)]
+        av = pd.concat([old, av.astype(str)], ignore_index=True).sort_values("inicio_utc")
     av.to_csv(previo, index=False)
+    av = av[av.inicio_utc.str[:10].isin(dias)]
     av["dia"] = av.inicio_utc.str[:10]
     res = res.merge(av.groupby("dia").size().rename("avisos").reset_index(), on="dia", how="left").fillna({"avisos": 0})
     res["avisos"] = res.avisos.astype(int)
     res = res.merge(fuera.reset_index(), on="dia", how="left").fillna({"fuera_de_chile": 0}).astype({"fuera_de_chile": int})
-    res.to_csv(os.path.join(AQUI, "resumen.csv"), index=False)
+    ruta = os.path.join(AQUI, "resumen.csv")
+    if os.path.exists(ruta):
+        res = pd.concat([pd.read_csv(ruta).query("dia not in @dias"), res], ignore_index=True).sort_values("dia")
+    res.to_csv(ruta, index=False)
     print(res.to_string(index=False))
     print(f"\n{len(av)} avisos en {len(res)} días; días con al menos uno: {(res.avisos > 0).sum()}")
 

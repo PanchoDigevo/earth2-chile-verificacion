@@ -1,5 +1,5 @@
 {
-"generado": "2026-10-26T16:04Z",
+"generado": "2026-10-26T17:05Z",
 "lluvia_prevista": {
 "AIFS": {
 "corrida": "20261026_06",
@@ -17,7 +17,7 @@
 "mm6": 2.8,
 "mm24": 28.5,
 "horas_lluvia_7d": {
-"SCTB": 9,
+"SCTB": 10,
 "SCEL": 16
 },
 "factor_antecedente": 1.32,

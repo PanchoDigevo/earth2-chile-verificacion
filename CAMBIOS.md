@@ -6,6 +6,7 @@ Sitio: https://panchodigevo.github.io/earth2-chile-verificacion/
 
 ## 26-oct-2026
 
+- **Verificación más robusta:** si el servidor de METAR de EE.UU. no responde (hoy dio 504), reintenta cuatro veces y, si sigue caído, publica igual con las observaciones guardadas en vez de detener todo el sitio.
 - **Portada nueva:** primero el producto (buscador de comuna y tarjeta en vivo con la temperatura de ahora, la máxima y la mínima, la lluvia y las próximas horas), luego una franja con cuatro cifras de confianza, la prueba con imágenes (25 contra 4 km junto al mapa del error) y puertas al resto. Pasa de 6.500 a 3.200 px en escritorio y de 12 a 6,6 pantallas en teléfono. "Lo que está cambiando" se mueve a Tu zona.
 - **Nueva pestaña Pronóstico, por comuna** (`pronostico.html`): buscador de las 352 comunas, temperatura de ahora medida en la estación más cercana, próximas 48 horas cada 6 h (un solo pronóstico: los modelos combinados y ajustados con el error del aeródromo más cercano, con la banda entre modelos) y 15 días con los 50 escenarios de ECMWF (máxima, mínima, probabilidad de lluvia y rango). El bloque de pronóstico sale de Tu zona, que queda como la evidencia. Datos: `verificacion/comunas_pron.py` (48 h) y `escenarios/escenarios.py` (15 días), en `site/datos/`.
 - **Mapa de aeródromos:** los puntos que caían uno sobre otro (Tobalaba y Pudahuel) se separan, con una línea a su lugar real.

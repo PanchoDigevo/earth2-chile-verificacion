@@ -1,6 +1,6 @@
 """Observaciones METAR de aeródromos chilenos (reportadas por la DMC; API pública de aviationweather.gov).
 Acumula en data/metar_obs.csv sin duplicados."""
-import csv, json, os, urllib.request
+import csv, json, os, sys, time, urllib.request
 
 ICAO = ("SCEL,SCSE,SCIE,SCDA,SCAR,SCCF,SCFA,SCTE,SCCI,SCBA,SCVD,SCTC,SCQP,SCIC,SCCH,SCGE,"
         "SCJO,SCSN,SCER,SCRM,SCAT,SCPC,SCAS,SCNT,SCCY,SCTB")
@@ -10,7 +10,19 @@ FIELDS = ["icao", "name", "lat", "lon", "elev", "time", "temp_c", "dewp_c", "wdi
 
 os.makedirs("data", exist_ok=True)
 req = urllib.request.Request(URL, headers={"User-Agent": "earth2-chile-verificacion/0.1"})
-rows = json.load(urllib.request.urlopen(req, timeout=60))
+rows = None
+for intento in range(4):                      # aviationweather.gov a veces responde 502/504 por unos minutos
+    try:
+        rows = json.load(urllib.request.urlopen(req, timeout=60))
+        break
+    except Exception as e:
+        print(f"METAR: intento {intento + 1} falló ({type(e).__name__}: {e})", flush=True)
+        time.sleep(20 * (intento + 1))
+if rows is None:
+    # Sin METAR nuevos no se detiene la verificación: se sigue con las observaciones ya guardadas (se recuperan en la próxima
+    # corrida, porque se piden las últimas 48 h).
+    print("METAR: aviationweather.gov no respondió; se sigue con las observaciones guardadas")
+    sys.exit(0)
 seen = set()
 exists = os.path.exists(PATH)
 if exists:

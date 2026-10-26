@@ -79,8 +79,9 @@ def gfs(run, cuencas):
     return pasos
 
 
-def ecmwf(cuencas):
-    """{modelo: {cuenca: [{c, mm}]}} de lluvia en bloques de 6 h hasta 48 h, de los GRIB de AIFS, IFS y GFS ya bajados."""
+def ecmwf(cuencas, run_gfs):
+    """{modelo: {cuenca: [{c, mm}]}} de lluvia en bloques de 6 h hasta 48 h, de los GRIB de AIFS, IFS y GFS ya bajados.
+    Se omite un archivo de una corrida más de 18 h anterior a la de GFS (quedó de otro día)."""
     import eccodes as ec
     out = {}
     for modelo in ("aifs", "ifs", "gfs"):
@@ -103,10 +104,11 @@ def ecmwf(cuencas):
                     paso = int(ec.codes_get(g, "endStep")); fac = 1000.0 if ec.codes_get(g, "units") == "m" else 1.0
                     val = ec.codes_get_values(g)
                     for c in cuencas:
-                        acum.setdefault(c["id"], {})[paso] = max(acum[c["id"]].get(paso, 0.0), float(np.mean(val[idx[c["id"]]])) * fac)
+                        a = acum.setdefault(c["id"], {})
+                        a[paso] = max(a.get(paso, 0.0), float(np.mean(val[idx[c["id"]]])) * fac)
                 finally:
                     ec.codes_release(g)
-        if run is None:
+        if run is None or run < run_gfs - pd.Timedelta(hours=18):
             continue
         for i, a in acum.items():
             ps = sorted(a)
@@ -125,7 +127,7 @@ def main():
                         "pts": puntos_cuenca(f["geometry"])})
     run = tormentas_gfs.corrida()
     pg = gfs(run, cuencas)
-    pm = ecmwf(cuencas)
+    pm = ecmwf(cuencas, run)
     salida = {"generado": a_chile(pd.Timestamp.now(tz="UTC").tz_localize(None)).strftime("%Y-%m-%dT%H:%M"),
               "corrida_gfs": a_chile(run).strftime("%Y-%m-%dT%H:%M"), "bajo_isoterma_m": BAJO_ISOTERMA_M, "cuencas": {}}
     for c in cuencas:

@@ -283,7 +283,7 @@ footer p{max-width:85ch}
 .tip{position:absolute;pointer-events:none;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,.12);min-width:150px;z-index:5}
 .tip b{display:block;margin-bottom:2px}
 .quince{display:grid;gap:0}
-.q-fila{display:grid;grid-template-columns:5.2em 3.6em 3em 1fr 3em 4.2em;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--line-soft);font-size:15px}
+.q-fila{display:grid;grid-template-columns:5.2em 30px 3.6em 3em 1fr 3em 4.2em;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--line-soft);font-size:15px}
 .q-fila:first-child{border-top:0}
 .q-fila .dia{font-weight:600} .q-fila .dia small{display:block;font-weight:400;color:var(--muted);font-size:12px}
 .q-fila .pl{font:12.5px var(--font-data);color:var(--muted);display:flex;align-items:center;gap:3px}
@@ -303,7 +303,19 @@ footer p{max-width:85ch}
 :root{--lluvia:#3b7dd8}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--lluvia:#6fa6f0}}
 :root[data-theme="dark"]{--lluvia:#6fa6f0}
-@media (max-width:560px){.ahora .temp{font-size:58px} .q-fila{grid-template-columns:4.4em 3.2em 2.6em 1fr 2.6em;font-size:14px} .q-fila .vi{display:none}}
+.ahora .cielo-txt{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:600}
+.hora .ic{display:flex;justify-content:center;min-height:26px}
+.q-fila .ic{display:flex;justify-content:center}
+@media (max-width:560px){.ahora .temp{font-size:58px} .q-fila{grid-template-columns:4.2em 26px 3em 2.4em 1fr 2.4em;font-size:14px} .q-fila .vi{display:none}}
+
+.cielo{display:inline-block;vertical-align:middle;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
+.cielo .i-sol{stroke:var(--sol);fill:none} .cielo circle.i-sol{fill:color-mix(in srgb,var(--sol) 35%,transparent)}
+.cielo .i-luna{stroke:var(--muted);fill:color-mix(in srgb,var(--muted) 18%,transparent)}
+.cielo .i-nube{stroke:var(--muted);fill:var(--surface)} .cielo .i-gris{fill:color-mix(in srgb,var(--muted) 22%,var(--surface))}
+.cielo .i-gota{stroke:var(--lluvia);stroke-width:2}
+:root{--sol:#e0a100}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--sol:#f2c14e}}
+:root[data-theme="dark"]{--sol:#f2c14e}
 
 .hero{display:grid;gap:22px;align-items:start}
 @media (min-width:960px){.hero{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:36px}}
@@ -318,6 +330,8 @@ footer p{max-width:85ch}
 .vivo .lugar small{display:block;font:13px var(--font-body);color:var(--muted);font-weight:400}
 .vivo .grande{font-family:var(--font-display);font-size:84px;font-weight:600;line-height:.95;letter-spacing:-.04em}
 .vivo .grande small{font-size:30px;color:var(--muted);font-weight:500;letter-spacing:0}
+.vivo .v-cab{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.vivo .cielo-txt{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:600}
 .vivo .mm{font-size:15px;display:flex;gap:16px;flex-wrap:wrap}
 .vivo .mm b{font-family:var(--font-display);font-size:19px}
 .vivo .prox{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;border-top:1px solid var(--line-soft);padding-top:12px}
@@ -437,7 +451,7 @@ ul.limites{margin:0;padding-left:1.2em;display:grid;gap:6px;max-width:75ch}
   <div class="card tabla "><table><thead><tr><th class='l'>Modelo</th><th>Anticipación</th><th>Días comparados</th><th>Días con lluvia</th><th>Acertó cuando llovió</th><th>Avisó en falso</th></tr></thead><tbody><tr><td class='l'>AIFS</td><td class='num'>24 h</td><td class='num'>19.013</td><td class='num'>29 %</td><td class='num'>76 %</td><td class='num'>17 %</td></tr><tr><td class='l'>AIFS</td><td class='num'>48 h</td><td class='num'>18.988</td><td class='num'>29 %</td><td class='num'>75 %</td><td class='num'>19 %</td></tr><tr><td class='l'>AIFS</td><td class='num'>72 h</td><td class='num'>18.949</td><td class='num'>29 %</td><td class='num'>75 %</td><td class='num'>21 %</td></tr><tr><td class='l'>IFS</td><td class='num'>24 h</td><td class='num'>21.255</td><td class='num'>28 %</td><td class='num'>73 %</td><td class='num'>19 %</td></tr><tr><td class='l'>IFS</td><td class='num'>48 h</td><td class='num'>21.227</td><td class='num'>28 %</td><td class='num'>71 %</td><td class='num'>19 %</td></tr><tr><td class='l'>IFS</td><td class='num'>72 h</td><td class='num'>21.188</td><td class='num'>28 %</td><td class='num'>70 %</td><td class='num'>20 %</td></tr><tr><td class='l'>GFS</td><td class='num'>24 h</td><td class='num'>21.255</td><td class='num'>28 %</td><td class='num'>63 %</td><td class='num'>13 %</td></tr><tr><td class='l'>GFS</td><td class='num'>48 h</td><td class='num'>21.227</td><td class='num'>28 %</td><td class='num'>61 %</td><td class='num'>13 %</td></tr><tr><td class='l'>GFS</td><td class='num'>72 h</td><td class='num'>21.188</td><td class='num'>28 %</td><td class='num'>60 %</td><td class='num'>15 %</td></tr></tbody></table></div>
 </section>
 <div class="aviso"><p class="small">Apoyo a la decisión, no una alerta. Las alertas oficiales son de la <a href="https://www.meteochile.gob.cl/" rel="noopener">Dirección Meteorológica de Chile</a> y de <a href="https://www.senapred.cl/" rel="noopener">SENAPRED</a>.</p></div>
-<footer><p>Actualizado el 26 oct, 16:24 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
+<footer><p>Actualizado el 26 oct, 17:42 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
 </div>
 
 <script>

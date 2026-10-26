@@ -19,4 +19,9 @@ Días probados: los que tuvieron tormenta (TS) en el METAR de algún aeródromo 
 - **28 y 29-ago, Biobío, Ñuble, costa:** 16 tornados y trombas en 48 h. Ningún aviso esos días: son tormentas de invierno, bajas y con pocos rayos, que el salto de rayos casi no ve. Para esas, el aviso útil es el ambiente a 72 h (`hindcast/tormentas_gfs/`).
 - **21-oct, ~14:00, Retiro (Maule):** tornado EF0/EF1. Ese día no estaba en la prueba porque ningún aeródromo informó tormenta; se prueba aparte.
 
+**Qué decía el indicador de 72 h en esos casos** (GFS de las 00 UTC del mismo día, `verificacion/tormentas_gfs.py`):
+Estación Central 13-oct 15-18 h: tormentas posibles (CAPE 544-665 J/kg, cizalle 25-33 kt). Retiro 21-oct 12-15 h: tormentas
+posibles (CAPE 913-990, cizalle 24-29 kt). Coelemu y Yungay 29-ago entre las 08 y las 14 h: **tormentas fuertes posibles** (CAPE 474-482,
+cizalle 37-45 kt: poca inestabilidad y mucho cizalle, el patrón de los tornados de invierno). Requínoa 26-oct 18 h: tormentas posibles.
+
 Conclusión provisoria: el salto de rayos sirve para tormentas de verano y primavera con mucha actividad eléctrica (granizo, aluviones por chubasco, tornados como el de Requínoa); no sirve para los tornados de invierno con pocos rayos. Por eso van los dos avisos.

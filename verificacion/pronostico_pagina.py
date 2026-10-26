@@ -3,8 +3,9 @@
 
 - Comunas: verificacion/comunas.csv (352, desde Wikidata). El pronóstico es el del punto de grilla de 25 km que contiene a la comuna.
 - 48 h: data/pronostico_comunas.csv (última corrida de AIFS, IFS, GFS y los modelos propios de Earth-2). Un solo pronóstico: el
-  promedio de los modelos, cada uno ajustado con el error que tuvo en el aeródromo más cercano (hasta 35 km) a esa hora del día en
-  los últimos 30 días; el rango entre modelos es la incertidumbre.
+  promedio de los modelos, cada uno ajustado con el error que tuvo, a esa hora del día en los últimos 30 días, en un aeródromo que
+  cae en el MISMO cuadrado de 0,25° que la comuna (el error es del cuadrado: Tobalaba falla −6,5 °C en la tarde porque su cuadrado
+  mezcla ciudad y cordillera, y eso no vale para La Cisterna, en otro cuadrado). Sin aeródromo en el cuadrado, va sin ajuste.
 - 15 días: site/datos/pronostico_15d.json, que escribe escenarios/escenarios.py con los 50 escenarios de AIFS-ENS.
 - Ahora: la última medición de la estación más cercana (aeródromos por METAR, estaciones DMC por SYNOP), hasta 30 km y 3 horas.
 Escribe site/datos/pronostico_48h.json (lo lee el navegador) y site/pronostico.html."""
@@ -14,7 +15,8 @@ from comun import JS_DEF, a_chile, aviso, nav, num, pie
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 DIAS_SESGO, MIN_SESGO = 30, 10
-KM_AJUSTE, KM_AHORA, HORAS_AHORA = 35.0, 30.0, 3.0
+KM_AHORA, HORAS_AHORA = 30.0, 3.0
+celda = lambda lat, lon: (int(round(float(lat) * 4)), int(round(float(lon) * 4)))   # cuadrado de 0,25° (AIFS, IFS y GFS)
 
 
 def km(lat1, lon1, lat2, lon2):
@@ -85,14 +87,17 @@ def datos_48h(est, pts, ahora):
 
     sg, coords = sesgos(pts, ahora_n)
     est_por_icao = {e["icao"]: e for e in est}
-    # aeródromo más cercano a cada comuna (para el ajuste y la confianza)
+    # aeródromo en el mismo cuadrado de 0,25° que cada comuna (para el ajuste y la confianza); si hay dos, el más cercano
     cerca = {}
     if not coords.empty:
+        por_celda = {}
+        for r in coords.itertuples(index=False):
+            por_celda.setdefault(celda(r.lat, r.lon), []).append(r)
         for c in com.itertuples(index=False):
-            d = km(c.lat, c.lon, coords.lat.values, coords.lon.values)
-            i = int(np.argmin(d))
-            if d[i] <= KM_AJUSTE:
-                cerca[c.id] = (coords.icao.iloc[i], float(d[i]))
+            cand = por_celda.get(celda(c.lat, c.lon), [])
+            if cand:
+                dist = [float(km(c.lat, c.lon, r.lat, r.lon)) for r in cand]
+                i = int(np.argmin(dist)); cerca[c.id] = (cand[i].icao, dist[i])
     pr["icao"] = pr.id.map(lambda k: cerca.get(k, (None, None))[0])
     pr = pr.merge(sg, on=["modelo", "icao", "h"], how="left")
     pr["aj"] = pr.sesgo.notna()
@@ -310,9 +315,9 @@ JS = r"""
   }
   function pintarConfianza(d) {
     const e = d && d.est, box = $('confianza');
-    if (!e) { box.innerHTML = '<strong>Qué tan confiable es aquí:</strong> no hay un aeródromo a menos de 35 km que permita medirlo, así que este pronóstico va sin ajuste local.'; return; }
+    if (!e) { box.innerHTML = '<strong>Qué tan confiable es aquí:</strong> no hay un aeródromo en el mismo cuadrado de 25 km que permita medir el error del modelo en esta comuna, así que este pronóstico va sin ajuste local.'; return; }
     const aj = d.pasos.reduce((s, x) => s + x.aj, 0), tot = d.pasos.reduce((s, x) => s + x.nm, 0);
-    box.innerHTML = `<strong>Qué tan confiable es aquí:</strong> se ajusta con lo medido en ${e.nombre}, a ${n(e.km)} km` +
+    box.innerHTML = `<strong>Qué tan confiable es aquí:</strong> se ajusta con lo medido en ${e.nombre}, a ${n(e.km)} km, en el mismo cuadrado de 25 km del modelo` +
       (e.g != null ? `, donde en 2026 el pronóstico de temperatura para el día siguiente se equivocó en promedio ${n(e.g, 1)} °C` + (e.c != null ? ` y ${n(e.c, 1)} °C con el ajuste.` : '.') : '.') +
       (aj < tot ? ` Esta vez se pudo ajustar ${aj} de ${tot} valores.` : '') + (e.g >= 2.5 ? ' Es de los lugares donde más se equivocan los modelos globales: tómalo con cautela.' : '');
   }
@@ -394,7 +399,7 @@ def pagina(head, escribir, est, pts, ahora):
 </section>
 
 <section class="card">
-  <div class="sec-head"><h2>Próximas 48 horas</h2><p class="muted">Cada 6 horas, en hora de Chile. Es nuestro pronóstico: la combinación de los modelos, cada uno corregido con su error reciente en el aeródromo más cercano.</p></div>
+  <div class="sec-head"><h2>Próximas 48 horas</h2><p class="muted">Cada 6 horas, en hora de Chile. Es nuestro pronóstico: la combinación de los modelos, cada uno corregido con su error reciente donde hay un aeródromo en el mismo cuadrado de 25 km.</p></div>
   <div class="horas" id="horas"></div>
   <figure class="graf" style="margin:0"><figcaption class="small muted">La banda muestra entre qué valores quedan los distintos modelos: cuanto más ancha, más dudoso.</figcaption><div id="graf"></div></figure>
   <p class="confianza-txt" id="confianza"></p>
@@ -407,7 +412,7 @@ def pagina(head, escribir, est, pts, ahora):
 </section>
 
 <details><summary>Cómo se arma este pronóstico</summary><div class="body">
-  <p>Cada comuna recibe el valor del cuadrado de 25 km que la contiene en los modelos globales (AIFS, IFS y GFS; y los modelos de Earth-2 que corramos nosotros, cuando los haya). A cada modelo le restamos el error que tuvo en los últimos 30 días en el aeródromo más cercano, a esa misma hora del día, y promediamos. El rango entre modelos es la banda de duda. Para 15 días usamos los 50 escenarios de AIFS-ENS: la máxima es la temperatura de las 15 h de Chile y la mínima la de las 03 h, así que son aproximadas.</p>
+  <p>Cada comuna recibe el valor del cuadrado de 25 km que la contiene en los modelos globales (AIFS, IFS y GFS; y los modelos de Earth-2 que corramos nosotros, cuando los haya). Si en ese cuadrado hay un aeródromo, a cada modelo le restamos el error que tuvo ahí en los últimos 30 días, a esa misma hora del día, y promediamos; el error es del cuadrado, así que no se traslada a comunas de otros cuadrados. El rango entre modelos es la banda de duda. Para 15 días usamos los 50 escenarios de AIFS-ENS: la máxima es la temperatura de las 15 h de Chile y la mínima la de las 03 h, así que son aproximadas.</p>
   <p>Lo que no sabe este pronóstico: la diferencia de altura entre tu comuna y el cuadrado de 25 km (en cordillera y costa puede ser grande), el viento de quebradas y laderas, y la nubosidad. Es lo que va a aprender el zoom a 4 km que estamos por entrenar. Este pronóstico se mide todos los días en <a href="zona.html">Tu zona</a>.</p>
   <p class="small muted" id="actualizado"></p>
 </div></details>

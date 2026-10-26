@@ -207,6 +207,13 @@ footer p{max-width:85ch}
 .aviso-oficial p{max-width:80ch;margin:0}
 .aviso-oficial .enlaces{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:15px}
 
+.tormenta-vivo{border:1px solid var(--alto);border-left:6px solid var(--alto);background:color-mix(in srgb,var(--alto) 10%,var(--surface));
+  border-radius:var(--radius);padding:14px 16px;display:grid;gap:6px}
+.tormenta-vivo[hidden]{display:none}
+.tormenta-vivo strong.t{font-family:var(--font-display);font-size:17px}
+.tormenta-vivo p{max-width:80ch;margin:0}
+.tormenta-vivo .enlaces{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:15px}
+
 :root{--calido:#d9622b;--frio:#2a78d6}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--calido:#ef8a55;--frio:#5aa0f0}}
 :root[data-theme="dark"]{--calido:#ef8a55;--frio:#5aa0f0}
@@ -313,6 +320,10 @@ footer p{max-width:85ch}
 .cielo .i-luna{stroke:var(--muted);fill:color-mix(in srgb,var(--muted) 18%,transparent)}
 .cielo .i-nube{stroke:var(--muted);fill:var(--surface)} .cielo .i-gris{fill:color-mix(in srgb,var(--muted) 22%,var(--surface))}
 .cielo .i-gota{stroke:var(--lluvia);stroke-width:2}
+.cielo .i-rayo{stroke:var(--medio);stroke-width:2.2} .cielo .i-fuerte{stroke:var(--alto)}
+.tormenta-72{margin:4px 0 0;padding:8px 12px;border-left:4px solid var(--medio);background:color-mix(in srgb,var(--medio) 10%,var(--surface));border-radius:6px;font-size:15px}
+.tormenta-72.fuerte{border-left-color:var(--alto);background:color-mix(in srgb,var(--alto) 10%,var(--surface))}
+.tormenta-72[hidden]{display:none}
 :root{--sol:#e0a100}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--sol:#f2c14e}}
 :root[data-theme="dark"]{--sol:#f2c14e}
@@ -395,7 +406,7 @@ footer p{max-width:85ch}
   <p>CorrDiff-Chile va a aprender con miles de pares como este a pasar de la imagen de la izquierda a la de la derecha. Cuando exista, recibirá el pronóstico global y entregará el detalle a 4 km, y se medirá en este sitio contra las estaciones. La simulación a 4 km tampoco es perfecta: es la mejor referencia abierta que hay para enseñarle la geografía de Chile.</p>
   <p class="small muted">Fuentes: SAAG-WRF, NCAR RDA d616000 (Liu et al. 2025), CC BY 4.0; ERA5 de ECMWF/Copernicus (copia ARCO de Google), CC BY 4.0; METAR de la DGAC, archivo de Iowa State University (IEM). Periodo: 2021-06-28T10 a 2021-06-28T10 UTC. Cómo se arma: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion/blob/main/entrenamiento/antes_despues.py" rel="noopener">entrenamiento/antes_despues.py</a>.</p>
 </section>
-<footer><p>Actualizado el 26 oct, 17:42 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
+<footer><p>Actualizado el 26 oct, 18:44 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
 </div>
 <script>
 (function(){

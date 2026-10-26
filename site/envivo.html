@@ -207,6 +207,13 @@ footer p{max-width:85ch}
 .aviso-oficial p{max-width:80ch;margin:0}
 .aviso-oficial .enlaces{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:15px}
 
+.tormenta-vivo{border:1px solid var(--alto);border-left:6px solid var(--alto);background:color-mix(in srgb,var(--alto) 10%,var(--surface));
+  border-radius:var(--radius);padding:14px 16px;display:grid;gap:6px}
+.tormenta-vivo[hidden]{display:none}
+.tormenta-vivo strong.t{font-family:var(--font-display);font-size:17px}
+.tormenta-vivo p{max-width:80ch;margin:0}
+.tormenta-vivo .enlaces{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:15px}
+
 :root{--calido:#d9622b;--frio:#2a78d6}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--calido:#ef8a55;--frio:#5aa0f0}}
 :root[data-theme="dark"]{--calido:#ef8a55;--frio:#5aa0f0}
@@ -313,6 +320,10 @@ footer p{max-width:85ch}
 .cielo .i-luna{stroke:var(--muted);fill:color-mix(in srgb,var(--muted) 18%,transparent)}
 .cielo .i-nube{stroke:var(--muted);fill:var(--surface)} .cielo .i-gris{fill:color-mix(in srgb,var(--muted) 22%,var(--surface))}
 .cielo .i-gota{stroke:var(--lluvia);stroke-width:2}
+.cielo .i-rayo{stroke:var(--medio);stroke-width:2.2} .cielo .i-fuerte{stroke:var(--alto)}
+.tormenta-72{margin:4px 0 0;padding:8px 12px;border-left:4px solid var(--medio);background:color-mix(in srgb,var(--medio) 10%,var(--surface));border-radius:6px;font-size:15px}
+.tormenta-72.fuerte{border-left-color:var(--alto);background:color-mix(in srgb,var(--alto) 10%,var(--surface))}
+.tormenta-72[hidden]{display:none}
 :root{--sol:#e0a100}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--sol:#f2c14e}}
 :root[data-theme="dark"]{--sol:#f2c14e}
@@ -391,6 +402,25 @@ td.parcial{color:var(--muted)}
 <nav class="topnav" aria-label="Secciones del sitio"><div class="in"><a class="marca" href="./">Earth-2 Chile<small>verificación pública del pronóstico</small></a><div class="tabs"><a href="./">Resumen</a><a href="pronostico.html">Pronóstico</a><a href="zona.html">Tu zona</a><a href="eventos.html">Eventos<span class="largo">2026</span></a><a href="quebradas.html">Quebradas</a><a href="escenarios.html">Escenarios</a><a href="envivo.html" class="activa" aria-current="page">En vivo</a><a href="metodo.html">Método</a></div></div></nav>
 <div class="wrap">
 
+<section class="tormenta-vivo" id="tormenta-vivo" role="status" aria-live="polite" hidden></section><script>
+(async function(){
+  const caja = document.getElementById("tormenta-vivo"); if (!caja) return;
+  let d; try { const r = await fetch("https://raw.githubusercontent.com/PanchoDigevo/earth2-chile-verificacion/datos-en-vivo/envivo/tormentas.json?t=" + Date.now()); if (!r.ok) return; d = await r.json(); } catch (e) { return; }
+  const ahora = Date.now() / 1000;
+  if (ahora - d.generado > 1800) return;
+  const act = (d.activas || []).filter(g => ahora - g.ultimo <= d.activa_min * 60);
+  if (!act.length) return;
+  const hora = s => new Date(s * 1000).toLocaleTimeString("es-CL", {timeZone: "America/Santiago", hour: "2-digit", minute: "2-digit", hourCycle: "h23"});
+  const lugar = g => `${g.comuna} (${g.region})`;
+  const lugares = act.map(lugar);
+  const lista = lugares.length === 1 ? lugares[0] : lugares.slice(0, -1).join(", ") + " y " + lugares[lugares.length - 1];
+  const g = act[0];
+  caja.innerHTML = `<strong class="t">${act.length === 1 ? "Tormenta intensificándose" : act.length + " tormentas intensificándose"} cerca de ${lista}</strong>
+    <p>El satélite GOES-19 detectó un salto en la cantidad de rayos${act.length === 1 ? ` a las ${hora(g.inicio)}: ${Math.round(g.tasa_max)} rayos por minuto` : ""}. Un salto así suele anteceder en 10 a 30 minutos granizo, rachas fuertes y, rara vez, un tornado; muchas veces no trae daño (en EE.UU., uno de cada tres). En Chile lo estamos midiendo. No es una alerta oficial.</p>
+    <div class="enlaces">${location.pathname.endsWith("envivo.html") ? "" : '<a href="envivo.html">Ver los rayos en vivo</a>'}<a href="https://senapred.cl/alertas/" rel="noopener">Alertas vigentes de SENAPRED</a><a href="https://www.meteochile.gob.cl/PortalDMC-web/index.xhtml" rel="noopener">Dirección Meteorológica de Chile</a></div>`;
+  caja.hidden = false;
+})();
+</script>
 <header>
   <div class="eyebrow">En vivo</div>
   <h1>Dónde hay tormenta ahora en la zona central</h1>
@@ -404,6 +434,9 @@ td.parcial{color:var(--muted)}
       <div class="cifras-vivo"><div><span class="v" id="r10">–</span><span class="l">últimos 10 min</span></div><div><span class="v" id="r30">–</span><span class="l">últimos 30 min</span></div><div><span class="v" id="r90">–</span><span class="l">últimos 90 min</span></div></div>
       <p class="small muted">A menos de 30 km de la Quebrada de Apoquindo (círculo punteado). En toda la zona del mapa: <strong id="rtot">–</strong> rayos en 90 minutos. La lluvia sin tormenta eléctrica no aparece en el mapa.</p>
       <div class="ley-vivo"><span><i style="background:var(--r10)"></i>hace 0 a 10 min</span><span><i style="background:var(--r30)"></i>10 a 30 min</span><span><i style="background:var(--r90)"></i>30 a 90 min</span></div></div>
+    <div class="card"><h2>Tormentas que se intensificaron</h2>
+      <div class="tabla"><table id="saltos"><thead><tr><th class="l">Hora</th><th class="l">Cerca de</th><th>Rayos/min</th></tr></thead><tbody><tr><td class="l" colspan="3">Cargando…</td></tr></tbody></table></div>
+      <p class="small muted">Últimas 24 horas en la zona del mapa. Se marca un <button type="button" class="def" data-def="Aumento brusco de la cantidad de rayos de una tormenta: al menos 10 por minuto y una subida mayor que 2 desviaciones estándar de los 10 minutos previos (Schultz et al., 2009 y 2011). Suele anteceder en 10 a 30 minutos granizo, rachas fuertes o, rara vez, un tornado. En EE.UU. acertó 79 % de los eventos severos y 1 de cada 3 marcas no trajo daño.">salto de rayos</button> cuando la tasa de rayos de una tormenta se dispara; en el mapa, con un anillo rojo mientras dura (30 minutos). Los umbrales son los publicados en EE.UU., no ajustados a un evento chileno: cuántas marcas traen daño en Chile se está midiendo (<a href="eventos.html">Eventos</a>). No es una alerta oficial.</p></div>
     <div class="card"><h2>Lluvia medida cerca de las quebradas</h2>
       <div class="tabla"><table id="lluvia"><thead><tr><th class="l">Estación</th><th>Última hora</th><th>6 h</th><th>24 h</th><th class="l">Hasta</th></tr></thead><tbody><tr><td class="l" colspan="5">Cargando…</td></tr></tbody></table></div>
       <p class="iso-vivo" id="iso-vivo"></p>
@@ -417,7 +450,7 @@ td.parcial{color:var(--muted)}
   </div>
 </div>
 <div class="aviso"><p class="small">Apoyo a la decisión, no una alerta. Las alertas oficiales son de la <a href="https://www.meteochile.gob.cl/" rel="noopener">Dirección Meteorológica de Chile</a> y de <a href="https://www.senapred.cl/" rel="noopener">SENAPRED</a>.</p></div>
-<footer><p>Actualizado el 26 oct, 17:42 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
+<footer><p>Actualizado el 26 oct, 18:44 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -432,7 +465,7 @@ td.parcial{color:var(--muted)}
   L.circle(APOQ, {radius: 30000, color: css("--accent"), weight: 1, dashArray: "4 4", fill: false, interactive: false}).addTo(mapa);
   fetch("quebradas/cuencas.geojson").then(r => r.json()).then(g => L.geoJSON(g, {interactive: false, style: f => {
     const q = (f.properties.prop_hm23 || 0) >= 0.01; return {color: css("--accent"), weight: q ? 2.5 : 0.8, fillOpacity: q ? 0.25 : 0.04}; }}).addTo(mapa)).catch(() => {});
-  const capa = L.layerGroup().addTo(mapa);
+  const capa = L.layerGroup().addTo(mapa), capaT = L.layerGroup().addTo(mapa);
   const hora = s => new Date(s * 1000).toLocaleTimeString("es-CL", {timeZone: "America/Santiago", hour: "2-digit", minute: "2-digit", hourCycle: "h23"});
   const dist = (a, b) => { const r = Math.PI / 180, dl = (b[0] - a[0]) * r, dn = (b[1] - a[1]) * r;
     const h = Math.sin(dl / 2) ** 2 + Math.cos(a[0] * r) * Math.cos(b[0] * r) * Math.sin(dn / 2) ** 2; return 12742 * Math.asin(Math.sqrt(h)); };
@@ -482,7 +515,14 @@ td.parcial{color:var(--muted)}
 
   async function actualizar() {
     const ahora = Date.now() / 1000;
-    const [ry, mt, sg, ll] = await Promise.all([j(RAW + "/datos-en-vivo/envivo/rayos.json"), j(RAW + "/datos-en-vivo/envivo/metar.json"), j(RAW + "/main/hindcast/seguimiento/pronosticos.csv"), j(RAW + "/datos-en-vivo/envivo/lluvia.json")]);
+    const [ry, mt, sg, ll, tm] = await Promise.all([j(RAW + "/datos-en-vivo/envivo/rayos.json"), j(RAW + "/datos-en-vivo/envivo/metar.json"), j(RAW + "/main/hindcast/seguimiento/pronosticos.csv"), j(RAW + "/datos-en-vivo/envivo/lluvia.json"), j(RAW + "/datos-en-vivo/envivo/tormentas.json")]);
+    if (tm) { const d = await tm.json(); capaT.clearLayers();
+      const act = (d.activas || []).filter(g => ahora - g.ultimo <= d.activa_min * 60);
+      act.forEach(g => L.circle([g.lat, g.lon], {radius: 15000, color: css("--alto"), weight: 3, fill: false})
+        .bindTooltip(`Tormenta intensificándose cerca de ${g.comuna}: salto de rayos a las ${hora(g.inicio)}, hasta ${Math.round(g.tasa_max)} rayos/min`).addTo(capaT));
+      const hoy = (d.registro || []).filter(r => ahora - r.inicio < 24 * 3600).reverse();
+      document.querySelector("#saltos tbody").innerHTML = hoy.map(r => `<tr class="${act.some(g => g.comuna === r.comuna) ? "lluvia" : ""}"><td class="l num">${hora(r.inicio)}</td><td class="l">${r.comuna} <span class="small muted">· ${r.region}</span></td><td class="num">${Math.round(r.tasa_max)}</td></tr>`).join("")
+        || `<tr><td class="l" colspan="3">Ninguna tormenta se intensificó en las últimas 24 horas.</td></tr>`; }
     let gen = [], medido = null;
     if (ll) { const d = await ll.json(); medido = lluvia(d, ahora); }
     if (ry) { const d = await ry.json(); gen.push(d.generado);

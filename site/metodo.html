@@ -207,6 +207,13 @@ footer p{max-width:85ch}
 .aviso-oficial p{max-width:80ch;margin:0}
 .aviso-oficial .enlaces{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:15px}
 
+.tormenta-vivo{border:1px solid var(--alto);border-left:6px solid var(--alto);background:color-mix(in srgb,var(--alto) 10%,var(--surface));
+  border-radius:var(--radius);padding:14px 16px;display:grid;gap:6px}
+.tormenta-vivo[hidden]{display:none}
+.tormenta-vivo strong.t{font-family:var(--font-display);font-size:17px}
+.tormenta-vivo p{max-width:80ch;margin:0}
+.tormenta-vivo .enlaces{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:15px}
+
 :root{--calido:#d9622b;--frio:#2a78d6}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--calido:#ef8a55;--frio:#5aa0f0}}
 :root[data-theme="dark"]{--calido:#ef8a55;--frio:#5aa0f0}
@@ -313,6 +320,10 @@ footer p{max-width:85ch}
 .cielo .i-luna{stroke:var(--muted);fill:color-mix(in srgb,var(--muted) 18%,transparent)}
 .cielo .i-nube{stroke:var(--muted);fill:var(--surface)} .cielo .i-gris{fill:color-mix(in srgb,var(--muted) 22%,var(--surface))}
 .cielo .i-gota{stroke:var(--lluvia);stroke-width:2}
+.cielo .i-rayo{stroke:var(--medio);stroke-width:2.2} .cielo .i-fuerte{stroke:var(--alto)}
+.tormenta-72{margin:4px 0 0;padding:8px 12px;border-left:4px solid var(--medio);background:color-mix(in srgb,var(--medio) 10%,var(--surface));border-radius:6px;font-size:15px}
+.tormenta-72.fuerte{border-left-color:var(--alto);background:color-mix(in srgb,var(--alto) 10%,var(--surface))}
+.tormenta-72[hidden]{display:none}
 :root{--sol:#e0a100}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--sol:#f2c14e}}
 :root[data-theme="dark"]{--sol:#f2c14e}
@@ -480,6 +491,22 @@ ul.limites{margin:0;padding-left:1.2em;display:grid;gap:6px;max-width:75ch}
     <li>No se usa Aguas Andinas (La Florida) (OMM 85565): entre el 6 y el 7 de octubre de 2026 midió 11 mm, cuando las demás estaciones del valle de Santiago midieron de 45 a 75 mm, y durante ese temporal su lluvia horaria fue bajando de a una décima: se excluye hasta revisarlo.</li>
   </ul>
 </section>
+<section class="card" id="tormentas">
+  <div class="sec-head"><h2>Tormentas: el ambiente a 72 horas y el salto de rayos</h2></div>
+  <p>Hay dos avisos de tormenta, uno para planificar y otro para reaccionar. Los dos usan umbrales publicados, no ajustados a ningún evento chileno: si se calibraran con un caso raro como el tornado de Requínoa del 26 de octubre de 2026, lo marcarían por construcción y no sabríamos cuántas falsas alarmas dan. Los eventos de 2026 solo sirven de prueba.</p>
+  <h3>Próximas 72 horas: el ambiente</h3>
+  <p>Cada corrida de GFS (NOAA), cada 3 horas hasta 72 h, en el cuadrado de 25 km de cada comuna. <strong>Tormentas posibles</strong>: inestabilidad (CAPE de 100 J/kg o más, la mayor entre la de superficie y la de la capa de 180 hPa), sin tapa que la frene (CIN de −50 J/kg o más) y lluvia prevista de al menos 0,1 mm por hora en el bloque, en el cuadrado o en los vecinos, como señal de que algo la dispara. <strong>Tormentas fuertes posibles</strong>: además, CAPE de 250 J/kg o más y cizalle de 35 nudos o más entre 10 m y 500 hPa (unos 5,5 km), el criterio de ambientes de poca inestabilidad y mucho cizalle de Sherburn y Parker (2014), donde se dan buena parte de los tornados y rachas dañinas fuera de las Grandes Llanuras de EE.UU. El código está en <code>verificacion/tormentas_gfs.py</code>.</p>
+  <h3>Ahora: el salto de rayos</h3>
+  <p>Cada 5 minutos, con los rayos del sensor GLM del satélite GOES-19, se busca una tormenta cuya tasa de rayos se dispare: el algoritmo «2σ» de Schultz, Petersen y Carey (2009 y 2011). Con intervalos de 2 minutos, hay salto cuando la tasa es de al menos 10 rayos por minuto y su aumento supera 2 desviaciones estándar de los 10 minutos previos. En EE.UU. antecedió en promedio 20 a 30 minutos al granizo, las rachas dañinas o un tornado, acertó el 79 % de esos eventos y 1 de cada 3 marcas no trajo daño. Las tormentas se aproximan con cuadros de unos 30 km; las que quedan a más de 25 km de toda comuna, casi siempre en Argentina, no se marcan. El código está en <code>envivo/salto_rayos.py</code>.</p>
+  <h3>Cómo se mide en Chile</h3>
+  <p>Chile no tiene un registro sistemático de granizo, rachas y tornados como el de EE.UU. Por eso se prueba el salto de rayos sobre los días con tormenta en algún aeródromo desde abril de 2025 (<code>hindcast/salto_rayos/</code>) y cada marca se contrasta con lo que informaron SENAPRED, la DMC y la prensa. El indicador de 72 horas se contrasta con las tormentas que informan los METAR. Lo que se encuentre se publica aquí, salga bien o mal.</p>
+  <h3>Límites</h3>
+  <ul class="limites">
+    <li>A 25 km el modelo ve el ambiente, no la tormenta: dice dónde pueden formarse, no dónde caerá cada una. Un tornado no se pronostica con un modelo global.</li>
+    <li>El GLM ve menos rayos que las redes en tierra de los estudios originales, así que el umbral de 10 por minuto es exigente.</li>
+    <li>Un salto de rayos no distingue granizo de racha o tornado: dice que la tormenta se está intensificando.</li>
+  </ul>
+</section>
 <section class="card">
   <div class="sec-head"><h2>Límites que conocemos</h2></div>
   <ul class="limites">
@@ -496,7 +523,7 @@ ul.limites{margin:0;padding-left:1.2em;display:grid;gap:6px;max-width:75ch}
 </section>
 <section class="card" aria-labelledby="etapas-t"><div class="sec-head"><h2 id="etapas-t">En qué etapa estamos</h2></div><ul class="etapas"><li class="hecho"><span class="tag">Funciona hoy</span><p>Verificación diaria de tres pronósticos globales de 25 km (AIFS, IFS y GFS, que bajamos ya calculados), corrección por estación (medida: baja el error entre 19 y 28 %), escenarios a 15 días con el ensamble de IA de ECMWF, indicador de quebradas quemadas y vista en vivo.</p></li><li class="curso"><span class="tag">Siguiente</span><p>Correr nosotros, en las GPUs del POD, modelos globales de Earth-2: AIFS (para comprobar que da lo mismo que el de ECMWF) y FourCastNet, y verificarlos aquí junto a los demás. Sirven en Chile tal como vienen, porque cubren todo el planeta.</p></li><li class="pendiente"><span class="tag">Por entrenar</span><p>CorrDiff-Chile, el zoom de 25 a 4 km. NVIDIA entrega la receta, pero los modelos ya entrenados solo existen para Estados Unidos y Taiwán y no sirven para Chile. Hay que entrenarlo con 22 años de simulación del clima chileno a 4 km (SAAG-WRF). Todavía no existe: nada de lo que se ve hoy en el sitio usa CorrDiff. <a href="zoom.html">Mira en una tormenta real qué cambia de 25 a 4 km</a>.</p></li></ul></section>
 <div class="aviso"><p class="small">Apoyo a la decisión, no una alerta. Las alertas oficiales son de la <a href="https://www.meteochile.gob.cl/" rel="noopener">Dirección Meteorológica de Chile</a> y de <a href="https://www.senapred.cl/" rel="noopener">SENAPRED</a>.</p></div>
-<footer><p>Actualizado el 26 oct, 17:42 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
+<footer><p>Actualizado el 26 oct, 18:44 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
 </div>
 
 <script>

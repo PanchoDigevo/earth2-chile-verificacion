@@ -242,6 +242,8 @@ footer p{max-width:85ch}
 .mon-efectos li::before{content:"";width:10px;height:10px;border-radius:50%;margin-top:6px;background:var(--medio)}
 .mon-efectos li.f::before{background:var(--alto)}
 .mon-pie{font-size:13px;color:var(--muted);margin:0}
+.mon-rayos{border-left:4px solid var(--alto);background:color-mix(in srgb,var(--alto) 8%,var(--surface));border-radius:6px;padding:10px 12px;display:grid;gap:4px;font-size:14.5px}
+.mon-rayos span{color:var(--muted);font-size:13.5px}
 .lluvia-curso{border:1px solid var(--accent);border-left:6px solid var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--surface));
   border-radius:var(--radius);padding:12px 16px;display:grid;gap:4px}
 .lluvia-curso[hidden]{display:none}
@@ -440,7 +442,7 @@ footer p{max-width:85ch}
   <p>CorrDiff-Chile va a aprender con miles de pares como este a pasar de la imagen de la izquierda a la de la derecha. Cuando exista, recibirá el pronóstico global y entregará el detalle a 4 km, y se medirá en este sitio contra las estaciones. La simulación a 4 km tampoco es perfecta: es la mejor referencia abierta que hay para enseñarle la geografía de Chile.</p>
   <p class="small muted">Fuentes: SAAG-WRF, NCAR RDA d616000 (Liu et al. 2025), CC BY 4.0; ERA5 de ECMWF/Copernicus (copia ARCO de Google), CC BY 4.0; METAR de la DGAC, archivo de Iowa State University (IEM). Periodo: 2021-06-28T10 a 2021-06-28T10 UTC. Cómo se arma: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion/blob/main/entrenamiento/antes_despues.py" rel="noopener">entrenamiento/antes_despues.py</a>.</p>
 </section>
-<footer><p>Actualizado el 26 oct, 20:16 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
+<footer><p>Actualizado el 26 oct, 20:34 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
 </div>
 <script>
 (function(){

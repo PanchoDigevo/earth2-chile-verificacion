@@ -16,7 +16,10 @@ from salto_rayos import km  # noqa: E402
 def main(d):
     com = pd.read_csv(os.path.join(AQUI, "..", "..", "verificacion", "comunas.csv"))
     res = pd.DataFrame([json.load(open(f)) for f in sorted(glob.glob(os.path.join(d, "resumen_*.json")))])
-    s = pd.concat([pd.read_csv(f) for f in sorted(glob.glob(os.path.join(d, "saltos_*.csv")))], ignore_index=True)
+    partes = [pd.read_csv(f) for f in sorted(glob.glob(os.path.join(d, "saltos_*.csv")))]
+    if not partes:
+        sys.exit("no llegó ningún día: revisar los trabajos de cada día")
+    s = pd.concat(partes, ignore_index=True)
     s["t"] = pd.to_datetime(s.hora_utc)
     s = s.sort_values("t").reset_index(drop=True)
     avisos = []                                           # cada uno: dict con primer y último salto

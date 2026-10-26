@@ -5,7 +5,7 @@ Corre en GitHub Actions (salto-rayos-prueba.yml), un día por trabajo: son unos 
 se guardan; solo los saltos (saltos_DIA.csv) y un resumen del día (resumen_DIA.json).
 
 Uso: python hindcast/salto_rayos/prueba_dia.py --dia 2026-10-26 --salida salida/"""
-import argparse, concurrent.futures as cf, datetime as dt, json, os, re, sys, urllib.request
+import argparse, concurrent.futures as cf, datetime as dt, json, os, re, sys, threading, urllib.request
 import netCDF4, numpy as np
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
@@ -14,6 +14,7 @@ import salto_rayos  # noqa: E402
 from actualizar import LAT0, LAT1, LON0, LON1, GLM, inicio  # noqa: E402
 
 UA = {"User-Agent": "earth2-chile-verificacion/prueba-salto"}
+LEER = threading.Lock()   # netCDF4/HDF5 no se puede usar desde varios hilos a la vez: se baja en paralelo, se lee de a uno
 
 
 def get(url, intentos=4):
@@ -30,10 +31,11 @@ def rayos_de(clave):
     b = get(f"{GLM}/{clave}")
     if not b:
         return None
-    try:
-        d = netCDF4.Dataset("glm", memory=b); la, lo = np.asarray(d["flash_lat"][:]), np.asarray(d["flash_lon"][:]); d.close()
-    except Exception:
-        return None
+    with LEER:
+        try:
+            d = netCDF4.Dataset("glm", memory=b); la, lo = np.asarray(d["flash_lat"][:]), np.asarray(d["flash_lon"][:]); d.close()
+        except Exception:
+            return None
     m = (la >= LAT0) & (la <= LAT1) & (lo >= LON0) & (lo <= LON1)
     t = inicio(clave).timestamp()
     return [(float(a), float(o), t) for a, o in zip(la[m], lo[m])]

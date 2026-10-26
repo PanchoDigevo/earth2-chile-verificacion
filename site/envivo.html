@@ -230,6 +230,20 @@ footer p{max-width:85ch}
 .lista-ctx{margin:0;padding-left:1.2em;display:grid;gap:7px;font-size:15.5px;max-width:90ch}
 .lista-ctx .fuente{color:var(--muted);font-size:14px}
 
+.comparar{position:relative;max-width:640px;margin:0 auto;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);
+  background:var(--tierra);touch-action:pan-y}
+.comparar img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none}
+.comparar .arriba{position:absolute;inset:0;clip-path:inset(0 calc(100% - var(--pos, 50%)) 0 0)}
+.comparar .linea{position:absolute;top:0;bottom:0;left:var(--pos, 50%);width:2px;background:var(--fg);transform:translateX(-1px);pointer-events:none}
+.comparar .etq{position:absolute;top:10px;font:600 13px var(--font-body);background:var(--surface);color:var(--fg);padding:4px 9px;border-radius:999px;border:1px solid var(--line)}
+.comparar .etq.izq{left:10px} .comparar .etq.der{right:10px}
+.deslizador{display:block;width:100%;max-width:640px;margin:10px auto 0;accent-color:var(--accent)}
+.escala{display:flex;flex-wrap:wrap;gap:2px;max-width:640px;margin:10px auto 0;font:12px var(--font-data);color:var(--muted)}
+.escala span{flex:1;min-width:34px;text-align:center;padding-top:16px;position:relative}
+.escala span i{position:absolute;top:0;left:0;right:0;height:12px;border-radius:2px;outline:1px solid var(--line-soft)}
+.botones{display:flex;gap:8px;justify-content:center;margin-top:8px}
+.botones button{font:600 13px var(--font-body);padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;min-height:44px}
+
 .vivo{display:grid;gap:14px}
 @media (min-width:1000px){.vivo{grid-template-columns:minmax(0,1fr) 420px;align-items:start}}
 #mapa-vivo{height:72vh;min-height:380px;border:1px solid var(--line);border-radius:var(--radius);background:var(--line-soft)}
@@ -287,7 +301,7 @@ td.parcial{color:var(--muted)}
   </div>
 </div>
 <div class="aviso"><p class="small">Apoyo a la decisión, no una alerta. Las alertas oficiales son de la <a href="https://www.meteochile.gob.cl/" rel="noopener">Dirección Meteorológica de Chile</a> y de <a href="https://www.senapred.cl/" rel="noopener">SENAPRED</a>.</p></div>
-<footer><p>Actualizado el 26 oct, 05:19 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
+<footer><p>Actualizado el 26 oct, 12:24 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>

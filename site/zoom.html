@@ -254,9 +254,10 @@ footer p{max-width:85ch}
   <p class="lead">La madrugada más fría del invierno de 2021 en Pudahuel: 28 de junio, 06:00. A la izquierda, la temperatura como la ve un pronóstico global, en cuadrados de 25 km. A la derecha, la misma hora a 4 km. Mueve el control para comparar.</p>
 </header>
 <section class="card">
-  <div class="comparar" id="comparar" style="--pos:50%">
-    <img src="zoom/saag_4km.png" alt="Mapa a 4 km sobre Chile central">
-    <img class="arriba" src="zoom/era5_25km.png" alt="Mapa a 25 km sobre Chile central">
+  <div data-comparar>
+  <div class="comparar" style="--pos:50%">
+    <img src="zoom/saag_4km.png" alt="Mapa de temperatura a 4 km sobre Chile central">
+    <img class="arriba" src="zoom/era5_25km.png" alt="Mapa de temperatura a 25 km sobre Chile central">
     <div class="linea" aria-hidden="true"></div>
     <span class="etq izq">25 km · pronóstico global</span><span class="etq der">4 km</span>
   </div>
@@ -264,6 +265,7 @@ footer p{max-width:85ch}
   <input class="deslizador" id="pos" type="range" min="0" max="100" value="50" aria-label="Proporción de la imagen a 25 km">
   <div class="botones"><button type="button" data-v="100">Ver 25 km</button><button type="button" data-v="0">Ver 4 km</button></div>
   <div class="escala" aria-label="Escala de colores"><span><i style="background:#08306b"></i>−12</span><span><i style="background:#2171b5"></i>−9</span><span><i style="background:#6baed6"></i>−6</span><span><i style="background:#c6dbef"></i>−3</span><span><i style="background:#f2f0f7"></i>0</span><span><i style="background:#fee6ce"></i>3</span><span><i style="background:#fdae6b"></i>6</span><span><i style="background:#f16913"></i>9</span><span><i style="background:#d94801"></i>12</span><span><i style="background:#7f2704"></i>15</span></div>
+</div>
   <p class="small muted" style="text-align:center">Temperatura a 2 m, en grados. Líneas grises: relieve cada 1.000 m. Puntos: los lugares de la tabla.</p>
 </section>
 <section>
@@ -277,20 +279,21 @@ footer p{max-width:85ch}
   <p>CorrDiff-Chile va a aprender con miles de pares como este a pasar de la imagen de la izquierda a la de la derecha. Cuando exista, recibirá el pronóstico global y entregará el detalle a 4 km, y se medirá en este sitio contra las estaciones. La simulación a 4 km tampoco es perfecta: es la mejor referencia abierta que hay para enseñarle la geografía de Chile.</p>
   <p class="small muted">Fuentes: SAAG-WRF, NCAR RDA d616000 (Liu et al. 2025), CC BY 4.0; ERA5 de ECMWF/Copernicus (copia ARCO de Google), CC BY 4.0; METAR de la DGAC, archivo de Iowa State University (IEM). Periodo: 2021-06-28T10 a 2021-06-28T10 UTC. Cómo se arma: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion/blob/main/entrenamiento/antes_despues.py" rel="noopener">entrenamiento/antes_despues.py</a>.</p>
 </section>
-<footer><p>Actualizado el 26 oct, 05:19 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
+<footer><p>Actualizado el 26 oct, 12:24 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
 </div>
 <script>
 (function(){
-  const c = document.getElementById('comparar'), r = document.getElementById('pos');
-  const poner = v => { c.style.setProperty('--pos', v + '%'); r.value = v; };
-  r.addEventListener('input', () => poner(r.value));
-  document.querySelectorAll('.botones button').forEach(b => b.addEventListener('click', () => poner(b.dataset.v)));
-  let arrastrando = false;
-  const mover = ev => { const x = (ev.touches ? ev.touches[0].clientX : ev.clientX) - c.getBoundingClientRect().left;
-    poner(Math.max(0, Math.min(100, Math.round(100 * x / c.clientWidth)))); };
-  c.addEventListener('pointerdown', ev => { arrastrando = true; mover(ev); });
-  window.addEventListener('pointermove', ev => { if (arrastrando) mover(ev); });
-  window.addEventListener('pointerup', () => arrastrando = false);
+  document.querySelectorAll('[data-comparar]').forEach(caja => {
+    const c = caja.querySelector('.comparar'), r = caja.querySelector('input[type=range]');
+    const poner = v => { c.style.setProperty('--pos', v + '%'); r.value = v; };
+    r.addEventListener('input', () => poner(r.value));
+    caja.querySelectorAll('.botones button').forEach(b => b.addEventListener('click', () => poner(b.dataset.v)));
+    let arrastrando = false;
+    const mover = ev => { const x = ev.clientX - c.getBoundingClientRect().left; poner(Math.max(0, Math.min(100, Math.round(100 * x / c.clientWidth)))); };
+    c.addEventListener('pointerdown', ev => { arrastrando = true; mover(ev); });
+    window.addEventListener('pointermove', ev => { if (arrastrando) mover(ev); });
+    window.addEventListener('pointerup', () => arrastrando = false);
+  });
 })();
 </script>
 

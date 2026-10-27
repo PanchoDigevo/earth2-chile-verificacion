@@ -1,5 +1,5 @@
 {
-"generado": "2026-10-27T15:05Z",
+"generado": "2026-10-27T17:40Z",
 "lluvia_prevista": {
 "AIFS": {
 "corrida": "20261027_06",
@@ -8,7 +8,7 @@
 "mm48": 0.0
 },
 "GFS": {
-"corrida": "20261027_06",
+"corrida": "20261027_12",
 "mm6": 0.0,
 "mm24": 0.0,
 "mm48": 0.0
@@ -17,10 +17,10 @@
 "mm6": 0.0,
 "mm24": 0.0,
 "horas_lluvia_7d": {
-"SCTB": 11,
-"SCEL": 16
+"SCTB": 10,
+"SCEL": 14
 },
-"factor_antecedente": 1.32,
+"factor_antecedente": 1.28,
 "parametros": {
 "KF": 0.25,
 "beta": [
@@ -44,8 +44,8 @@
 "p24": 0.026,
 "p": 0.026,
 "nivel": "bajo",
-"mm_atencion": 7.6,
-"mm_aviso": 12.3
+"mm_atencion": 7.8,
+"mm_aviso": 12.7
 },
 {
 "id": 2,
@@ -64,8 +64,8 @@
 "p24": 0.026,
 "p": 0.026,
 "nivel": "bajo",
-"mm_atencion": 16.7,
-"mm_aviso": 27.0
+"mm_atencion": 17.2,
+"mm_aviso": 27.9
 },
 {
 "id": 4,

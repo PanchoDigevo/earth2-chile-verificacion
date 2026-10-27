@@ -1015,6 +1015,8 @@ def render_site(pts):
         import envivo_pagina                 # pestaña En vivo: armazón; los datos los lee el navegador
         print(f"site/envivo.html ({envivo_pagina.pagina(head, escribir, ahora)} KB) listo")
         print(f"site/pronostico.html ({pronostico_pagina.pagina(head, escribir, est, pts, ahora)} KB) listo")
+        import gemelo_pagina                 # Gemelo: un lugar con su cámara, ahora, viene, escenarios y simulador
+        print(f"site/gemelo.html ({gemelo_pagina.pagina(head, escribir, ahora)} KB) listo")
         import zoom_pagina                   # "Por qué 4 km": antes y después de una tormenta real
         kb = zoom_pagina.pagina(head, escribir, ahora)
         print(f"site/zoom.html ({kb} KB) listo" if kb else "site/zoom.html: faltan las imágenes (antes-despues.yml)")

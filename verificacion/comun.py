@@ -28,6 +28,7 @@ SECCIONES = [
     ("quebradas", "quebradas.html", "Quebradas"),
     ("escenarios", "escenarios.html", "Escenarios"),
     ("envivo", "envivo.html", "En vivo"),
+    ("gemelo", "gemelo.html", "Gemelo"),
     ("metodo", "metodo.html", "Método"),
 ]
 

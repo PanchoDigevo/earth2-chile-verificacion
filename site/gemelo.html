@@ -482,6 +482,18 @@ footer p{max-width:85ch}
 .gem-3d-nota{font-size:13px;color:var(--muted);margin:6px 0 0}
 .gem-verif td.num.bien{color:var(--bueno)} .gem-verif td.num.mal{color:var(--alto)}
 .maplibregl-ctrl-attrib{font-size:10px}
+.cams{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.cam{display:grid;gap:6px;border:1px solid var(--line-soft);border-radius:var(--radius);overflow:hidden;background:var(--surface)}
+.cam img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:var(--line-soft)}
+.cam .cab{padding:8px 10px 0;font-weight:600;font-size:14.5px;line-height:1.25}
+.cam .met{padding:0 10px 10px;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:13px;color:var(--muted)}
+.cam .met b{color:var(--fg);font-family:var(--font-display);font-size:16px}
+.cam .hora{font-size:12px;color:var(--muted);padding:0 10px}
+.tira{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin}
+.tira .cuadro{flex:0 0 220px;display:grid;gap:4px;font-size:12.5px}
+.tira .cuadro img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:6px;background:var(--line-soft)}
+.tira .cuadro .m{display:flex;gap:6px;align-items:center;color:var(--muted)}
+.tira .cuadro .m b{color:var(--fg)}
 </style><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.css">
 </head>
 <body>
@@ -546,7 +558,15 @@ footer p{max-width:85ch}
   <p class="gem-3d-nota">Relieve de AWS Terrain Tiles (Mapzen: Copernicus y SRTM, abierto) e imagen satelital de Esri. Es terreno real, no una simulación de la nieve: la línea de nieve de cada día está en el perfil de arriba. La versión con la nieve y la lluvia pintadas sobre el relieve viene después.</p>
 </section>
 
-<section class="card"><div class="sec-head"><h2>Lo que decían los modelos y lo que se midió</h2><p class="muted">Últimas 24 horas en Tobalaba: temperatura pronosticada (promedio de AIFS, IFS y GFS, corrida más reciente que cubría cada hora) contra la medida. Es la verificación de este lugar, hora a hora.</p></div><div class='tabla gem-verif'><table><thead><tr><th class='l'>Hora</th><th>Modelos</th><th>Medido</th><th>Diferencia</th><th class='l'>Tiempo observado</th></tr></thead><tbody><tr><td class='l'>Mon 26, 09:00</td><td class='num'>13,7 °C</td><td class='num'>15,0 °C</td><td class='num bien'>−1,3</td><td class='l'>despejado o nubes</td></tr><tr><td class='l'>Mon 26, 15:00</td><td class='num'>13,6 °C</td><td class='num'>20,0 °C</td><td class='num mal'>−6,4</td><td class='l'>despejado o nubes</td></tr><tr><td class='l'>Mon 26, 21:00</td><td class='num'>8,7 °C</td><td class='num'>–</td><td class='num '>–</td><td class='l'>–</td></tr><tr><td class='l'>Tue 27, 03:00</td><td class='num'>7,3 °C</td><td class='num'>–</td><td class='num '>–</td><td class='l'>–</td></tr></tbody></table></div></section>
+<section class="card">
+  <div class="sec-head"><h2>Cámaras con imagen: lo que se ve en la cordillera y el norte</h2><p class="muted">Cámaras públicas cuya imagen se puede leer por programa: el cuadro actual con lo que el modelo dice para ese lugar ahora (cielo, temperatura, lluvia; en la cordillera, desde qué altura nieva). Se guardan cada hora.</p></div>
+  <div class="cams" id="g-cams"><p class="small muted">Cargando las cámaras…</p></div>
+  <h3>Valle Nevado: lo que vio la cámara y lo que decía el modelo</h3>
+  <div class="tira" id="g-tira"></div>
+  <p class="small muted">Un cuadro cada 3 horas de las últimas 24 (cámara Piscina, OpenSnow). El modelo es el cuadrado de 25 km de Lo Barnechea (promedio de AIFS, IFS y GFS, corrida más reciente que cubría esa hora), sin corregir por los 3.000 m de altura: lo que se compara es el cielo y la lluvia, no la temperatura exacta. Fuentes de cada cámara en <code>envivo/camaras.csv</code>; cada imagen cita la suya.</p>
+</section>
+
+<section class="card"><div class="sec-head"><h2>Lo que decían los modelos y lo que se midió</h2><p class="muted">Últimas 24 horas en Tobalaba: temperatura pronosticada (promedio de AIFS, IFS y GFS, corrida más reciente que cubría cada hora) contra la medida. Es la verificación de este lugar, hora a hora.</p></div><div class='tabla gem-verif'><table><thead><tr><th class='l'>Hora</th><th>Modelos</th><th>Medido</th><th>Diferencia</th><th class='l'>Tiempo observado</th></tr></thead><tbody><tr><td class='l'>Mon 26, 15:00</td><td class='num'>13,5 °C</td><td class='num'>20,0 °C</td><td class='num mal'>−6,5</td><td class='l'>despejado o nubes</td></tr><tr><td class='l'>Mon 26, 21:00</td><td class='num'>8,6 °C</td><td class='num'>–</td><td class='num '>–</td><td class='l'>–</td></tr><tr><td class='l'>Tue 27, 03:00</td><td class='num'>7,3 °C</td><td class='num'>–</td><td class='num '>–</td><td class='l'>–</td></tr><tr><td class='l'>Tue 27, 09:00</td><td class='num'>9,7 °C</td><td class='num'>12,0 °C</td><td class='num mal'>−2,3</td><td class='l'>despejado o nubes</td></tr></tbody></table></div></section>
 
 <details><summary>Cómo se arma este gemelo</summary><div class="body">
   <p>La cámara es la transmisión pública de Ledrium en YouTube, con el reproductor oficial. YouTube no deja sacar cuadros desde servidores, así que de esta cámara no se guardan imágenes; la verificación usa el aeródromo de Tobalaba. Las cámaras con imagen fija (Valle Nevado, Portillo, Paranal) sí permiten guardar "lo que la cámara vio" junto a "lo que el modelo decía": es el siguiente gemelo.</p>
@@ -554,9 +574,9 @@ footer p{max-width:85ch}
   <p>Para un cliente, el mismo armado sirve con sus cámaras (basta una imagen cada algunos minutos), sus puntos sensibles y su comuna. Nada de esto es una alerta: las alertas son de la DMC y SENAPRED.</p>
 </div></details>
 <div class="aviso"><p class="small">Apoyo a la decisión, no una alerta. Las alertas oficiales son de la <a href="https://www.meteochile.gob.cl/" rel="noopener">Dirección Meteorológica de Chile</a> y de <a href="https://www.senapred.cl/" rel="noopener">SENAPRED</a>.</p></div>
-<footer><p>Actualizado el 27 oct, 05:59 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
+<footer><p>Actualizado el 27 oct, 09:43 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
 </div>
-<script>window.GEMELO = {"raw": "https://raw.githubusercontent.com/PanchoDigevo/earth2-chile-verificacion/datos-en-vivo/envivo", "lat": -33.4175, "lon": -70.6066, "comuna": "Q51587", "comunaNombre": "Providencia", "cuenca": "mapocho", "quebradas": [1, 3], "hitos": [["Cerro San Cristóbal", -33.4262, -70.6325, 880], ["Cerro Manquehue", -33.353, -70.5755, 1638], ["Farellones", -33.354, -70.308, 2470], ["Cerro Provincia", -33.3822, -70.4664, 2750], ["Valle Nevado", -33.355, -70.25, 3025], ["Cerro San Ramón", -33.448, -70.454, 3249], ["Cerro El Plomo", -33.2367, -70.2142, 5424]], "nombre": "Sanhattan, Santiago"};</script>
+<script>window.GEMELO = {"raw": "https://raw.githubusercontent.com/PanchoDigevo/earth2-chile-verificacion/datos-en-vivo/envivo", "lat": -33.4175, "lon": -70.6066, "comuna": "Q51587", "comunaNombre": "Providencia", "cuenca": "mapocho", "quebradas": [1, 3], "hitos": [["Cerro San Cristóbal", -33.4262, -70.6325, 880], ["Cerro Manquehue", -33.353, -70.5755, 1638], ["Farellones", -33.354, -70.308, 2470], ["Cerro Provincia", -33.3822, -70.4664, 2750], ["Valle Nevado", -33.355, -70.25, 3025], ["Cerro San Ramón", -33.448, -70.454, 3249], ["Cerro El Plomo", -33.2367, -70.2142, 5424]], "nombre": "Sanhattan, Santiago", "rawArchivo": "https://raw.githubusercontent.com/PanchoDigevo/earth2-chile-verificacion/camaras-archivo", "comunas": {"vallenevado_fourchette": "Q14502", "vallenevado_piscina": "Q14502", "vallenevado_puertadelsol": "Q14502", "portillo_laguna": "Q23660195", "chillan_plazatata": "Q51106", "corralco_hotel": "Q16902", "paranal_pano": "Q188049", "lasilla_cielo": "Q14462"}, "cuencas": {"vallenevado_fourchette": "mapocho", "vallenevado_piscina": "mapocho", "vallenevado_puertadelsol": "mapocho", "portillo_laguna": "aconcagua"}, "modeloHoras": {"20261026_18": {"t": 10.8, "p": null, "nb": 81}, "20261026_19": {"t": 10.1, "p": null, "nb": 84}, "20261026_20": {"t": 9.4, "p": null, "nb": 87}, "20261026_21": {"t": 8.7, "p": null, "nb": 90}, "20261026_22": {"t": 8.0, "p": null, "nb": 93}, "20261026_23": {"t": 7.3, "p": null, "nb": 97}, "20261027_00": {"t": 6.6, "p": 0.0, "nb": 100}, "20261027_01": {"t": 6.4, "p": 1.1, "nb": 88}, "20261027_02": {"t": 6.2, "p": 2.2, "nb": 76}, "20261027_03": {"t": 6.0, "p": 3.4, "nb": 64}, "20261027_04": {"t": 5.8, "p": 4.5, "nb": 52}, "20261027_05": {"t": 5.6, "p": 5.6, "nb": 41}, "20261027_06": {"t": 5.4, "p": 6.8, "nb": 29}, "20261027_07": {"t": 5.8, "p": 5.6, "nb": 26}, "20261027_08": {"t": 6.2, "p": 4.5, "nb": 23}, "20261027_09": {"t": 6.6, "p": 3.4, "nb": 20}, "20261027_10": {"t": 7.0, "p": 2.3, "nb": 17}, "20261027_11": {"t": 7.5, "p": 1.2, "nb": 14}, "20261027_12": {"t": 7.9, "p": 0.0, "nb": 11}, "20261027_13": {"t": 8.8, "p": 0.0, "nb": 12}, "20261027_14": {"t": 9.8, "p": 0.0, "nb": 13}, "20261027_15": {"t": 10.7, "p": 0.1, "nb": 14}, "20261027_16": {"t": 11.7, "p": 0.1, "nb": 15}, "20261027_17": {"t": 12.6, "p": 0.1, "nb": 16}, "20261027_18": {"t": 13.5, "p": 0.1, "nb": 18}}};</script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.js"></script>
 <script>
@@ -709,7 +729,27 @@ footer p{max-width:85ch}
         new maplibregl.Marker({element: el, anchor: 'bottom'}).setLngLat([h[2], h[1]]).addTo(m); }); });
   }
 
-  ahora(); quince(); nieve(); quebradas(); tresD();
+  // ---- cámaras con imagen (archivo propio) ----
+  async function camaras() {
+    const [cj, p48, cu, idx] = await Promise.all([j(RAW + '/camaras/camaras.json'), j('datos/pronostico_48h.json'), j('datos/cuencas_72h.json'), j(G.rawArchivo + '/index.json')]);
+    if (!cj) return;
+    const ahoraS = Date.now() / 1000;
+    const paso0 = id => { const d = p48 && p48.comunas[id]; if (!d) return null; return d.pasos.find(p => new Date(p.c).getTime() / 1000 >= ahoraS - 3 * 3600) || d.pasos[0]; };
+    const nieveHoy = cuenca => { const c = cu && cu.cuencas[cuenca]; if (!c) return null; const ps = c.pasos.filter(p => { const t = new Date(p.c).getTime() / 1000; return t > ahoraS - 3 * 3600 && t <= ahoraS + 12 * 3600; }); return ps.length ? Math.round(Math.min(...ps.map(p => p.nieve)) / 50) * 50 : null; };
+    $('#g-cams').innerHTML = cj.lista.map(c => { const e = cj.camaras[c.id] || {}, p = paso0(G.comunas[c.id]), nv = G.cuencas[c.id] ? nieveHoy(G.cuencas[c.id]) : null, h = Number((p || {c: '2026-01-01T12:00'}).c.slice(11, 13));
+      return `<figure class="cam"><img src="${RAW}/camaras/${c.id}.jpg?t=${e.t || 0}" alt="${c.nombre}" loading="lazy"><figcaption class="cab">${c.nombre}</figcaption>
+        <div class="met">${p ? `${icono(CIELO_P(p, h), 22)}<b>${n(p.t)}°</b><span>${p.p >= 0.5 ? n(p.p, 1) + ' mm' : 'sin lluvia'}</span>` : '<span>Sin pronóstico</span>'}${nv != null ? `<span>nieve desde ${n(nv)} m</span>` : ''}</div>
+        <div class="hora">${e.t ? 'Cuadro de las ' + hora(e.t) : 'Sin cuadro todavía'} · ${c.fuente}</div></figure>`; }).join('');
+    // tira: Valle Nevado, un cuadro cada 3 h de las últimas 24 h, con lo que decía el modelo para esa hora (nubosidad y lluvia del cuadrado de Lo Barnechea)
+    const horas = idx && idx.horas && idx.horas.vallenevado_piscina || [];
+    const sel = horas.slice(-24).filter((h, i, a) => (a.length - 1 - i) % 3 === 0);
+    $('#g-tira').innerHTML = sel.length ? sel.map(hh => { const iso = `${hh.slice(0, 4)}-${hh.slice(4, 6)}-${hh.slice(6, 8)}T${hh.slice(9, 11)}:00:00Z`, t = new Date(iso), m = (G.modeloHoras || {})[hh];
+      const local = t.toLocaleString('es-CL', {timeZone: 'America/Santiago', weekday: 'short', hour: '2-digit', hourCycle: 'h23'});
+      return `<div class="cuadro"><img src="${G.rawArchivo}/vallenevado_piscina/${hh}.jpg" alt="Valle Nevado, ${local}" loading="lazy"><span>${local} h · cámara</span>
+        <span class="m">${m ? `${icono(CIELO(m.nb, m.p, (t.getUTCHours() + 21) % 24), 20)}<b>${n(m.t)}°</b> modelo: ${m.nb != null ? n(m.nb) + ' % nubes' : ''}${m.p >= 0.5 ? ', ' + n(m.p, 1) + ' mm' : ''}` : 'modelo: sin dato para esa hora'}</span></div>`; }).join('') : '<p class="small muted">El archivo empieza a llenarse hoy: cada hora se guarda un cuadro y aquí aparecerán las últimas 24 horas con lo que decía el modelo.</p>';
+  }
+  ahora(); quince(); nieve(); quebradas(); camaras();
+  try { tresD(); } catch (e) { document.getElementById('gem-3d').innerHTML = '<p class="small muted" style="padding:14px">Este navegador no puede mostrar el terreno en 3D (necesita WebGL).</p>'; }
   setInterval(ahora, 5 * 60000);
 })();
 </script>

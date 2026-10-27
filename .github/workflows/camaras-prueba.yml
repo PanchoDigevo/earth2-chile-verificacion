@@ -1,0 +1,28 @@
+name: camaras-prueba
+# Prueba manual: ¿puede un runner de GitHub sacar un cuadro real de un stream de YouTube (yt-dlp + ffmpeg)?
+# Sube el cuadro como artefacto. Si YouTube bloquea a los runners, aquí se ve.
+on:
+  workflow_dispatch:
+    inputs:
+      video:
+        description: "ID del video en vivo"
+        default: "UpHOS_enhjI"
+jobs:
+  cuadro:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - run: pip install -q yt-dlp && ffmpeg -version | head -1
+      - name: URL del stream
+        run: |
+          yt-dlp --no-warnings -g -f "best[height<=720]/best" "https://www.youtube.com/watch?v=${{ inputs.video }}" > url.txt 2> err.txt || true
+          echo "url: $(cut -c1-120 url.txt)"; cat err.txt | tail -5
+          test -s url.txt
+      - name: Un cuadro
+        run: |
+          ffmpeg -hide_banner -loglevel error -y -i "$(head -1 url.txt)" -frames:v 1 -q:v 3 cuadro.jpg
+          ls -la cuadro.jpg
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cuadro-${{ inputs.video }}
+          path: cuadro.jpg

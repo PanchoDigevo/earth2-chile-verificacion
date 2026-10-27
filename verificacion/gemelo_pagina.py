@@ -302,17 +302,23 @@ JS = r"""
     const ahoraS = Date.now() / 1000;
     const paso0 = id => { const d = p48 && p48.comunas[id]; if (!d) return null; return d.pasos.find(p => new Date(p.c).getTime() / 1000 >= ahoraS - 3 * 3600) || d.pasos[0]; };
     const nieveHoy = cuenca => { const c = cu && cu.cuencas[cuenca]; if (!c) return null; const ps = c.pasos.filter(p => { const t = new Date(p.c).getTime() / 1000; return t > ahoraS - 3 * 3600 && t <= ahoraS + 12 * 3600; }); return ps.length ? Math.round(Math.min(...ps.map(p => p.nieve)) / 50) * 50 : null; };
-    $('#g-cams').innerHTML = cj.lista.map(c => { const e = cj.camaras[c.id] || {}, p = paso0(G.comunas[c.id]), nv = G.cuencas[c.id] ? nieveHoy(G.cuencas[c.id]) : null, h = Number((p || {c: '2026-01-01T12:00'}).c.slice(11, 13));
+    const GRUPOS = [['montana', 'Cordillera y centros de ski'], ['aerodromos', 'Aeródromos de la DGAC, de Arica a Puerto Williams (los mismos donde verificamos el pronóstico)'], ['norte', 'Observatorios del norte']];
+    const tarjeta = c => { const e = cj.camaras[c.id] || {}, p = paso0(G.comunas[c.id]), nv = G.cuencas[c.id] ? nieveHoy(G.cuencas[c.id]) : null, h = Number((p || {c: '2026-01-01T12:00'}).c.slice(11, 13));
+      if (!e.t) return '';
       return `<figure class="cam"><img src="${RAW}/camaras/${c.id}.jpg?t=${e.t || 0}" alt="${c.nombre}" loading="lazy"><figcaption class="cab">${c.nombre}</figcaption>
         <div class="met">${p ? `${icono(CIELO_P(p, h), 22)}<b>${n(p.t)}°</b><span>${p.p >= 0.5 ? n(p.p, 1) + ' mm' : 'sin lluvia'}</span>` : '<span>Sin pronóstico</span>'}${nv != null ? `<span>nieve desde ${n(nv)} m</span>` : ''}</div>
-        <div class="hora">${e.t ? 'Cuadro de las ' + hora(e.t) : 'Sin cuadro todavía'} · ${c.fuente}</div></figure>`; }).join('');
+        <div class="hora">${'Cuadro de las ' + hora(e.t)} · ${c.fuente}</div></figure>`; };
+    $('#g-cams').innerHTML = GRUPOS.map(([g, titulo]) => { const lista = cj.lista.filter(c => (c.grupo || 'norte') === g); const html = lista.map(tarjeta).join('');
+      return html ? `<h3>${titulo} <span class="small muted">· ${lista.length} cámaras</span></h3><div class="cams">${html}</div>` : ''; }).join('');
     // tira: Valle Nevado, un cuadro cada 3 h de las últimas 24 h, con lo que decía el modelo para esa hora (nubosidad y lluvia del cuadrado de Lo Barnechea)
-    const horas = idx && idx.horas && idx.horas.vallenevado_piscina || [];
-    const sel = horas.slice(-24).filter((h, i, a) => (a.length - 1 - i) % 3 === 0);
-    $('#g-tira').innerHTML = sel.length ? sel.map(hh => { const iso = `${hh.slice(0, 4)}-${hh.slice(4, 6)}-${hh.slice(6, 8)}T${hh.slice(9, 11)}:00:00Z`, t = new Date(iso), m = (G.modeloHoras || {})[hh];
-      const local = t.toLocaleString('es-CL', {timeZone: 'America/Santiago', weekday: 'short', hour: '2-digit', hourCycle: 'h23'});
-      return `<div class="cuadro"><img src="${G.rawArchivo}/vallenevado_piscina/${hh}.jpg" alt="Valle Nevado, ${local}" loading="lazy"><span>${local} h · cámara</span>
-        <span class="m">${m ? `${icono(CIELO(m.nb, m.p, (t.getUTCHours() + 21) % 24), 20)}<b>${n(m.t)}°</b> modelo: ${m.nb != null ? n(m.nb) + ' % nubes' : ''}${m.p >= 0.5 ? ', ' + n(m.p, 1) + ' mm' : ''}` : 'modelo: sin dato para esa hora'}</span></div>`; }).join('') : '<p class="small muted">El archivo empieza a llenarse hoy: cada hora se guarda un cuadro y aquí aparecerán las últimas 24 horas con lo que decía el modelo.</p>';
+    const tira = (cam, nombre, modelo) => { const horas = (idx && idx.horas && idx.horas[cam]) || [], sel = horas.slice(-8);
+      return sel.length ? sel.map(hh => { const iso = `${hh.slice(0, 4)}-${hh.slice(4, 6)}-${hh.slice(6, 8)}T${hh.slice(9, 11)}:00:00Z`, t = new Date(iso), m = (modelo || {})[hh];
+        const local = t.toLocaleString('es-CL', {timeZone: 'America/Santiago', weekday: 'short', hour: '2-digit', hourCycle: 'h23'});
+        return `<div class="cuadro"><img src="${G.rawArchivo}/${cam}/${hh}.jpg" alt="${nombre}, ${local}" loading="lazy"><span>${local} h · cámara</span>
+          <span class="m">${m ? `${icono(CIELO(m.nb, m.p, (t.getUTCHours() + 21) % 24), 20)}<b>${n(m.t)}°</b> modelo: ${m.nb != null ? n(m.nb) + ' % nubes' : ''}${m.p >= 0.5 ? ', ' + n(m.p, 1) + ' mm' : ''}` : 'modelo: sin dato para esa hora'}</span></div>`; }).join('')
+        : '<p class="small muted">El archivo empieza a llenarse hoy: cada 3 horas se guarda un cuadro y aquí aparecerán las últimas 24 horas con lo que decía el modelo.</p>'; };
+    $('#g-tira').innerHTML = tira('dgac_sctb_norte', 'Tobalaba', G.modeloHorasTobalaba);
+    $('#g-tira-vn').innerHTML = tira('vallenevado_piscina', 'Valle Nevado', G.modeloHoras);
   }
   ahora(); quince(); nieve(); quebradas(); camaras(); escenarios();
   try { tresD(); } catch (e) { document.getElementById('gem-3d').innerHTML = '<p class="small muted" style="padding:14px;color:#fff">Este navegador no puede mostrar la reproducción 3D (necesita WebGL).</p>'; }
@@ -383,7 +389,7 @@ def pagina(head, escribir, ahora):
     datos = json.dumps({"raw": RAW, "lat": L["lat"], "lon": L["lon"], "comuna": L["comuna"], "comunaNombre": L["comuna_nombre"], "cuenca": L["cuenca"],
                         "quebradas": L["quebradas"], "hitos": L["hitos"], "nombre": L["nombre"], "rawArchivo": RAW_ARCHIVO,
                         "comunas": {c["id"]: c["comuna"] for c in cams}, "cuencas": {c["id"]: c["cuenca"] for c in cams if c["cuenca"]},
-                        "modeloHoras": modelo_por_hora("Q14502", ahora)}, ensure_ascii=False)
+                        "modeloHoras": modelo_por_hora("Q14502", ahora), "modeloHorasTobalaba": modelo_por_hora(L["comuna"], ahora)}, ensure_ascii=False)
     verif = modelo_vs_medido(ahora)
     html = f"""{head("Gemelo · Earth-2 Chile", "Un lugar icónico de Chile con su cámara, lo que pasa ahora, lo que viene, los 50 escenarios a 15 días y un simulador de qué pasaría con otra lluvia u otra isoterma, sobre el terreno en 3D.")}
 <body>
@@ -461,11 +467,13 @@ def pagina(head, escribir, ahora):
 </section>
 
 <section class="card">
-  <div class="sec-head"><h2>Cámaras con imagen: lo que se ve en la cordillera y el norte</h2><p class="muted">Cámaras públicas cuya imagen se puede leer por programa: el cuadro actual con lo que el modelo dice para ese lugar ahora (cielo, temperatura, lluvia; en la cordillera, desde qué altura nieva). Se guardan cada hora.</p></div>
-  <div class="cams" id="g-cams"><p class="small muted">Cargando las cámaras…</p></div>
-  <h3>Valle Nevado: lo que vio la cámara y lo que decía el modelo</h3>
+  <div class="sec-head"><h2>Cámaras con imagen: lo que se ve en Chile ahora</h2><p class="muted">Cámaras públicas cuya imagen se puede leer por programa, cada 10 minutos: el cuadro actual con lo que el modelo dice para ese lugar ahora (cielo, temperatura, lluvia; en la cordillera, desde qué altura nieva). Las de los aeródromos de la DGAC están justo donde el sitio verifica el pronóstico. Se guarda un cuadro cada 3 horas.</p></div>
+  <div id="g-cams"><p class="small muted">Cargando las cámaras…</p></div>
+  <h3>Tobalaba: lo que vio la cámara y lo que decía el modelo</h3>
   <div class="tira" id="g-tira"></div>
-  <p class="small muted">Un cuadro cada 3 horas de las últimas 24 (cámara Piscina, OpenSnow). El modelo es el cuadrado de 25 km de Lo Barnechea (promedio de AIFS, IFS y GFS, corrida más reciente que cubría esa hora), sin corregir por los 3.000 m de altura: lo que se compara es el cielo y la lluvia, no la temperatura exacta. Fuentes de cada cámara en <code>envivo/camaras.csv</code>; cada imagen cita la suya.</p>
+  <h3>Valle Nevado: lo que vio la cámara y lo que decía el modelo</h3>
+  <div class="tira" id="g-tira-vn"></div>
+  <p class="small muted">Un cuadro cada 3 horas de las últimas 24. Tobalaba: cámara Norte del aeródromo (DGAC, IFIS) y el modelo del cuadrado de Providencia/Las Condes, el mismo punto donde el sitio verifica la temperatura. Valle Nevado: cámara Piscina (OpenSnow) y el cuadrado de 25 km de Lo Barnechea, sin corregir por los 3.000 m de altura: ahí lo que se compara es el cielo y la lluvia, no la temperatura exacta. El modelo es el promedio de AIFS, IFS y GFS de la corrida más reciente que cubría cada hora. Fuentes de cada cámara en <code>envivo/camaras.csv</code>; cada imagen cita la suya.</p>
 </section>
 
 {'<section class="card"><div class="sec-head"><h2>Lo que decían los modelos y lo que se midió</h2><p class="muted">Últimas 24 horas en Tobalaba: temperatura pronosticada (promedio de AIFS, IFS y GFS, corrida más reciente que cubría cada hora) contra la medida. Es la verificación de este lugar, hora a hora.</p></div>' + verif + '</section>' if verif else ''}

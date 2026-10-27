@@ -4,6 +4,17 @@ Para el gemelo digital: la imagen real del lugar junto al pronóstico y a los es
 que la imagen cambie). Lo que importa es que la imagen se pueda leer por programa y se actualice; el video en vivo es
 secundario.
 
+## El hallazgo grande: las cámaras de aeródromos de la DGAC (27-oct)
+
+El IFIS de la DGAC publica **93 cámaras en 50 aeródromos**, de Arica a Puerto Williams y la Antártica, una imagen cada 10 minutos, sin clave:
+índice `https://aipchile.dgac.gob.cl/camara/index.html`, por aeródromo `…/camara_ubicacion/show/designador/<OACI>` (la URL de cada imagen cambia en cada toma;
+`envivo/camaras.py` la saca de la página). 21 de esos aeródromos son los mismos donde el sitio verifica el pronóstico con METAR: cámara, medición y
+pronóstico en el mismo punto. Sin términos publicados (pie "VIA56 S.A."); uso informativo citando DGAC-IFIS. Ya se capturan 65 cámaras (las que tienen
+coordenadas en nuestra lista) y se archivan 45.
+
+También verificadas y en captura: Cerro Tololo (`ctio.noirlab.edu/~seecam/CTIO_webcam.jpg`, ~2 min), Cerro Pachón SOAR (`~soarcam/outer_back_new.jpg`, ~1 min),
+Corralco pistas (`ipcamlive alias zcbski`). Con clave o login: Windy (API), Rubin (EarthCam), ArgosAtlas (agregador, 559 cámaras de Chile, mayormente estas mismas).
+
 ## Lo que sirve de inmediato (imagen fija, sin clave, legible por programa)
 
 | Lugar | URL de la imagen | Cada cuánto | Nota |

@@ -47,14 +47,15 @@ jobs:
           MINUTOS: ${{ inputs.minutos || '340' }}
           DESTINO: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
         run: |
-          fin=$(( $(date +%s) + MINUTOS * 60 )); i=0
+          fin=$(( $(date +%s) + MINUTOS * 60 )); i=0; ultimo_archivo=$(md5sum archivo/index.json 2>/dev/null | cut -c1-32)
           while :; do
             python envivo/actualizar.py --salida datos/envivo || echo "::warning::falló esta vuelta; se reintenta en 5 minutos"
             python envivo/camaras.py datos/envivo/camaras archivo || echo "::warning::cámaras: falló esta vuelta"
-            if [ $((i % 12)) -eq 0 ]; then   # una vez por hora: el archivo de cuadros por hora (48 h) a su propia rama
+            if [ "$(md5sum archivo/index.json 2>/dev/null | cut -c1-32)" != "$ultimo_archivo" ]; then   # solo cuando entró un cuadro nuevo al archivo (cada 3 h)
+              ultimo_archivo=$(md5sum archivo/index.json | cut -c1-32)
               ( cd archivo && rm -rf .git && git init -q -b camaras-archivo \
                 && git config user.name "earth2-bot" && git config user.email "actions@users.noreply.github.com" \
-                && printf 'Un cuadro por hora de las cámaras públicas de envivo/camaras.csv, últimas 48 h. Cada imagen cita su fuente.\nEsta rama se reemplaza cada hora.\n' > LEEME.md \
+                && printf 'Un cuadro cada 3 horas de las cámaras públicas de envivo/camaras.csv (las marcadas archivar=1), últimas 48 h. Cada imagen cita su fuente.\nEsta rama se reemplaza cada hora.\n' > LEEME.md \
                 && git add -A && git commit -q -m "cámaras: $(date -u +%Y-%m-%dT%H:%MZ)" && git push -q -f "$DESTINO" camaras-archivo ) \
                 || echo "::warning::no se pudo guardar el archivo de cámaras"
             fi

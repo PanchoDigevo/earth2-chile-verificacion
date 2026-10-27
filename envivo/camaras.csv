@@ -1,0 +1,9 @@
+id,nombre,lugar,lat,lon,alt_m,url,fuente,licencia,cada_min
+vallenevado_fourchette,Valle Nevado · La Fourchette,Valle Nevado,-33.355,-70.250,3025,https://cams.opensnow.com/latest/4278/720.webp,OpenSnow (Valle Nevado),sin términos explícitos; se cita la fuente,10
+vallenevado_piscina,Valle Nevado · Piscina,Valle Nevado,-33.355,-70.250,3025,https://cams.opensnow.com/latest/4279/720.webp,OpenSnow (Valle Nevado),sin términos explícitos; se cita la fuente,10
+vallenevado_puertadelsol,Valle Nevado · Hotel Puerta del Sol,Valle Nevado,-33.355,-70.250,3025,https://cams.opensnow.com/latest/4280/720.webp,OpenSnow (Valle Nevado),sin términos explícitos; se cita la fuente,10
+portillo_laguna,Portillo · Laguna del Inca,Portillo,-32.835,-70.129,2880,https://ipcamlive.com/player/snapshot.php?alias=laguna,Ski Portillo (ipcamlive),sin términos explícitos; se cita la fuente,10
+chillan_plazatata,Nevados de Chillán · Plaza Tata,Nevados de Chillán,-36.906,-71.489,1700,https://ipcamlive.com/player/snapshot.php?alias=plazatata,Nevados de Chillán (ipcamlive),sin términos explícitos; se cita la fuente,10
+corralco_hotel,Corralco · hotel,Corralco (Lonquimay),-38.456,-71.500,1450,https://ipcamlive.com/player/snapshot.php?alias=hotel,Corralco (ipcamlive),sin términos explícitos; se cita la fuente,10
+paranal_pano,Cerro Paranal · panorámica,Paranal (Antofagasta),-24.627,-70.404,2635,https://www.eso.org/public/archives/static/pano/latest/pano_PV_960x.jpg,ESO,ESO autoriza embeber con la URL (CC BY 4.0),60
+lasilla_cielo,La Silla · cielo completo,La Silla (Coquimbo),-29.257,-70.738,2400,https://allsky-dk154.asu.cas.cz/AllSkyCurrentImage.JPG,Instituto Astronómico de la Academia Checa (La Silla),sin términos explícitos; se cita la fuente,10

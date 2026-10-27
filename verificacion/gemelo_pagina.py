@@ -15,6 +15,7 @@ from comun import JS_DEF, a_chile, aviso, nav, num, pie
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 RAW = "https://raw.githubusercontent.com/PanchoDigevo/earth2-chile-verificacion/datos-en-vivo/envivo"
+RAW_ARCHIVO = "https://raw.githubusercontent.com/PanchoDigevo/earth2-chile-verificacion/camaras-archivo"
 
 LUGAR = {
     "id": "sanhattan", "nombre": "Sanhattan, Santiago", "sub": "Costanera Center y Titanium · Providencia y Las Condes",
@@ -75,6 +76,18 @@ CSS = """
 .gem-3d-nota{font-size:13px;color:var(--muted);margin:6px 0 0}
 .gem-verif td.num.bien{color:var(--bueno)} .gem-verif td.num.mal{color:var(--alto)}
 .maplibregl-ctrl-attrib{font-size:10px}
+.cams{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.cam{display:grid;gap:6px;border:1px solid var(--line-soft);border-radius:var(--radius);overflow:hidden;background:var(--surface)}
+.cam img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:var(--line-soft)}
+.cam .cab{padding:8px 10px 0;font-weight:600;font-size:14.5px;line-height:1.25}
+.cam .met{padding:0 10px 10px;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:13px;color:var(--muted)}
+.cam .met b{color:var(--fg);font-family:var(--font-display);font-size:16px}
+.cam .hora{font-size:12px;color:var(--muted);padding:0 10px}
+.tira{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin}
+.tira .cuadro{flex:0 0 220px;display:grid;gap:4px;font-size:12.5px}
+.tira .cuadro img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:6px;background:var(--line-soft)}
+.tira .cuadro .m{display:flex;gap:6px;align-items:center;color:var(--muted)}
+.tira .cuadro .m b{color:var(--fg)}
 """
 
 JS = r"""
@@ -202,7 +215,27 @@ JS = r"""
         new maplibregl.Marker({element: el, anchor: 'bottom'}).setLngLat([h[2], h[1]]).addTo(m); }); });
   }
 
-  ahora(); quince(); nieve(); quebradas(); tresD();
+  // ---- cámaras con imagen (archivo propio) ----
+  async function camaras() {
+    const [cj, p48, cu, idx] = await Promise.all([j(RAW + '/camaras/camaras.json'), j('datos/pronostico_48h.json'), j('datos/cuencas_72h.json'), j(G.rawArchivo + '/index.json')]);
+    if (!cj) return;
+    const ahoraS = Date.now() / 1000;
+    const paso0 = id => { const d = p48 && p48.comunas[id]; if (!d) return null; return d.pasos.find(p => new Date(p.c).getTime() / 1000 >= ahoraS - 3 * 3600) || d.pasos[0]; };
+    const nieveHoy = cuenca => { const c = cu && cu.cuencas[cuenca]; if (!c) return null; const ps = c.pasos.filter(p => { const t = new Date(p.c).getTime() / 1000; return t > ahoraS - 3 * 3600 && t <= ahoraS + 12 * 3600; }); return ps.length ? Math.round(Math.min(...ps.map(p => p.nieve)) / 50) * 50 : null; };
+    $('#g-cams').innerHTML = cj.lista.map(c => { const e = cj.camaras[c.id] || {}, p = paso0(G.comunas[c.id]), nv = G.cuencas[c.id] ? nieveHoy(G.cuencas[c.id]) : null, h = Number((p || {c: '2026-01-01T12:00'}).c.slice(11, 13));
+      return `<figure class="cam"><img src="${RAW}/camaras/${c.id}.jpg?t=${e.t || 0}" alt="${c.nombre}" loading="lazy"><figcaption class="cab">${c.nombre}</figcaption>
+        <div class="met">${p ? `${icono(CIELO_P(p, h), 22)}<b>${n(p.t)}°</b><span>${p.p >= 0.5 ? n(p.p, 1) + ' mm' : 'sin lluvia'}</span>` : '<span>Sin pronóstico</span>'}${nv != null ? `<span>nieve desde ${n(nv)} m</span>` : ''}</div>
+        <div class="hora">${e.t ? 'Cuadro de las ' + hora(e.t) : 'Sin cuadro todavía'} · ${c.fuente}</div></figure>`; }).join('');
+    // tira: Valle Nevado, un cuadro cada 3 h de las últimas 24 h, con lo que decía el modelo para esa hora (nubosidad y lluvia del cuadrado de Lo Barnechea)
+    const horas = idx && idx.horas && idx.horas.vallenevado_piscina || [];
+    const sel = horas.slice(-24).filter((h, i, a) => (a.length - 1 - i) % 3 === 0);
+    $('#g-tira').innerHTML = sel.length ? sel.map(hh => { const iso = `${hh.slice(0, 4)}-${hh.slice(4, 6)}-${hh.slice(6, 8)}T${hh.slice(9, 11)}:00:00Z`, t = new Date(iso), m = (G.modeloHoras || {})[hh];
+      const local = t.toLocaleString('es-CL', {timeZone: 'America/Santiago', weekday: 'short', hour: '2-digit', hourCycle: 'h23'});
+      return `<div class="cuadro"><img src="${G.rawArchivo}/vallenevado_piscina/${hh}.jpg" alt="Valle Nevado, ${local}" loading="lazy"><span>${local} h · cámara</span>
+        <span class="m">${m ? `${icono(CIELO(m.nb, m.p, (t.getUTCHours() + 21) % 24), 20)}<b>${n(m.t)}°</b> modelo: ${m.nb != null ? n(m.nb) + ' % nubes' : ''}${m.p >= 0.5 ? ', ' + n(m.p, 1) + ' mm' : ''}` : 'modelo: sin dato para esa hora'}</span></div>`; }).join('') : '<p class="small muted">El archivo empieza a llenarse hoy: cada hora se guarda un cuadro y aquí aparecerán las últimas 24 horas con lo que decía el modelo.</p>';
+  }
+  ahora(); quince(); nieve(); quebradas(); camaras();
+  try { tresD(); } catch (e) { document.getElementById('gem-3d').innerHTML = '<p class="small muted" style="padding:14px">Este navegador no puede mostrar el terreno en 3D (necesita WebGL).</p>'; }
   setInterval(ahora, 5 * 60000);
 })();
 </script>"""
@@ -238,11 +271,39 @@ def modelo_vs_medido(ahora):
             + "".join(filas) + "</tbody></table></div>")
 
 
+def modelo_por_hora(comuna, ahora, horas=30):
+    """{AAAAMMDD_HH: {t, p, nb}} para las últimas `horas` horas en una comuna, con la corrida más reciente que cubría cada
+    paso (los modelos van cada 6 h; se interpola a cada hora)."""
+    try:
+        pr = pd.read_csv(os.path.join(AQUI, "data", "pronostico_comunas.csv"))
+    except Exception:
+        return {}
+    for c in ("run", "valid"):
+        pr[c] = pd.to_datetime(pr[c], format="mixed")
+    pr = pr[(pr.id == comuna) & ~pr.modelo.str.endswith(("SIMULADO", "PRUEBA")) & (pr.modelo != "PERSISTENCIA")]
+    ahora_n = ahora.tz_localize(None) if ahora.tzinfo else ahora
+    pr = pr[(pr.valid >= ahora_n - pd.Timedelta(hours=horas + 6)) & (pr.valid <= ahora_n + pd.Timedelta(hours=6))]
+    if pr.empty:
+        return {}
+    pr = pr.sort_values("run").groupby(["modelo", "valid"]).tail(1)
+    pr["p6"] = pr.sort_values("valid").groupby("modelo").tp_fc.diff().clip(lower=0)
+    g = pr.groupby("valid").agg(t=("t_fc", "mean"), p=("p6", "mean"), nb=("nub_fc", "mean")).sort_index()
+    if len(g) < 2:
+        return {}
+    idx = pd.date_range(g.index.min().floor("h"), g.index.max(), freq="h")
+    h = g.reindex(g.index.union(idx)).interpolate(method="time").reindex(idx)
+    return {t.strftime("%Y%m%d_%H"): {"t": round(float(r.t), 1), "p": None if pd.isna(r.p) else round(float(r.p), 1), "nb": None if pd.isna(r.nb) else int(round(float(r.nb)))}
+            for t, r in h.iterrows() if t >= ahora_n - pd.Timedelta(hours=horas)}
+
+
 def pagina(head, escribir, ahora):
-    import json
+    import json, csv
     L = LUGAR
+    cams = list(csv.DictReader(open(os.path.join(AQUI, "..", "envivo", "camaras.csv"), encoding="utf-8")))
     datos = json.dumps({"raw": RAW, "lat": L["lat"], "lon": L["lon"], "comuna": L["comuna"], "comunaNombre": L["comuna_nombre"], "cuenca": L["cuenca"],
-                        "quebradas": L["quebradas"], "hitos": L["hitos"], "nombre": L["nombre"]}, ensure_ascii=False)
+                        "quebradas": L["quebradas"], "hitos": L["hitos"], "nombre": L["nombre"], "rawArchivo": RAW_ARCHIVO,
+                        "comunas": {c["id"]: c["comuna"] for c in cams}, "cuencas": {c["id"]: c["cuenca"] for c in cams if c["cuenca"]},
+                        "modeloHoras": modelo_por_hora("Q14502", ahora)}, ensure_ascii=False)
     verif = modelo_vs_medido(ahora)
     html = f"""{head("Gemelo · Earth-2 Chile", "Un lugar icónico de Chile con su cámara, lo que pasa ahora, lo que viene, los 50 escenarios a 15 días y un simulador de qué pasaría con otra lluvia u otra isoterma, sobre el terreno en 3D.")}
 <body>
@@ -305,6 +366,14 @@ def pagina(head, escribir, ahora):
   <div class="sec-head"><h2>El terreno en 3D</h2><p class="muted">Desde la cámara hacia la cordillera: relieve real con los hitos y sus alturas. Arrastra para girar; con la rueda, acercar.</p></div>
   <div id="gem-3d" role="application" aria-label="Vista 3D del terreno entre Santiago y la cordillera"></div>
   <p class="gem-3d-nota">Relieve de AWS Terrain Tiles (Mapzen: Copernicus y SRTM, abierto) e imagen satelital de Esri. Es terreno real, no una simulación de la nieve: la línea de nieve de cada día está en el perfil de arriba. La versión con la nieve y la lluvia pintadas sobre el relieve viene después.</p>
+</section>
+
+<section class="card">
+  <div class="sec-head"><h2>Cámaras con imagen: lo que se ve en la cordillera y el norte</h2><p class="muted">Cámaras públicas cuya imagen se puede leer por programa: el cuadro actual con lo que el modelo dice para ese lugar ahora (cielo, temperatura, lluvia; en la cordillera, desde qué altura nieva). Se guardan cada hora.</p></div>
+  <div class="cams" id="g-cams"><p class="small muted">Cargando las cámaras…</p></div>
+  <h3>Valle Nevado: lo que vio la cámara y lo que decía el modelo</h3>
+  <div class="tira" id="g-tira"></div>
+  <p class="small muted">Un cuadro cada 3 horas de las últimas 24 (cámara Piscina, OpenSnow). El modelo es el cuadrado de 25 km de Lo Barnechea (promedio de AIFS, IFS y GFS, corrida más reciente que cubría esa hora), sin corregir por los 3.000 m de altura: lo que se compara es el cielo y la lluvia, no la temperatura exacta. Fuentes de cada cámara en <code>envivo/camaras.csv</code>; cada imagen cita la suya.</p>
 </section>
 
 {'<section class="card"><div class="sec-head"><h2>Lo que decían los modelos y lo que se midió</h2><p class="muted">Últimas 24 horas en Tobalaba: temperatura pronosticada (promedio de AIFS, IFS y GFS, corrida más reciente que cubría cada hora) contra la medida. Es la verificación de este lugar, hora a hora.</p></div>' + verif + '</section>' if verif else ''}

@@ -59,6 +59,9 @@ def actualizar(salida, archivo):
             os.remove(os.path.join(carpeta, f))
         estado[c["id"]] = {"t": t, "hash": h, "visto": t, "kb": len(b) // 1024}
         nuevas += 1
+    # índice del archivo: qué horas tiene cada cámara (lo lee la página Gemelo)
+    indice = {c["id"]: sorted(f[:-4] for f in os.listdir(os.path.join(archivo, c["id"]))) for c in cams if os.path.isdir(os.path.join(archivo, c["id"]))}
+    json.dump({"generado": t, "horas": indice}, open(os.path.join(archivo, "index.json"), "w", encoding="utf-8"), separators=(",", ":"))
     json.dump({"generado": t, "camaras": estado, "lista": [{k: c[k] for k in ("id", "nombre", "lugar", "lat", "lon", "alt_m", "fuente", "licencia", "cada_min")} for c in cams]},
               open(ruta, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
     print(f"cámaras: {nuevas} cuadros nuevos de {len(cams)} cámaras", flush=True)

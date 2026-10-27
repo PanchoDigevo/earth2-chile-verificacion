@@ -6,6 +6,7 @@ Sitio: https://panchodigevo.github.io/earth2-chile-verificacion/
 
 ## 27-oct-2026
 
+- **Cuadro "En qué etapa estamos" al día** (Resumen): la fila "Funciona hoy" ahora nombra el pronóstico por comuna, los 16 escenarios, los dos avisos de tormenta, el monitor de cordillera, la respuesta por dirección, las cámaras y el gemelo. La etapa no cambia: "Siguiente" (modelos Earth-2 corridos en el POD) sigue a la espera de la función de NVCF.
 - **76 cámaras públicas con imagen**, 65 de ellas de los aeródromos de la DGAC (IFIS, una imagen cada 10 minutos, de Arica a Puerto Williams), más Tololo, Pachón y Corralco. Gemelo las muestra agrupadas (cordillera, aeródromos, observatorios) con lo que dice el modelo para cada lugar, y compara cámara contra modelo en Tobalaba (el mismo aeródromo donde se verifica la temperatura) y en Valle Nevado. Archivo: un cuadro cada 3 horas, 48 horas, para 55 cámaras.
 - **Gemelo con reproducción del lugar:** arriba a la izquierda, el terreno real (relieve y satélite) visto desde la cámara, con el escenario del pronóstico pintado encima: nieve en las bandas de altura del DEM sobre la línea de nieve, nubes, niebla, lluvia, noche y rayos, hora por hora (48 h) o a mano (línea de nieve, lluvia, nubes, tormenta). Tres vistas: desde la cámara, hacia la cordillera y sobrevuelo. A la derecha, la cámara real para comparar. No es una foto generada: es el dato pintado sobre el terreno.
 

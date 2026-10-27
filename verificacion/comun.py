@@ -234,8 +234,10 @@ if __name__ == "__main__":
 # ---------- etapas del proyecto (portada y Método) ----------
 ETAPAS = [
     ("Funciona hoy", "hecho",
-     "Verificación diaria de tres pronósticos globales de 25 km (AIFS, IFS y GFS, que bajamos ya calculados), corrección por estación "
-     "(medida: baja el error entre 19 y 28 %), escenarios a 15 días con el ensamble de IA de ECMWF, indicador de quebradas quemadas y vista en vivo."),
+     "Verificación diaria de tres pronósticos globales de 25 km (AIFS, IFS y GFS, que bajamos ya calculados) y corrección por estación "
+     "(medida: baja el error entre 19 y 28 %). Sobre eso: pronóstico por comuna a 48 h y 15 días, 16 escenarios con el ensamble de IA de ECMWF, "
+     "dos avisos de tormenta (ambiente a 72 h y salto de rayos del GOES-19 cada 5 min), monitor de lluvia y nieve en la cordillera, "
+     "quebradas quemadas con respuesta por dirección, 76 cámaras públicas y el gemelo del lugar con la nieve pintada sobre el terreno."),
     ("Siguiente", "curso",
      "Correr nosotros, en las GPUs del POD, modelos globales de Earth-2: AIFS (para comprobar que da lo mismo que el de ECMWF) y FourCastNet, "
      "y verificarlos aquí junto a los demás. Sirven en Chile tal como vienen, porque cubren todo el planeta."),

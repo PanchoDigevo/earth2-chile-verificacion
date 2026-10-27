@@ -1,0 +1,739 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Gemelo · Earth-2 Chile</title>
+<meta name="description" content="Un lugar icónico de Chile con su cámara, lo que pasa ahora, lo que viene, los 50 escenarios a 15 días y un simulador de qué pasaría con otra lluvia u otra isoterma, sobre el terreno en 3D.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Una columna de 1080 px; lo consolidado antes que lo preliminar; cada número con su explicación al lado.
+   Neutros fríos con leve sesgo azul (cielo y hielo), acento verde glaciar; semáforo fijo y siempre con texto. */
+:root{
+  --bg:#f4f6f8; --surface:#ffffff; --fg:#17212b; --muted:#5a6977; --line:#d8dfe6; --line-soft:#e9eef2;
+  --accent:#0e7c86; --accent-soft:#d7eef0; --tierra:#e3e9ee; --costa:#9fb0bd;
+  --bueno:#0ca30c; --medio:#c98500; --alto:#d03b3b; --sin:#8a99a6;
+  --font-display:"Sora",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-body:"Source Sans 3","Source Sans Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-data:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --radius:10px; color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111821; --surface:#19222c; --fg:#e7ecf1; --muted:#9fadba; --line:#2c3845; --line-soft:#232e3a;
+  --accent:#44bcc6; --accent-soft:#163b40; --tierra:#243040; --costa:#4f6071;
+  --bueno:#2fbf2f; --medio:#e0a428; --alto:#ee6a6a; --sin:#7d8c99; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111821; --surface:#19222c; --fg:#e7ecf1; --muted:#9fadba; --line:#2c3845; --line-soft:#232e3a;
+  --accent:#44bcc6; --accent-soft:#163b40; --tierra:#243040; --costa:#4f6071;
+  --bueno:#2fbf2f; --medio:#e0a428; --alto:#ee6a6a; --sin:#7d8c99; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
+a:focus-visible,button:focus-visible,summary:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:16px;padding-block:24px 56px;display:grid;gap:32px}
+@media (min-width:720px){.wrap{padding-inline:28px;padding-block:40px 72px;gap:44px}}
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(26px,3.8vw,40px);line-height:1.15;font-weight:600;max-width:26ch}
+h2{font-size:22px;font-weight:600}
+h3{font-size:17px;font-weight:600}
+p{margin:0;max-width:65ch}
+.eyebrow{font-family:var(--font-display);font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.muted{color:var(--muted)}
+.small{font-size:14.5px}
+header{display:grid;gap:12px}
+header .lead{font-size:19px;color:var(--muted);max-width:60ch}
+.aviso{border-left:3px solid var(--accent);padding:10px 14px;background:var(--accent-soft);border-radius:0 var(--radius) var(--radius) 0;max-width:72ch}
+.aviso p{max-width:none}
+section{display:grid;gap:14px}
+.sec-head{display:grid;gap:6px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;display:grid;gap:12px;min-width:0}
+/* cifras de la portada */
+.cifras{display:grid;gap:12px;grid-template-columns:1fr}
+@media (min-width:760px){.cifras{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.cifra{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;display:grid;gap:6px;align-content:start}
+.cifra .v{font-family:var(--font-display);font-size:42px;font-weight:600;line-height:1.05;letter-spacing:-.02em}
+.cifra .v small{font-size:18px;font-weight:500;color:var(--muted);margin-left:3px}
+.cifra .v .flecha{color:var(--muted);font-weight:400;margin:0 6px}
+.cifra p{font-size:15.5px}
+.cifra.principal{border-color:var(--accent)}
+/* puertas de entrada */
+.puertas{display:grid;gap:12px;grid-template-columns:1fr}
+@media (min-width:760px){.puertas{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:1100px){.puertas{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.puerta{display:grid;gap:6px;align-content:start;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;color:var(--fg);text-decoration:none}
+.puerta:hover{border-color:var(--accent)}
+.puerta .q{font-family:var(--font-display);font-weight:600;font-size:18px}
+.puerta .ir{color:var(--accent);font-weight:600;font-size:15px}
+.puerta p{font-size:15.5px;color:var(--muted)}
+.confianza{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:14.5px;color:var(--muted)}
+/* controles */
+.controles{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center}
+.selector{display:flex;flex-wrap:wrap;gap:6px;border:0;padding:0;margin:0;align-items:center}
+.selector legend{float:left;margin-right:6px;padding:0}
+.selector label{position:relative;cursor:pointer;border:1px solid var(--line);border-radius:999px;padding:5px 13px;font-size:14.5px;font-weight:600;background:var(--bg)}
+.selector label .muted{font-weight:400;font-size:13px}
+.selector input{position:absolute;opacity:0;width:0;height:0;margin:0}
+.selector label:has(input:checked){background:var(--accent-soft);border-color:var(--accent)}
+.selector label:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+select{font:inherit;font-size:16px;padding:7px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg);max-width:100%}
+/* mapa */
+.mapa{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:flex-start;justify-content:center}
+.franja{margin:0;display:grid;gap:4px;justify-items:center}
+.franja svg{max-width:100%;height:auto;display:block;overflow:hidden}
+.franja figcaption{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.tierra{fill:var(--tierra);stroke:var(--costa);stroke-width:.6;vector-effect:non-scaling-stroke}
+.est{cursor:pointer;outline:none}
+.est .hit{fill:transparent}
+.est .pt{stroke:var(--surface);stroke-width:2;fill:var(--sin)}
+.est .guia{stroke:var(--muted);stroke-width:1;opacity:.7}
+.est.bueno .pt{fill:var(--bueno)} .est.medio .pt{fill:var(--medio)} .est.alto .pt{fill:var(--alto)}
+.est .etq{display:none;font:600 10px var(--font-body);fill:var(--fg);paint-order:stroke;stroke:var(--surface);stroke-width:3px;stroke-linejoin:round}
+.est.con-etq .etq{display:block}
+.est.sel .pt{stroke:var(--fg);stroke-width:2.5;r:7}
+.est:focus-visible .pt{stroke:var(--accent);stroke-width:3}
+.est:hover .pt{r:7}
+.leyenda{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:14px;color:var(--muted);align-items:center}
+.leyenda span.item{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:2px 9px 2px 7px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--fg);white-space:nowrap}
+.chip i{width:8px;height:8px;border-radius:50%;background:var(--sin)}
+.chip.bueno i{background:var(--bueno)} .chip.medio i{background:var(--medio)} .chip.alto i{background:var(--alto)}
+.chip.sin{color:var(--muted)} .chip.prelim{color:var(--muted);border-style:dashed}
+/* tu zona */
+.zona{display:grid;gap:20px}
+@media (min-width:900px){.zona{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);align-items:start}}
+.ficha{position:relative}
+@media (min-width:900px){.ficha{position:sticky;top:72px}}
+.ficha-cab{display:grid;gap:2px}
+.antes-despues{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.antes-despues > div{display:grid;gap:2px;justify-items:start}
+.antes-despues .lbl{font-size:13px;color:var(--muted)}
+.antes-despues .v{font-family:var(--font-display);font-size:34px;font-weight:600;line-height:1.1}
+.antes-despues .v small{font-size:16px;font-weight:500;color:var(--muted);margin-left:2px}
+.antes-despues .flecha{font-size:24px;color:var(--muted)}
+/* tablas */
+.tabla{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line-soft);text-align:right;vertical-align:middle;white-space:nowrap}
+th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line)}
+th.l,td.l{text-align:left}
+td.num{font-family:var(--font-data);font-size:14px;font-variant-numeric:tabular-nums}
+td .region{display:block;font-size:13px;color:var(--muted)}
+tr.actual td{background:var(--accent-soft)}
+#tabla-est tbody tr,#tabla-lluvia tbody tr{cursor:pointer}
+#tabla-est tbody tr:hover td,#tabla-lluvia tbody tr:hover td{background:color-mix(in srgb,var(--accent) 8%,transparent)}
+.ficha h3{margin-top:6px}
+table.mini td.sel{background:var(--accent-soft)}
+.modelo .que{font-size:14.5px;margin-bottom:4px}
+table.mini{font-size:14.5px} table.mini th,table.mini td{padding:6px 8px}
+td.medida{min-width:9.5em}
+.medida-in{display:inline-grid;grid-template-columns:72px auto;gap:8px;align-items:center;justify-items:end}
+.bar{display:block;width:72px;height:8px;border-radius:4px;background:var(--line-soft);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:4px;background:var(--sin)}
+.bar.bueno i{background:var(--bueno)} .bar.medio i{background:var(--medio)} .bar.alto i{background:var(--alto)}
+td.plazo{font-weight:600;vertical-align:top} tr.sep td{border-top:1px solid var(--line)}
+td.modelo-nombre{font-weight:600} td.modelo-nombre .tipo{display:block;font-size:12px;color:var(--muted);font-weight:400}
+td.num.mejor{font-weight:700;color:var(--accent)}
+/* bloque preliminar */
+.prelim-bloque{border:1px dashed var(--line);border-radius:var(--radius);padding:16px;display:grid;gap:12px;background:var(--surface)}
+.modelos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.modelos{grid-template-columns:1fr}}
+.modelo{border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;display:grid;gap:2px;align-content:start;background:var(--bg)}
+.modelo .tipo{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.modelo .nombre{font-family:var(--font-display);font-size:18px;font-weight:600}
+.modelo .value{font-family:var(--font-display);font-size:28px;font-weight:600;line-height:1.1}
+.modelo .value small{font-size:15px;font-weight:500;color:var(--muted);margin-left:2px}
+.modelo .foot{font-size:13px;color:var(--muted)}
+/* narrativa y desplegables */
+.narrativa{display:grid;gap:12px;max-width:68ch}
+.narrativa p{max-width:none}
+.narrativa ol{margin:0;padding-left:1.25em;display:grid;gap:8px}
+details{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);padding:0}
+summary{cursor:pointer;padding:12px 16px;font-weight:600;font-family:var(--font-display);font-size:15.5px;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--muted);font-weight:400}
+details[open] summary::after{content:"–"}
+details .body{padding:0 16px 16px;display:grid;gap:12px}
+details .body p{max-width:72ch}
+footer{border-top:1px solid var(--line);padding-top:20px;display:grid;gap:8px;font-size:14px;color:var(--muted)}
+footer p{max-width:85ch}
+@media (max-width:600px){.cifra .v{font-size:36px}}
+@media (prefers-reduced-motion:no-preference){.est .pt{transition:r .15s ease}}
+
+.topnav{position:sticky;top:0;z-index:1100;background:var(--surface);border-bottom:1px solid var(--line)}
+.topnav .in{max-width:1400px;margin:0 auto;padding-inline:16px;display:flex;align-items:center;gap:16px;min-height:52px}
+.topnav .marca{font-family:var(--font-display);font-weight:600;font-size:15px;color:var(--fg);text-decoration:none;white-space:nowrap;letter-spacing:-.01em}
+.topnav .marca small{color:var(--muted);font-weight:500;font-size:13px;margin-left:8px}
+.topnav .tabs{display:flex;gap:2px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.topnav .tabs::-webkit-scrollbar{display:none}
+.topnav .tabs a{display:inline-flex;align-items:center;height:52px;padding:0 12px;color:var(--muted);text-decoration:none;font-weight:600;font-size:14.5px;border-bottom:3px solid transparent;white-space:nowrap}
+.topnav .tabs a:hover{color:var(--fg)}
+.topnav .tabs a.activa{color:var(--fg);border-bottom-color:var(--accent)}
+.topnav .tabs a:focus-visible{outline:2px solid var(--accent);outline-offset:-4px;border-radius:4px}
+.topnav .largo{margin-left:.3em}
+@media (max-width:1060px){
+  .topnav .in{flex-wrap:wrap;gap:0;padding-inline:0}
+  .topnav .marca{padding:10px 16px 2px;font-size:14px}
+  .topnav .marca small{display:none}
+  .topnav .tabs{margin-left:0;width:100%;padding-inline:6px}
+  .topnav .tabs a{height:42px;padding:0 10px;font-size:14px}
+  .topnav .largo{display:none}
+}
+@media (max-width:620px){
+  /* en teléfono las seis pestañas no caben: se desplazan y el borde derecho se desvanece como pista */
+  .topnav .tabs{-webkit-mask-image:linear-gradient(to right,#000 85%,transparent);mask-image:linear-gradient(to right,#000 85%,transparent);padding-right:28px}
+  .topnav .tabs a{padding:0 9px}
+}
+
+.def{all:unset;cursor:help;border-bottom:1.5px dotted currentColor;text-underline-offset:2px}
+.def:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+.def-pop{position:absolute;z-index:2000;max-width:min(320px,calc(100vw - 32px));background:var(--fg);color:var(--bg);
+  font:400 14.5px/1.45 var(--font-body);padding:10px 12px;border-radius:8px;box-shadow:0 6px 24px rgba(0,0,0,.18)}
+
+.etapas{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.etapas li{display:grid;grid-template-columns:8.5em 1fr;gap:4px 12px;align-items:start}
+.etapas .tag{justify-self:start}
+.etapas .tag{font:600 12px var(--font-body);letter-spacing:.02em;padding:3px 9px;border-radius:999px;border:1px solid var(--line);white-space:nowrap;margin-top:2px}
+.etapas .hecho .tag{background:var(--accent-soft);border-color:var(--accent);color:var(--fg)}
+.etapas .curso .tag{background:color-mix(in srgb,var(--medio) 14%,var(--surface));border-color:var(--medio);color:var(--fg)}
+.etapas .pendiente .tag{background:var(--surface);border-style:dashed;color:var(--muted)}
+.etapas p{margin:0}
+@media (max-width:560px){.etapas li{grid-template-columns:1fr}}
+
+.aviso-oficial{border:1px solid var(--medio);border-left:6px solid var(--medio);background:color-mix(in srgb,var(--medio) 12%,var(--surface));
+  border-radius:var(--radius);padding:14px 16px;display:grid;gap:6px}
+.aviso-oficial strong.t{font-family:var(--font-display);font-size:17px}
+.aviso-oficial p{max-width:80ch;margin:0}
+.aviso-oficial .enlaces{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:15px}
+
+.tormenta-vivo{border:1px solid var(--alto);border-left:6px solid var(--alto);background:color-mix(in srgb,var(--alto) 10%,var(--surface));
+  border-radius:var(--radius);padding:14px 16px;display:grid;gap:6px}
+.tormenta-vivo[hidden]{display:none}
+.tormenta-vivo strong.t{font-family:var(--font-display);font-size:17px}
+.tormenta-vivo p{max-width:80ch;margin:0}
+.tormenta-vivo .enlaces{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:15px}
+
+.monitor{display:grid;gap:18px}
+.mon-estado{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;font-size:14.5px;color:var(--muted)}
+.mon-cifras{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.mon-cifra{border:1px solid var(--line-soft);border-radius:var(--radius);padding:12px 14px;display:grid;gap:2px;align-content:start}
+.mon-cifra .k{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.mon-cifra .v{font-family:var(--font-display);font-size:28px;font-weight:600;line-height:1.15}
+.mon-cifra .s{font-size:13px;color:var(--muted)}
+.mon-bloque{display:grid;gap:10px}
+.mon-bloque h3{margin:0;font-size:16px}
+.mon-qb{border:1px solid var(--line-soft);border-radius:var(--radius);padding:12px 14px;display:grid;gap:8px}
+.mon-qb .cab{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 12px}
+.mon-qb .cab strong{font-size:15.5px}
+.mon-qb .chips{display:flex;flex-wrap:wrap;gap:6px}
+.mon-escala{position:relative;height:10px;border-radius:5px;background:var(--line-soft);margin:4px 0 18px}
+.mon-escala .ll{position:absolute;inset:0 auto 0 0;border-radius:5px;background:var(--accent)}
+.mon-escala .um{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--medio)}
+.mon-escala .um.av{background:var(--alto)}
+.mon-escala .um span{position:absolute;top:16px;transform:translateX(-50%);font-size:11.5px;color:var(--muted);white-space:nowrap}
+.mon-qb p{margin:0;font-size:14px}
+.mon-rios td .mini{display:inline-block;width:54px;height:6px;border-radius:3px;background:var(--line-soft);vertical-align:middle;margin-right:6px;position:relative;overflow:hidden}
+.mon-rios td .mini i{position:absolute;inset:0 auto 0 0;background:var(--accent)}
+.mon-rios tr.crece td{background:color-mix(in srgb,var(--alto) 8%,transparent)}
+.mon-rios .mods{display:block;font-size:12px;color:var(--muted)}
+.mon-efectos{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.mon-efectos li{display:grid;grid-template-columns:12px 1fr;gap:10px;align-items:start;font-size:14.5px}
+.mon-efectos li::before{content:"";width:10px;height:10px;border-radius:50%;margin-top:6px;background:var(--medio)}
+.mon-efectos li.f::before{background:var(--alto)}
+.mon-pie{font-size:13px;color:var(--muted);margin:0}
+.mon-rayos{border-left:4px solid var(--alto);background:color-mix(in srgb,var(--alto) 8%,var(--surface));border-radius:6px;padding:10px 12px;display:grid;gap:4px;font-size:14.5px}
+.mon-rayos span{color:var(--muted);font-size:13.5px}
+.lluvia-curso{border:1px solid var(--accent);border-left:6px solid var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--surface));
+  border-radius:var(--radius);padding:12px 16px;display:grid;gap:4px}
+.lluvia-curso[hidden]{display:none}
+.lluvia-curso strong.t{font-family:var(--font-display);font-size:17px}
+.lluvia-curso p{margin:0;max-width:80ch}
+
+.dir{display:grid;gap:10px}
+.dir h2{margin:0}
+.dir form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.dir input[type=search]{min-width:0;width:100%;font:inherit;font-size:16px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg)}
+.dir input[type=search]:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.dir button{font:inherit;font-weight:600;font-size:15px;padding:10px 14px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;white-space:nowrap}
+.dir button.sec{background:var(--surface);color:var(--accent)}
+.dir button:disabled{opacity:.6;cursor:default}
+.dir .acciones{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.dir .estado{font-size:14px;color:var(--muted);margin:0;min-height:1.2em}
+.dir .sug{display:grid;gap:4px;margin:0;padding:0;list-style:none}
+.dir .sug button{text-align:left;background:var(--bg);color:var(--fg);border-color:var(--line);font-weight:500;white-space:normal}
+.dir-res{border-top:1px solid var(--line-soft);padding-top:10px;display:grid;gap:10px}
+.dir-res[hidden]{display:none}
+.dir-res .frase{font-size:17px;margin:0;line-height:1.4}
+.dir-res .frase strong.m{font-family:var(--font-display);font-size:24px}
+.dir-chips{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}
+.dir-chip{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:600;padding:3px 10px 3px 8px;border-radius:999px;border:1px solid var(--line);background:var(--bg)}
+.dir-chip i{width:8px;height:8px;border-radius:50%;background:var(--sin,var(--muted))}
+.dir-chip.n-bajo i{background:var(--bajo,var(--bueno))} .dir-chip.n-atencion i{background:var(--atencion,var(--medio))} .dir-chip.n-aviso i{background:var(--aviso,var(--alto))}
+.dir-chip.rayos i{background:var(--aviso,var(--alto))}
+.dir-escala{position:relative;height:10px;border-radius:5px;margin:4px 0 20px;background:linear-gradient(90deg,var(--aviso,var(--alto)) 0 25%,var(--atencion,var(--medio)) 25% 50%,var(--bajo,var(--bueno)) 50% 100%);opacity:.9}
+.dir-escala b{position:absolute;top:-5px;width:20px;height:20px;border-radius:50%;background:var(--surface);border:3px solid var(--fg);transform:translateX(-50%);box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.dir-escala span{position:absolute;top:14px;transform:translateX(-50%);font-size:11.5px;color:var(--muted);white-space:nowrap}
+.dir-res .nota{font-size:13px;color:var(--muted);margin:0}
+.dir-res .nota a{color:inherit}
+
+:root{--calido:#d9622b;--frio:#2a78d6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--calido:#ef8a55;--frio:#5aa0f0}}
+:root[data-theme="dark"]{--calido:#ef8a55;--frio:#5aa0f0}
+.cambios{display:grid;gap:12px;grid-template-columns:1fr}
+@media (min-width:900px){.cambios{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}.cambios .cambio:nth-child(3){grid-column:1/-1}}
+.barras-mar{width:100%;max-width:560px;height:auto;display:block}
+.barras-mar .nom{font:14px var(--font-body);fill:var(--fg)}
+.barras-mar .val{font:600 12.5px var(--font-data);fill:var(--fg)}
+.barras-mar .eje{font:11.5px var(--font-data);fill:var(--muted)}
+.barras-mar .eje0{stroke:var(--line);stroke-width:1}
+.barras-mar .calido{fill:var(--calido)} .barras-mar .frio{fill:var(--frio)}
+.indices{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.indices > div{display:grid;gap:2px}
+.indices .lbl{font-size:13px;color:var(--muted)}
+.indices .v{font-family:var(--font-display);font-size:30px;font-weight:600;line-height:1.1}
+.indices .v small{font-size:15px;color:var(--muted);margin-left:2px}
+.serie-mini{width:100%;max-width:260px;height:auto}
+.serie-mini .cero{stroke:var(--line);stroke-width:1}
+.serie-mini .linea{fill:none;stroke:var(--calido);stroke-width:2;stroke-linejoin:round}
+.serie-mini .fin{fill:var(--calido);stroke:var(--surface);stroke-width:2}
+.lista-deriva{margin:0;padding-left:1.2em;display:grid;gap:6px;font-size:15.5px;max-width:80ch}
+.cambios .contexto{grid-column:1/-1}
+.lista-ctx{margin:0;padding-left:1.2em;display:grid;gap:7px;font-size:15.5px;max-width:90ch}
+.lista-ctx .fuente{color:var(--muted);font-size:14px}
+
+.comparar{position:relative;max-width:640px;margin:0 auto;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);
+  background:var(--tierra);touch-action:pan-y}
+.comparar img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none}
+.comparar .arriba{position:absolute;inset:0;clip-path:inset(0 calc(100% - var(--pos, 50%)) 0 0)}
+.comparar .linea{position:absolute;top:0;bottom:0;left:var(--pos, 50%);width:2px;background:var(--fg);transform:translateX(-1px);pointer-events:none}
+.comparar .etq{position:absolute;top:10px;font:600 13px var(--font-body);background:var(--surface);color:var(--fg);padding:4px 9px;border-radius:999px;border:1px solid var(--line)}
+.comparar .etq.izq{left:10px} .comparar .etq.der{right:10px}
+.deslizador{display:block;width:100%;max-width:640px;margin:10px auto 0;accent-color:var(--accent)}
+.escala{display:flex;flex-wrap:wrap;gap:2px;max-width:640px;margin:10px auto 0;font:12px var(--font-data);color:var(--muted)}
+.escala span{flex:1;min-width:34px;text-align:center;padding-top:16px;position:relative}
+.escala span i{position:absolute;top:0;left:0;right:0;height:12px;border-radius:2px;outline:1px solid var(--line-soft)}
+.botones{display:flex;gap:8px;justify-content:center;margin-top:8px}
+.botones button{font:600 13px var(--font-body);padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;min-height:44px}
+
+.buscar{position:relative;max-width:520px}
+.buscar input{width:100%;font:17px var(--font-body);padding:12px 14px 12px 40px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--fg)}
+.buscar input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.buscar svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;stroke:var(--muted);fill:none;stroke-width:2}
+.buscar ul{position:absolute;left:0;right:0;top:calc(100% + 6px);margin:0;padding:6px;list-style:none;background:var(--surface);border:1px solid var(--line);
+  border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.14);max-height:320px;overflow:auto;z-index:20}
+.buscar li{padding:10px 12px;border-radius:8px;cursor:pointer;display:flex;justify-content:space-between;gap:12px}
+.buscar li:hover,.buscar li[aria-selected="true"]{background:var(--accent-soft)}
+.buscar li .r{color:var(--muted);font-size:13px}
+.sugeridas{display:flex;flex-wrap:wrap;gap:8px}
+.sugeridas button{font:14px var(--font-body);padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;min-height:38px}
+.ahora{display:grid;gap:14px}
+.ahora .top{display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px 28px}
+.ahora .temp{font-family:var(--font-display);font-size:72px;font-weight:600;line-height:1;letter-spacing:-.03em}
+.ahora .temp small{font-size:28px;font-weight:500;color:var(--muted);letter-spacing:0}
+.ahora .mm{display:grid;gap:3px;font-size:15px}
+.ahora .mm b{font-size:22px;font-family:var(--font-display);font-weight:600}
+.ahora .fuente{font-size:13px;color:var(--muted)}
+.hoy{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:15px}
+.hoy span svg{width:16px;height:16px;vertical-align:-3px;stroke:var(--muted);fill:none;stroke-width:1.8;margin-right:4px}
+.hoy span.llueve svg{stroke:var(--lluvia)}
+.horas{display:flex;gap:4px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x proximity}
+.hora{flex:0 0 76px;scroll-snap-align:start;display:grid;gap:5px;text-align:center;padding:10px 4px;border-radius:10px;border:1px solid var(--line-soft)}
+.hora .h{font:12px var(--font-data);color:var(--muted)}
+.hora .d{font:600 11px var(--font-body);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.hora .t{font-family:var(--font-display);font-size:20px;font-weight:600}
+.hora .ll{font-size:12.5px;color:var(--muted);min-height:16px}
+.hora .ll.si{color:var(--lluvia);font-weight:600}
+.hora .v{font-size:12px;color:var(--muted)}
+.graf svg{width:100%;height:auto;display:block;overflow:visible}
+.graf .eje{font:11px var(--font-data);fill:var(--muted)} .graf .grid{stroke:var(--line-soft)} .graf .sep{stroke:var(--line)}
+.graf .banda{fill:var(--accent-soft)} .graf .lin{fill:none;stroke:var(--accent);stroke-width:2}
+.graf .pt{fill:var(--accent);stroke:var(--surface);stroke-width:2} .graf .barra{fill:var(--lluvia)} .graf .etq{font:600 12px var(--font-data);fill:var(--fg)}
+.graf .hit{fill:transparent;cursor:crosshair} .graf .guia{stroke:var(--muted);stroke-dasharray:3 3}
+.tip{position:absolute;pointer-events:none;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,.12);min-width:150px;z-index:5}
+.tip b{display:block;margin-bottom:2px}
+.quince{display:grid;gap:0}
+.q-fila{display:grid;grid-template-columns:5.2em 30px 3.6em 3em 1fr 3em 4.2em;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--line-soft);font-size:15px}
+.q-fila:first-child{border-top:0}
+.q-fila .dia{font-weight:600} .q-fila .dia small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.q-fila .pl{font:12.5px var(--font-data);color:var(--muted);display:flex;align-items:center;gap:3px}
+.q-fila .pl.si{color:var(--lluvia);font-weight:600} .q-fila .pl svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.8}
+.q-fila .mn{text-align:right;color:var(--muted);font-family:var(--font-data)} .q-fila .mx{font-family:var(--font-data);font-weight:600}
+.q-fila .vi{font:12.5px var(--font-data);color:var(--muted);text-align:right}
+.rango{position:relative;height:10px;border-radius:5px;background:var(--line-soft)}
+.rango i{position:absolute;top:0;bottom:0;border-radius:5px}
+.rango .amplio{background:var(--accent-soft)} .rango .centro{background:var(--accent)}
+.q-pie{font-size:13px;color:var(--muted)}
+.confianza-txt{margin:0;padding:10px 12px;border-radius:8px;background:var(--accent-soft);font-size:14.5px}
+.estado{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;color:var(--muted);margin:0}
+.estado span::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--bueno);margin-right:6px;vertical-align:1px}
+.estado span.atrasado{color:var(--fg);font-weight:600} .estado span.atrasado::before{background:var(--medio)}
+.estado span.sin::before{background:var(--sin)}
+.vacio{color:var(--muted)}
+:root{--lluvia:#3b7dd8}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--lluvia:#6fa6f0}}
+:root[data-theme="dark"]{--lluvia:#6fa6f0}
+.ahora .cielo-txt{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:600}
+.hora .ic{display:flex;justify-content:center;min-height:26px}
+.q-fila .ic{display:flex;justify-content:center}
+@media (max-width:560px){.ahora .temp{font-size:58px} .q-fila{grid-template-columns:4.2em 26px 3em 2.4em 1fr 2.4em;font-size:14px} .q-fila .vi{display:none}}
+
+.cielo{display:inline-block;vertical-align:middle;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
+.cielo .i-sol{stroke:var(--sol);fill:none} .cielo circle.i-sol{fill:color-mix(in srgb,var(--sol) 35%,transparent)}
+.cielo .i-luna{stroke:var(--muted);fill:color-mix(in srgb,var(--muted) 18%,transparent)}
+.cielo .i-nube{stroke:var(--muted);fill:var(--surface)} .cielo .i-gris{fill:color-mix(in srgb,var(--muted) 22%,var(--surface))}
+.cielo .i-gota{stroke:var(--lluvia);stroke-width:2}
+.cielo .i-rayo{stroke:var(--medio);stroke-width:2.2} .cielo .i-fuerte{stroke:var(--alto)}
+.tormenta-72{margin:4px 0 0;padding:8px 12px;border-left:4px solid var(--medio);background:color-mix(in srgb,var(--medio) 10%,var(--surface));border-radius:6px;font-size:15px}
+.tormenta-72.fuerte{border-left-color:var(--alto);background:color-mix(in srgb,var(--alto) 10%,var(--surface))}
+.tormenta-72[hidden]{display:none}
+:root{--sol:#e0a100}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--sol:#f2c14e}}
+:root[data-theme="dark"]{--sol:#f2c14e}
+
+.hero{display:grid;gap:22px;align-items:start}
+@media (min-width:960px){.hero{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:36px}}
+.hero h1{font-size:clamp(32px,4.4vw,52px);line-height:1.04;letter-spacing:-.025em;margin:6px 0 14px}
+.hero .lead{font-size:18.5px;max-width:52ch;margin:0 0 20px}
+.hero .buscar{max-width:none}
+.hero .buscar input{font-size:18px;padding:15px 16px 15px 44px}
+.hero .sugeridas{margin-top:12px}
+.vivo{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:18px;padding:20px 22px;
+  background:linear-gradient(160deg,color-mix(in srgb,var(--accent) 16%,var(--surface)),var(--surface) 70%);display:grid;gap:12px;min-height:260px}
+.vivo .lugar{font-family:var(--font-display);font-weight:600;font-size:20px}
+.vivo .lugar small{display:block;font:13px var(--font-body);color:var(--muted);font-weight:400}
+.vivo .grande{font-family:var(--font-display);font-size:84px;font-weight:600;line-height:.95;letter-spacing:-.04em}
+.vivo .grande small{font-size:30px;color:var(--muted);font-weight:500;letter-spacing:0}
+.vivo .v-cab{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.vivo .cielo-txt{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:600}
+.vivo .mm{font-size:15px;display:flex;gap:16px;flex-wrap:wrap}
+.vivo .mm b{font-family:var(--font-display);font-size:19px}
+.vivo .prox{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;border-top:1px solid var(--line-soft);padding-top:12px}
+.vivo .prox div{text-align:center;display:grid;gap:2px}
+.vivo .prox .h{font:12px var(--font-data);color:var(--muted)}
+.vivo .prox .t{font-family:var(--font-display);font-weight:600;font-size:18px}
+.vivo .prox .l{font-size:11.5px;color:var(--lluvia);min-height:14px}
+.vivo .fuente{font-size:12.5px;color:var(--muted)}
+.vivo a.ir{font-weight:600;text-decoration:none}
+.banda-cifras{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 0}
+.banda-cifras div{display:grid;gap:4px}
+.banda-cifras .v{font-family:var(--font-display);font-size:34px;font-weight:600;letter-spacing:-.02em;line-height:1}
+.banda-cifras .v small{font-size:16px;color:var(--muted);font-weight:500}
+.banda-cifras p{margin:0;font-size:14px;color:var(--muted);max-width:30ch}
+.prueba .mapa{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.prueba .mapa svg{width:100%;height:auto}
+.prueba{display:grid;gap:16px}
+@media (min-width:1050px){.prueba{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}}
+.prueba .card h2{font-size:22px}
+.puerta-mini{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.puerta-mini a{display:grid;gap:6px;padding:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);text-decoration:none;color:var(--fg)}
+.puerta-mini a:hover{border-color:var(--accent)}
+.puerta-mini .q{font-family:var(--font-display);font-weight:600;font-size:17px}
+.puerta-mini p{margin:0;font-size:14px;color:var(--muted)}
+.puerta-mini .ir{font-size:14px;font-weight:600;color:var(--accent)}
+.sec-titulo{display:grid;gap:4px}
+.sec-titulo h2{font-size:clamp(24px,2.6vw,32px)}
+
+.gem-top{display:grid;gap:14px}
+@media (min-width:1000px){.gem-top{grid-template-columns:minmax(0,3fr) minmax(300px,2fr);align-items:start}}
+.gem-cam{position:relative;aspect-ratio:16/9;background:#000;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line)}
+.gem-cam iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.gem-cam .etq{position:absolute;left:10px;top:10px;background:rgba(0,0,0,.6);color:#fff;font-size:12.5px;padding:3px 8px;border-radius:6px}
+.gem-cam .etq i{display:inline-block;width:8px;height:8px;border-radius:50%;background:#e33;margin-right:6px;vertical-align:1px}
+.gem-ahora{display:grid;gap:10px}
+.gem-cifras{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.gem-cifra{border:1px solid var(--line-soft);border-radius:8px;padding:10px 12px;display:grid;gap:2px}
+.gem-cifra .k{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.gem-cifra .v{font-family:var(--font-display);font-size:24px;font-weight:600;line-height:1.15}
+.gem-cifra .s{font-size:12.5px;color:var(--muted)}
+.gem-horas{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin}
+.gem-horas .h{flex:0 0 64px;display:grid;justify-items:center;gap:2px;border:1px solid var(--line-soft);border-radius:8px;padding:8px 4px;font-size:12.5px}
+.gem-horas .h .d{color:var(--muted);font-size:11px;min-height:13px}
+.gem-horas .h .t{font-family:var(--font-display);font-weight:600;font-size:16px}
+.gem-horas .h .ll{color:var(--lluvia,var(--accent));font-size:11.5px;min-height:13px}
+.gem-quince{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin}
+.gem-quince .q{flex:0 0 58px;display:grid;justify-items:center;gap:2px;border:1px solid var(--line-soft);border-radius:8px;padding:8px 2px;font-size:12px}
+.gem-quince .q .d{color:var(--muted);font-size:11px}
+.gem-quince .q .mx{font-weight:600} .gem-quince .q .mn{color:var(--muted)}
+.gem-quince .q .p{font-size:11px;color:var(--lluvia,var(--accent))}
+.gem-casos{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}
+.gem-casos li{font-size:13.5px;border:1px solid var(--line);border-radius:999px;padding:3px 10px;background:var(--bg)}
+.gem-casos li b{font-family:var(--font-display)}
+.gem-sim{display:grid;gap:14px}
+@media (min-width:1000px){.gem-sim{grid-template-columns:1fr 1fr}}
+.gem-sim label{display:grid;gap:4px;font-size:14.5px}
+.gem-sim input[type=range]{width:100%;accent-color:var(--accent)}
+.gem-sim .val{font-family:var(--font-display);font-weight:600;font-size:22px}
+.perfil{width:100%;height:auto;display:block}
+.perfil .cielo{fill:color-mix(in srgb,var(--accent) 8%,var(--surface))}
+.perfil .monte{fill:var(--tierra);stroke:var(--costa);stroke-width:1}
+.perfil .nieve{fill:#fff;opacity:.85}
+.perfil .linea{stroke:var(--alto);stroke-width:2;stroke-dasharray:6 4}
+.perfil .linea-txt{font:600 12px var(--font-body);fill:var(--alto)}
+.perfil .hito{font:11.5px var(--font-body);fill:var(--fg)}
+.perfil .hito-m{font:11px var(--font-data);fill:var(--muted)}
+.perfil .hito-p{fill:var(--fg)}
+.gem-dias{display:flex;flex-wrap:wrap;gap:4px}
+.gem-dias button{font:600 12.5px var(--font-body);padding:5px 8px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.gem-dias button.sel{background:var(--accent);border-color:var(--accent);color:#fff}
+.gem-qb{display:grid;gap:6px}
+.gem-qb .fila{display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:14.5px}
+#gem-3d{height:420px;border-radius:var(--radius);border:1px solid var(--line);overflow:hidden;background:var(--line-soft)}
+.gem-3d-nota{font-size:13px;color:var(--muted);margin:6px 0 0}
+.gem-verif td.num.bien{color:var(--bueno)} .gem-verif td.num.mal{color:var(--alto)}
+.maplibregl-ctrl-attrib{font-size:10px}
+</style><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.css">
+</head>
+<body>
+<nav class="topnav" aria-label="Secciones del sitio"><div class="in"><a class="marca" href="./">Earth-2 Chile<small>verificación pública del pronóstico</small></a><div class="tabs"><a href="./">Resumen</a><a href="pronostico.html">Pronóstico</a><a href="zona.html">Tu zona</a><a href="eventos.html">Eventos<span class="largo">2026</span></a><a href="quebradas.html">Quebradas</a><a href="escenarios.html">Escenarios</a><a href="envivo.html">En vivo</a><a href="gemelo.html" class="activa" aria-current="page">Gemelo</a><a href="metodo.html">Método</a></div></div></nav>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Gemelo · Sanhattan, Santiago</div>
+  <h1>Sanhattan, Santiago: lo que se ve, lo que viene y lo que pasaría</h1>
+  <p class="lead">Costanera Center y Titanium · Providencia y Las Condes. La cámara muestra el lugar en este momento; alrededor, lo que miden las estaciones, lo que pronostican los modelos y un simulador para probar escenarios sobre el terreno real.</p>
+</header>
+
+<div class="gem-top">
+  <div>
+    <div class="gem-cam"><span class="etq"><i></i>En vivo · Ledrium</span>
+      <iframe src="https://www.youtube-nocookie.com/embed/UpHOS_enhjI?autoplay=1&mute=1&rel=0" title="Cámara en vivo: Sanhattan, Santiago" loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+    <p class="small muted">Transmisión pública de <a href="https://www.youtube.com/@Ledrium" rel="noopener">Ledrium</a> en YouTube (cámara de Ledrium, empresa chilena de videovigilancia; transmisión pública en YouTube). Si el reproductor no carga, el stream cambió de dirección: se actualiza en la siguiente publicación del sitio.</p>
+  </div>
+  <section class="card gem-ahora" aria-live="polite">
+    <h2>Ahora</h2>
+    <div class="gem-cifras">
+      <div class="gem-cifra"><span class="k">Temperatura</span><span class="v" id="g-temp">–</span><span class="s" id="g-temp-s"></span></div>
+      <div class="gem-cifra"><span class="k">Viento</span><span class="v" id="g-viento">–</span><span class="s" id="g-viento-s"></span></div>
+      <div class="gem-cifra"><span class="k">Rayos a menos de 10 km</span><span class="v" id="g-rayos">–</span><span class="s" id="g-rayos-s"></span></div>
+      <div class="gem-cifra"><span class="k">Lluvia medida</span><span class="v" id="g-lluvia">–</span><span class="s" id="g-lluvia-s"></span></div>
+    </div>
+    <p class="small muted" id="g-iso-ahora"></p>
+    <p class="small muted">Tobalaba está a 7 km de la cámara; los rayos son del satélite GOES-19 (cada 5 minutos) y la lluvia, de las estaciones de la DMC a menos de 20 km. <a href="envivo.html">Ver todo en vivo →</a></p>
+  </section>
+</div>
+
+<section class="card">
+  <div class="sec-head"><h2>Lo que viene en Providencia</h2><p class="muted">Próximas 48 horas cada 6 horas (los tres modelos corregidos con Tobalaba) y 15 días con el ensamble de 50 escenarios.</p></div>
+  <div class="gem-horas" id="g-horas"></div>
+  <p class="small" id="g-tormenta"></p>
+  <div class="gem-quince" id="g-quince"></div>
+  <h3>Casos más probables en 15 días</h3>
+  <ul class="gem-casos" id="g-casos"></ul>
+  <p class="small muted" id="g-casos-nota"></p>
+  <p class="small muted"><a href="pronostico.html#Q51587">Pronóstico completo de Providencia →</a></p>
+</section>
+
+<section class="card gem-sim">
+  <div>
+    <div class="sec-head"><h2>¿Y si…? Línea de nieve en la cordillera</h2><p class="muted">Los cerros que se ven desde Santiago, con la nieve según la isoterma 0 °C: la prevista por GFS para cada día (cuenca del Mapocho) o la que tú elijas.</p></div>
+    <div class="gem-dias" id="g-dias"></div>
+    <label>¿Y si la isoterma estuviera a <span class="val" id="g-iso-val">3.000 m</span>?<input type="range" id="g-iso" min="1000" max="5500" step="50" value="3000"></label>
+  </div>
+  <div>
+    <div id="g-perfil"></div>
+    <p class="small" id="g-nieve-txt"></p>
+  </div>
+  <div>
+    <div class="sec-head"><h2>¿Y si cayeran… en 2 horas?</h2><p class="muted">Las quebradas quemadas más cercanas a la cámara (Apoquindo a 8 km, Ramón a 10 km) y su nivel con esa lluvia.</p></div>
+    <label><span class="val" id="g-mm-val">20 mm</span><input type="range" id="g-mm" min="0" max="50" step="1" value="20"></label>
+  </div>
+  <div class="gem-qb" id="g-qb"></div>
+</section>
+
+<section class="card">
+  <div class="sec-head"><h2>El terreno en 3D</h2><p class="muted">Desde la cámara hacia la cordillera: relieve real con los hitos y sus alturas. Arrastra para girar; con la rueda, acercar.</p></div>
+  <div id="gem-3d" role="application" aria-label="Vista 3D del terreno entre Santiago y la cordillera"></div>
+  <p class="gem-3d-nota">Relieve de AWS Terrain Tiles (Mapzen: Copernicus y SRTM, abierto) e imagen satelital de Esri. Es terreno real, no una simulación de la nieve: la línea de nieve de cada día está en el perfil de arriba. La versión con la nieve y la lluvia pintadas sobre el relieve viene después.</p>
+</section>
+
+<section class="card"><div class="sec-head"><h2>Lo que decían los modelos y lo que se midió</h2><p class="muted">Últimas 24 horas en Tobalaba: temperatura pronosticada (promedio de AIFS, IFS y GFS, corrida más reciente que cubría cada hora) contra la medida. Es la verificación de este lugar, hora a hora.</p></div><div class='tabla gem-verif'><table><thead><tr><th class='l'>Hora</th><th>Modelos</th><th>Medido</th><th>Diferencia</th><th class='l'>Tiempo observado</th></tr></thead><tbody><tr><td class='l'>Mon 26, 09:00</td><td class='num'>12,8 °C</td><td class='num'>15,0 °C</td><td class='num mal'>−2,2</td><td class='l'>despejado o nubes</td></tr><tr><td class='l'>Mon 26, 15:00</td><td class='num'>13,6 °C</td><td class='num'>20,0 °C</td><td class='num mal'>−6,4</td><td class='l'>despejado o nubes</td></tr><tr><td class='l'>Mon 26, 21:00</td><td class='num'>8,9 °C</td><td class='num'>–</td><td class='num '>–</td><td class='l'>–</td></tr></tbody></table></div></section>
+
+<details><summary>Cómo se arma este gemelo</summary><div class="body">
+  <p>La cámara es la transmisión pública de Ledrium en YouTube, con el reproductor oficial. YouTube no deja sacar cuadros desde servidores, así que de esta cámara no se guardan imágenes; la verificación usa el aeródromo de Tobalaba. Las cámaras con imagen fija (Valle Nevado, Portillo, Paranal) sí permiten guardar "lo que la cámara vio" junto a "lo que el modelo decía": es el siguiente gemelo.</p>
+  <p>Ahora: METAR de Tobalaba, rayos del GOES-19 a menos de 10 km y lluvia de las estaciones de la DMC a menos de 20 km. Viene: el pronóstico de Providencia de la pestaña Pronóstico (48 h) y el ensamble de 15 días; los casos, del catálogo de Escenarios. Línea de nieve: 300 m bajo la isoterma 0 °C de GFS sobre la cuenca del Mapocho, o la que fijes con el control; los hitos son cerros y centros de ski con su altura. Quebradas: los umbrales del indicador de quebradas con la humedad del suelo de hoy. La vista 3D es relieve real; no simula la nieve ni el agua todavía.</p>
+  <p>Para un cliente, el mismo armado sirve con sus cámaras (basta una imagen cada algunos minutos), sus puntos sensibles y su comuna. Nada de esto es una alerta: las alertas son de la DMC y SENAPRED.</p>
+</div></details>
+<div class="aviso"><p class="small">Apoyo a la decisión, no una alerta. Las alertas oficiales son de la <a href="https://www.meteochile.gob.cl/" rel="noopener">Dirección Meteorológica de Chile</a> y de <a href="https://www.senapred.cl/" rel="noopener">SENAPRED</a>.</p></div>
+<footer><p>Actualizado el 26 oct, 23:19 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
+</div>
+<script>window.GEMELO = {"raw": "https://raw.githubusercontent.com/PanchoDigevo/earth2-chile-verificacion/datos-en-vivo/envivo", "lat": -33.4175, "lon": -70.6066, "comuna": "Q51587", "comunaNombre": "Providencia", "cuenca": "mapocho", "quebradas": [1, 3], "hitos": [["Cerro San Cristóbal", -33.4262, -70.6325, 880], ["Cerro Manquehue", -33.353, -70.5755, 1638], ["Farellones", -33.354, -70.308, 2470], ["Cerro Provincia", -33.3822, -70.4664, 2750], ["Valle Nevado", -33.355, -70.25, 3025], ["Cerro San Ramón", -33.448, -70.454, 3249], ["Cerro El Plomo", -33.2367, -70.2142, 5424]], "nombre": "Sanhattan, Santiago"};</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.js"></script>
+<script>
+(function(){
+  const G = window.GEMELO, RAW = G.raw, $ = s => document.querySelector(s);
+  const n = (v, d) => v == null || isNaN(v) ? '–' : Number(v).toLocaleString('es-CL', {maximumFractionDigits: d || 0, minimumFractionDigits: d || 0});
+  const DIA3 = ['dom','lun','mar','mié','jue','vie','sáb'];
+  const hora = s => new Date(s * 1000).toLocaleTimeString('es-CL', {timeZone: 'America/Santiago', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'});
+  const km = (a, b) => 111.2 * Math.hypot(a[0] - b[0], (a[1] - b[1]) * Math.cos(a[0] * Math.PI / 180));
+  async function j(u) { try { const r = await fetch(u + (u.includes('?') ? '&' : '?') + 't=' + Math.floor(Date.now() / 3e5)); return r.ok ? await r.json() : null; } catch (e) { return null; } }
+  
+  // Ícono del cielo, sin inventar: sale de la nubosidad total de los modelos (%) y de la lluvia prevista (mm).
+  const CIELO = (nb, mm, h) => {
+    const noche = h != null && (h >= 21 || h < 7);
+    if (mm != null && mm >= 1) return {k: 'lluvia', t: 'Lluvia'};
+    if (mm != null && mm >= 0.2) return {k: 'llovizna', t: 'Llovizna'};
+    if (nb == null) return null;
+    if (nb < 25) return {k: noche ? 'luna' : 'sol', t: 'Despejado'};
+    if (nb < 60) return {k: noche ? 'luna-nube' : 'sol-nube', t: 'Parcial'};
+    if (nb < 85) return {k: 'nube', t: 'Mayormente nublado'};
+    return {k: 'nubes', t: 'Nublado'};
+  };
+  // Con tormentas posibles en el bloque (ingredientes de GFS, tormentas_gfs.py), el ícono es de tormenta.
+  const CIELO_P = (p, h) => p.tr ? {k: p.tr >= 2 ? 'tormenta-f' : 'tormenta', t: p.tr >= 2 ? 'Tormentas fuertes posibles' : 'Tormentas posibles'} : CIELO(p.nb, p.p, h);
+  const SVG = {
+    sol: '<circle cx="12" cy="12" r="4.2" class="i-sol"/><path class="i-sol" d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/>',
+    luna: '<path class="i-luna" d="M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5z"/>',
+    nube: '<path class="i-nube" d="M7 18h10.5a3.5 3.5 0 0 0 .4-7A5.5 5.5 0 0 0 7.3 10 4 4 0 0 0 7 18z"/>',
+    nubes: '<path class="i-nube i-gris" d="M7 18h10.5a3.5 3.5 0 0 0 .4-7A5.5 5.5 0 0 0 7.3 10 4 4 0 0 0 7 18z"/><path class="i-nube" d="M9 8.5A4.5 4.5 0 0 1 17.6 7"/>',
+    'sol-nube': '<circle cx="8.5" cy="8.5" r="3.2" class="i-sol"/><path class="i-sol" d="M8.5 2.5v1.5M2.5 8.5H4M4.3 4.3l1 1M12.7 4.3l-1 1"/><path class="i-nube" d="M9 19h9a3 3 0 0 0 .3-6 4.7 4.7 0 0 0-8.9-.8A3.4 3.4 0 0 0 9 19z"/>',
+    'luna-nube': '<path class="i-luna" d="M13 6.2A5 5 0 0 1 6.2 13 5 5 0 1 0 13 6.2z"/><path class="i-nube" d="M9 19h9a3 3 0 0 0 .3-6 4.7 4.7 0 0 0-8.9-.8A3.4 3.4 0 0 0 9 19z"/>',
+    llovizna: '<path class="i-nube" d="M7 14.5h10.5a3.5 3.5 0 0 0 .4-7A5.5 5.5 0 0 0 7.3 6.5 4 4 0 0 0 7 14.5z"/><path class="i-gota" d="M10 17.5v1.5M14 17.5v1.5"/>',
+    lluvia: '<path class="i-nube" d="M7 13.5h10.5a3.5 3.5 0 0 0 .4-7A5.5 5.5 0 0 0 7.3 5.5 4 4 0 0 0 7 13.5z"/><path class="i-gota" d="M8.5 16l-1 3M12.5 16l-1 3M16.5 16l-1 3"/>',
+    tormenta: '<path class="i-nube i-gris" d="M7 13.5h10.5a3.5 3.5 0 0 0 .4-7A5.5 5.5 0 0 0 7.3 5.5 4 4 0 0 0 7 13.5z"/><path class="i-rayo" d="M12.5 13l-2.5 4.5h3l-2 4.5"/>',
+    'tormenta-f': '<path class="i-nube i-gris" d="M7 13.5h10.5a3.5 3.5 0 0 0 .4-7A5.5 5.5 0 0 0 7.3 5.5 4 4 0 0 0 7 13.5z"/><path class="i-rayo i-fuerte" d="M12.5 13l-2.5 4.5h3l-2 4.5"/>'
+  };
+  const icono = (c, tam) => c ? `<svg class="cielo" viewBox="0 0 24 24" width="${tam || 26}" height="${tam || 26}" role="img" aria-label="${c.t}"><title>${c.t}</title>${SVG[c.k]}</svg>` : '';
+
+
+  // ---- ahora ----
+  async function ahora() {
+    const ahoraS = Date.now() / 1000;
+    const [p48, ry, ll] = await Promise.all([j('datos/pronostico_48h.json'), j(RAW + '/rayos.json'), j(RAW + '/lluvia.json')]);
+    const d = p48 && p48.comunas[G.comuna];
+    const o = d && d.obs;
+    $('#g-temp').innerHTML = o ? `${n(o.t)}<small>°</small>` : (d ? `${n(d.pasos[0].t)}<small>°</small>` : '–');
+    $('#g-temp-s').textContent = o ? `Medido a las ${o.hora} en ${o.nombre}, a ${o.km} km` : 'Pronóstico (sin medición reciente)';
+    $('#g-viento').innerHTML = o && o.w != null ? `${n(o.w)}<small> km/h</small>` : '–';
+    $('#g-viento-s').textContent = o ? `En ${o.nombre}` : 'Sin medición reciente';
+    const r10 = ry && ahoraS - ry.generado < 1800 ? ry.rayos.filter(r => ahoraS - r[2] <= 1800 && km([G.lat, G.lon], [r[0], r[1]]) <= 10).length : null;
+    $('#g-rayos').innerHTML = r10 == null ? '–' : `${r10}<small> en 30 min</small>`;
+    $('#g-rayos-s').textContent = r10 == null ? 'Sin datos de rayos recientes' : r10 ? 'Tormenta eléctrica a menos de 10 km' : 'Sin rayos a menos de 10 km';
+    let lluvia = null, iso = null;
+    if (ll && ahoraS - ll.generado < 3 * 3600) {
+      ll.estaciones.filter(e => e.alt < 1500 && km([G.lat, G.lon], [e.lat, e.lon]) <= 20).forEach(e => { const x = (ll.obs[e.wmo] || []).filter(v => v[0] > ahoraS - 3 * 3600 - 600 && v[1] != null);
+        if (x.length) { const mm = x.reduce((s, v) => s + v[1], 0); if (!lluvia || mm > lluvia.mm) lluvia = {mm, nombre: e.nombre.replace(/\s*\(([^)]*)\)/, ', $1')}; } });
+      const c = (ll.obs['85594'] || []).filter(x => x[3] != null).pop(); if (c) iso = {t: c[0], temp: c[3], m: Math.round((2750 + c[3] / 0.0065) / 50) * 50};
+    }
+    $('#g-lluvia').innerHTML = lluvia ? `${n(lluvia.mm, 1)}<small> mm</small>` : '–';
+    $('#g-lluvia-s').textContent = lluvia ? `En 3 h, ${lluvia.nombre}` : 'Sin lluvia medida cerca en 3 h';
+    if (iso) { G.isoAhora = iso.m; $('#g-iso-ahora').textContent = `Ahora la isoterma 0 °C está a unos ${n(iso.m)} m (El Colorado, 2.750 m: ${n(iso.temp, 1)} °C a las ${hora(iso.t)}).`; }
+    // 48 h
+    if (d) {
+      let ult = '';
+      $('#g-horas').innerHTML = d.pasos.map(p => { const f = p.c.slice(0, 10), h = Number(p.c.slice(11, 13)), dd = new Date(f + 'T12:00'), nuevo = f !== ult; ult = f;
+        return `<div class="h"><span class="d">${nuevo ? DIA3[dd.getDay()] + ' ' + dd.getDate() : ''}</span><span>${String(h).padStart(2, '0')}h</span>${icono(CIELO_P(p, h), 24)}<span class="t">${n(p.t)}°</span><span class="ll">${p.p >= 0.5 ? n(p.p, 1) + ' mm' : ''}</span></div>`; }).join('');
+      const tr = d.tr72 || [];
+      $('#g-tormenta').textContent = tr.length ? 'Tormentas ' + (tr.some(x => x.n >= 2) ? 'fuertes ' : '') + 'posibles: ' + tr.map(x => { const dd = new Date(x.f + 'T12:00'); return DIA3[dd.getDay()] + ' ' + dd.getDate() + (x.desde === x.hasta ? ' cerca de las ' + x.desde + ' h' : ' entre las ' + x.desde + ' y las ' + x.hasta + ' h'); }).join('; ') + '.' : '';
+    }
+  }
+
+  // ---- 15 días y escenarios ----
+  async function quince() {
+    const [q, e] = await Promise.all([j('datos/pronostico_15d.json'), j('datos/escenarios_15d.json')]);
+    const d = q && q.comunas[G.comuna];
+    if (d) $('#g-quince').innerHTML = d.map(x => { const dd = new Date(x.f + 'T12:00');
+      return `<div class="q"><span class="d">${DIA3[dd.getDay()]} ${dd.getDate()}</span>${icono(CIELO(x.nub, x.ll[0], 15), 22)}<span class="mx">${n(x.tmax[1])}°</span><span class="mn">${x.tmin[1] == null ? '' : n(x.tmin[1]) + '°'}</span><span class="p">${x.p1 >= 20 ? n(x.p1) + ' %' : ''}</span></div>`; }).join('');
+    const c = e && e.comunas[G.comuna];
+    if (c) { const casos = e.escenarios.map(s => { const a = c.p[s.id] || []; let m = 0, i = -1; a.forEach((v, k) => { if (v > m) { m = v; i = k; } }); return [s, m, i]; }).filter(x => x[1] >= 10).sort((a, b) => b[1] - a[1]).slice(0, 6);
+      $('#g-casos').innerHTML = casos.length ? casos.map(x => { const dd = new Date(e.fechas[x[2]] + 'T12:00'); return `<li><b>${x[1]} %</b> ${x[0].nombre.toLowerCase()} · ${DIA3[dd.getDay()]} ${dd.getDate()}</li>`; }).join('') : '<li>Ningún caso del catálogo llega al 10 % en 15 días.</li>';
+      $('#g-casos-nota').innerHTML = `Con los 50 escenarios del ensamble (corrida del ${e.corrida.slice(8, 10)}/${e.corrida.slice(5, 7)}). <a href="escenarios.html#c=${G.comuna}">Ver los 16 casos en ${G.comunaNombre} →</a>`; }
+    else $('#g-casos').innerHTML = '<li>El catálogo de escenarios aparece con la próxima corrida del ensamble.</li>';
+  }
+
+  // ---- línea de nieve: perfil de la cordillera ----
+  const HITOS = G.hitos, H_MAX = 5600;
+  let nieveDias = null, modoNieve = 'dia', diaSel = 0, isoManual = 3000;
+  function perfil(nieve, titulo) {
+    const W = 760, H = 300, ml = 44, mb = 30, y = m => H - mb - (H - mb - 60) * (m / H_MAX), x0 = ml + 10;
+    const orden = [...HITOS].sort((a, b) => a[3] - b[3]);
+    const paso = (W - x0 - 20) / (orden.length - 1);
+    const puntos = orden.map((h, i) => [x0 + i * paso, y(h[3])]);
+    const poli = `M${x0 - 10} ${y(500)} L${puntos.map(p => p.join(' ')).join(' L')} L${W - 10} ${y(500)} L${W - 10} ${H - mb} L${x0 - 10} ${H - mb} Z`;
+    const yN = y(Math.min(H_MAX, Math.max(0, nieve)));
+    const clip = `<clipPath id="cp-nieve"><rect x="0" y="0" width="${W}" height="${yN}"/></clipPath>`;
+    const hitos = orden.map((h, i) => { const [px, py] = puntos[i]; const alto = h[3] >= nieve, dy = i % 2 ? 30 : 0;   // etiquetas alternadas para que no se pisen
+      return `<circle class="hito-p" cx="${px}" cy="${py}" r="3"/>${dy ? `<line x1="${px}" x2="${px}" y1="${py - 4}" y2="${py - 18 - dy}" stroke="var(--costa)" stroke-width="1"/>` : ''}<text class="hito" x="${px}" y="${py - 20 - dy}" text-anchor="middle">${h[0]}${alto ? ' ❄' : ''}</text><text class="hito-m" x="${px}" y="${py - 9 - dy}" text-anchor="middle">${n(h[3])} m</text>`; }).join('');
+    return `<svg class="perfil" viewBox="0 0 ${W} ${H}" role="img" aria-label="${titulo}: línea de nieve a ${n(nieve)} m"><defs>${clip}</defs>
+      <rect class="cielo" x="0" y="0" width="${W}" height="${H}"/><path class="monte" d="${poli}"/><path class="nieve" d="${poli}" clip-path="url(#cp-nieve)"/>
+      <line class="linea" x1="${ml}" x2="${W - 6}" y1="${yN}" y2="${yN}"/><text class="linea-txt" x="${ml}" y="${yN - 6}">nieve desde ${n(nieve)} m</text>${hitos}
+      ${[1000, 2000, 3000, 4000, 5000].map(m => `<text class="hito-m" x="${ml - 6}" y="${y(m) + 4}" text-anchor="end">${n(m)}</text>`).join('')}</svg>`;
+  }
+  function pintarNieve() {
+    let nieve, titulo;
+    if (modoNieve === 'manual') { nieve = isoManual - 300; titulo = `Si la isoterma estuviera a ${n(isoManual)} m`; }
+    else if (nieveDias && nieveDias[diaSel]) { const d = nieveDias[diaSel]; nieve = d.nieve; titulo = d.titulo; }
+    else { nieve = (G.isoAhora || 3000) - 300; titulo = 'Con la isoterma de ahora'; }
+    $('#g-perfil').innerHTML = perfil(nieve, titulo);
+    const con = HITOS.filter(h => h[3] >= nieve).map(h => h[0]), sin = HITOS.filter(h => h[3] < nieve).map(h => h[0]);
+    $('#g-nieve-txt').innerHTML = `<strong>${titulo}:</strong> nieva desde unos ${n(nieve)} m (300 m bajo la isoterma). Con nieve: ${con.length ? con.join(', ') : 'ningún hito'}. Sin nieve: ${sin.length ? sin.join(', ') : 'ninguno'}.`;
+    document.querySelectorAll('#g-dias button').forEach(b => b.classList.toggle('sel', modoNieve === 'dia' && +b.dataset.d === diaSel));
+  }
+  async function nieve() {
+    const cu = await j('datos/cuencas_72h.json'); const c = cu && cu.cuencas[G.cuenca];
+    if (c) { const porDia = {};
+      c.pasos.forEach(p => { const f = p.c.slice(0, 10); (porDia[f] = porDia[f] || []).push(p); });
+      nieveDias = Object.entries(porDia).slice(0, 4).map(([f, ps]) => { const dd = new Date(f + 'T12:00'), lluv = ps.filter(p => p.mm >= 0.5);
+        const ref = lluv.length ? lluv : ps; const nv = Math.round(Math.min(...ref.map(p => p.nieve)) / 50) * 50;
+        return {f, nieve: nv, titulo: `${DIA3[dd.getDay()]} ${dd.getDate()}${lluv.length ? ' (con precipitación)' : ''}`, mm: ps.reduce((s, p) => s + p.mm, 0)}; });
+      $('#g-dias').innerHTML = nieveDias.map((d, i) => `<button type="button" data-d="${i}">${d.titulo.split(' (')[0]}${d.mm >= 1 ? ' · ' + n(d.mm) + ' mm' : ''}</button>`).join('');
+      $('#g-dias').addEventListener('click', ev => { const b = ev.target.closest('button[data-d]'); if (!b) return; modoNieve = 'dia'; diaSel = +b.dataset.d; pintarNieve(); }); }
+    pintarNieve();
+  }
+  const sl = $('#g-iso'); sl.addEventListener('input', () => { modoNieve = 'manual'; isoManual = +sl.value; $('#g-iso-val').textContent = n(isoManual) + ' m'; pintarNieve(); });
+
+  // ---- ¿y si cayeran X mm en 2 h? (quebradas cercanas) ----
+  async function quebradas() {
+    const q = await j('quebradas/indicador.json'); if (!q) return;
+    const qs = q.cuencas.filter(c => G.quebradas.includes(c.id) && c.mm_atencion != null);
+    const sl2 = $('#g-mm'), out = $('#g-qb');
+    const pintar = () => { const mm = +sl2.value; $('#g-mm-val').textContent = mm + ' mm';
+      out.innerHTML = qs.map(c => { const nv = mm >= c.mm_aviso ? 'aviso' : mm >= c.mm_atencion ? 'atencion' : 'bajo', cls = {bajo: 'bueno', atencion: 'medio', aviso: 'alto'}[nv];
+        return `<div class="fila"><span>${c.nombre.replace(/\s*\(.*\)/, '')} <span class="small muted">· atención desde ${n(c.mm_atencion, 1)} mm, aviso desde ${n(c.mm_aviso, 1)} mm</span></span><span class="chip ${cls}"><i></i>${{bajo: 'bajo', atencion: 'atención', aviso: 'aviso'}[nv]}</span></div>`; }).join('') +
+        `<p class="small muted">Umbrales del <a href="quebradas.html">indicador de quebradas</a> con la humedad del suelo de hoy. Hoy, con lo previsto: ${qs.map(c => c.nombre.replace(/\s*\(.*\)/, '') + ' en ' + ({bajo: 'bajo', atencion: 'atención', aviso: 'aviso'}[c.nivel] || c.nivel)).join('; ')}.</p>`; };
+    sl2.addEventListener('input', pintar); pintar();
+  }
+
+  // ---- vista 3D ----
+  function tresD() {
+    if (!window.maplibregl) return;
+    const m = new maplibregl.Map({container: 'gem-3d', zoom: 10.6, center: [G.lon + 0.12, G.lat + 0.02], pitch: 68, bearing: 62, maxPitch: 85, attributionControl: true,
+      style: {version: 8, sources: {
+        sat: {type: 'raster', tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'], tileSize: 256, maxzoom: 17, attribution: 'Imagen: Esri, Maxar, Earthstar Geographics · Relieve: AWS Terrain Tiles (Mapzen, Copernicus, SRTM)'},
+        dem: {type: 'raster-dem', tiles: ['https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'], tileSize: 256, encoding: 'terrarium', maxzoom: 14}},
+        layers: [{id: 'sat', type: 'raster', source: 'sat'}], terrain: {source: 'dem', exaggeration: 1.3}}});
+    m.addControl(new maplibregl.NavigationControl({visualizePitch: true}), 'top-right');
+    m.on('load', () => { m.setTerrain({source: 'dem', exaggeration: 1.3});
+      new maplibregl.Marker({color: '#0e7c86'}).setLngLat([G.lon, G.lat]).setPopup(new maplibregl.Popup().setText('Cámara: ' + G.nombre)).addTo(m);
+      G.hitos.forEach(h => { const el = document.createElement('div'); el.style.cssText = 'font:600 11px sans-serif;background:rgba(255,255,255,.85);color:#17212b;padding:2px 6px;border-radius:4px;white-space:nowrap'; el.textContent = h[0] + ' · ' + n(h[3]) + ' m';
+        new maplibregl.Marker({element: el, anchor: 'bottom'}).setLngLat([h[2], h[1]]).addTo(m); }); });
+  }
+
+  ahora(); quince(); nieve(); quebradas(); tresD();
+  setInterval(ahora, 5 * 60000);
+})();
+</script>
+
+<script>
+(function(){
+  let pop=null, dueno=null;
+  function cerrar(){ if(pop){pop.remove();pop=null;} if(dueno){dueno.setAttribute('aria-expanded','false');dueno=null;} }
+  document.addEventListener('click',function(e){
+    const b=e.target.closest('.def');
+    if(!b){ if(pop && !e.target.closest('.def-pop')) cerrar(); return; }
+    e.preventDefault();
+    if(dueno===b){cerrar();return;}
+    cerrar(); dueno=b; b.setAttribute('aria-expanded','true');
+    pop=document.createElement('div'); pop.className='def-pop'; pop.setAttribute('role','tooltip'); pop.textContent=b.dataset.def;
+    document.body.appendChild(pop);
+    const r=b.getBoundingClientRect(), w=pop.offsetWidth;
+    let x=r.left+window.scrollX; x=Math.min(x, window.scrollX+document.documentElement.clientWidth-w-16); x=Math.max(16+window.scrollX,x);
+    pop.style.left=x+'px'; pop.style.top=(r.bottom+window.scrollY+6)+'px';
+  });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') cerrar(); });
+  window.addEventListener('resize',cerrar);
+})();
+</script>
+
+</body>
+</html>

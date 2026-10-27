@@ -30,6 +30,30 @@ LUGAR = {
 CSS = """
 .gem-top{display:grid;gap:14px}
 @media (min-width:1000px){.gem-top{grid-template-columns:minmax(0,3fr) minmax(300px,2fr);align-items:start}}
+.rep{position:relative;aspect-ratio:16/9;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);background:#1b2430}
+.rep #gem-3d{position:absolute;inset:0;height:auto;border:0;border-radius:0}
+.rep .capa{position:absolute;inset:0;pointer-events:none;transition:opacity .6s}
+.rep .noche{background:linear-gradient(#050a14,#0b1424);opacity:0;mix-blend-mode:multiply}
+.rep .nube{background:linear-gradient(rgba(190,196,204,.0),rgba(170,178,188,.9) 55%,rgba(150,158,168,.95));opacity:0;mix-blend-mode:multiply}
+.rep .niebla{background:rgba(200,206,214,.9);opacity:0}
+.rep .lluvia{opacity:0;background-image:repeating-linear-gradient(100deg,transparent 0 11px,rgba(255,255,255,.35) 11px 12px);background-size:60px 100%;animation:cae .5s linear infinite}
+@keyframes cae{from{background-position:0 -120px}to{background-position:0 0}}
+.rep .rayo{background:#fff;opacity:0}
+.rep .rayo.flash{animation:flash .5s ease-out}
+@keyframes flash{0%{opacity:.9}20%{opacity:.2}35%{opacity:.7}100%{opacity:0}}
+.rep .etq{position:absolute;left:10px;top:10px;z-index:3;background:rgba(0,0,0,.6);color:#fff;font-size:12.5px;padding:3px 8px;border-radius:6px;max-width:70%}
+.rep .vistas{position:absolute;left:10px;bottom:10px;z-index:3;display:flex;gap:6px}
+.rep .vistas button{font:600 12px var(--font-body);padding:5px 9px;border-radius:999px;border:1px solid rgba(255,255,255,.5);background:rgba(0,0,0,.55);color:#fff;cursor:pointer}
+.rep .vistas button.sel{background:var(--accent);border-color:var(--accent)}
+.rep-ctrl{display:grid;gap:8px;margin-top:8px}
+.rep-ctrl .pasos{display:flex;gap:4px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.rep-ctrl .pasos button{flex:0 0 auto;font:600 12.5px var(--font-body);padding:5px 9px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;white-space:nowrap}
+.rep-ctrl .pasos button.sel{background:var(--accent);border-color:var(--accent);color:#fff}
+.rep-ctrl .manual{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px 14px;font-size:13.5px}
+.rep-ctrl .manual label{display:grid;gap:2px}
+.rep-ctrl .manual input{width:100%;accent-color:var(--accent)}
+.rep-ctrl .manual b{font-family:var(--font-display)}
+.rep-txt{font-size:14.5px;margin:0}
 .gem-cam{position:relative;aspect-ratio:16/9;background:#000;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line)}
 .gem-cam iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .gem-cam .etq{position:absolute;left:10px;top:10px;background:rgba(0,0,0,.6);color:#fff;font-size:12.5px;padding:3px 8px;border-radius:6px}
@@ -200,20 +224,76 @@ JS = r"""
     sl2.addEventListener('input', pintar); pintar();
   }
 
-  // ---- vista 3D ----
+  // ---- la reproducción: terreno real + escenario pintado (nieve por bandas de altura, nubes, lluvia, noche, rayos) ----
+  const VISTAS = {camara: {center: [G.lon - 0.02, G.lat - 0.004], zoom: 13.2, pitch: 72, bearing: 262},
+                  cordillera: {center: [G.lon + 0.10, G.lat + 0.01], zoom: 10.8, pitch: 68, bearing: 70},
+                  sobrevuelo: {center: [G.lon + 0.25, G.lat + 0.03], zoom: 9.6, pitch: 60, bearing: 40}};
+  const R = {m: null, listo: false, pasos: [], i: 0, manual: null, flash: null};
   function tresD() {
     if (!window.maplibregl) return;
-    const m = new maplibregl.Map({container: 'gem-3d', zoom: 10.6, center: [G.lon + 0.12, G.lat + 0.02], pitch: 68, bearing: 62, maxPitch: 85, attributionControl: true,
+    const m = R.m = new maplibregl.Map({container: 'gem-3d', ...VISTAS.camara, maxPitch: 85, attributionControl: true,
       style: {version: 8, sources: {
-        sat: {type: 'raster', tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'], tileSize: 256, maxzoom: 17, attribution: 'Imagen: Esri, Maxar, Earthstar Geographics · Relieve: AWS Terrain Tiles (Mapzen, Copernicus, SRTM)'},
-        dem: {type: 'raster-dem', tiles: ['https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'], tileSize: 256, encoding: 'terrarium', maxzoom: 14}},
-        layers: [{id: 'sat', type: 'raster', source: 'sat'}], terrain: {source: 'dem', exaggeration: 1.3}}});
+        sat: {type: 'raster', tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'], tileSize: 256, maxzoom: 17, attribution: 'Imagen: Esri, Maxar, Earthstar Geographics · Relieve: AWS Terrain Tiles (Mapzen, Copernicus, SRTM) · Bandas de altura: Copernicus DEM'},
+        dem: {type: 'raster-dem', tiles: ['https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'], tileSize: 256, encoding: 'terrarium', maxzoom: 14},
+        bandas: {type: 'geojson', data: 'cordillera/bandas_santiago.geojson'}},
+        layers: [{id: 'sat', type: 'raster', source: 'sat'}, {id: 'nieve', type: 'fill', source: 'bandas', paint: {'fill-color': '#f4f7fb', 'fill-opacity': 0.88}, filter: ['>=', ['get', 'h'], 99999]}],
+        terrain: {source: 'dem', exaggeration: 1.25}}});
     m.addControl(new maplibregl.NavigationControl({visualizePitch: true}), 'top-right');
-    m.on('load', () => { m.setTerrain({source: 'dem', exaggeration: 1.3});
+    m.on('load', () => { m.setTerrain({source: 'dem', exaggeration: 1.25}); R.listo = true;
       new maplibregl.Marker({color: '#0e7c86'}).setLngLat([G.lon, G.lat]).setPopup(new maplibregl.Popup().setText('Cámara: ' + G.nombre)).addTo(m);
       G.hitos.forEach(h => { const el = document.createElement('div'); el.style.cssText = 'font:600 11px sans-serif;background:rgba(255,255,255,.85);color:#17212b;padding:2px 6px;border-radius:4px;white-space:nowrap'; el.textContent = h[0] + ' · ' + n(h[3]) + ' m';
-        new maplibregl.Marker({element: el, anchor: 'bottom'}).setLngLat([h[2], h[1]]).addTo(m); }); });
+        new maplibregl.Marker({element: el, anchor: 'bottom'}).setLngLat([h[2], h[1]]).addTo(m); });
+      aplicar(); });
+    document.querySelectorAll('.rep .vistas button').forEach(b => b.addEventListener('click', () => { document.querySelectorAll('.rep .vistas button').forEach(x => x.classList.toggle('sel', x === b)); m.easeTo({...VISTAS[b.dataset.v], duration: 1500}); }));
   }
+  // escenario de cada paso del pronóstico de 48 h, con la línea de nieve de GFS para esa hora (cuenca del Mapocho)
+  async function escenarios() {
+    const [p48, cu] = await Promise.all([j('datos/pronostico_48h.json'), j('datos/cuencas_72h.json')]);
+    const d = p48 && p48.comunas[G.comuna], c = cu && cu.cuencas[G.cuenca];
+    if (!d) { $('#rep-txt').textContent = 'Sin pronóstico para armar el escenario.'; return; }
+    R.pasos = d.pasos.map(p => { const t = new Date(p.c).getTime();
+      const cerca = c ? c.pasos.reduce((a, x) => Math.abs(new Date(x.c).getTime() - t) < Math.abs(new Date(a.c).getTime() - t) ? x : a) : null;
+      return {c: p.c, t: p.t, mm: p.p || 0, nub: p.nb == null ? 50 : p.nb, tr: p.tr || 0, nieve: cerca ? cerca.nieve : null, iso: cerca ? cerca.iso : null}; });
+    $('#rep-pasos').innerHTML = R.pasos.map((p, i) => { const f = new Date(p.c.slice(0, 10) + 'T12:00'); return `<button type="button" data-i="${i}">${DIA3[f.getDay()]} ${f.getDate()} · ${p.c.slice(11, 13)}h</button>`; }).join('');
+    $('#rep-pasos').addEventListener('click', ev => { const b = ev.target.closest('button[data-i]'); if (!b) return; R.i = +b.dataset.i; R.manual = null; aplicar(); });
+    aplicar();
+  }
+  function escenaActual() {
+    const p = R.pasos[R.i] || {c: new Date().toISOString(), t: null, mm: 0, nub: 30, tr: 0, nieve: G.isoAhora ? G.isoAhora - 300 : 2800};
+    const e = {...p};
+    if (R.manual) Object.assign(e, R.manual);
+    return e;
+  }
+  function aplicar() {
+    const e = escenaActual(), h = Number(String(e.c).slice(11, 13)), noche = h >= 21 || h < 7;
+    const f = new Date(String(e.c).slice(0, 10) + 'T12:00'), cuando = R.manual ? 'Escenario a mano' : `${DIA3[f.getDay()]} ${f.getDate()} a las ${String(h).padStart(2, '0')} h`;
+    document.querySelectorAll('#rep-pasos button').forEach(b => b.classList.toggle('sel', !R.manual && +b.dataset.i === R.i));
+    if (R.m && R.listo) { try { R.m.setFilter('nieve', ['>=', ['get', 'h'], e.nieve == null ? 99999 : Math.round(e.nieve / 100) * 100]); } catch (x) {} }
+    const nub = Math.max(0, Math.min(100, e.nub)), mm = e.mm || 0;
+    $('#rep-nube').style.opacity = (nub / 100) * 0.75;
+    $('#rep-niebla').style.opacity = mm >= 10 ? 0.45 : mm >= 3 ? 0.25 : nub >= 95 ? 0.15 : 0;
+    $('#rep-lluvia').style.opacity = mm >= 0.5 ? Math.min(0.9, 0.3 + mm / 20) : 0;
+    $('#rep-noche').style.opacity = noche ? 0.75 : 0;
+    if (R.flash) { clearInterval(R.flash); R.flash = null; }
+    if (e.tr) R.flash = setInterval(() => { if (Math.random() < 0.5) { const r = $('#rep-rayo'); r.classList.remove('flash'); void r.offsetWidth; r.classList.add('flash'); } }, 2500);
+    const partes = [];
+    if (e.nieve != null) partes.push(`nieve desde ${n(e.nieve)} m`);
+    partes.push(mm >= 0.5 ? `${n(mm, mm < 10 ? 1 : 0)} mm en 6 h` : 'sin lluvia');
+    partes.push(`${n(nub)} % de nubes`);
+    if (e.tr) partes.push(e.tr >= 2 ? 'tormentas fuertes posibles' : 'tormenta posible');
+    if (e.t != null && !R.manual) partes.push(`${n(e.t)} °C en ${G.comunaNombre}`);
+    $('#rep-txt').innerHTML = `<strong>${cuando}:</strong> ${partes.join(' · ')}.` + (R.manual ? '' : ' <span class="muted">Pronóstico de los tres modelos para Providencia y línea de nieve de GFS en la cuenca del Mapocho.</span>');
+    $('#rep-etq').textContent = (R.manual ? 'Escenario a mano' : 'Así se vería el ' + cuando.toLowerCase()) + ' · reproducción, no foto';
+    $('#rm-nieve-v').textContent = R.manual && R.manual.nieve != null ? n(R.manual.nieve) + ' m' : 'auto';
+    $('#rm-mm-v').textContent = R.manual && R.manual.mm != null ? n(R.manual.mm) + ' mm' : 'auto';
+    $('#rm-nub-v').textContent = R.manual && R.manual.nub != null ? n(R.manual.nub) + ' %' : 'auto';
+  }
+  function manual(k, v) { R.manual = {...(R.manual || {}), [k]: v}; aplicar(); }
+  $('#rm-nieve').addEventListener('input', e => manual('nieve', +e.target.value));
+  $('#rm-mm').addEventListener('input', e => manual('mm', +e.target.value));
+  $('#rm-nub').addEventListener('input', e => manual('nub', +e.target.value));
+  $('#rm-rayos').addEventListener('change', e => manual('tr', e.target.checked ? 1 : 0));
+  $('#rm-auto').addEventListener('click', () => { R.manual = null; $('#rm-rayos').checked = false; aplicar(); });
 
   // ---- cámaras con imagen (archivo propio) ----
   async function camaras() {
@@ -234,8 +314,8 @@ JS = r"""
       return `<div class="cuadro"><img src="${G.rawArchivo}/vallenevado_piscina/${hh}.jpg" alt="Valle Nevado, ${local}" loading="lazy"><span>${local} h · cámara</span>
         <span class="m">${m ? `${icono(CIELO(m.nb, m.p, (t.getUTCHours() + 21) % 24), 20)}<b>${n(m.t)}°</b> modelo: ${m.nb != null ? n(m.nb) + ' % nubes' : ''}${m.p >= 0.5 ? ', ' + n(m.p, 1) + ' mm' : ''}` : 'modelo: sin dato para esa hora'}</span></div>`; }).join('') : '<p class="small muted">El archivo empieza a llenarse hoy: cada hora se guarda un cuadro y aquí aparecerán las últimas 24 horas con lo que decía el modelo.</p>';
   }
-  ahora(); quince(); nieve(); quebradas(); camaras();
-  try { tresD(); } catch (e) { document.getElementById('gem-3d').innerHTML = '<p class="small muted" style="padding:14px">Este navegador no puede mostrar el terreno en 3D (necesita WebGL).</p>'; }
+  ahora(); quince(); nieve(); quebradas(); camaras(); escenarios();
+  try { tresD(); } catch (e) { document.getElementById('gem-3d').innerHTML = '<p class="small muted" style="padding:14px;color:#fff">Este navegador no puede mostrar la reproducción 3D (necesita WebGL).</p>'; }
   setInterval(ahora, 5 * 60000);
 })();
 </script>"""
@@ -312,16 +392,34 @@ def pagina(head, escribir, ahora):
 <header>
   <div class="eyebrow">Gemelo · {L["nombre"]}</div>
   <h1>{L["nombre"]}: lo que se ve, lo que viene y lo que pasaría</h1>
-  <p class="lead">{L["sub"]}. La cámara muestra el lugar en este momento; alrededor, lo que miden las estaciones, lo que pronostican los modelos y un simulador para probar escenarios sobre el terreno real.</p>
+  <p class="lead">{L["sub"]}. A la izquierda, nuestra reproducción del lugar: el terreno real con el escenario del pronóstico pintado encima (nieve, lluvia, nubes, noche, rayos), hora por hora o a mano. A la derecha, la cámara real para comparar. Abajo, lo que se mide ahora, lo que viene y los casos a 15 días.</p>
 </header>
 
 <div class="gem-top">
   <div>
-    <div class="gem-cam"><span class="etq"><i></i>En vivo · {L["camara"]["canal"]}</span>
-      <iframe src="https://www.youtube-nocookie.com/embed/{L["camara"]["video"]}?autoplay=1&mute=1&rel=0" title="Cámara en vivo: {L["nombre"]}" loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
-    <p class="small muted">Transmisión pública de <a href="{L["camara"]["url"]}" rel="noopener">{L["camara"]["canal"]}</a> en YouTube ({L["camara"]["nota"]}). Si el reproductor no carga, el stream cambió de dirección: se actualiza en la siguiente publicación del sitio.</p>
+    <div class="rep"><div id="gem-3d" role="application" aria-label="Reproducción 3D del lugar con el escenario elegido"></div>
+      <div class="capa noche" id="rep-noche"></div><div class="capa nube" id="rep-nube"></div><div class="capa niebla" id="rep-niebla"></div><div class="capa lluvia" id="rep-lluvia"></div><div class="capa rayo" id="rep-rayo"></div>
+      <span class="etq" id="rep-etq">Reproducción: terreno real con el escenario pintado</span>
+      <div class="vistas"><button type="button" data-v="camara" class="sel">Desde la cámara</button><button type="button" data-v="cordillera">Hacia la cordillera</button><button type="button" data-v="sobrevuelo">Sobrevuelo</button></div></div>
+    <div class="rep-ctrl">
+      <div class="pasos" id="rep-pasos" role="group" aria-label="Día y hora del escenario"></div>
+      <p class="rep-txt" id="rep-txt">Cargando el escenario…</p>
+      <details><summary>¿Y si…? Mover el escenario a mano</summary><div class="body"><div class="manual">
+        <label>Línea de nieve <b id="rm-nieve-v">auto</b><input type="range" id="rm-nieve" min="800" max="5500" step="50" value="2500"></label>
+        <label>Lluvia en 6 h <b id="rm-mm-v">auto</b><input type="range" id="rm-mm" min="0" max="60" step="1" value="0"></label>
+        <label>Nubes <b id="rm-nub-v">auto</b><input type="range" id="rm-nub" min="0" max="100" step="5" value="0"></label>
+        <label><input type="checkbox" id="rm-rayos"> Tormenta eléctrica</label>
+        <button type="button" class="sec" id="rm-auto" style="font:600 13px var(--font-body);padding:6px 10px;border-radius:8px;border:1px solid var(--accent);background:var(--surface);color:var(--accent);cursor:pointer">Volver al pronóstico</button></div></div></details>
+    </div>
   </div>
-  <section class="card gem-ahora" aria-live="polite">
+  <div>
+    <div class="gem-cam"><span class="etq"><i></i>Cámara real · {L["camara"]["canal"]}</span>
+      <iframe src="https://www.youtube-nocookie.com/embed/{L["camara"]["video"]}?autoplay=1&mute=1&rel=0" title="Cámara en vivo: {L["nombre"]}" loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+    <p class="small muted">Transmisión pública de <a href="{L["camara"]["url"]}" rel="noopener">{L["camara"]["canal"]}</a> en YouTube ({L["camara"]["nota"]}). Es la referencia real; a la izquierda, nuestra reproducción del mismo lugar con el escenario elegido: terreno y satélite reales, con la nieve, la lluvia, las nubes y los rayos del pronóstico pintados encima. No es una foto generada.</p>
+  </div>
+</div>
+<div class="gem-top">
+  <section class="card gem-ahora" aria-live="polite" style="grid-column:1/-1">
     <h2>Ahora</h2>
     <div class="gem-cifras">
       <div class="gem-cifra"><span class="k">Temperatura</span><span class="v" id="g-temp">–</span><span class="s" id="g-temp-s"></span></div>
@@ -363,12 +461,6 @@ def pagina(head, escribir, ahora):
 </section>
 
 <section class="card">
-  <div class="sec-head"><h2>El terreno en 3D</h2><p class="muted">Desde la cámara hacia la cordillera: relieve real con los hitos y sus alturas. Arrastra para girar; con la rueda, acercar.</p></div>
-  <div id="gem-3d" role="application" aria-label="Vista 3D del terreno entre Santiago y la cordillera"></div>
-  <p class="gem-3d-nota">Relieve de AWS Terrain Tiles (Mapzen: Copernicus y SRTM, abierto) e imagen satelital de Esri. Es terreno real, no una simulación de la nieve: la línea de nieve de cada día está en el perfil de arriba. La versión con la nieve y la lluvia pintadas sobre el relieve viene después.</p>
-</section>
-
-<section class="card">
   <div class="sec-head"><h2>Cámaras con imagen: lo que se ve en la cordillera y el norte</h2><p class="muted">Cámaras públicas cuya imagen se puede leer por programa: el cuadro actual con lo que el modelo dice para ese lugar ahora (cielo, temperatura, lluvia; en la cordillera, desde qué altura nieva). Se guardan cada hora.</p></div>
   <div class="cams" id="g-cams"><p class="small muted">Cargando las cámaras…</p></div>
   <h3>Valle Nevado: lo que vio la cámara y lo que decía el modelo</h3>
@@ -380,6 +472,7 @@ def pagina(head, escribir, ahora):
 
 <details><summary>Cómo se arma este gemelo</summary><div class="body">
   <p>La cámara es la transmisión pública de {L["camara"]["canal"]} en YouTube, con el reproductor oficial. YouTube no deja sacar cuadros desde servidores, así que de esta cámara no se guardan imágenes; la verificación usa el aeródromo de Tobalaba. Las cámaras con imagen fija (Valle Nevado, Portillo, Paranal) sí permiten guardar "lo que la cámara vio" junto a "lo que el modelo decía": es el siguiente gemelo.</p>
+  <p>La reproducción: relieve de AWS Terrain Tiles (Mapzen: Copernicus y SRTM) e imagen satelital de Esri, vistos desde el punto de la cámara. La nieve se pinta en las bandas de altura del DEM (cada 100 m) que quedan sobre la línea de nieve del escenario: 300 m bajo la isoterma 0 °C de GFS sobre la cuenca del Mapocho a esa hora. Las nubes, la niebla y la lluvia son capas sobre la escena según la nubosidad y la lluvia de 6 h del pronóstico de Providencia; la noche, según la hora; los rayos, cuando el indicador marca tormentas posibles. Es una reproducción del dato, no una foto generada: a 25 km el modelo no ve laderas ni calles, así que la nieve va por altura y la lluvia por cuadrado. Con CorrDiff-Chile entrenado, lo mismo a 4 km.</p>
   <p>Ahora: METAR de Tobalaba, rayos del GOES-19 a menos de 10 km y lluvia de las estaciones de la DMC a menos de 20 km. Viene: el pronóstico de {L["comuna_nombre"]} de la pestaña Pronóstico (48 h) y el ensamble de 15 días; los casos, del catálogo de Escenarios. Línea de nieve: 300 m bajo la isoterma 0 °C de GFS sobre la cuenca del Mapocho, o la que fijes con el control; los hitos son cerros y centros de ski con su altura. Quebradas: los umbrales del indicador de quebradas con la humedad del suelo de hoy. La vista 3D es relieve real; no simula la nieve ni el agua todavía.</p>
   <p>Para un cliente, el mismo armado sirve con sus cámaras (basta una imagen cada algunos minutos), sus puntos sensibles y su comuna. Nada de esto es una alerta: las alertas son de la DMC y SENAPRED.</p>
 </div></details>

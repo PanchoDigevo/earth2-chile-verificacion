@@ -4,6 +4,10 @@ Lo hecho, en orden inverso y en simple. Los commits automáticos (verificación,
 
 Sitio: https://panchodigevo.github.io/earth2-chile-verificacion/
 
+## 27-oct-2026
+
+- **Gemelo con reproducción del lugar:** arriba a la izquierda, el terreno real (relieve y satélite) visto desde la cámara, con el escenario del pronóstico pintado encima: nieve en las bandas de altura del DEM sobre la línea de nieve, nubes, niebla, lluvia, noche y rayos, hora por hora (48 h) o a mano (línea de nieve, lluvia, nubes, tormenta). Tres vistas: desde la cámara, hacia la cordillera y sobrevuelo. A la derecha, la cámara real para comparar. No es una foto generada: es el dato pintado sobre el terreno.
+
 ## 26-oct-2026
 
 - **Archivo de cámaras públicas:** cada 5 minutos se bajan las imágenes fijas de 8 cámaras con URL legible por programa (Valle Nevado ×3, Portillo, Nevados de Chillán, Corralco, Paranal, La Silla), reducidas a 640 px: el cuadro actual en la rama `datos-en-vivo` y un cuadro por hora de las últimas 48 h en la rama `camaras-archivo`, para poner «lo que la cámara vio» junto a «lo que el modelo decía». Lista en `envivo/camaras.csv`.

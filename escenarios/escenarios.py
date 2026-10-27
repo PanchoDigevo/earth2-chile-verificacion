@@ -16,6 +16,8 @@ Faenas (escenarios/faenas.csv): con los mismos 50 escenarios, la probabilidad de
   - chubasco convectivo: 2 mm o más de precipitación convectiva en ese lapso (indicio de tormenta eléctrica; el modelo no da rayos),
   - frío extremo: −10 °C o menos a las 06 UTC (madrugada), llevando la temperatura de la grilla a la altura de la faena con
     6,5 °C por kilómetro de diferencia entre el terreno de la grilla (z del miembro de control) y la faena.
+Comunas de todo Chile (verificacion/comunas.csv, 352): con los mismos escenarios, el porcentaje de miembros que cumple cada caso del
+CATALOGO (helada, calor, lluvia, viento, nieve, tormenta, frío, tiempo de incendio, nublado) por día -> site/datos/escenarios_15d.json.
 Salidas: escenarios/data/actual.json y escenarios/data/historial.csv (para ver cómo cambia la probabilidad de un mismo día).
 Uso: python escenarios/escenarios.py [--fecha YYYY-MM-DD]"""
 import argparse, csv, datetime as dt, json, os, threading, time, urllib.error, urllib.request
@@ -218,6 +220,64 @@ def quince_dias(run, chile, pch, fechas):
     print(f"{ruta}: {len(chile)} comunas, {len(fechas)} días, {os.path.getsize(ruta) // 1024} KB")
 
 
+# Catálogo de escenarios por comuna (todas las comunas de Chile): id, nombre, regla en palabras, sectores, y cómo se cuenta.
+# Los umbrales son los de uso común en los avisos de la DMC y en la agricultura; no están ajustados a ningún evento.
+CATALOGO = [
+    ("helada", "Helada", "0 °C o menos de madrugada", ["agro", "ciudades"]),
+    ("helada_fuerte", "Helada fuerte", "−3 °C o menos de madrugada", ["agro"]),
+    ("calor", "Calor", "32 °C o más a media tarde", ["ciudades", "agro", "energia", "incendios"]),
+    ("calor_extremo", "Calor extremo", "35 °C o más a media tarde", ["ciudades", "energia"]),
+    ("lluvia5", "Lluvia que moja la cosecha", "5 mm o más en el día", ["agro"]),
+    ("lluvia20", "Lluvia fuerte", "20 mm o más en el día", ["ciudades", "agro"]),
+    ("lluvia40", "Lluvia muy fuerte", "40 mm o más en el día", ["ciudades"]),
+    ("viento50", "Viento fuerte", "50 km/h o más a media tarde", ["energia", "incendios", "agro", "cordillera"]),
+    ("viento70", "Temporal de viento", "70 km/h o más a media tarde", ["energia", "ciudades"]),
+    ("nieve", "Nevada", "unos 2 cm de nieve o más en el día", ["cordillera"]),
+    ("nieve10", "Nevada intensa", "unos 10 cm de nieve o más en el día", ["cordillera"]),
+    ("tormenta", "Tormenta posible", "chubasco convectivo de 2 mm o más", ["ciudades", "cordillera", "agro"]),
+    ("frio", "Frío extremo", "−10 °C o menos de madrugada", ["cordillera"]),
+    ("incendio_alta", "Tiempo de incendio, condición alta", "dos de las tres partes de la regla 30-30-30 y 5 días sin lluvia", ["incendios"]),
+    ("incendio", "Tiempo de incendio, condición crítica", "regla 30-30-30 completa", ["incendios"]),
+    ("nublado", "Día muy nublado", "85 % o más de nubes a media tarde", ["energia"]),
+]
+SECTORES = [("agro", "Agricultura"), ("ciudades", "Ciudades y quebradas"), ("incendios", "Incendios"), ("cordillera", "Cordillera, nieve y faenas"), ("energia", "Energía y redes")]
+
+
+def escenarios_comunas(run, chile, pch, fechas):
+    """site/datos/escenarios_15d.json: por comuna y escenario del CATALOGO, el porcentaje de los 50 miembros que lo cumple cada día."""
+    t18 = pch["2t"] - 273.15; t06 = pch["2t_06"] - 273.15; td = pch["2d"] - 273.15
+    hr = humedad(t18, td)
+    vv = np.hypot(pch["10u"], pch["10v"]) * 3.6
+    lluvia, nieve, conv = acumulado_diario(pch["tp"]), acumulado_diario(pch["sf"]), acumulado_diario(pch["cp"])
+    nub = pch["tcc"] * (100.0 if np.nanmax(pch["tcc"]) <= 1.0001 else 1.0)
+    secos = np.zeros_like(lluvia)
+    for d in range(lluvia.shape[1]):
+        secos[:, d] = np.where(lluvia[:, d] < 1, (secos[:, d - 1] if d else 0) + 1, 0)
+    cumple = (t18 >= T_UMB).astype(int) + (hr <= HR_UMB).astype(int) + (vv >= V_UMB).astype(int)
+    cond = {"helada": t06 <= 0, "helada_fuerte": t06 <= -3, "calor": t18 >= 32, "calor_extremo": t18 >= 35,
+            "lluvia5": lluvia >= 5, "lluvia20": lluvia >= 20, "lluvia40": lluvia >= 40, "viento50": vv >= 50, "viento70": vv >= 70,
+            "nieve": nieve >= 2, "nieve10": nieve >= 10, "tormenta": conv >= 2, "frio": t06 <= -10,
+            "incendio_alta": ((cumple >= 2) & (secos >= DIAS_SECOS)) | (cumple == 3), "incendio": cumple == 3, "nublado": nub >= 85}
+    base = {"helada": t06, "helada_fuerte": t06, "frio": t06, "calor": t18, "calor_extremo": t18, "lluvia5": lluvia, "lluvia20": lluvia, "lluvia40": lluvia,
+            "viento50": vv, "viento70": vv, "nieve": nieve, "nieve10": nieve, "tormenta": conv, "incendio_alta": t18, "incendio": t18, "nublado": nub}
+    comunas = {}
+    for j, c in enumerate(chile):
+        fila = {}
+        for k, _, _, _ in CATALOGO:
+            ok = ~np.isnan(base[k][:, :, j]); n = ok.sum(axis=0)
+            p = np.where(n > 0, 100 * (cond[k][:, :, j] & ok).sum(axis=0) / np.maximum(n, 1), 0)
+            if p.max() > 0:
+                fila[k] = [int(round(x)) for x in p]
+        comunas[c["id"]] = {"n": c["nombre"], "r": c["region"], "lat": round(float(c["lat"]), 3), "lon": round(float(c["lon"]), 3), "p": fila}
+    salida = {"corrida": f"{run:%Y-%m-%dT%H:%MZ}", "generado": dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%MZ"), "miembros": 50,
+              "fechas": [f.isoformat() for f in fechas], "escenarios": [{"id": k, "nombre": nm, "regla": rg, "sectores": sc} for k, nm, rg, sc in CATALOGO],
+              "sectores": SECTORES, "comunas": comunas}
+    carpeta = os.path.join(AQUI, "..", "site", "datos"); os.makedirs(carpeta, exist_ok=True)
+    ruta = os.path.join(carpeta, "escenarios_15d.json")
+    json.dump(salida, open(ruta, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
+    print(f"{ruta}: {len(comunas)} comunas, {len(CATALOGO)} escenarios, {os.path.getsize(ruta) // 1024} KB")
+
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--fecha")
     a = ap.parse_args()
@@ -298,6 +358,7 @@ def main():
                 w.writerow(h)
     guardar_historial_faenas(hist_f)
     quince_dias(run, chile, pch, fechas)
+    escenarios_comunas(run, chile, pch, fechas)
     for f in salida["faenas"]:
         print(f"{f['faena']}: grilla a {f['altura_grilla_m']} m; " + "; ".join(
             f"{k} máx. {max(x['p'][k] for x in f['dias'] if x['p'][k] is not None)} %" for k in ("viento", "nieve", "convectivo", "frio")))

@@ -20,6 +20,7 @@ import direccion
 import pronostico_pagina
 import zoom_pagina
 import cambio
+import dmc_oficial
 from comun import (CSS_ETAPAS, CSS_NAV, CSS_DEF, JS_DEF, etapas, EVENTOS, GLOSARIO, MESES, a_chile, aviso, d, entero, fecha, hora_chile, nav, num, pie, signo)
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
@@ -46,9 +47,10 @@ ESTACIONES = {
 # Modelos comparados, en orden de presentación. (nombre corto, tipo, centro)
 MODELOS = {"AIFS": ("AIFS", "Inteligencia artificial", "ECMWF"), "IFS": ("IFS", "Modelo físico", "ECMWF"), "GFS": ("GFS", "Modelo físico", "NOAA")}
 ORDEN = list(MODELOS)
-# Modelos de Earth-2 corridos por nosotros (earth2/endpoint.py o earth2/correr_pod.py). Solo entran a la comparación diaria,
-# no a las tablas históricas, y aparecen apenas tienen pares.
-EXTERNOS = {"FCN3": ("FCN3", "IA · FourCastNet 3", "NVIDIA Earth-2, en el POD de Santiago"),
+# Modelos de Earth-2 corridos por nosotros (earth2/endpoint.py o earth2/correr_pod.py) y la referencia oficial (fetch_dmc.py).
+# Solo entran a la comparación diaria, no a las tablas históricas, y aparecen apenas tienen pares.
+EXTERNOS = {"WRF-DMC": ("WRF-DMC", "Modelo físico regional", "Dirección Meteorológica de Chile"),
+            "FCN3": ("FCN3", "IA · FourCastNet 3", "NVIDIA Earth-2, en el POD de Santiago"),
             "AIFS-POD": ("AIFS-POD", "IA · AIFS", "ECMWF, corrido en el POD de Santiago"),
             "SFNO": ("SFNO", "IA · FourCastNet v2", "NVIDIA Earth-2, en el POD de Santiago")}
 
@@ -838,6 +840,7 @@ def pagina_resumen(est, ahora, ll=None):
     <p class="small"><a href="zona.html">Ver cada aeródromo y modelo en Tu zona →</a></p>
   </section>
 </div>
+{dmc_oficial.seccion()}
 
 <section class="sec-titulo"><div class="eyebrow">Más</div><h2>Lo que también puedes ver</h2></section>
 <nav class="puerta-mini" aria-label="Otras secciones">{''.join(puertas)}</nav>

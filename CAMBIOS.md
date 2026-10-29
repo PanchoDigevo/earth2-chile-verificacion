@@ -4,6 +4,10 @@ Lo hecho, en orden inverso y en simple. Los commits automáticos (verificación,
 
 Sitio: https://panchodigevo.github.io/earth2-chile-verificacion/
 
+## 29-oct-2026
+
+- **La referencia oficial entra a la verificación.** Dos productos públicos de la Dirección Meteorológica de Chile, leídos cuatro veces al día (`verificacion/fetch_dmc.py`): el **modelo WRF de la DMC** (meteograma por estación a 5 días, hora a hora) se verifica contra los METAR de 24 aeródromos igual que AIFS, IFS y GFS y aparece como "WRF-DMC" en Tu zona (comparación de los últimos días y tablas por plazo); y el **pronóstico oficial redactado por sus meteorólogos** (mínima, máxima y tiempo por tramo, 103 localidades) se compara con la mínima, la máxima y la lluvia medidas en 22 ciudades con aeródromo, en la tarjeta "Contra el pronóstico oficial" del Resumen (las primeras cifras, cuando terminen los primeros días pronosticados). Supuesto declarado: la corrida del WRF es la de las 00/12 UTC (la DMC no publica la hora de inicio). Pendiente: la misma tabla de mínima y máxima para el pronóstico por comuna de este sitio, y la API de estaciones de la DMC, que espera el usuario y token de Pancho.
+
 ## 27-oct-2026
 
 - **Cuadro "En qué etapa estamos" al día** (Resumen): la fila "Funciona hoy" ahora nombra el pronóstico por comuna, los 16 escenarios, los dos avisos de tormenta, el monitor de cordillera, la respuesta por dirección, las cámaras y el gemelo. La etapa no cambia: "Siguiente" (modelos Earth-2 corridos en el POD) sigue a la espera de la función de NVCF.

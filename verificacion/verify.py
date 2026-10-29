@@ -3,6 +3,7 @@ y la lluvia de 24 h contra los milímetros de la estación SYNOP de cada aeródr
   AIFS  ECMWF, inteligencia artificial      data/aifs_*.grib2
   IFS   ECMWF, modelo físico                 data/ifs_*.grib2
   GFS   NOAA, modelo físico                  data/gfs_*.grib2
+  WRF-DMC  referencia oficial (DMC)          data/puntos_WRF-DMC_*.csv (fetch_dmc.py, modelo externo)
 
 Flujo:
  1. De cada GRIB se extrae el valor del punto de grilla más cercano a cada aeródromo y se guarda en
@@ -178,6 +179,11 @@ try:
     lluvia.verificar()
 except Exception as e:                    # la lluvia no debe impedir publicar la temperatura
     print("AVISO: no se verificó la lluvia:", type(e).__name__, e)
+import dmc_oficial                        # el pronóstico oficial de la DMC (fetch_dmc.py) contra mínima, máxima y lluvia del día
+try:
+    dmc_oficial.verificar()
+except Exception as e:
+    print("AVISO: no se verificó el pronóstico oficial de la DMC:", type(e).__name__, e)
 
 from render_site import render_site
 render_site(pts)

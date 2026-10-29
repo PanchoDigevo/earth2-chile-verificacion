@@ -162,12 +162,24 @@ jobs:
           pattern: puntosdmc-*
           path: historico/data/puntos_dmc
           merge-multiple: true
+      - if: ${{ inputs.modo == 'solo_analizar' }}
+        name: Pronósticos consolidados de la corrida anterior
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          id=$(gh run list -w historico-dmc.yml -s success -L 20 --json databaseId -q '.[].databaseId' | while read r; do gh run view $r --json jobs -q '.jobs[].name' | grep -q '^analizar' && echo $r && break; done)
+          [ -n "$id" ] && gh run download $id -n pronosticos-dmc -D historico/data || echo "sin artefacto previo"
       - run: python historico/analizar_dmc.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pronosticos-dmc
+          path: historico/data/pronosticos_dmc.csv.gz
+          retention-days: 90
       - name: Guardar resultados
         run: |
           git config user.name "earth2-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add historico/estaciones_dmc.csv historico/data/dmc_obs historico/data/pronosticos_dmc.csv.gz historico/data/resultados/dmc_*.csv
+          git add historico/estaciones_dmc.csv historico/data/dmc_obs historico/data/resultados/dmc_*.csv
           git diff --cached --quiet || git commit -m "histórico DMC: $(date -u +%Y-%m-%dT%H:%MZ)"
           git pull --rebase -X theirs origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"

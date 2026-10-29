@@ -73,12 +73,13 @@ def viento(v):
 def catalogo():
     j = get("getEstacionesRedEma")
     filas = []
-    for e in (j or {}).get("datosEstacion") or (j or {}).get("estaciones") or registros_est(j):
+    for e in registros_est(j):
         cod = str(e.get("codigoNacional") or "").strip()
         if not cod:
             continue
         filas.append({"icao": "D" + cod, "nombre": e.get("nombreEstacion", ""), "lat": e.get("latitud"), "lon": e.get("longitud"),
-                      "elev": e.get("altura", ""), "codigo": cod, "wmo": e.get("codigoOMM", ""), "oaci": e.get("codigoOACI", "")})
+                      "elev": e.get("altura", ""), "codigo": cod, "wmo": e.get("CodigoOMM") or e.get("codigoOMM") or "",
+                      "oaci": e.get("codigoOACI", ""), "region": e.get("NombreRegion", ""), "zona": e.get("zonaGeografica", "")})
     if not filas:
         print("DMC catálogo: sin estaciones; claves de la respuesta:", list((j or {}).keys())[:12]); return
     with open(CATALOGO, "w", newline="", encoding="utf-8") as fh:

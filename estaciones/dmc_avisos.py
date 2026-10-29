@@ -9,7 +9,8 @@ Qué comunas toca cada uno, según cómo la DMC dibuja el área:
   - "area" (polígono libre): las comunas con su cabecera dentro o al menos 10 % de sus puntos de muestra
     (estaciones/comunas_muestras.csv); la parte, por la zona DMC de los puntos que caen dentro.
   - "regiones": todas las comunas de esas regiones (Isla de Pascua = ip, Juan Fernández = jf).
-Para cada comuna se guardan las zonas tocadas ("cordillera", "valle"...), para decir qué parte de la comuna afecta.
+Para cada comuna se guardan las partes tocadas ("la cordillera", "el valle"...), para decir qué parte de la comuna afecta;
+si el aviso cubre todas sus zonas (o todos sus puntos), la lista queda vacía: la comuna entera.
 
 Horario: la DMC lo escribe en texto ("la tarde del jueves 29 de octubre del 2026"); se pasa a hora de Chile con
 madrugada 0-6, mañana 6-12, tarde 12-18 y noche 18-24 (desde = inicio del tramo; hasta = su fin). Si no se entiende,
@@ -74,11 +75,12 @@ def _en_poligono(lat, lon, poli):
 
 
 def _cargar():
-    zonas, region, nombres = {}, {}, {}
+    zonas, region, nombres, propias = {}, {}, {}, {}
     for r in csv.DictReader(open(os.path.join(AQUI, "dmc_zonas_comunas.csv"), encoding="utf-8")):
         nombres[r["id"]] = r["nombre"]
         if r["region_dmc"]:
             region[r["id"]] = r["region_dmc"]
+        propias.setdefault(r["id"], set()).add(r["zona"])        # todas sus zonas (desde 2 %): para saber si es la comuna entera
         if float(r["fraccion"]) >= MIN_FR or r["centro"] == "1":
             zonas.setdefault(r["zona"], []).append(r["id"])
     for r in csv.DictReader(open(os.path.join(AQUI, "..", "verificacion", "comunas.csv"), encoding="utf-8")):
@@ -88,23 +90,32 @@ def _cargar():
     muestras = {}
     for r in csv.DictReader(open(os.path.join(AQUI, "comunas_muestras.csv"), encoding="utf-8")):
         muestras.setdefault(r["id"], []).append((float(r["lat"]), float(r["lon"]), r.get("zona", "")))
-    return zonas, region, nombres, muestras
+    return zonas, region, nombres, muestras, propias
 
 
 def parte(zona):
-    """'05m_Valle_Longitudinal' -> 'valle'; '12_Insular_Sur' -> 'insular sur'."""
+    """'05m_Valle_Longitudinal' -> 'el valle'; '12_Insular_Sur' -> 'la zona insular sur' (con artículo, para el sitio)."""
     z = zona.split("_", 1)[-1].replace("_", " ").lower()
-    return {"valle longitudinal": "valle", "cordillera costa": "cordillera de la costa"}.get(z, z)
+    z = {"valle longitudinal": "valle", "cordillera costa": "cordillera de la costa"}.get(z, z)
+    if z.startswith(("valle", "litoral")):
+        return "el " + z
+    if z.startswith(("cordillera", "precordillera", "pampa", "patagonia")):
+        return "la " + z
+    return "la zona " + z
 
 
-def comunas_de(a, zonas, region, muestras):
+def comunas_de(a, zonas, region, muestras, propias):
     """{id comuna: [partes]} afectadas por un aviso."""
     tipo, data = a.get("tipoZonaAfecta"), str(a.get("dataZonaAfecta") or "")
     out = {}
     if tipo == "zonas":
-        for z in [x.strip() for x in data.split(",") if x.strip()]:
+        lista = {x.strip() for x in data.split(",") if x.strip()}
+        for z in sorted(lista):
             for c in zonas.get(z, []):
                 out.setdefault(c, []).append(parte(z))
+        for c in out:                                   # toda la comuna: no se nombra la parte
+            if propias.get(c, set()) <= lista:
+                out[c] = []
     elif tipo == "regiones":
         regs = {x.strip() for x in data.split(",") if x.strip()}
         out = {c: [] for c, r in region.items() if r in regs}
@@ -120,17 +131,17 @@ def comunas_de(a, zonas, region, muestras):
                 dentro = [_en_poligono(la, lo, poli) for la, lo, _ in pts]
                 if dentro[0] or sum(dentro) >= MIN_FR * len(dentro):
                     zs = [z for (_, _, z), d in zip(pts, dentro) if d and z]          # partes: zonas con 2 o más puntos dentro
-                    out[c] = [parte(z) for z in sorted(set(zs)) if zs.count(z) >= 2]
+                    out[c] = [] if all(dentro) else [parte(z) for z in sorted(set(zs)) if zs.count(z) >= 2]
     return out
 
 
 def vigentes(j, ahora=None):
     """Escribe avisos_vigentes.json desde el JSON de la DMC y devuelve un resumen en texto."""
     ahora = ahora or dt.datetime.now(dt.timezone.utc)
-    zonas, region, nombres, muestras = _cargar()
+    zonas, region, nombres, muestras, propias = _cargar()
     avisos = []
     for a in j.get("AAA") or []:
-        cs = comunas_de(a, zonas, region, muestras)
+        cs = comunas_de(a, zonas, region, muestras, propias)
         avisos.append({
             "id": str(a.get("id")), "tipo": plano(a.get("tipo")), "codigo": plano(a.get("codigoMeteo")),
             "fenomeno": plano(a.get("fenomeno")), "titulo": plano(a.get("titulo")), "emision": plano(a.get("emision")),

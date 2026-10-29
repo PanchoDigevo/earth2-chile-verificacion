@@ -69,12 +69,13 @@ JS = r"""<script>
   function item(a, partes, fijo) {
     const t = (a.tipo || "Aviso").toLowerCase();
     const donde = fijo ? fijo : partes !== undefined
-      ? (partes && partes.length ? "En la " + y(partes) + " de la comuna" : "")
-      : (a.zonas_texto || []).join(" · ");
+      ? (partes && partes.length ? "Solo en " + y(partes) + " de la comuna" : "")
+      : "Regiones: " + y([...new Set((a.zonas_texto || []).map(z => z.split(" (")[0]))]);
     return `<li><div><span class="nivel ${t}">${esc(a.tipo)}</span><strong>${esc(a.fenomeno)}</strong>${a.observacion ? " · " + esc(a.observacion) : ""}</div>
       <div class="cuando">${cuando(a)}</div>${donde ? `<div class="donde">${esc(donde)}</div>` : ""}
       <details><summary>Detalle de la DMC</summary>
         <p>${esc(a.titulo)}. Condición: ${esc(a.condicion)}. Emitido el ${corto(a.emision)} (${esc(a.codigo)}).</p>
+        ${a.zonas_texto && a.zonas_texto.length ? `<p>Zonas: ${esc(a.zonas_texto.join(" · "))}</p>` : ""}
         ${a.tabla && a.tabla.length ? `<p>${esc(a.tabla_titulo)}:</p>${tablaHTML(a)}` : ""}
       </details></li>`;
   }

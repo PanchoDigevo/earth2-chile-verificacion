@@ -216,7 +216,10 @@ footer p{max-width:85ch}
 .avisos-dmc .nivel.alerta{background:#e06a00;color:#fff}
 .avisos-dmc .nivel.alarma{background:var(--alto,#d03b3b);color:#fff}
 .avisos-dmc .cuando,.avisos-dmc .donde{font-size:14px;color:var(--muted)}
-.avisos-dmc details{font-size:14px}
+.avisos-dmc details,.avisos-dmc details[open]{font-size:14px;border:0;background:none;padding:0;margin:0;box-shadow:none}
+.avisos-dmc details>summary{font-size:13px;font-weight:400;font-family:inherit;padding:0;color:var(--muted);text-decoration:underline;cursor:pointer;list-style:none;background:none;border:0}
+.avisos-dmc details>summary::-webkit-details-marker{display:none}
+.avisos-dmc details>summary::after,.avisos-dmc details>summary::before{content:none!important;display:none!important}
 .avisos-dmc details table{border-collapse:collapse;margin:6px 0;font-size:13px}
 .avisos-dmc details th,.avisos-dmc details td{border:1px solid var(--border,#ccc);padding:2px 6px;text-align:left}
 .avisos-dmc .enlaces{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:15px}
@@ -509,7 +512,7 @@ td.parcial{color:var(--muted)}
     const t = (a.tipo || "Aviso").toLowerCase();
     const donde = fijo ? fijo : partes !== undefined
       ? (partes && partes.length ? "Solo en " + y(partes) + " de la comuna" : "")
-      : "Regiones: " + y([...new Set((a.zonas_texto || []).map(z => z.split(" (")[0]))]);
+      : ((a.zonas_texto || []).some(z => z.includes(" (")) ? "Regiones: " + y([...new Set(a.zonas_texto.map(z => z.split(" (")[0]))]) : "Zona: " + (a.zonas_texto || []).join(" · "));
     return `<li><div><span class="nivel ${t}">${esc(a.tipo)}</span><strong>${esc(a.fenomeno)}</strong>${a.observacion ? " · " + esc(a.observacion) : ""}</div>
       <div class="cuando">${cuando(a)}</div>${donde ? `<div class="donde">${esc(donde)}</div>` : ""}
       <details><summary>Detalle de la DMC</summary>
@@ -746,7 +749,7 @@ const MON = (function(){
   </div>
 </div>
 <div class="aviso"><p class="small">Apoyo a la decisión, no una alerta. Las alertas oficiales son de la <a href="https://www.meteochile.gob.cl/" rel="noopener">Dirección Meteorológica de Chile</a> y de <a href="https://www.senapred.cl/" rel="noopener">SENAPRED</a>.</p></div>
-<footer><p>Actualizado el 29 oct, 19:19 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
+<footer><p>Actualizado el 29 oct, 19:42 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>

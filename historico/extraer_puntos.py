@@ -18,8 +18,11 @@ UA = {"User-Agent": "earth2-chile-verificacion/historico"}
 PAUSA = 0.15
 
 
-def estaciones():
-    return [(r["icao"], float(r["lat"]), float(r["lon"])) for r in csv.DictReader(open(os.path.join(AQUI, "estaciones.csv")))]
+def estaciones(ruta=None):
+    """(icao, lat, lon) de los puntos: los aeródromos (estaciones.csv) u otra lista con las mismas columnas
+    (estaciones_dmc.csv: la red de la DMC, icao = "D" + código nacional)."""
+    ruta = ruta or os.path.join(AQUI, "estaciones.csv")
+    return [(r["icao"], float(r["lat"]), float(r["lon"])) for r in csv.DictReader(open(ruta, encoding="utf-8")) if r.get("lat") and r.get("lon")]
 
 
 def get(url, rango=None, intentos=8):
@@ -102,10 +105,11 @@ def main():
     ap.add_argument("--modelo", required=True, choices=["aifs", "ifs", "gfs"])
     ap.add_argument("--desde", required=True); ap.add_argument("--hasta", required=True)
     ap.add_argument("--salida", default=os.path.join(AQUI, "data", "puntos"))
+    ap.add_argument("--puntos", help="CSV de puntos (icao, lat, lon); por defecto, los aeródromos de estaciones.csv")
     a = ap.parse_args()
     d0, d1 = dt.date.fromisoformat(a.desde), dt.date.fromisoformat(a.hasta)
     nombre = {"aifs": "AIFS", "ifs": "IFS", "gfs": "GFS"}[a.modelo]
-    ests = estaciones()
+    ests = estaciones(a.puntos)
     os.makedirs(a.salida, exist_ok=True)
     salida = os.path.join(a.salida, f"{nombre}_{d0:%Y%m%d}_{d1:%Y%m%d}.csv")
     hechos = set()

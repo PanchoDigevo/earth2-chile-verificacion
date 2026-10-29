@@ -1,0 +1,178 @@
+name: historico-dmc
+# Verificación retroactiva en la red de estaciones automáticas de la DMC (~137), igual que la de los aeródromos:
+# catálogo y lo medido desde la API de la DMC (historico/dmc_historico.py, secretos DMC_USUARIO y DMC_TOKEN), pronósticos
+# históricos de AIFS, IFS y GFS en esos puntos (historico/extraer_puntos.py --puntos), y el análisis con la corrección por
+# estación aprendida con 2025 y medida en 2026 (historico/analizar_dmc.py). Los resultados alimentan Tu zona.
+on:
+  workflow_dispatch:
+    inputs:
+      modo:
+        description: "probar = solo describe la respuesta de la API; completo = todo; solo_analizar = rehace el análisis"
+        default: "probar"
+      desde:
+        description: "Primer mes (YYYY-MM)"
+        default: "2025-01"
+      hasta:
+        description: "Último mes (YYYY-MM)"
+        default: "2026-10"
+      modelos:
+        description: "Modelos, separados por coma"
+        default: "aifs,ifs,gfs"
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: historico-dmc
+  cancel-in-progress: false
+jobs:
+  probar:
+    if: ${{ inputs.modo == 'probar' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - env:
+          DMC_USUARIO: ${{ secrets.DMC_USUARIO }}
+          DMC_TOKEN: ${{ secrets.DMC_TOKEN }}
+        run: python historico/dmc_historico.py --probar
+
+  preparar:
+    if: ${{ inputs.modo == 'completo' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      meses: ${{ steps.m.outputs.meses }}
+      trozos: ${{ steps.m.outputs.trozos }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Catálogo de la red DMC
+        env:
+          DMC_USUARIO: ${{ secrets.DMC_USUARIO }}
+          DMC_TOKEN: ${{ secrets.DMC_TOKEN }}
+        run: python historico/dmc_historico.py --catalogo
+      - uses: actions/upload-artifact@v4
+        with:
+          name: catalogo-dmc
+          path: historico/estaciones_dmc.csv
+      - id: m
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import calendar, datetime as dt, json
+          a0, m0 = map(int, "${{ inputs.desde }}".split("-")); a1, m1 = map(int, "${{ inputs.hasta }}".split("-"))
+          modelos = [m.strip() for m in "${{ inputs.modelos }}".split(",") if m.strip()]
+          hoy = dt.date.today(); meses, trozos = [], []
+          a, m = a0, m0
+          while (a, m) <= (a1, m1):
+              meses.append(f"{a}-{m:02d}")
+              ult = calendar.monthrange(a, m)[1]
+              for d0, d1 in ((dt.date(a, m, 1), dt.date(a, m, 15)), (dt.date(a, m, 16), dt.date(a, m, ult))):
+                  d1 = min(d1, hoy - dt.timedelta(days=1))
+                  if d0 <= d1:
+                      for mod in modelos:
+                          trozos.append({"modelo": mod, "mes": f"{a}-{m:02d}{'a' if d0.day == 1 else 'b'}", "desde": d0.isoformat(), "hasta": d1.isoformat()})
+              a, m = (a + 1, 1) if m == 12 else (a, m + 1)
+          print("meses=" + json.dumps(meses)); print("trozos=" + json.dumps({"include": trozos}))
+          PY
+
+  medido:
+    needs: preparar
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        mes: ${{ fromJSON(needs.preparar.outputs.meses) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/download-artifact@v4
+        with:
+          name: catalogo-dmc
+          path: historico
+      - env:
+          DMC_USUARIO: ${{ secrets.DMC_USUARIO }}
+          DMC_TOKEN: ${{ secrets.DMC_TOKEN }}
+        run: python historico/dmc_historico.py --desde ${{ matrix.mes }} --hasta ${{ matrix.mes }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: medido-${{ matrix.mes }}
+          path: historico/data/dmc_obs/*.csv.gz
+
+  extraer:
+    needs: preparar
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      max-parallel: 15
+      matrix: ${{ fromJSON(needs.preparar.outputs.trozos) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r historico/requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          name: catalogo-dmc
+          path: historico
+      - name: Extraer ${{ matrix.modelo }} ${{ matrix.mes }}
+        run: python historico/extraer_puntos.py --modelo ${{ matrix.modelo }} --desde ${{ matrix.desde }} --hasta ${{ matrix.hasta }} --puntos historico/estaciones_dmc.csv --salida historico/data/puntos_dmc
+      - uses: actions/upload-artifact@v4
+        with:
+          name: puntosdmc-${{ matrix.modelo }}-${{ matrix.mes }}
+          path: historico/data/puntos_dmc/*.csv
+
+  analizar:
+    needs: [preparar, medido, extraer]
+    if: ${{ always() && (inputs.modo == 'solo_analizar' || needs.preparar.result == 'success') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r historico/requirements.txt
+      - if: ${{ inputs.modo == 'completo' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: catalogo-dmc
+          path: historico
+      - if: ${{ inputs.modo == 'completo' }}
+        uses: actions/download-artifact@v4
+        with:
+          pattern: medido-*
+          path: historico/data/dmc_obs
+          merge-multiple: true
+      - if: ${{ inputs.modo == 'completo' }}
+        uses: actions/download-artifact@v4
+        with:
+          pattern: puntosdmc-*
+          path: historico/data/puntos_dmc
+          merge-multiple: true
+      - run: python historico/analizar_dmc.py
+      - name: Guardar resultados
+        run: |
+          git config user.name "earth2-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add historico/estaciones_dmc.csv historico/data/dmc_obs historico/data/pronosticos_dmc.csv.gz historico/data/resultados/dmc_*.csv
+          git diff --cached --quiet || git commit -m "histórico DMC: $(date -u +%Y-%m-%dT%H:%MZ)"
+          git pull --rebase -X theirs origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+      - name: Publicar el sitio
+        if: github.ref_name == 'main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run verificacion.yml --ref main

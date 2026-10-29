@@ -1,7 +1,7 @@
 name: estaciones
 # Lluvia medida en estaciones chilenas: cada hora lee los SYNOP de las 141 estaciones de Chile, casi todas automáticas
 # de la DMC (estaciones/synop.py, un CSV por mes), la API de la DMC si están los secretos DMC_USUARIO y DMC_TOKEN
-# (estaciones/dmc.py; sin ellos no hace nada), los servicios abiertos de la DMC (estaciones/dmc_abierto.py: extremos del
+# (estaciones/dmc.py: toda la red hora a hora en estaciones/datos/dmc/; sin ellos no hace nada), los servicios abiertos de la DMC (estaciones/dmc_abierto.py: extremos del
 # día y riesgo de incendio de ~150 estaciones) y compara el seguimiento de pronósticos con lo medido
 # (estaciones/verificar_lluvia.py). Guarda CSV livianos en estaciones/. No cambia el sitio.
 on:
@@ -33,7 +33,8 @@ jobs:
       - name: Servicios abiertos de la DMC (extremos del día y riesgo de incendio, sin token)
         continue-on-error: true
         run: python estaciones/dmc_abierto.py
-      - name: API de la DMC (solo con usuario y token)
+      - name: API de la DMC (solo con usuario y token; toda la red, hora a hora)
+        continue-on-error: true
         env:
           DMC_USUARIO: ${{ secrets.DMC_USUARIO }}
           DMC_TOKEN: ${{ secrets.DMC_TOKEN }}

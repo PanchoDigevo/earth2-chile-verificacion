@@ -240,10 +240,12 @@ ETAPAS = [
      "(medida: baja el error entre 19 y 28 %), junto a la referencia oficial: el pronóstico y el modelo WRF de la Dirección Meteorológica "
      "de Chile, verificados con la misma vara. Sobre eso: pronóstico por comuna a 48 h y 15 días, 16 escenarios con el ensamble de IA de ECMWF, "
      "dos avisos de tormenta (ambiente a 72 h y salto de rayos del GOES-19 cada 5 min), monitor de lluvia y nieve en la cordillera, "
-     "quebradas quemadas con respuesta por dirección, 76 cámaras públicas y el gemelo del lugar con la nieve pintada sobre el terreno."),
+     "quebradas quemadas con respuesta por dirección, 76 cámaras públicas y el gemelo del lugar con la nieve pintada sobre el terreno. "
+     "Y desde el 28 de octubre de 2026, el primer modelo de Earth-2 corrido por nosotros: FourCastNet 3 en una GPU del POD de Santiago, "
+     "que parte del análisis de ECMWF y se verifica aquí junto a los demás (en Tu zona, como FCN3)."),
     ("Siguiente", "curso",
-     "Correr nosotros, en las GPUs del POD, modelos globales de Earth-2: AIFS (para comprobar que da lo mismo que el de ECMWF) y FourCastNet, "
-     "y verificarlos aquí junto a los demás. Sirven en Chile tal como vienen, porque cubren todo el planeta."),
+     "Darle semanas a FourCastNet para que su cifra se consolide, correr también AIFS en el POD (para comprobar que da lo mismo que el de "
+     "ECMWF) y preparar el dataset chileno de 4 km (SAAG-WRF) con el que se entrena el zoom."),
     ("Por entrenar", "pendiente",
      "CorrDiff-Chile, el zoom de 25 a 4 km. NVIDIA entrega la receta, pero los modelos ya entrenados solo existen para Estados Unidos y Taiwán "
      "y no sirven para Chile. Hay que entrenarlo con 22 años de simulación del clima chileno a 4 km (SAAG-WRF). Todavía no existe: nada de "

@@ -1,20 +1,26 @@
 {
-"generado": "2026-10-28T19:53Z",
+"generado": "2026-10-29T00:29Z",
 "lluvia_prevista": {
-"GFS": {
-"corrida": "20261028_12",
+"AIFS": {
+"corrida": "20261028_18",
 "mm6": 0.0,
-"mm24": 0.0,
+"mm24": 0.2,
 "mm48": 0.4
+},
+"GFS": {
+"corrida": "20261028_18",
+"mm6": 0.0,
+"mm24": 0.1,
+"mm48": 0.9
 }
 },
 "mm6": 0.0,
-"mm24": 0.0,
+"mm24": 0.2,
 "horas_lluvia_7d": {
-"SCTB": 8,
-"SCEL": 4
+"SCEL": 4,
+"SCTB": 7
 },
-"factor_antecedente": 1.16,
+"factor_antecedente": 1.14,
 "parametros": {
 "KF": 0.25,
 "beta": [
@@ -38,8 +44,8 @@
 "p24": 0.026,
 "p": 0.026,
 "nivel": "bajo",
-"mm_atencion": 8.6,
-"mm_aviso": 14.0
+"mm_atencion": 8.8,
+"mm_aviso": 14.2
 },
 {
 "id": 2,
@@ -58,8 +64,8 @@
 "p24": 0.026,
 "p": 0.026,
 "nivel": "bajo",
-"mm_atencion": 19.0,
-"mm_aviso": 30.7
+"mm_atencion": 19.3,
+"mm_aviso": 31.3
 },
 {
 "id": 4,

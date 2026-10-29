@@ -178,6 +178,38 @@ def datos_estaciones():
     return sorted(out, key=lambda e: -e["lat"])
 
 
+def datos_estaciones_dmc():
+    """Lo mismo que datos_estaciones() para la red de estaciones automáticas de la DMC (historico/analizar_dmc.py):
+    error a 24 h en 2026 sin corregir y corregido, por estación y modelo, más el viento. Cada estación lleva red="dmc"."""
+    ce, es, vi = leer("dmc_correccion_estaciones.csv"), leer("dmc_estaciones.csv"), leer("dmc_viento_estaciones.csv")
+    try:
+        info = pd.read_csv(os.path.join(AQUI, "..", "historico", "estaciones_dmc.csv"))
+    except Exception:
+        return []
+    if ce.empty:
+        return []
+    ce = ce[ce.lead_h == 24]; es = es[es.lead_h == 24] if not es.empty else es; vi = vi[vi.lead_h == 24] if not vi.empty else vi
+    out = []
+    for r in info.itertuples(index=False):
+        m = {}
+        for mod in ORDEN:
+            x = ce[(ce.modelo == mod) & (ce.icao == r.icao)]
+            if x.empty or int(x.n.iloc[0]) < MIN_PARES:
+                continue
+            sx = es[(es.modelo == mod) & (es.icao == r.icao)] if not es.empty else es
+            m[mod] = {"g": round(float(x.mae_global.iloc[0]), 2), "c": round(float(x.mae_corregido.iloc[0]), 2),
+                      "n": int(x.n.iloc[0]), "s": round(float(sx.sesgo.iloc[0]), 2) if len(sx) else None}
+            vx = vi[(vi.modelo == mod) & (vi.icao == r.icao)] if not vi.empty else vi
+            if len(vx) and pd.notna(vx.w_mae.iloc[0]):
+                m[mod].update(viento=round(float(vx.w_mae.iloc[0]) * 3.6, 1), viento_sesgo=round(float(vx.w_sesgo.iloc[0]) * 3.6, 1))
+        if not m:
+            continue
+        nom = str(r.nombre).strip()
+        out.append({"icao": r.icao, "red": "dmc", "nombre": nom, "region": str(getattr(r, "region", "") or ""),
+                    "elev": None if pd.isna(r.elev) else int(float(r.elev)), "lat": float(r.lat), "lon": float(r.lon), "m": m})
+    return sorted(out, key=lambda e: -e["lat"])
+
+
 def cifras_portada(est):
     """Las tres cifras del Resumen, todas consolidadas (2026, 24 h)."""
     cp = leer("correccion_plazos.csv")
@@ -352,8 +384,11 @@ def mapa_svg(est):
         x0, y0 = proj(lo0, la0); x1, y1 = proj(lo1, la1)
         w, h = x1 - x0, y1 - y0
         dentro = [e for e in est if la1 <= e["lat"] <= la0 and lo0 <= e["lon"] <= lo1]
+        dentro.sort(key=lambda e: e.get("red", "aero"))
         reales = [proj(e["lon"], e["lat"]) for e in dentro]
-        corr = separar(reales)
+        corr = []                                        # cada red se separa sola: se muestra una a la vez
+        for red in sorted({e.get("red", "aero") for e in dentro}):
+            corr += separar([p for e, p in zip(dentro, reales) if e.get("red", "aero") == red])
         pts = []
         for e, (xr, yr), (x, y) in zip(dentro, reales, corr):
             etq = e["nombre"].split(" (")[0]
@@ -361,7 +396,7 @@ def mapa_svg(est):
             cabe = (x1 - x) > 8 * len(etq) + 12
             tx, ancla = (x + 9, "start") if cabe else (x - 9, "end")
             guia = f'<line class="guia" x1="{xr:.1f}" y1="{yr:.1f}" x2="{x:.1f}" y2="{y:.1f}"/>' if math.hypot(x - xr, y - yr) > 1.5 else ""
-            pts.append(f'<g class="est sin" data-icao="{e["icao"]}" tabindex="0" role="button" aria-label="{e["nombre"]}">'
+            pts.append(f'<g class="est sin red-{e.get("red", "aero")}" data-icao="{e["icao"]}" tabindex="0" role="button" aria-label="{e["nombre"]}">'
                        f'<title>{e["nombre"]}</title>{guia}<circle class="hit" cx="{x:.1f}" cy="{y:.1f}" r="11"/>'
                        f'<circle class="pt" cx="{x:.1f}" cy="{y:.1f}" r="5"/>'
                        f'<text class="etq" x="{tx:.1f}" y="{y + 4:.1f}" text-anchor="{ancla}">{etq}</text></g>')
@@ -384,7 +419,9 @@ JS_MAPA = r"""
 (function(){
   const Z = window.ZONA, E = Z.est, porId = {};
   E.forEach(e => porId[e.icao] = e);
-  const st = { modelo: Z.modelo || 'AIFS', estado: 'g', sel: null };
+  const st = { modelo: Z.modelo || 'AIFS', estado: 'g', sel: null, red: 'aero' };
+  const redDe = e => e.red || 'aero', enRed = () => E.filter(e => redDe(e) === st.red);
+  const LUGAR = {aero: 'aeródromo', dmc: 'estación'};
   const fmt = (v, d=1) => v == null ? '–' : Number(v).toLocaleString('es-CL', {minimumFractionDigits:d, maximumFractionDigits:d}).replace('-', '−');
   const niv = v => v == null ? 'sin' : v < 1.5 ? 'bueno' : v < 3 ? 'medio' : 'alto';
   const NIV = {bueno:'Bueno', medio:'Aceptable', alto:'Alto', sin:'Sin datos'};
@@ -393,11 +430,14 @@ JS_MAPA = r"""
   const MOD = {AIFS:'la IA de ECMWF (AIFS)', IFS:'el modelo físico de ECMWF (IFS)', GFS:'el modelo físico de NOAA (GFS)'};
 
   function pintar(){
-    const peores = E.filter(e => val(e) != null).sort((a,b) => val(b) - val(a)).slice(0, 3).map(e => e.icao);
+    document.body.dataset.red = st.red;
+    document.querySelectorAll('input[name="red"]').forEach(i => i.checked = i.value === st.red);
+    document.querySelectorAll('[data-red-txt]').forEach(el => el.textContent = el.dataset[st.red] || el.textContent);
+    const peores = enRed().filter(e => val(e) != null).sort((a,b) => val(b) - val(a)).slice(0, 3).map(e => e.icao);
     document.querySelectorAll('.est').forEach(g => {
       const e = porId[g.dataset.icao]; if (!e) return;
       const v = val(e), sel = e.icao === st.sel;
-      g.setAttribute('class', 'est ' + niv(v) + (sel ? ' sel' : '') + (sel || peores.includes(e.icao) ? ' con-etq' : ''));
+      g.setAttribute('class', 'est red-' + redDe(e) + ' ' + niv(v) + (sel ? ' sel' : '') + (sel || peores.includes(e.icao) ? ' con-etq' : ''));
       g.querySelector('title').textContent = e.nombre + ': ' + (v == null ? 'sin datos suficientes' : fmt(v) + ' °C de error medio');
       g.setAttribute('aria-label', e.nombre + ', ' + (v == null ? 'sin datos' : fmt(v) + ' grados de error medio'));
     });
@@ -409,7 +449,7 @@ JS_MAPA = r"""
     const box = document.getElementById('ficha'); const e = porId[st.sel]; if (!box || !e) return;
     const x = e.m[st.modelo];
     let cuerpo;
-    if (!x) cuerpo = `<p class="muted">Sin datos suficientes de ${st.modelo} en este aeródromo.</p>`;
+    if (!x) cuerpo = `<p class="muted">Sin datos suficientes de ${st.modelo} en ${redDe(e) === 'dmc' ? 'esta estación' : 'este aeródromo'}.</p>`;
     else {
       const mej = 100 * (1 - x.c / x.g);
       const frase_c = x.c < x.g ? `Con la corrección por estación queda en <strong>${fmt(x.c)} °C</strong>: ${fmt(mej, 0)} % menos.`
@@ -428,12 +468,12 @@ JS_MAPA = r"""
       ${x && x.deriva != null ? `<p class="small"><span class="chip medio"><i></i>En deriva</span> En los últimos 30 días, este modelo pronosticó aquí ${fmt(Math.abs(x.deriva))} °C más ${x.deriva < 0 ? 'frío' : 'calor'} de lo que corresponde a su error de 2025.</p>` : ''}
       ${x && x.viento != null ? `<p class="small">Viento: ${MOD[st.modelo]} se equivoca en promedio ${fmt(x.viento, 0)} km/h en la velocidad de mañana${Math.abs(x.viento_sesgo) >= 3 ? (x.viento_sesgo > 0 ? ', y tiende a pronosticar más viento del que hay' : ', y tiende a pronosticar menos viento del que hay') : ''}${x.rafaga != null ? `; en las ráfagas, ${fmt(x.rafaga, 0)} km/h` : (st.modelo === 'AIFS' ? '; AIFS no pronostica ráfagas' : '')}.</p>` : ''}
       <table class="mini"><thead><tr><th class="l">Modelo</th><th>Sin corregir</th><th>Corregido</th></tr></thead><tbody>${filas}</tbody></table>
-      <p class="muted small">Error medio de la temperatura pronosticada con 24 h de anticipación, ${n.toLocaleString('es-CL')} comparaciones en 2026. <a href="#${e.icao}">Enlace a esta estación</a></p>
+      <p class="muted small">Error medio de la temperatura pronosticada con 24 h de anticipación, ${n.toLocaleString('es-CL')} comparaciones en 2026${redDe(e) === 'dmc' ? ', contra lo medido por esta estación automática de la Dirección Meteorológica de Chile' : ''}. <a href="#${e.icao}">Enlace a esta estación</a></p>
       ${lluvia(e)}`;
   }
 
   function lluvia(e){
-    const L = Z.lluvia; if (!L) return '';
+    const L = Z.lluvia; if (!L || redDe(e) === 'dmc') return '';
     if (!e.ll) return `<h3>Lluvia</h3><p class="small muted">Este aeródromo no tiene un pluviómetro de la DMC a menos de 15 km y a una altura parecida.</p>`;
     const c = e.ll.m[st.modelo];
     const dias = n => n === 1 ? '1 día' : n + ' días', cap = t => t[0].toUpperCase() + t.slice(1);
@@ -450,7 +490,7 @@ JS_MAPA = r"""
 
   function tabla(){
     const tb = document.querySelector('#tabla-est tbody'); if (!tb) return;
-    const filas = E.filter(e => e.m[st.modelo]).sort((a,b) => val(b,'g') - val(a,'g'));
+    const filas = enRed().filter(e => e.m[st.modelo]).sort((a,b) => val(b,'g') - val(a,'g'));
     tb.innerHTML = filas.map(e => { const x = e.m[st.modelo], mej = 100 * (1 - x.c / x.g);
       return `<tr data-icao="${e.icao}" tabindex="0"${e.icao === st.sel ? ' class="actual"' : ''}><td class="l">${e.nombre}<span class="region">${e.region}</span></td>
         <td class="num">${fmt(x.g)} °C</td><td class="num">${fmt(x.c)} °C</td><td class="num">${x.c < x.g ? '−' + fmt(mej, 0) : '+' + fmt(-mej, 0)} %</td><td>${chip(niv(val(e)))}</td></tr>`; }).join('');
@@ -462,10 +502,15 @@ JS_MAPA = r"""
     document.querySelectorAll('[data-modelo-txt]').forEach(el => el.textContent = st.modelo);
   }
 
+  function opciones(){
+    const s = document.getElementById('estacion'); if (!s || s.dataset.red === st.red) return;
+    s.innerHTML = enRed().map(e => `<option value="${e.icao}">${e.nombre}${e.region ? ' · ' + e.region : ''}</option>`).join('');
+    s.dataset.red = st.red;
+  }
   function elegir(icao, desplazar){
     if (!porId[icao]) return;
     if (Z.navegar) { location.href = 'zona.html#' + icao; return; }
-    st.sel = icao; pintar();
+    st.sel = icao; st.red = redDe(porId[icao]); opciones(); pintar();
     const s = document.getElementById('estacion'); if (s) s.value = icao;
     if (location.hash.slice(1) !== icao) history.replaceState(null, '', '#' + icao);
     if (desplazar) document.getElementById('ficha').scrollIntoView({behavior:'smooth', block:'nearest'});
@@ -482,11 +527,19 @@ JS_MAPA = r"""
   });
   document.querySelectorAll('input[name="modelo"]').forEach(i => i.addEventListener('change', () => { st.modelo = i.value; pintar(); }));
   document.querySelectorAll('input[name="estado"]').forEach(i => i.addEventListener('change', () => { st.estado = i.value; pintar(); }));
+  // Cambio de red: la estación más cercana a la elegida, en la otra red
+  document.querySelectorAll('input[name="red"]').forEach(i => i.addEventListener('change', () => {
+    const a = porId[st.sel], otras = E.filter(e => redDe(e) === i.value); if (!otras.length) return;
+    const d = e => a ? (e.lat - a.lat) ** 2 + ((e.lon - a.lon) * Math.cos(a.lat * Math.PI / 180)) ** 2 : 0;
+    elegir(otras.reduce((m, e) => d(e) < d(m) ? e : m).icao, false);
+  }));
   const s = document.getElementById('estacion'); if (s) s.addEventListener('change', () => elegir(s.value, false));
   window.addEventListener('hashchange', () => elegir(location.hash.slice(1), false));
 
   const h = location.hash.slice(1);
   st.sel = porId[h] ? h : (Z.inicial || (E[0] && E[0].icao));
+  if (porId[st.sel]) st.red = redDe(porId[st.sel]);
+  opciones();
   if (s) s.value = st.sel;
   pintar();
 })();
@@ -516,6 +569,7 @@ CSS = """
   --accent:#44bcc6; --accent-soft:#163b40; --tierra:#243040; --costa:#4f6071;
   --bueno:#2fbf2f; --medio:#e0a428; --alto:#ee6a6a; --sin:#7d8c99; color-scheme:dark}
 *{box-sizing:border-box}
+body:not([data-red="dmc"]) .est.red-dmc,body[data-red="dmc"] .est.red-aero{display:none}
 html,body{margin:0}
 body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
 a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
@@ -935,12 +989,17 @@ def tabla_lluvia(ll):
 </section>"""
 
 
-def pagina_zona(est, pts, ahora, ll=None):
+def pagina_zona(est, pts, ahora, ll=None, dmc=None):
     c = cifras_portada(est)
     inicial = c["ejemplo"]["icao"] if "ejemplo" in c else (est[0]["icao"] if est else "")
     opciones = "".join(f'<option value="{e["icao"]}">{e["nombre"]} · {e["region"]}</option>' for e in est)
     ultimos, tecnico = bloque_ultimos_dias(pts)
-    datos_js = json.dumps({"est": est, "modelo": "AIFS", "navegar": False, "ficha": True, "inicial": inicial, "lluvia": lluvia_js(ll)}, ensure_ascii=False)
+    dmc = dmc or []
+    todas = est + dmc
+    datos_js = json.dumps({"est": todas, "modelo": "AIFS", "navegar": False, "ficha": True, "inicial": inicial, "lluvia": lluvia_js(ll)}, ensure_ascii=False)
+    selector_red = (f'<fieldset class="selector"><legend class="eyebrow">Red</legend>'
+                    f'<label><input type="radio" name="red" value="aero" checked>Aeródromos <span class="muted">{len(est)}</span></label>'
+                    f'<label><input type="radio" name="red" value="dmc">Estaciones DMC <span class="muted">{len(dmc)}</span></label></fieldset>') if dmc else ""
     html = f"""{head("Tu zona · Earth-2 Chile", "Elige un aeródromo de Chile y mira cuánto se equivocan los modelos de pronóstico al predecir la temperatura de mañana, con y sin corrección local.")}
 <body>
 {nav("zona")}
@@ -951,12 +1010,13 @@ def pagina_zona(est, pts, ahora, ll=None):
 <header>
   <div class="eyebrow">Tu zona</div>
   <h1>¿Cuánto se equivoca el pronóstico donde vives?</h1>
-  <p class="lead">Elige un aeródromo en la lista o en el mapa. Las cifras son el {d("error medio")} de la temperatura pronosticada para el día siguiente, durante 2026, sin corregir y con la {d("corrección por estación")}.{" Más abajo, la lluvia pronosticada frente a la que midió el pluviómetro de cada aeródromo." if ll else ""}</p>
+  <p class="lead">Elige {"un aeródromo o una de las " + str(len(dmc)) + " estaciones automáticas de la Dirección Meteorológica de Chile" if dmc else "un aeródromo"} en la lista o en el mapa. Las cifras son el {d("error medio")} de la temperatura pronosticada para el día siguiente, durante 2026, sin corregir y con la {d("corrección por estación")}.{" Más abajo, la lluvia pronosticada frente a la que midió el pluviómetro de cada aeródromo." if ll else ""}</p>
 </header>
 
 <section class="card">
   <div class="controles">
-    <label for="estacion" class="eyebrow">Aeródromo</label> <select id="estacion">{opciones}</select>
+    {selector_red}
+    <label for="estacion" class="eyebrow" data-red-txt data-aero="Aeródromo" data-dmc="Estación">Aeródromo</label> <select id="estacion">{opciones}</select>
     <fieldset class="selector"><legend class="eyebrow">Modelo</legend>
       <label><input type="radio" name="modelo" value="AIFS" checked>AIFS <span class="muted">IA</span></label>
       <label><input type="radio" name="modelo" value="IFS">IFS <span class="muted">físico</span></label>
@@ -966,15 +1026,15 @@ def pagina_zona(est, pts, ahora, ll=None):
       <label><input type="radio" name="estado" value="c">Corregido</label></fieldset>
   </div>
   <div class="zona">
-    <div>{mapa_svg(est)}{leyenda()}</div>
+    <div>{mapa_svg(todas)}{leyenda()}</div>
     <div class="card ficha" id="ficha" aria-live="polite"><p class="muted">Elige un aeródromo.</p></div>
   </div>
 </section>
 
 <section>
-  <div class="sec-head"><h2>Todos los aeródromos, de mayor a menor error</h2>
+  <div class="sec-head"><h2 data-red-txt data-aero="Todos los aeródromos, de mayor a menor error" data-dmc="Todas las estaciones de la DMC, de mayor a menor error">Todos los aeródromos, de mayor a menor error</h2>
   <p class="muted">Modelo <strong id="tabla-modelo">AIFS</strong>, error medio a 24 h en 2026. Toca una fila para ver su ficha.</p></div>
-  <div class="card tabla"><table id="tabla-est"><thead><tr><th class="l">Aeródromo</th><th>Sin corregir</th><th>Corregido</th><th>Cambio</th><th class="l">Nivel</th></tr></thead><tbody></tbody></table></div>
+  <div class="card tabla"><table id="tabla-est"><thead><tr><th class="l" data-red-txt data-aero="Aeródromo" data-dmc="Estación">Aeródromo</th><th>Sin corregir</th><th>Corregido</th><th>Cambio</th><th class="l">Nivel</th></tr></thead><tbody></tbody></table></div>
 </section>
 
 {tabla_lluvia(ll)}
@@ -1006,9 +1066,10 @@ def render_site(pts):
     pts["valid"] = pd.to_datetime(pts["valid"])
     ahora = pd.Timestamp.now("UTC")
     est = datos_estaciones()
+    dmc = datos_estaciones_dmc()
     ll = datos_lluvia(est)
     kb1 = pagina_resumen(est, ahora, ll)
-    kb2 = pagina_zona(est, pts, ahora, ll)
+    kb2 = pagina_zona(est, pts, ahora, ll, dmc)
     print(f"site/index.html ({kb1} KB) y site/zona.html ({kb2} KB) listos: {len(est)} aeródromos consolidados, "
           f"{len(pts)} comparaciones del pipeline diario" + (f", lluvia en {ll['n_est']} aeródromos" if ll else ", sin lluvia medida"))
     try:                                     # Eventos y Método se regeneran con los resultados guardados

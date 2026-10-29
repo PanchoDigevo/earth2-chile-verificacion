@@ -146,6 +146,17 @@ def main():
             print("Earth-2: sin endpoint configurado (secreto EARTH2_URL vacío); no se hace nada.")
             return 0
         ds = pedir_pronostico(url, clave, corrida, PLAZOS)
+    # Qué trae el archivo: la hora de inicio declarada y los atributos. Si la hora no es la pedida, no se guarda nada:
+    # un pronóstico con la corrida equivocada se verificaría contra horas que no le corresponden.
+    print("Earth-2: atributos del archivo:", {k: str(v)[:80] for k, v in ds.attrs.items()} or "ninguno")
+    if "time" in ds.coords:
+        recibida = pd.Timestamp(np.atleast_1d(ds["time"].values)[0]).to_pydatetime().replace(tzinfo=None)
+        print(f"Earth-2: corrida pedida {corrida:%Y-%m-%d %H}Z, corrida en el archivo {recibida:%Y-%m-%d %H}Z")
+        if recibida != corrida:
+            print("Earth-2: la función devolvió otra corrida; no se guarda.")
+            return 1
+    else:
+        print("Earth-2: el archivo no declara su hora de inicio (coordenada time); no se puede comprobar.")
     est = pd.read_csv(ESTACIONES)
     df = en_estaciones(ds, corrida, modelo, est)
     os.makedirs(SALIDA, exist_ok=True)

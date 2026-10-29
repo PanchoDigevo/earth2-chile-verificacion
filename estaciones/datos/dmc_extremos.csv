@@ -1,0 +1,147 @@
+fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
+2026-10-28,170001,Visviri Tenencia,-17.595,-69.4775,4084.0,General Lagos,18.9,-2.6,0.0
+2026-10-28,180005,"Chacalluta, Arica Ap.",-18.3556,-70.3403,51.0,Arica,24.9,18.0,0.0
+2026-10-28,180017,Putre,-18.2,-69.5625,3532.0,Putre,15.0,5.0,0.3
+2026-10-28,180018,"Defensa Civil, Arica",-18.4911,-70.3014,71.0,Arica,25.2,19.0,0.0
+2026-10-28,180042,"Cerro Sombrero, Arica",-18.5125,-70.2656,122.0,Arica,31.0,18.1,0.0
+2026-10-28,190010,Colchane,-19.2769,-68.6397,3700.0,Colchane,19.3,-0.5,0.0
+2026-10-28,200006,Diego Aracena Iquique Ap.,-20.5492,-70.1811,48.0,Iquique,26.0,19.4,0.0
+2026-10-28,200007,"La Huayca, Pozo Almonte",-20.4217,-69.6275,992.0,Pozo Almonte,31.2,13.1,0.0
+2026-10-28,200010,"UNAP (Universidad Arturo Prat), Iquique",-20.2708,-70.1308,30.0,Iquique,23.6,19.8,0.0
+2026-10-28,210901,Ollagüe,-21.2242,-68.2558,3708.0,Ollague,15.6,-5.5,0.0
+2026-10-28,220002,"El Loa, Calama Ad.",-22.4981,-68.8925,2326.0,Calama,21.5,5.0,0.2
+2026-10-28,220026,"Chorrillos, Calama",-22.45,-68.9103,2298.0,Calama,21.6,7.5,0.0
+2026-10-28,220027,Tocopilla (C.D.P),-22.0639,-70.1861,81.0,Tocopilla,21.6,7.5,0.0
+2026-10-28,220028,"Maria Elena, Salitrera",-22.3433,-69.6717,1292.0,María Elena,29.4,9.9,0.0
+2026-10-28,230001,Cerro Moreno Antofagasta Ap.,-23.4536,-70.4453,139.0,Antofagasta,23.4,18.3,0.0
+2026-10-28,230002,"Universidad Católica del Norte, Antofagasta",-23.6808,-70.4111,31.0,Antofagasta,24.6,18.9,0.0
+2026-10-28,230004,Toconao,-23.1861,-68.0056,2495.0,San Pedro de Atacama,19.8,8.3,1.1
+2026-10-28,230021,"Llano de Chajnantor, observatorio APEX",-23.0058,-67.7592,5000.0,San Pedro de Atacama,-3.5,-9.4,
+2026-10-28,230022,Mejillones,-23.1092,-70.4433,31.0,Mejillones,25.7,17.8,0.0
+2026-10-28,240005,"Cerro Paranal, observatorio astronómico",-24.6275,-70.4047,2648.0,Taltal,14.8,7.8,
+2026-10-28,250005,Taltal,-25.4111,-70.4842,37.0,Antofagasta,23.0,18.3,0.0
+2026-10-28,260010,"Ad. Ricardo García Posada, El Salvador",-26.3131,-69.7514,1597.0,Diego de Almagro,22.5,8.6,0.0
+2026-10-28,270001,Mataveri  Isla de Pascua Ap.,-27.1589,-109.4325,69.0,Isla de Pascua,23.0,17.0,0.8
+2026-10-28,270008,"Desierto de Atacama, Caldera  Ad.",-27.2544,-70.7811,204.0,Caldera,22.7,15.3,0.0
+2026-10-28,270009,Copiapó Universidad de Atacama,-27.3589,-70.3533,362.0,Copiapó,25.8,15.3,0.0
+2026-10-28,270022,"Copiapo, Cerro Antenas",-27.3628,-70.2831,946.0,Copiapó,23.6,11.0,0.0
+2026-10-28,280010,Freirina Nicolasa,-28.5169,-71.01,156.0,Freirina,24.3,11.5,0.0
+2026-10-28,280028,"Alto del Carmen, Los Sauces",-28.7778,-70.4706,854.0,Alto del Carmen,25.9,11.7,0.0
+2026-10-28,290004,"La Florida, La Serena Ad.",-29.9144,-71.2067,146.0,La Serena,21.1,12.6,0.0
+2026-10-28,300024,Ovalle Escuela Agrícola,-30.58,-71.1867,310.0,Ovalle,24.3,11.3,0.0
+2026-10-28,300034,El Tololo,-30.1683,-70.8036,2154.0,La Serena,15.7,8.8,0.0
+2026-10-28,300046,"Vicuña, Parque Los Pimientos",-30.0336,-70.6972,642.0,Vicuña,24.8,9.4,0.0
+2026-10-28,300047,"Monte Patria, Municipalidad",-30.6983,-70.9578,406.0,Monte Patria,25.7,10.4,0.0
+2026-10-28,310023,Canela Baja (Liceo Padre José Herde),-31.39,-71.4128,343.0,Los Vilos,20.2,10.9,0.0
+2026-10-28,310024,Liceo Samuel Román Rojas (Combarbalá),-31.1881,-70.9989,936.0,Combarbalá,23.3,11.4,0.0
+2026-10-28,310040,"Vivero Conaf, Illapel",-31.6325,-71.1519,333.0,La Serena,22.9,10.5,0.0
+2026-10-28,310044,Salamanca Pisco Capel,-31.7872,-70.9594,516.0,Salamanca,22.9,10.5,0.0
+2026-10-28,320019,San Felipe Escuela Agrícola,-32.7553,-70.7069,662.0,Valparaíso,29.0,8.7,0.0
+2026-10-28,320041,Viña del Mar  Ad. (Torquemada),-32.9494,-71.4761,140.0,Viña del Mar,20.2,11.5,0.0
+2026-10-28,320045,"Llay Llay, Las Peñas",-32.8814,-70.9131,423.0,Llaillay,27.7,9.1,0.0
+2026-10-28,320049,Chincolco Liceo agrícola,-32.2225,-70.8317,665.0,Petorca,25.1,-49.5,0.0
+2026-10-28,320051,Los Libertadores,-32.8456,-70.1192,2955.0,Los Andes,,,0.0
+2026-10-28,320055,Catemu,-32.7589,-70.9428,443.0,Catemu,25.0,8.2,0.1
+2026-10-28,320056,"Quintero, Climatológica",-32.7842,-71.5228,5.0,Quintero,18.4,14.5,0.0
+2026-10-28,320063,Zapallar Catapilco,-32.5614,-71.2978,81.0,Zapallar,20.1,9.1,0.0
+2026-10-28,320121,El Tártaro (Putaendo),-32.5708,-70.7042,933.0,Putaendo,26.4,8.5,0.0
+2026-10-28,320122,Panquehue,-32.7692,-70.835,519.0,Panquehue,27.3,9.9,0.0
+2026-10-28,320123,"San Esteban, Liceo",-32.8011,-70.5781,835.0,San Esteban,28.3,9.2,0.0
+2026-10-28,320124,"Quillota, Liceo Agrícola",-32.9072,-71.2714,123.0,Quillota,24.2,9.5,0.0
+2026-10-28,320127,"Planta Transmisora Quintero, Armada",-32.8036,-71.4844,73.0,Quintero,19.7,12.0,0.0
+2026-10-28,330006,"Jardín Botánico (ex Parque Fauna), Viña del Mar",-33.045,-71.5019,50.0,Viña del Mar,19.1,-49.3,0.2
+2026-10-28,330007,"Rodelillo, Ad.",-33.0653,-71.5564,335.0,Viña del Mar,16.9,12.5,0.0
+2026-10-28,330019,"Eulogio Sánchez, Tobalaba Ad.",-33.4553,-70.5486,649.0,La Reina,27.1,10.3,0.0
+2026-10-28,330020,"Quinta Normal, Santiago",-33.445,-70.6828,520.0,Estación Central,28.8,10.2,0.0
+2026-10-28,330021,Pudahuel Santiago,-33.3783,-70.7878,474.0,Pudahuel,27.4,9.7,0.0
+2026-10-28,330030,"Santo Domingo, Ad.",-33.6561,-71.6133,77.0,Santo Domingo,19.8,8.9,0.0
+2026-10-28,330031,"Juan Fernández, Estación Meteorológica.",-33.6358,-78.8331,40.0,Juan Fernández,20.2,13.3,0.0
+2026-10-28,330071,Talagante,-33.6703,-70.8494,390.0,Talagante,,,0.0
+2026-10-28,330075,Río Clarillo,-33.7283,-70.4967,876.0,Pirque,27.7,6.3,0.0
+2026-10-28,330076,Chorombo Hacienda,-33.5294,-71.2292,145.0,María Pinto,26.4,8.8,
+2026-10-28,330077,El Colorado,-33.35,-70.2936,2750.0,Lo Barnechea,14.8,4.5,0.0
+2026-10-28,330111,Lo Prado Cerro San Francisco,-33.4581,-70.9486,1068.0,Pudahuel,23.6,12.1,0.2
+2026-10-28,330112,San José  Guayacán,-33.6153,-70.3506,928.0,San José de Maipo,26.1,6.9,0.0
+2026-10-28,330113,El Paico,-33.7064,-71.0081,275.0,El Monte,27.2,9.7,0.0
+2026-10-28,330114,San Pablo - DASA,-33.4422,-70.7467,490.0,Pudahuel,27.5,9.5,0.0
+2026-10-28,330118,Lo Pinto,-33.2681,-70.7322,512.0,Colina,27.1,8.4,0.0
+2026-10-28,330121,Curacaví Ad.,-33.4111,-71.1678,203.0,Curacaví,28.2,9.5,0.0
+2026-10-28,330122,"Aguas Andinas, La Florida",-33.545,-70.5483,670.0,La Florida,26.8,9.6,0.0
+2026-10-28,330160,"El Milagro, Buin",-33.7544,-70.7644,460.0,Buin,26.8,9.6,0.0
+2026-10-28,330161,"San Antonio, Lo Zarate",-33.5305,-71.5061,103.0,Cartagena,22.2,8.2,0.0
+2026-10-28,330162,Colina (Reg.),-33.1622,-70.6431,755.0,Colina,26.7,10.2,0.0
+2026-10-28,330163,Peldehue Ad.,-33.1139,-70.6858,670.0,Colina,27.8,7.5,0.0
+2026-10-28,330193,Llanos de Caleu - La Dormida,-33.0494,-71.0014,1450.0,Tiltil,19.8,10.4,0.0
+2026-10-28,340031,"General Freire, Curicó Ad.",-34.9694,-71.2169,229.0,Curicó,28.7,11.8,0.0
+2026-10-28,340045,Rancagua,-34.1722,-70.7761,482.0,Rancagua,27.5,8.1,0.0
+2026-10-28,340048,Quimávida,-34.215,-70.9969,316.0,Doñihue,28.7,10.7,0.1
+2026-10-28,340066,Nilahue - La Quebrada,-34.6608,-71.7353,81.0,Pumanque,28.3,9.4,0.0
+2026-10-28,340093,Portezuelo-Codelco,-34.1983,-70.5792,1185.0,Rancagua,24.6,12.2,0.0
+2026-10-28,340115,Pichilemu aeródromo,-34.3942,-72.0186,25.0,Pichilemu,19.9,13.8,0.0
+2026-10-28,350028,Panguilemo,-35.3778,-71.6011,119.0,Pelarco,27.7,12.0,0.0
+2026-10-28,350901,Escuela de Artillería Linares,-35.8369,-71.5928,160.0,Linares,27.6,11.0,0.0
+2026-10-28,360011,"General Bernardo OHiggins, Chillán Ad.",-36.5858,-72.0367,152.0,Chillán,27.7,9.6,0.0
+2026-10-28,360019,"Carriel Sur, Concepción Ap.",-36.7805,-73.0664,8.0,Talcahuano,24.9,11.1,0.0
+2026-10-28,360046,Chillán Mayulermo,-36.828,-71.8669,397.0,San Ignacio,24.9,11.1,0.0
+2026-10-28,360047,Retiro Copihue,-36.0755,-71.7581,162.0,Retiro,27.7,10.5,0.1
+2026-10-28,360097,Liceo Polivalente San Nicolás,-36.5056,-72.2194,118.0,San Nicolás,29.9,10.8,0.0
+2026-10-28,370033,"María Dolores, Los Angeles Ad.",-37.3969,-72.4239,114.0,Los Angeles,28.2,11.3,0.0
+2026-10-28,370036,"El Huertón liceo agrícola, Los Ángeles",-37.4569,-72.275,173.0,Los Angeles,28.0,10.4,0.0
+2026-10-28,370067,"Angol, Húsares",-37.7958,-72.6844,69.0,Angol,28.0,10.4,0.0
+2026-10-28,370077,"La Colcha, Arauco",-37.425,-73.3525,144.0,Curanilahue,24.6,9.1,0.0
+2026-10-28,380013,"Maquehue, Temuco Ad.",-38.7678,-72.6319,93.0,Temuco,25.7,5.4,0.0
+2026-10-28,380018,Lonquimay,-38.455,-71.3619,912.0,Lonquimay,25.4,2.5,0.0
+2026-10-28,380029,La Araucanía Ad.,-38.9344,-72.6533,98.0,Temuco,25.6,5.9,0.0
+2026-10-28,380032,Rucamanque-UFRO,-38.6608,-72.6056,344.0,Temuco,24.0,7.7,0.0
+2026-10-28,380033,Maquehue-UFRO,-38.8378,-72.6944,74.0,Temuco,25.4,6.3,0.1
+2026-10-28,380063,Victoria (Reg.),-38.2289,-72.3433,336.0,Victoria,25.6,6.8,0.0
+2026-10-28,380080,Lequecahue Tirúa Ad.,-38.3594,-73.4883,152.0,Tirúa,22.1,9.9,0.0
+2026-10-28,380082,Isla Mocha Ad.,-38.3839,-73.8692,6.0,Tirúa,22.1,9.9,0.0
+2026-10-28,390006,"Pichoy, Valdivia Ad.",-39.6567,-73.0872,18.0,Mariquina,26.6,4.3,0.0
+2026-10-28,390015,Isla Teja  (Universidad Austral Valdivia),-39.7994,-73.2583,15.0,Valdivia,27.1,7.8,0.0
+2026-10-28,390028,Villarrica,-39.19,-72.1122,393.0,Villarrica,25.4,7.3,0.0
+2026-10-28,390029,Panguipulli,-39.6344,-72.3439,229.0,Panguipulli,24.7,8.4,0.0
+2026-10-28,390043,Corral ESSAL,-39.89,-73.4261,24.0,Corral,22.9,8.3,0.0
+2026-10-28,390056,Pucón Aeródromo,-39.2911,-71.9169,268.0,Pucón,30.8,9.4,0.0
+2026-10-28,400013,Juan Kalt Bode (Fundación Adolfo Matthei),-40.5906,-73.1122,53.0,Osorno,23.7,6.8,0.0
+2026-10-28,400058,"La Unión, Agrotec",-40.31,-73.0039,60.0,La Unión,23.9,6.7,0.0
+2026-10-28,400060,"Fundo el Maitén, Paillaco",-40.0836,-72.6589,194.0,Paillaco,23.2,0.0,0.0
+2026-10-28,400061,Purranque,-40.8667,-73.0236,75.0,Purrangue,23.1,7.3,0.0
+2026-10-28,410005,El Tepual  Puerto Montt Ap.,-41.4475,-73.0958,90.0,Puerto Montt,18.5,5.0,0.0
+2026-10-28,410026,Ancud Liceo Agrícola,-41.8661,-73.8164,31.0,Ancud,19.6,8.9,0.0
+2026-10-28,410027,"Escuela Mirasol, Puerto Montt",-41.4794,-72.9689,100.0,Puerto Montt,18.0,9.9,0.0
+2026-10-28,410040,Puerto Varas ESSAL,-41.3244,-72.9767,70.0,Puerto Varas,20.8,7.6,0.0
+2026-10-28,420015,Nueva Chaitén,-42.7853,-72.835,26.0,Chaitén,14.7,3.5,0.0
+2026-10-28,430001,Quellón Ad.,-43.1336,-73.6328,13.0,Quellón,17.7,3.7,0.0
+2026-10-28,430002,Futaleufú Ad.,-43.1889,-71.8522,350.0,Futaleufú,26.7,3.6,0.0
+2026-10-28,430009,Melinka Ad.,-43.8978,-73.7394,11.0,Aysén,18.9,8.7,0.0
+2026-10-28,440004,Cisnes Puyuhuapi,-44.3233,-72.5553,11.0,Cisnes,22.3,2.7,0.0
+2026-10-28,450001,Puerto Aysén Ad.,-45.3994,-72.6772,10.0,Aysén,20.9,3.5,0.0
+2026-10-28,450004,"Teniente Vidal, Coyhaique Ad.",-45.5908,-72.1022,299.0,Coyhaique,24.3,4.1,0.0
+2026-10-28,450005,Balmaceda Ad.,-45.9183,-71.6778,517.0,Coyhaique,23.9,-1.3,0.0
+2026-10-28,450022,"Mirador Marchant, Coyhaique",-45.5253,-72.0981,438.0,Coyhaique,23.6,4.5,0.0
+2026-10-28,480002,Villa OHiggins subcomisaría,-48.4714,-72.5603,280.0,Cisnes,24.2,4.3,0.0
+2026-10-28,510005,"Teniente Gallardo, Puerto Natales Ad.",-51.6672,-72.5289,69.0,Natales,20.6,4.4,0.0
+2026-10-28,510020,"Río Serrano, Torres del Paine",-51.2167,-72.9703,22.0,Torres del Paine,22.8,7.8,0.0
+2026-10-28,520006,"Carlos Ibañez, Punta Arenas Ap.",-53.0017,-70.8386,43.0,Punta Arenas,23.6,7.3,0.0
+2026-10-28,520012,Instituto de la Patagonia (Jorge Schytte),-53.13,-70.8875,11.0,Punta Arenas,18.0,7.0,0.0
+2026-10-28,520014,Punta Arenas Unidad Aeropolicial,-53.1528,-70.9264,53.0,Punta Arenas,19.0,7.5,0.0
+2026-10-28,520015,Magallanes Villa Tehuelche,-52.4289,-71.4161,176.0,Laguna Blanca,23.0,6.0,0.0
+2026-10-28,520030,"Cerro Sombrero, Estrecho de Magallanes",-52.7764,-69.2947,64.0,Primavera,19.8,7.1,0.0
+2026-10-28,530005,"Fuentes Martínez, Porvenir Ad.",-53.2536,-70.3261,25.0,Porvenir,21.4,6.2,0.0
+2026-10-28,530008,Escuela Alberto Hurtado,-53.1669,-70.9453,60.0,Punta Arenas,18.9,9.0,0.0
+2026-10-28,540008,"Pampa Guanaco, Tierra del Fuego",-54.0508,-68.8039,150.0,Timaukel,23.7,-16.3,0.3
+2026-10-28,550001,"Guardiamarina Zañartu, Pto Williams Ad.",-54.9317,-67.6156,12.0,Cabo de Hornos (Ex-Navarino),18.3,7.1,0.0
+2026-10-28,950001,"C.M.A. Eduardo Frei Montalva, Antártica",-62.1919,-58.9797,45.0,Antártica,0.9,-0.9,3.8
+2026-10-28,950008,Glaciar Unión,-79.7683,-82.9114,768.0,Antártica,-21.7,-21.7,
+2026-10-28,950009,Carvajal - INACH,-67.7758,-68.8883,30.0,Antártica,2.5,0.9,
+2026-10-28,950010,Punta. Py - INACH,-64.9053,-63.7372,55.0,Antártica,1.8,1.3,
+2026-10-28,950011,Gabriel Gonzalez Videla - INACH,-64.8239,-62.8578,5.0,Antártica,0.1,0.1,
+2026-10-28,950012,Boonen Rivera,-63.5375,-57.4089,16.0,Antártica,2.8,1.5,
+2026-10-28,950013,Base OHiggins - INACH,-63.3217,-57.8978,10.0,Antártica,2.8,1.5,
+2026-10-28,950014,Base Prat - INACH,-62.4789,-59.6639,5.0,Antártica,2.3,0.3,
+2026-10-28,950016,Escudero,-62.2028,-58.9617,55.0,Antártica,0.4,-0.3,
+2026-10-28,950017,Cabo Melville,-62.0206,-57.6244,123.0,Antártica,0.4,-0.3,
+2026-10-28,950020,Islote Alcock,-64.24,-61.1314,102.0,Antártica,0.8,0.2,
+2026-10-28,950021,Base J,-66.0081,-65.3392,3.0,Antártica,1.6,1.6,
+2026-10-28,950023,Isla Livington,-62.68,-60.4122,154.0,Antártica,1.6,1.6,

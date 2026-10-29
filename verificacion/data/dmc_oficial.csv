@@ -1029,3 +1029,18 @@ emision,indice,ciudad,icao,fecha,dia,tmin,tmax,lluvia,texto
 2026-10-29 17:36:46,stgoc,Santiago Sector Centro,,2026-11-01,2,11,21,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nubosidad parcial
 2026-10-29 17:36:46,stgoc,Santiago Sector Centro,,2026-11-02,3,11,22,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nubosidad parcial
 2026-10-29 17:36:46,stgoc,Santiago Sector Centro,,2026-11-03,4,10,20,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Despejado
+2026-10-29 19:32:32,colchane,Colchane,,2026-10-30,0,-6,17,0,madrugada: Nubosidad parcial / mañana: Despejado / tarde: Despejado con viento entre 40 y 60 km/h y ráfagas de viento hasta 70 km/h / noche: Despejado con viento entre 40 y 60 km/h
+2026-10-29 19:32:32,colchane,Colchane,,2026-10-31,1,-6,17,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado con viento entre 40 y 60 km/h / noche: Despejado con viento entre 40 y 60 km/h
+2026-10-29 19:32:32,colchane,Colchane,,2026-11-01,2,-7,18,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado con viento entre 40 y 60 km/h / noche: Despejado con viento entre 25 y 40 km/h
+2026-10-29 19:32:32,colchane,Colchane,,2026-11-02,3,-7,21,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado con viento entre 25 y 40 km/h
+2026-10-29 19:32:32,colchane,Colchane,,2026-11-03,4,-5,21,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado con viento entre 25 y 40 km/h
+2026-10-29 19:33:40,caldera,Caldera,,2026-10-30,0,14,22,0,madrugada: Nublado / mañana: Nubosidad parcial variando a despejado / tarde: Despejado / noche: Despejado
+2026-10-29 19:33:40,caldera,Caldera,,2026-10-31,1,15,22,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado variando a despejado / noche: Despejado
+2026-10-29 19:33:40,caldera,Caldera,,2026-11-01,2,13,23,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Despejado
+2026-10-29 19:33:40,caldera,Caldera,,2026-11-02,3,13,23,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-10-29 19:33:40,caldera,Caldera,,2026-11-03,4,15,23,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-10-29 19:34:09,huasco,Huasco,,2026-10-30,0,17,21,0,madrugada: Nublado / mañana: Nublado variando a despejado / tarde: Despejado / noche: Despejado
+2026-10-29 19:34:09,huasco,Huasco,,2026-10-31,1,16,20,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado variando a despejado / noche: Nublado
+2026-10-29 19:34:09,huasco,Huasco,,2026-11-01,2,14,21,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial con viento entre 25 y 40 km/h / noche: Despejado
+2026-10-29 19:34:09,huasco,Huasco,,2026-11-02,3,13,21,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial con viento entre 25 y 40 km/h / noche: Nubosidad parcial
+2026-10-29 19:34:09,huasco,Huasco,,2026-11-03,4,14,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado con viento entre 25 y 40 km/h / noche: Nublado

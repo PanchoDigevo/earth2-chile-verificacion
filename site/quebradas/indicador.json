@@ -1,5 +1,5 @@
 {
-"generado": "2026-10-29T22:41Z",
+"generado": "2026-10-29T23:53Z",
 "lluvia_prevista": {
 "GFS": {
 "corrida": "20261029_18",
@@ -12,9 +12,9 @@
 "mm24": 0.2,
 "horas_lluvia_7d": {
 "SCEL": 4,
-"SCTB": 7
+"SCTB": 6
 },
-"factor_antecedente": 1.14,
+"factor_antecedente": 1.12,
 "parametros": {
 "KF": 0.25,
 "beta": [
@@ -38,8 +38,8 @@
 "p24": 0.026,
 "p": 0.027,
 "nivel": "bajo",
-"mm_atencion": 8.8,
-"mm_aviso": 14.2
+"mm_atencion": 8.9,
+"mm_aviso": 14.5
 },
 {
 "id": 2,
@@ -58,8 +58,8 @@
 "p24": 0.026,
 "p": 0.026,
 "nivel": "bajo",
-"mm_atencion": 19.3,
-"mm_aviso": 31.3
+"mm_atencion": 19.7,
+"mm_aviso": 31.8
 },
 {
 "id": 4,

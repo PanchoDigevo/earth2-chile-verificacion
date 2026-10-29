@@ -111,7 +111,8 @@ GLOSARIO = {
     "AIFS": "El modelo de inteligencia artificial del Centro Europeo de Pronósticos (ECMWF). Aprende de décadas de datos.",
     "IFS": "El modelo físico del Centro Europeo (ECMWF): resuelve las ecuaciones de la atmósfera.",
     "GFS": "El modelo físico global de Estados Unidos (NOAA).",
-    "WRF-DMC": "El modelo regional de la Dirección Meteorológica de Chile (WRF), leído de su meteograma público por estación. "
+    "WRF-DMC": "El modelo regional de la Dirección Meteorológica de Chile (WRF), leído de su servicio oficial por estación. "
+               "La DMC lo corre dos veces al día con dos bordes: GFS (WRF-DMC) y ECMWF (WRF-DMC-EC). "
                "Es la referencia oficial: lo que ya tiene el país.",
     "indicador": "Probabilidad estimada de que una quebrada quemada produzca un flujo de detritos con cierta lluvia. Es apoyo a "
                  "la decisión, no una alerta: las alertas oficiales son de la DMC y SENAPRED.",

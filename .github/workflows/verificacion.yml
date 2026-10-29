@@ -41,6 +41,9 @@ jobs:
         working-directory: verificacion
         continue-on-error: true
         timeout-minutes: 8
+        env:
+          DMC_USUARIO: ${{ secrets.DMC_USUARIO }}
+          DMC_TOKEN: ${{ secrets.DMC_TOKEN }}
         run: python fetch_dmc.py
       - name: Tormentas a 72 h por comuna (ingredientes de GFS)
         working-directory: verificacion

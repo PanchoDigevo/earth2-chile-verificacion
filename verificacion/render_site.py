@@ -49,7 +49,8 @@ MODELOS = {"AIFS": ("AIFS", "Inteligencia artificial", "ECMWF"), "IFS": ("IFS", 
 ORDEN = list(MODELOS)
 # Modelos de Earth-2 corridos por nosotros (earth2/endpoint.py o earth2/correr_pod.py) y la referencia oficial (fetch_dmc.py).
 # Solo entran a la comparación diaria, no a las tablas históricas, y aparecen apenas tienen pares.
-EXTERNOS = {"WRF-DMC": ("WRF-DMC", "Modelo físico regional", "Dirección Meteorológica de Chile"),
+EXTERNOS = {"WRF-DMC": ("WRF-DMC", "Modelo físico regional, con borde de GFS", "Dirección Meteorológica de Chile"),
+            "WRF-DMC-EC": ("WRF-DMC-EC", "Modelo físico regional, con borde de ECMWF", "Dirección Meteorológica de Chile"),
             "FCN3": ("FCN3", "IA · FourCastNet 3", "NVIDIA Earth-2, en el POD de Santiago"),
             "AIFS-POD": ("AIFS-POD", "IA · AIFS", "ECMWF, corrido en el POD de Santiago"),
             "SFNO": ("SFNO", "IA · FourCastNet v2", "NVIDIA Earth-2, en el POD de Santiago")}

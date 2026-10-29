@@ -155,8 +155,9 @@ def main():
         if recibida != corrida:
             print("Earth-2: la función devolvió otra corrida; no se guarda.")
             return 1
-    else:
-        print("Earth-2: el archivo no declara su hora de inicio (coordenada time); no se puede comprobar.")
+    else:                                   # la función de NVCF elige la corrida por su cuenta (29-oct-2026): sin hora, no se guarda
+        print("Earth-2: el archivo no declara su hora de inicio (coordenada time); no se guarda.")
+        return 1
     est = pd.read_csv(ESTACIONES)
     df = en_estaciones(ds, corrida, modelo, est)
     os.makedirs(SALIDA, exist_ok=True)

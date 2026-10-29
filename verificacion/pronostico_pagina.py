@@ -13,6 +13,7 @@ import glob, json, os
 import numpy as np, pandas as pd
 import tormenta_vivo
 import monitor_lluvia
+import aviso_oficial
 from comun import JS_DEF, a_chile, aviso, nav, num, pie
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
@@ -325,6 +326,7 @@ JS = r"""
     $('c-nombre').textContent = c.n; $('c-region').textContent = c.r;
     const d = D48 && D48.comunas[sel];
     pintarAhora(c, d); pintarHoras(d); pintarGrafico(d); pintarConfianza(d); pintarQuince(d); estado();
+    if (window.avisosDMC) window.avisosDMC.comuna(sel, c.n);
   }
   function diasDe(pasos) {
     const hoy = new Date(); hoy.setHours(0, 0, 0, 0); const g = {};
@@ -485,6 +487,8 @@ def pagina(head, escribir, est, pts, ahora):
 </header>
 
 <p class="estado" id="estado" aria-live="polite"><span class="sin">Cargando…</span></p>
+
+{aviso_oficial.html(modo="comuna")}
 
 <section class="card ahora" aria-live="polite">
   <div><h2 id="c-nombre"></h2><p class="muted" id="c-region"></p></div>

@@ -107,10 +107,29 @@ footer p{max-width:90ch}
 .leaflet-control-attribution{font-size:10px}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .leaflet-tile{filter:brightness(.78) contrast(1.05)}}
 :root[data-theme="dark"] .leaflet-tile{filter:brightness(.78) contrast(1.05)}
-.aviso-oficial{border:1px solid var(--atencion);border-left:6px solid var(--atencion);background:color-mix(in srgb,var(--atencion) 12%,var(--surface));border-radius:var(--radius);padding:14px 16px;display:grid;gap:6px}
-.aviso-oficial strong.t{font-family:var(--font-display);font-size:17px}
-.aviso-oficial p{max-width:80ch;margin:0}
-.aviso-oficial .enlaces{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:15px}
+/* avisos:css */
+.avisos-dmc{border:1px solid var(--medio,#c98500);border-left:6px solid var(--medio,#c98500);background:color-mix(in srgb,var(--medio,#c98500) 9%,var(--surface));
+  border-radius:var(--radius);padding:14px 16px;display:grid;gap:8px}
+.avisos-dmc[hidden]{display:none}
+.avisos-dmc.hay-alerta{border-color:#e06a00;border-left-color:#e06a00;background:color-mix(in srgb,#e06a00 9%,var(--surface))}
+.avisos-dmc.hay-alarma{border-color:var(--alto,#d03b3b);border-left-color:var(--alto,#d03b3b);background:color-mix(in srgb,var(--alto,#d03b3b) 9%,var(--surface))}
+.avisos-dmc.sin{border-color:var(--border,#ccc);border-left-color:var(--border,#ccc);background:none;padding:8px 14px}
+.avisos-dmc strong.t{font-family:var(--font-display);font-size:17px}
+.avisos-dmc p{max-width:80ch;margin:0}
+.avisos-dmc ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.avisos-dmc li{display:grid;gap:2px}
+.avisos-dmc .nivel{display:inline-block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;border-radius:4px;
+  padding:1px 6px;margin-right:6px;color:#1a1a1a;background:var(--medio,#c98500)}
+.avisos-dmc .nivel.alerta{background:#e06a00;color:#fff}
+.avisos-dmc .nivel.alarma{background:var(--alto,#d03b3b);color:#fff}
+.avisos-dmc .cuando,.avisos-dmc .donde{font-size:14px;color:var(--muted)}
+.avisos-dmc details{font-size:14px}
+.avisos-dmc details table{border-collapse:collapse;margin:6px 0;font-size:13px}
+.avisos-dmc details th,.avisos-dmc details td{border:1px solid var(--border,#ccc);padding:2px 6px;text-align:left}
+.avisos-dmc .enlaces{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:15px}
+.avisos-dmc .pie{font-size:13px;color:var(--muted)}
+@media (max-width:600px){.avisos-dmc details{overflow-x:auto}}
+/* /avisos:css */
 /* comun:css */
 .topnav{position:sticky;top:0;z-index:1100;background:var(--surface);border-bottom:1px solid var(--line)}
 .topnav .in{max-width:1400px;margin:0 auto;padding-inline:16px;display:flex;align-items:center;gap:16px;min-height:52px}
@@ -173,9 +192,97 @@ footer p{max-width:90ch}
 </style>
 </head>
 <body>
-<nav class="topnav" aria-label="Secciones del sitio"><div class="in"><a class="marca" href="./">Earth-2 Chile<small>verificación pública del pronóstico</small></a><div class="tabs"><a href="./">Resumen</a><a href="pronostico.html">Pronóstico</a><a href="zona.html">Tu zona</a><a href="eventos.html">Eventos<span class="largo">2026</span></a><a href="quebradas.html" class="activa" aria-current="page">Quebradas</a><a href="escenarios.html">Escenarios</a><a href="envivo.html">En vivo</a><a href="metodo.html">Método</a></div></div></nav>
+<nav class="topnav" aria-label="Secciones del sitio"><div class="in"><a class="marca" href="./">Earth-2 Chile<small>verificación pública del pronóstico</small></a><div class="tabs"><a href="./">Resumen</a><a href="pronostico.html">Pronóstico</a><a href="zona.html">Tu zona</a><a href="eventos.html">Eventos<span class="largo">2026</span></a><a href="quebradas.html" class="activa" aria-current="page">Quebradas</a><a href="escenarios.html">Escenarios</a><a href="envivo.html">En vivo</a><a href="gemelo.html">Gemelo</a><a href="metodo.html">Método</a></div></div></nav>
 <div class="wrap">
-<div id="aviso-oficial" hidden></div>
+<!-- avisos:html --><template id="avisos-dmc-extra"><p><strong>Por qué el indicador de esta página puede marcar «bajo» igual:</strong> usa la lluvia de los modelos globales, que reparten los chaparrones en bloques de 6 horas. Lo peligroso es una lluvia concentrada en poco tiempo, como la del 13 de octubre. <span id="aviso-umbral"></span> Ante cualquier diferencia, mandan las indicaciones oficiales.</p></template><section class="avisos-dmc" id="avisos-dmc" data-modo="comunas" data-ids="Q14502,Q14484,Q14466,Q51100,Q201036,Q187847" data-lugar="Santiago oriente" role="status" aria-label="Avisos oficiales de la DMC" hidden></section><script>
+(function(){
+  const caja = document.getElementById("avisos-dmc"); if (!caja) return;
+  const MODO = caja.dataset.modo || "pais";
+  const EXTRA = (document.getElementById("avisos-dmc-extra") || {}).innerHTML || "";
+  let D = null, pedida = null;
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const corto = s => esc(String(s || "").replace(/ de (enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre) del? \d{4}/gi, ""));
+  const hora = t => new Date(t * 1000).toLocaleString("es-CL", {timeZone: "America/Santiago", weekday: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23"});
+  const plural = (n, s, p) => n + " " + (n === 1 ? s : p);
+  function vigentes() {
+    const ahora = Date.now() / 1000;
+    return (D.avisos || []).filter(a => !a.hasta_ts || a.hasta_ts > ahora);
+  }
+  function cuando(a) {
+    const ahora = Date.now() / 1000;
+    if (a.desde_ts && a.desde_ts > ahora) return `Desde ${corto(a.desde)} hasta ${corto(a.hasta)}`;
+    return `En curso, hasta ${corto(a.hasta)}`;
+  }
+  function tablaHTML(a) {
+    return (a.tabla || []).map(b => `<table><caption style="text-align:left;font-weight:600">${esc(b.region)}</caption>
+      <tr><th>Zona</th>${b.dias.map(d => `<th>${esc(d)}</th>`).join("")}</tr>
+      ${b.filas.map(f => `<tr>${f.map(c => `<td>${esc(c)}</td>`).join("")}</tr>`).join("")}</table>`).join("");
+  }
+  function item(a, partes, fijo) {
+    const t = (a.tipo || "Aviso").toLowerCase();
+    const donde = fijo ? fijo : partes !== undefined
+      ? (partes && partes.length ? "En la " + partes.join(", ") + " de la comuna" : "")
+      : (a.zonas_texto || []).join(" · ");
+    return `<li><div><span class="nivel ${t}">${esc(a.tipo)}</span><strong>${esc(a.fenomeno)}</strong>${a.observacion ? " · " + esc(a.observacion) : ""}</div>
+      <div class="cuando">${cuando(a)}</div>${donde ? `<div class="donde">${esc(donde)}</div>` : ""}
+      <details><summary>Detalle de la DMC</summary>
+        <p>${esc(a.titulo)}. Condición: ${esc(a.condicion)}. Emitido el ${corto(a.emision)} (${esc(a.codigo)}).</p>
+        ${a.tabla && a.tabla.length ? `<p>${esc(a.tabla_titulo)}:</p>${tablaHTML(a)}` : ""}
+      </details></li>`;
+  }
+  function clases(lista) {
+    caja.classList.toggle("hay-alarma", lista.some(a => a.tipo === "Alarma"));
+    caja.classList.toggle("hay-alerta", !lista.some(a => a.tipo === "Alarma") && lista.some(a => a.tipo === "Alerta"));
+  }
+  function pie() {
+    const viejo = Date.now() / 1000 - D.generado > 3 * 3600;
+    return `<p class="pie">Copiados tal cual del Sistema de Alerta Meteorológica de la Dirección Meteorológica de Chile, que este sitio lee cada hora
+      (última lectura: ${hora(D.generado)}${viejo ? "; está atrasada, revise la fuente" : ""}). Este sitio no emite alertas.</p>
+      <div class="enlaces"><a href="https://archivos.meteochile.gob.cl/portaldmc/AAA/aaa_mapa.php" rel="noopener">Mapa oficial de avisos de la DMC</a><a href="https://senapred.cl/alertas/" rel="noopener">Alertas vigentes de SENAPRED</a>__EXTRA__</div>`;
+  }
+  function conteo(lista) {
+    const n = t => lista.filter(a => a.tipo === t).length;
+    const partes = [];
+    if (n("Alarma")) partes.push(plural(n("Alarma"), "alarma", "alarmas"));
+    if (n("Alerta")) partes.push(plural(n("Alerta"), "alerta", "alertas"));
+    if (n("Aviso")) partes.push(plural(n("Aviso"), "aviso", "avisos"));
+    return partes.length > 1 ? partes.slice(0, -1).join(", ") + " y " + partes[partes.length - 1] : partes[0];
+  }
+  function pais() {
+    const lista = vigentes(); if (!lista.length) { caja.hidden = true; return; }
+    clases(lista);
+    caja.innerHTML = `<strong class="t">Dirección Meteorológica de Chile: ${conteo(lista)} vigente${lista.length === 1 ? "" : "s"}</strong>
+      <ul>${lista.map(a => item(a)).join("")}</ul>${EXTRA}` + pie().replace("__EXTRA__", '<a href="pronostico.html">¿Toca tu comuna? Míralo en Pronóstico</a>');
+    caja.hidden = false;
+  }
+  function grupo() {
+    const ids = (caja.dataset.ids || "").split(","), lugar = caja.dataset.lugar || "esta zona";
+    const lista = vigentes().filter(a => a.comunas && ids.some(i => i in a.comunas));
+    if (!lista.length) { caja.hidden = true; return; }
+    clases(lista);
+    const donde = a => ids.filter(i => i in a.comunas).map(i => (D.nombres[i] || i) + (a.comunas[i].length ? " (" + a.comunas[i].join(", ") + ")" : "")).join(", ");
+    caja.innerHTML = `<strong class="t">Dirección Meteorológica de Chile: ${conteo(lista)} vigente${lista.length === 1 ? "" : "s"} en ${esc(lugar)}</strong>
+      <ul>${lista.map(a => item(a, undefined, "Comunas: " + donde(a))).join("")}</ul>${EXTRA}` + pie().replace("__EXTRA__", "");
+    caja.hidden = false;
+  }
+  function comuna(id, nombre) {
+    pedida = [id, nombre]; if (!D) return;
+    const lista = vigentes().filter(a => a.comunas && id in a.comunas);
+    clases(lista); caja.classList.toggle("sin", !lista.length);
+    caja.innerHTML = lista.length
+      ? `<strong class="t">Para ${esc(nombre)}, la Dirección Meteorológica de Chile tiene ${conteo(lista)} vigente${lista.length === 1 ? "" : "s"}</strong>
+         <ul>${lista.map(a => item(a, a.comunas[id])).join("")}</ul>` + pie().replace("__EXTRA__", "")
+      : `<p class="pie">Sin avisos, alertas ni alarmas de la Dirección Meteorológica de Chile para ${esc(nombre)} (lectura de ${hora(D.generado)}). <a href="https://archivos.meteochile.gob.cl/portaldmc/AAA/aaa_mapa.php" rel="noopener">Mapa oficial</a></p>`;
+    caja.hidden = false;
+  }
+  window.avisosDMC = {comuna: comuna};
+  fetch("https://raw.githubusercontent.com/PanchoDigevo/earth2-chile-verificacion/main/estaciones/datos/dmc_pron/avisos_vigentes.json?t=" + Math.floor(Date.now() / 600000)).then(r => r.ok ? r.json() : null).then(d => {
+    if (!d) return; D = d;
+    if (MODO === "comuna") { if (pedida) comuna(pedida[0], pedida[1]); } else if (MODO === "comunas") grupo(); else pais();
+    document.dispatchEvent(new Event("avisos-dmc"));
+  }).catch(() => {});
+})();
+</script><!-- /avisos:html -->
 <header>
   <div class="eyebrow">Quebradas de Santiago oriente</div>
   <h1>Las quebradas que se quemaron, y cuánta lluvia haría falta para que bajen</h1>
@@ -520,22 +627,12 @@ footer p{max-width:90ch}
 })();
 </script><!-- /direccion:js -->
 <script>
-/* Alerta oficial vigente (site/aviso_oficial.json, editado a mano). Explica por qué el indicador puede marcar "bajo". */
-(async function () {
-  try {
-    const a = await (await fetch("aviso_oficial.json", { cache: "no-cache" })).json();
-    if (!a || new Date() >= new Date(a.vigente_hasta)) return;
-    const caja = document.getElementById("aviso-oficial");
-    const enlaces = (a.enlaces || []).map(e => `<a href="${e.url}" rel="noopener">${e.texto}</a>`).join("");
-    caja.outerHTML = `<section class="aviso-oficial" role="status" aria-label="Alerta oficial vigente"><strong class="t">${a.titulo}</strong>
-      <p>${a.texto}</p>
-      <p><strong>Por qué el indicador de esta página puede marcar «bajo» igual:</strong> usa la lluvia de los modelos globales, que reparten los chaparrones en bloques de 6 horas. Lo peligroso es una lluvia concentrada en poco tiempo, como la del 13 de octubre. <span id="aviso-umbral"></span> Ante cualquier diferencia, mandan las indicaciones oficiales.</p>
-      <div class="enlaces">${enlaces}</div></section>`;
-    const pon = () => { const filas = document.querySelectorAll("#lista tbody tr"); if (!filas.length) return false;
-      const c = filas[0].querySelectorAll("td"); document.getElementById("aviso-umbral").textContent = `Si caen unos ${c[1].textContent.trim()} en 2 horas, ${c[0].textContent.trim()} pasaría a atención; con unos ${c[2].textContent.trim()}, a aviso de impacto.`; return true; };
-    if (!pon()) { const t = setInterval(() => { if (pon()) clearInterval(t); }, 400); setTimeout(() => clearInterval(t), 10000); }
-  } catch (e) { /* sin aviso vigente o sin conexión: la página sigue igual */ }
-})();
+/* Avisos oficiales de la DMC que tocan Santiago oriente (aviso_oficial.py vía comun.py): completa el umbral de la primera quebrada. */
+document.addEventListener("avisos-dmc", function () {
+  const pon = () => { const sp = document.getElementById("aviso-umbral"), filas = document.querySelectorAll("#lista tbody tr"); if (!sp) return true; if (!filas.length) return false;
+    const c = filas[0].querySelectorAll("td"); sp.textContent = `Si caen unos ${c[1].textContent.trim()} en 2 horas, ${c[0].textContent.trim()} pasaría a atención; con unos ${c[2].textContent.trim()}, a aviso de impacto.`; return true; };
+  if (!pon()) { const t = setInterval(() => { if (pon()) clearInterval(t); }, 400); setTimeout(() => clearInterval(t), 10000); }
+});
 </script>
 <!-- comun:js -->
 <script>

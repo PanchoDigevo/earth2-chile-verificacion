@@ -800,7 +800,7 @@ def pagina_resumen(est, ahora, ll=None):
 <body>
 {nav("resumen")}
 <div class="wrap">
-{aviso_oficial.html('<p>Para las quebradas quemadas de Santiago oriente, mire también <a href="quebradas.html">cuánta lluvia las acercaría a un umbral</a>.</p>')}
+{aviso_oficial.html()}
 {tormenta_vivo.html()}
 {monitor_lluvia.aviso()}
 

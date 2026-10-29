@@ -5,7 +5,8 @@ producto en estaciones/datos/dmc_pron/ (horas en UTC salvo los textos de la DMC,
 
   aaa.csv           Sistema de Alerta Meteorológica: avisos, alertas y alarmas vigentes (AAA/datos_AAA.json). Una fila
                     por código; zonas y tabla de intensidad en texto plano. El área de cada uno (polígono o lista de
-                    zonas) va en aaa_zonas.json, por id.
+                    zonas) va en aaa_zonas.json, por id. Los vigentes, con sus comunas, van a avisos_vigentes.json para
+                    el sitio (dmc_avisos.py).
   cordillera.csv    Pronóstico de cordillera por región, 5 días, con la isoterma 0 °C (js/pronostico_cordillera.js).
   pasos.csv         Pronóstico de los pasos fronterizos, 5 días, con la apreciación sinóptica y la isoterma medida
                     (js/datos_pasos_fronterizos_<región>.js; Los Libertadores, con isoterma pronosticada, en
@@ -117,7 +118,9 @@ def aaa():
     json.dump(previas, open(ruta, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
     n = guardar("aaa.csv", filas, ["id"], ["id", "codigo", "tipo", "fenomeno", "emision", "desde", "hasta", "condicion", "zonas",
                                           "tabla", "observacion", "titulo", "actualizado", "visto"])
-    return f"{j.get('Avisos', 0)} avisos, {j.get('Alertas', 0)} alertas, {j.get('Alarmas', 0)} alarmas vigentes; {n[0]} nuevos"
+    import dmc_avisos                                    # avisos vigentes por comuna, para el sitio
+    return (f"{j.get('Avisos', 0)} avisos, {j.get('Alertas', 0)} alertas, {j.get('Alarmas', 0)} alarmas vigentes; {n[0]} nuevos; "
+            f"sitio: {dmc_avisos.vigentes(j)}")
 
 
 def cordillera():

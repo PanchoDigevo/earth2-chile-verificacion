@@ -1,0 +1,735 @@
+id,nombre,region_dmc,zona,fraccion,centro
+Q23660303,Antofagasta,02,02_Cordillera_Costa,0.244,0
+Q23660303,Antofagasta,02,02_Precordillera_Salar,0.117,0
+Q23660303,Antofagasta,02,02_Litoral,0.041,0
+Q23660303,Antofagasta,02,02_Precordillera_Occidental,0.257,1
+Q23660303,Antofagasta,02,02_Cordillera,0.242,0
+Q23660303,Antofagasta,02,02_Pampa,0.097,0
+Q23660534,Calama,02,02_Precordillera_Alto_Loa,0.218,0
+Q23660534,Calama,02,02_Precordillera_Occidental,0.449,1
+Q23660534,Calama,02,02_Cordillera,0.328,0
+Q16923,María Elena,02,02_Cordillera_Costa,0.175,0
+Q16923,María Elena,02,02_Precordillera_Occidental,0.232,0
+Q16923,María Elena,02,02_Pampa,0.591,1
+Q16928,Mejillones,02,02_Cordillera_Costa,0.691,0
+Q16928,Mejillones,02,02_Litoral,0.305,1
+Q23660235,Ollagüe,02,02_Cordillera,0.997,1
+Q23660231,San Pedro de Atacama,02,02_Precordillera_Salar,0.442,1
+Q23660231,San Pedro de Atacama,02,02_Cordillera,0.554,0
+Q188027,Sierra Gorda,02,02_Cordillera_Costa,0.08,0
+Q188027,Sierra Gorda,02,02_Precordillera_Occidental,0.634,0
+Q188027,Sierra Gorda,02,02_Pampa,0.283,1
+Q188049,Taltal,02,02_Cordillera_Costa,0.432,0
+Q188049,Taltal,02,02_Litoral,0.067,1
+Q188049,Taltal,02,02_Precordillera_Occidental,0.381,0
+Q188049,Taltal,02,02_Cordillera,0.105,0
+Q23660225,Tocopilla,01b,01b_Cordillera_Costa,0.246,0
+Q23660225,Tocopilla,01b,01b_Pampa,0.516,0
+Q23660225,Tocopilla,01b,02_Cordillera_Costa,0.001,1
+Q23660225,Tocopilla,01b,01b_Cordillera,0.042,0
+Q23660225,Tocopilla,01b,01b_Precordillera,0.193,0
+Q23660598,Arica,01a,01a_Pampa,0.493,1
+Q23660598,Arica,01a,01a_Precordillera,0.323,0
+Q23660598,Arica,01a,01a_Cordillera,0.024,0
+Q23660598,Arica,01a,01a_Litoral,0.157,0
+Q3729,Comuna de Camarones,01a,01a_Pampa,0.23,1
+Q3729,Comuna de Camarones,01a,01a_Cordillera_Costa,0.102,0
+Q3729,Comuna de Camarones,01a,01a_Precordillera,0.36,0
+Q3729,Comuna de Camarones,01a,01a_Cordillera,0.255,0
+Q3729,Comuna de Camarones,01a,01a_Litoral,0.049,0
+Q13065,General Lagos,01a,01a_Cordillera,0.997,1
+Q51605,Putre,01a,01a_Precordillera,0.132,0
+Q51605,Putre,01a,01a_Cordillera,0.867,1
+Q2215,Alto del Carmen,03,03_Precordillera,0.301,1
+Q2215,Alto del Carmen,03,03_Cordillera,0.692,0
+Q3708,Caldera,03,03_Litoral,0.522,1
+Q3708,Caldera,03,03_Cordillera_Costa,0.471,0
+Q23660220,Chañaral,03,03_Litoral,0.194,0
+Q23660220,Chañaral,03,03_Cordillera_Costa,0.72,1
+Q23660220,Chañaral,03,03_Pampa,0.077,0
+Q23660229,Copiapó,03,03_Precordillera,0.273,1
+Q23660229,Copiapó,03,03_Litoral,0.03,0
+Q23660229,Copiapó,03,03_Cordillera,0.373,0
+Q23660229,Copiapó,03,03_Cordillera_Costa,0.246,0
+Q23660229,Copiapó,03,03_Pampa,0.078,0
+Q13033,Diego de Almagro,03,03_Precordillera,0.169,0
+Q13033,Diego de Almagro,03,03_Cordillera,0.677,0
+Q13033,Diego de Almagro,03,03_Cordillera_Costa,0.026,1
+Q13033,Diego de Almagro,03,03_Pampa,0.124,1
+Q13051,Freirina,03,03_Litoral,0.32,1
+Q13051,Freirina,03,03_Cordillera_Costa,0.673,0
+Q14422,Huasco,03,03_Litoral,0.572,0
+Q14422,Huasco,03,03_Cordillera_Costa,0.32,0
+Q14422,Huasco,03,03_Pampa,0.099,0
+Q188142,Tierra Amarilla,03,03_Precordillera,0.286,0
+Q188142,Tierra Amarilla,03,03_Cordillera,0.666,0
+Q188142,Tierra Amarilla,03,03_Cordillera_Costa,0.047,1
+Q23660268,Vallenar,03,03_Precordillera,0.581,1
+Q23660268,Vallenar,03,03_Cordillera,0.068,0
+Q23660268,Vallenar,03,03_Cordillera_Costa,0.249,0
+Q23660268,Vallenar,03,03_Pampa,0.098,0
+Q3651,Aysén,11,11_Cordillera_Austral_Norte,0.472,0
+Q3651,Aysén,11,11_Insular_Norte,0.515,0
+Q3651,Aysén,11,11_Litoral_Interior_Norte,0.003,1
+Q23660552,Chile Chico,11,11_Cordillera_Austral_Norte,0.748,0
+Q23660552,Chile Chico,11,11_Patagonia_Subandina_Norte,0.246,1
+Q3793,Cisnes,11,11_Cordillera_Austral_Norte,0.675,0
+Q3793,Cisnes,11,11_Insular_Norte,0.287,0
+Q3793,Cisnes,11,11_Litoral_Interior_Norte,0.031,1
+Q23660615,Cochrane,11,11_Cordillera_Austral_Sur,0.814,1
+Q23660615,Cochrane,11,11_Patagonia_Subandina_Sur,0.173,0
+Q23660241,Coyhaique,11,11_Cordillera_Austral_Norte,0.43,0
+Q23660241,Coyhaique,11,11_Patagonia_Subandina_Norte,0.56,1
+Q13069,Guaitecas,11,11_Insular_Norte,0.964,1
+Q14471,Lago Verde,11,11_Cordillera_Austral_Norte,0.59,0
+Q14471,Lago Verde,11,11_Patagonia_Subandina_Norte,0.402,1
+Q51051,O'Higgins,11,11_Cordillera_Austral_Sur,0.99,0
+Q51051,O'Higgins,11,11_Patagonia_Subandina_Sur,0.005,1
+Q56129,Río Ibáñez,11,11_Cordillera_Austral_Norte,0.792,0
+Q56129,Río Ibáñez,11,11_Patagonia_Subandina_Norte,0.207,1
+Q2390232,Tortel,11,11_Cordillera_Austral_Sur,0.72,1
+Q2390232,Tortel,11,11_Insular_Sur,0.256,0
+Q2213,Alto Biobío,08b,08b_Cordillera,0.628,0
+Q2213,Alto Biobío,08b,08b_Precordillera,0.369,1
+Q3619,Antuco,08b,08b_Cordillera,0.759,0
+Q3619,Antuco,08b,08b_Precordillera,0.218,1
+Q3632,Arauco,08b,08b_Litoral,0.939,1
+Q3632,Arauco,08b,08b_Cordillera_Costa,0.045,0
+Q23660149,Arauco,08b,08b_Litoral,0.939,1
+Q23660149,Arauco,08b,08b_Cordillera_Costa,0.045,0
+Q3678,Cabrero,08b,08b_Valle_Longitudinal,0.967,1
+Q3678,Cabrero,08b,08a_Valle_Longitudinal,0.033,0
+Q3753,Cañete,08b,08b_Litoral,0.614,1
+Q3753,Cañete,08b,08b_Cordillera_Costa,0.37,0
+Q3765,Chiguayante,08b,08b_Litoral,0.935,1
+Q3765,Chiguayante,08b,08b_Cordillera_Costa,0.065,0
+Q1880,Concepción,08b,08b_Litoral,0.706,1
+Q1880,Concepción,08b,08b_Cordillera_Costa,0.294,0
+Q23659675,Concepción,08b,08b_Litoral,0.706,1
+Q23659675,Concepción,08b,08b_Cordillera_Costa,0.294,0
+Q3864,Contulmo,08b,08b_Litoral,0.136,0
+Q3864,Contulmo,08b,08b_Cordillera_Costa,0.824,1
+Q3864,Contulmo,08b,09_Cordillera_Costa,0.039,0
+Q3873,Coronel,08b,08b_Litoral,0.884,1
+Q3892,Curanilahue,08b,08b_Litoral,0.45,1
+Q3892,Curanilahue,08b,08b_Cordillera_Costa,0.547,0
+Q13048,Florida,08b,08a_Cordillera_Costa,0.032,0
+Q13048,Florida,08b,08b_Litoral,0.026,0
+Q13048,Florida,08b,08b_Cordillera_Costa,0.942,1
+Q13077,Hualpén,08b,08b_Litoral,0.972,1
+Q13079,Hualqui,08b,08b_Litoral,0.107,0
+Q13079,Hualqui,08b,08b_Cordillera_Costa,0.893,1
+Q14475,Laja,08b,08b_Valle_Longitudinal,1.0,1
+Q23660283,Lebu,08b,08b_Litoral,0.897,1
+Q16909,Los Álamos,08b,08b_Litoral,0.604,1
+Q16909,Los Álamos,08b,08b_Cordillera_Costa,0.389,0
+Q31921981,Los Ángeles,08b,08b_Valle_Longitudinal,0.999,1
+Q16910,Los Ángeles,08b,08b_Valle_Longitudinal,0.999,1
+Q23660628,Lota,08b,08b_Litoral,0.714,1
+Q23660628,Lota,08b,08b_Cordillera_Costa,0.264,0
+Q16911,Lota,08b,08b_Litoral,0.714,1
+Q16911,Lota,08b,08b_Cordillera_Costa,0.264,0
+Q51036,Mulchén,08b,08b_Valle_Longitudinal,0.664,1
+Q51036,Mulchén,08b,08b_Cordillera,0.026,0
+Q51036,Mulchén,08b,08b_Precordillera,0.3,0
+Q51039,Nacimiento,08b,08b_Valle_Longitudinal,0.068,1
+Q51039,Nacimiento,08b,08b_Cordillera_Costa,0.902,0
+Q51039,Nacimiento,08b,09_Cordillera_Costa,0.03,0
+Q51046,Negrete,08b,08b_Valle_Longitudinal,0.987,1
+Q51093,Penco,08b,08b_Litoral,0.995,1
+Q51610,Quilaco,08b,08b_Valle_Longitudinal,0.23,1
+Q51610,Quilaco,08b,08b_Cordillera,0.185,0
+Q51610,Quilaco,08b,08b_Precordillera,0.57,0
+Q56107,Quilleco,08b,08b_Valle_Longitudinal,0.634,1
+Q56107,Quilleco,08b,08b_Cordillera,0.061,0
+Q56107,Quilleco,08b,08b_Precordillera,0.305,0
+Q19344,San Pedro de la Paz,08b,08b_Litoral,0.993,1
+Q22137,San Rosendo,08b,08b_Valle_Longitudinal,0.179,1
+Q22137,San Rosendo,08b,08b_Cordillera_Costa,0.821,0
+Q187961,Santa Bárbara,08b,08b_Valle_Longitudinal,0.4,1
+Q187961,Santa Bárbara,08b,08b_Cordillera,0.195,0
+Q187961,Santa Bárbara,08b,08b_Precordillera,0.405,0
+Q187974,Santa Juana,08b,08b_Litoral,0.073,0
+Q187974,Santa Juana,08b,08b_Cordillera_Costa,0.927,1
+Q41997,Talcahuano,08b,08b_Litoral,0.942,1
+Q23659669,Talcahuano,08b,08b_Litoral,0.942,1
+Q188183,Tirúa,08b,08b_Litoral,0.839,1
+Q188183,Tirúa,08b,08b_Cordillera_Costa,0.131,0
+Q200934,Tomé,08b,08b_Litoral,0.786,1
+Q200934,Tomé,08b,08b_Cordillera_Costa,0.183,0
+Q23660282,Tomé,08b,08b_Litoral,0.786,1
+Q23660282,Tomé,08b,08b_Cordillera_Costa,0.183,0
+Q200965,Tucapel,08b,08b_Valle_Longitudinal,0.371,1
+Q200965,Tucapel,08b,08b_Cordillera,0.157,0
+Q200965,Tucapel,08b,08b_Precordillera,0.458,0
+Q201050,Yumbel,08b,08b_Valle_Longitudinal,0.501,1
+Q201050,Yumbel,08b,08b_Cordillera_Costa,0.498,0
+Q3602,Andacollo,04,04_Cordillera_Costa,0.998,1
+Q3735,Canela,04,04_Litoral,0.351,1
+Q3735,Canela,04,04_Cordillera_Costa,0.602,0
+Q3735,Canela,04,04_Precordillera,0.043,0
+Q3850,Combarbalá,04,04_Cordillera,0.232,0
+Q3850,Combarbalá,04,04_Cordillera_Costa,0.299,0
+Q3850,Combarbalá,04,04_Precordillera,0.469,1
+Q23660214,Coquimbo,04,04_Litoral,0.663,1
+Q23660214,Coquimbo,04,04_Cordillera_Costa,0.326,0
+Q23660296,Illapel,04,04_Cordillera,0.263,0
+Q23660296,Illapel,04,04_Cordillera_Costa,0.377,0
+Q23660296,Illapel,04,04_Precordillera,0.36,1
+Q14462,La Higuera,04,04_Cordillera,0.087,0
+Q14462,La Higuera,04,04_Litoral,0.157,1
+Q14462,La Higuera,04,04_Cordillera_Costa,0.26,0
+Q14462,La Higuera,04,04_Precordillera,0.484,0
+Q23660215,La Serena,04,04_Litoral,0.271,0
+Q23660215,La Serena,04,04_Cordillera_Costa,0.528,1
+Q23660215,La Serena,04,04_Precordillera,0.198,0
+Q16908,Los Vilos,04,04_Litoral,0.362,0
+Q16908,Los Vilos,04,04_Cordillera_Costa,0.602,0
+Q51034,Monte Patria,04,04_Cordillera,0.448,0
+Q51034,Monte Patria,04,04_Cordillera_Costa,0.053,0
+Q51034,Monte Patria,04,04_Precordillera,0.497,1
+Q23660217,Ovalle,04,04_Litoral,0.303,0
+Q23660217,Ovalle,04,04_Cordillera_Costa,0.661,1
+Q23660217,Ovalle,04,04_Precordillera,0.03,0
+Q51064,Paihuano,04,04_Cordillera,0.801,0
+Q51064,Paihuano,04,04_Precordillera,0.199,1
+Q51598,Punitaqui,04,04_Litoral,0.035,0
+Q51598,Punitaqui,04,04_Cordillera_Costa,0.965,1
+Q56128,Río Hurtado,04,04_Cordillera,0.394,0
+Q56128,Río Hurtado,04,04_Cordillera_Costa,0.128,0
+Q56128,Río Hurtado,04,04_Precordillera,0.478,1
+Q56134,Salamanca,04,04_Cordillera,0.459,0
+Q56134,Salamanca,04,04_Cordillera_Costa,0.061,0
+Q56134,Salamanca,04,04_Precordillera,0.471,1
+Q201007,Vicuña,04,04_Cordillera,0.656,0
+Q201007,Vicuña,04,04_Cordillera_Costa,0.082,0
+Q201007,Vicuña,04,04_Precordillera,0.26,1
+Q23660240,Angol,09,09_Cordillera_Costa,0.78,1
+Q23660240,Angol,09,09_Valle_Longitudinal,0.215,0
+Q3736,Carahue,09,09_Litoral,0.358,0
+Q3736,Carahue,09,09_Cordillera_Costa,0.619,1
+Q3785,Cholchol,09,09_Cordillera_Costa,0.416,0
+Q3785,Cholchol,09,09_Valle_Longitudinal,0.584,1
+Q3843,Collipulli,09,09_Cordillera,0.025,0
+Q3843,Collipulli,09,09_Precordillera,0.339,0
+Q3843,Collipulli,09,09_Valle_Longitudinal,0.611,1
+Q3878,Cunco,09,09_Cordillera,0.055,0
+Q3878,Cunco,09,09_Precordillera,0.526,0
+Q3878,Cunco,09,09_Valle_Longitudinal,0.419,1
+Q13025,Curarrehue,09,09_Cordillera,0.478,0
+Q13025,Curarrehue,09,09_Precordillera,0.514,1
+Q13044,Ercilla,09,09_Cordillera_Costa,0.33,0
+Q13044,Ercilla,09,09_Valle_Longitudinal,0.668,1
+Q13049,Freire,09,09_Valle_Longitudinal,1.0,1
+Q13063,Galvarino,09,09_Cordillera_Costa,0.234,0
+Q13063,Galvarino,09,09_Valle_Longitudinal,0.766,1
+Q13067,Gorbea,09,09_Cordillera_Costa,0.553,0
+Q13067,Gorbea,09,09_Valle_Longitudinal,0.447,1
+Q14486,Lautaro,09,09_Precordillera,0.083,0
+Q14486,Lautaro,09,09_Valle_Longitudinal,0.917,1
+Q16900,Loncoche,09,09_Cordillera_Costa,0.64,0
+Q16900,Loncoche,09,09_Valle_Longitudinal,0.344,1
+Q16902,Lonquimay,09,09_Cordillera,0.933,1
+Q16902,Lonquimay,09,09_Precordillera,0.064,0
+Q16907,Los Sauces,09,09_Cordillera_Costa,0.636,0
+Q16907,Los Sauces,09,09_Valle_Longitudinal,0.364,1
+Q16914,Lumaco,09,09_Cordillera_Costa,0.968,1
+Q16914,Lumaco,09,09_Valle_Longitudinal,0.027,0
+Q49076,Melipeuco,09,09_Cordillera,0.527,0
+Q49076,Melipeuco,09,09_Precordillera,0.473,1
+Q51050,Nueva Imperial,09,09_Cordillera_Costa,0.263,0
+Q51050,Nueva Imperial,09,09_Valle_Longitudinal,0.737,1
+Q51063,Padre Las Casas,09,09_Valle_Longitudinal,1.0,1
+Q15076,Perquenco,09,09_Valle_Longitudinal,1.0,1
+Q51115,Pitrufquén,09,09_Cordillera_Costa,0.172,0
+Q51115,Pitrufquén,09,09_Valle_Longitudinal,0.828,1
+Q51590,Pucón,09,09_Cordillera,0.248,0
+Q51590,Pucón,09,09_Precordillera,0.639,0
+Q51590,Pucón,09,09_Valle_Longitudinal,0.111,1
+Q51602,Purén,09,09_Cordillera_Costa,0.699,1
+Q51602,Purén,09,09_Valle_Longitudinal,0.29,1
+Q56118,Renaico,09,08b_Valle_Longitudinal,0.033,0
+Q56118,Renaico,09,09_Cordillera_Costa,0.134,0
+Q56118,Renaico,09,09_Valle_Longitudinal,0.816,1
+Q56132,Saavedra,09,09_Litoral,0.993,1
+Q23660141,Temuco,09,09_Valle_Longitudinal,1.0,1
+Q188135,Teodoro Schmidt,09,09_Litoral,0.538,0
+Q188135,Teodoro Schmidt,09,09_Cordillera_Costa,0.249,1
+Q188135,Teodoro Schmidt,09,09_Valle_Longitudinal,0.213,0
+Q17107613,Toltén,09,09_Litoral,0.512,1
+Q17107613,Toltén,09,09_Cordillera_Costa,0.483,0
+Q200961,Traiguén,09,09_Cordillera_Costa,0.324,0
+Q200961,Traiguén,09,09_Valle_Longitudinal,0.676,1
+Q200999,Victoria,09,09_Cordillera_Costa,0.043,0
+Q200999,Victoria,09,09_Precordillera,0.031,0
+Q200999,Victoria,09,09_Valle_Longitudinal,0.926,1
+Q1643896,Vilcún,09,09_Cordillera,0.058,0
+Q1643896,Vilcún,09,09_Precordillera,0.3,0
+Q1643896,Vilcún,09,09_Valle_Longitudinal,0.642,1
+Q201019,Villarrica,09,09_Cordillera_Costa,0.049,0
+Q201019,Villarrica,09,09_Precordillera,0.183,0
+Q201019,Villarrica,09,09_Valle_Longitudinal,0.751,1
+Q3880,Curacautín,09,09_Cordillera,0.242,0
+Q3880,Curacautín,09,09_Precordillera,0.541,0
+Q3880,Curacautín,09,09_Valle_Longitudinal,0.216,1
+Q23660274,Ancud,10b,10b_Chiloe,0.993,1
+Q23660261,Calbuco,10b,10b_Valle_Longitudinal,0.121,0
+Q23660261,Calbuco,10b,10b_Litoral,0.041,0
+Q23660261,Calbuco,10b,10b_Litoral_Interior,0.792,1
+Q23660569,Castro,10b,10b_Chiloe,1.0,1
+Q3759,Chaitén,10b,10b_Cordillera_Austral,0.768,0
+Q3759,Chaitén,10b,10b_Litoral_Interior,0.216,1
+Q23660568,Chonchi,10b,10b_Chiloe,1.0,1
+Q3797,Cochamó,10b,10b_Precordillera,0.069,0
+Q3797,Cochamó,10b,10b_Cordillera,0.198,0
+Q3797,Cochamó,10b,10b_Cordillera_Austral,0.682,0
+Q3797,Cochamó,10b,10b_Litoral_Interior,0.03,0
+Q23660566,Curaco de Vélez,10b,10b_Chiloe,1.0,1
+Q85867165,Dalcahue,10b,10b_Chiloe,1.0,1
+Q23660584,Fresia,10b,10b_Valle_Longitudinal,0.429,0
+Q23660584,Fresia,10b,10b_Cordillera_Costa,0.425,1
+Q23660584,Fresia,10b,10b_Litoral,0.142,0
+Q23660602,Frutillar,10b,10b_Valle_Longitudinal,1.0,1
+Q23660561,Futaleufú,10b,10b_Cordillera_Austral,0.968,1
+Q13072,Hualaihué,10b,10b_Cordillera_Austral,0.762,0
+Q13072,Hualaihué,10b,10b_Litoral_Interior,0.222,1
+Q14500,Llanquihue,10b,10b_Valle_Longitudinal,1.0,1
+Q16906,Los Muermos,10b,10b_Valle_Longitudinal,0.502,1
+Q16906,Los Muermos,10b,10b_Cordillera_Costa,0.065,0
+Q16906,Los Muermos,10b,10b_Litoral,0.431,0
+Q16927,Maullín,10b,10b_Valle_Longitudinal,0.429,0
+Q16927,Maullín,10b,10b_Litoral,0.546,1
+Q16927,Maullín,10b,10b_Litoral_Interior,0.023,0
+Q22451496,Osorno,10b,10b_Valle_Longitudinal,0.917,1
+Q22451496,Osorno,10b,10b_Cordillera_Costa,0.083,0
+Q23660618,Palena,10b,10b_Patagonia_Subandina,0.047,0
+Q23660618,Palena,10b,10b_Cordillera_Austral,0.931,1
+Q23660601,Puerto Montt,10b,10b_Valle_Longitudinal,0.331,0
+Q23660601,Puerto Montt,10b,10b_Precordillera,0.248,0
+Q23660601,Puerto Montt,10b,10b_Cordillera,0.111,0
+Q23660601,Puerto Montt,10b,10b_Litoral_Interior,0.31,1
+Q51595,Puerto Octay,10b,10b_Valle_Longitudinal,0.632,1
+Q51595,Puerto Octay,10b,10b_Precordillera,0.281,0
+Q51595,Puerto Octay,10b,10b_Cordillera,0.087,0
+Q23660278,Puerto Varas,10b,10b_Valle_Longitudinal,0.293,0
+Q23660278,Puerto Varas,10b,10b_Precordillera,0.401,0
+Q23660278,Puerto Varas,10b,10b_Cordillera,0.302,1
+Q2118779,Puqueldón,10b,10b_Chiloe,0.985,1
+Q51601,Purranque,10b,10b_Valle_Longitudinal,0.539,1
+Q51601,Purranque,10b,10b_Cordillera_Costa,0.344,0
+Q51601,Purranque,10b,10b_Litoral,0.113,0
+Q15084,Puyehue,10b,10b_Valle_Longitudinal,0.474,1
+Q15084,Puyehue,10b,10a_Valle_Longitudinal,0.008,1
+Q15084,Puyehue,10b,10b_Precordillera,0.294,0
+Q15084,Puyehue,10b,10b_Cordillera,0.21,0
+Q51607,Queilén,10b,10b_Chiloe,0.988,1
+Q51608,Quellón,10b,10b_Chiloe,0.998,1
+Q51609,Quemchi,10b,10b_Chiloe,0.803,1
+Q56111,Quinchao,10b,10b_Chiloe,0.317,1
+Q56130,Río Negro,10b,10b_Valle_Longitudinal,0.573,1
+Q56130,Río Negro,10b,10b_Cordillera_Costa,0.263,0
+Q56130,Río Negro,10b,10b_Litoral,0.162,0
+Q187856,San Juan de la Costa,10b,10b_Valle_Longitudinal,0.036,0
+Q187856,San Juan de la Costa,10b,10b_Cordillera_Costa,0.662,1
+Q187856,San Juan de la Costa,10b,10b_Litoral,0.292,0
+Q187873,San Pablo,10b,10b_Valle_Longitudinal,0.682,1
+Q187873,San Pablo,10b,10b_Cordillera_Costa,0.305,0
+Q3875,Corral,10a,10a_Litoral,0.714,1
+Q3875,Corral,10a,10a_Cordillera_Costa,0.274,0
+Q13062,Futrono,10a,10a_Valle_Longitudinal,0.196,1
+Q13062,Futrono,10a,10a_Precordillera,0.49,0
+Q13062,Futrono,10a,10a_Cordillera,0.313,0
+Q23660622,La Unión,10a,10a_Litoral,0.155,0
+Q23660622,La Unión,10a,10a_Valle_Longitudinal,0.308,1
+Q23660622,La Unión,10a,10a_Cordillera_Costa,0.528,0
+Q14470,Lago Ranco,10a,10a_Valle_Longitudinal,0.221,1
+Q14470,Lago Ranco,10a,10a_Precordillera,0.504,0
+Q14470,Lago Ranco,10a,10a_Cordillera,0.274,0
+Q64972453,Lanco,10a,10a_Valle_Longitudinal,0.087,0
+Q64972453,Lanco,10a,10a_Cordillera_Costa,0.868,1
+Q64972453,Lanco,10a,09_Cordillera_Costa,0.044,0
+Q16905,Los Lagos,10a,10a_Valle_Longitudinal,0.362,1
+Q16905,Los Lagos,10a,10a_Precordillera,0.301,0
+Q16905,Los Lagos,10a,10a_Cordillera_Costa,0.303,0
+Q16905,Los Lagos,10a,10a_Cordillera,0.034,0
+Q51038,Máfil,10a,10a_Cordillera_Costa,1.0,1
+Q16922,Mariquina,10a,10a_Litoral,0.404,0
+Q16922,Mariquina,10a,10a_Cordillera_Costa,0.58,1
+Q51069,Paillaco,10a,10a_Valle_Longitudinal,0.616,1
+Q51069,Paillaco,10a,10a_Cordillera_Costa,0.384,0
+Q23660623,Panguipulli,10a,10a_Valle_Longitudinal,0.219,0
+Q23660623,Panguipulli,10a,10a_Precordillera,0.578,1
+Q23660623,Panguipulli,10a,10a_Cordillera_Costa,0.023,0
+Q23660623,Panguipulli,10a,10a_Cordillera,0.174,0
+Q23660621,Río Bueno,10a,10a_Valle_Longitudinal,0.668,1
+Q23660621,Río Bueno,10a,10a_Precordillera,0.182,0
+Q23660621,Río Bueno,10a,10a_Cordillera,0.129,0
+Q23660540,Valdivia,10a,10a_Litoral,0.454,0
+Q23660540,Valdivia,10a,10a_Cordillera_Costa,0.543,1
+Q3673,Cabo de Hornos,12,12_Cordillera_Austral_Sur,0.273,0
+Q3673,Cabo de Hornos,12,12_Insular_Sur,0.714,1
+Q14474,Laguna Blanca,12,12_Pampa_Patagonica_Norte,0.002,1
+Q14474,Laguna Blanca,12,12_Pampa_Patagonica_Sur,0.998,0
+Q51043,Natales,12,12_Pampa_Patagonica_Norte,0.098,0
+Q51043,Natales,12,12_Cordillera_Austral_Norte,0.443,0
+Q51043,Natales,12,12_Insular_Norte,0.393,0
+Q51120,Porvenir,12,12_Pampa_Patagonica_Sur,0.999,1
+Q51586,Primavera,12,12_Pampa_Patagonica_Sur,0.98,1
+Q20530729,Punta Arenas,12,12_Cordillera_Austral_Sur,0.291,0
+Q20530729,Punta Arenas,12,12_Insular_Central,0.437,0
+Q20530729,Punta Arenas,12,12_Pampa_Patagonica_Sur,0.265,1
+Q56131,Río Verde,12,12_Cordillera_Austral_Sur,0.667,0
+Q56131,Río Verde,12,12_Insular_Central,0.021,0
+Q56131,Río Verde,12,12_Pampa_Patagonica_Sur,0.29,1
+Q187816,San Gregorio,12,12_Pampa_Patagonica_Sur,0.999,1
+Q188177,Timaukel,12,12_Cordillera_Austral_Sur,0.51,0
+Q188177,Timaukel,12,12_Pampa_Patagonica_Sur,0.488,1
+Q200948,Torres del Paine,12,12_Pampa_Patagonica_Norte,0.779,1
+Q200948,Torres del Paine,12,12_Cordillera_Austral_Norte,0.215,0
+Q3749,Cauquenes,07,07_Cordillera_Costa,0.221,0
+Q3749,Cauquenes,07,07_Litoral,0.037,0
+Q3749,Cauquenes,07,07_Valle_Longitudinal,0.727,1
+Q3762,Chanco,07,07_Cordillera_Costa,0.17,0
+Q3762,Chanco,07,07_Litoral,0.823,1
+Q3836,Colbún,07,07_Precordillera,0.263,0
+Q3836,Colbún,07,07_Cordillera,0.656,0
+Q3836,Colbún,07,07_Valle_Longitudinal,0.076,1
+Q3862,Constitución,07,07_Cordillera_Costa,0.407,0
+Q3862,Constitución,07,07_Litoral,0.582,1
+Q13026,Curepto,07,07_Cordillera_Costa,0.786,1
+Q13026,Curepto,07,07_Litoral,0.214,1
+Q23660294,Curicó,07,07_Precordillera,0.437,1
+Q23660294,Curicó,07,07_Cordillera,0.344,0
+Q23660294,Curicó,07,07_Valle_Longitudinal,0.215,0
+Q13042,Empedrado,07,07_Cordillera_Costa,0.772,1
+Q13042,Empedrado,07,07_Litoral,0.187,0
+Q13042,Empedrado,07,07_Valle_Longitudinal,0.041,0
+Q13074,Hualañé,07,07_Cordillera_Costa,0.99,1
+Q14490,Licantén,07,07_Cordillera_Costa,0.315,1
+Q14490,Licantén,07,07_Litoral,0.684,0
+Q23660288,Linares,07,07_Precordillera,0.5,1
+Q23660288,Linares,07,07_Cordillera,0.244,0
+Q23660288,Linares,07,07_Valle_Longitudinal,0.256,0
+Q16901,Longaví,07,07_Precordillera,0.389,0
+Q16901,Longaví,07,07_Cordillera,0.175,0
+Q16901,Longaví,07,07_Valle_Longitudinal,0.436,1
+Q16926,Maule,07,07_Valle_Longitudinal,1.0,1
+Q51033,Molina,07,07_Precordillera,0.264,0
+Q51033,Molina,07,07_Cordillera,0.48,0
+Q51033,Molina,07,07_Cordillera_Costa,0.035,0
+Q51033,Molina,07,07_Valle_Longitudinal,0.222,1
+Q51083,Parral,07,07_Precordillera,0.353,0
+Q51083,Parral,07,07_Cordillera,0.083,0
+Q51083,Parral,07,07_Valle_Longitudinal,0.55,1
+Q51085,Pelarco,07,07_Precordillera,0.026,0
+Q51085,Pelarco,07,07_Valle_Longitudinal,0.974,1
+Q51086,Pelluhue,07,07_Cordillera_Costa,0.159,0
+Q51086,Pelluhue,07,07_Litoral,0.84,1
+Q51091,Pencahue,07,07_Cordillera_Costa,0.827,0
+Q51091,Pencahue,07,07_Valle_Longitudinal,0.173,1
+Q56116,Rauco,07,06_Cordillera_Costa,0.052,0
+Q56116,Rauco,07,07_Cordillera_Costa,0.806,0
+Q56116,Rauco,07,07_Valle_Longitudinal,0.142,1
+Q56122,Retiro,07,07_Valle_Longitudinal,1.0,1
+Q56127,Río Claro,07,07_Precordillera,0.072,0
+Q56127,Río Claro,07,07_Valle_Longitudinal,0.928,1
+Q56124,Romeral,07,07_Precordillera,0.341,1
+Q56124,Romeral,07,07_Cordillera,0.554,0
+Q56124,Romeral,07,07_Valle_Longitudinal,0.087,1
+Q56133,Sagrada Familia,07,07_Cordillera_Costa,0.874,1
+Q56133,Sagrada Familia,07,07_Valle_Longitudinal,0.126,1
+Q56138,San Clemente,07,07_Precordillera,0.283,0
+Q56138,San Clemente,07,07_Cordillera,0.589,0
+Q56138,San Clemente,07,07_Valle_Longitudinal,0.127,1
+Q23660142,San Javier,07,07_Cordillera_Costa,0.493,1
+Q23660142,San Javier,07,07_Valle_Longitudinal,0.507,0
+Q187898,San Rafael,07,07_Cordillera_Costa,0.132,0
+Q187898,San Rafael,07,07_Valle_Longitudinal,0.868,1
+Q31947291,Talca,07,07_Cordillera_Costa,0.111,0
+Q31947291,Talca,07,07_Valle_Longitudinal,0.889,1
+Q2383688,Teno,07,07_Precordillera,0.305,0
+Q2383688,Teno,07,07_Cordillera,0.05,0
+Q2383688,Teno,07,07_Cordillera_Costa,0.064,0
+Q2383688,Teno,07,07_Valle_Longitudinal,0.547,1
+Q200992,Vichuquén,07,06_Litoral,0.035,0
+Q200992,Vichuquén,07,07_Cordillera_Costa,0.273,1
+Q200992,Vichuquén,07,07_Litoral,0.691,1
+Q201015,Villa Alegre,07,07_Valle_Longitudinal,1.0,1
+Q201046,Yerbas Buenas,07,07_Valle_Longitudinal,1.0,1
+Q2208,Alhué,05m,06_Cordillera_Costa,0.024,0
+Q2208,Alhué,05m,05m_Cordillera_Costa,0.976,1
+Q3656,Buin,05m,05m_Precordillera,0.143,0
+Q3656,Buin,05m,05m_Valle_Longitudinal,0.855,1
+Q3725,Calera de Tango,05m,05m_Valle_Longitudinal,1.0,1
+Q3755,Cerrillos,05m,05m_Valle_Longitudinal,1.0,1
+Q3756,Cerro Navia,05m,05m_Valle_Longitudinal,1.0,1
+Q3841,Colina,05m,05m_Precordillera,0.506,0
+Q3841,Colina,05m,05m_Valle_Longitudinal,0.336,1
+Q3841,Colina,05m,05m_Cordillera,0.148,0
+Q3851,Conchalí,05m,05m_Valle_Longitudinal,1.0,0
+Q3885,Curacaví,05m,05m_Cordillera_Costa,0.994,1
+Q13036,El Bosque,05m,05m_Valle_Longitudinal,1.0,1
+Q13038,El Monte,05m,05m_Valle_Longitudinal,0.436,1
+Q13038,El Monte,05m,05m_Cordillera_Costa,0.564,0
+Q13045,Estación Central,05m,05m_Valle_Longitudinal,1.0,1
+Q14433,Huechuraba,05m,05m_Precordillera,0.501,1
+Q14433,Huechuraba,05m,05m_Valle_Longitudinal,0.499,0
+Q14437,Independencia,05m,05m_Valle_Longitudinal,1.0,1
+Q14445,Isla de Maipo,05m,05m_Valle_Longitudinal,0.569,1
+Q14445,Isla de Maipo,05m,05m_Cordillera_Costa,0.431,0
+Q14456,La Cisterna,05m,05m_Valle_Longitudinal,1.0,1
+Q14460,La Florida,05m,05m_Precordillera,0.321,0
+Q14460,La Florida,05m,05m_Valle_Longitudinal,0.552,1
+Q14460,La Florida,05m,05m_Cordillera,0.127,0
+Q14461,La Granja,05m,05m_Valle_Longitudinal,1.0,1
+Q14464,La Pintana,05m,05m_Valle_Longitudinal,1.0,1
+Q14466,La Reina,05m,05m_Precordillera,0.184,0
+Q14466,La Reina,05m,05m_Valle_Longitudinal,0.816,1
+Q14477,Lampa,05m,05m_Valle_Longitudinal,0.637,1
+Q14477,Lampa,05m,05m_Cordillera_Costa,0.363,1
+Q14484,Las Condes,05m,05m_Precordillera,0.371,0
+Q14484,Las Condes,05m,05m_Valle_Longitudinal,0.428,1
+Q14484,Las Condes,05m,05m_Cordillera,0.201,0
+Q14502,Lo Barnechea,05m,05m_Precordillera,0.318,1
+Q14502,Lo Barnechea,05m,05m_Valle_Longitudinal,0.007,1
+Q14502,Lo Barnechea,05m,05m_Cordillera,0.67,0
+Q14503,Lo Espejo,05m,05m_Valle_Longitudinal,1.0,1
+Q14504,Lo Prado,05m,05m_Valle_Longitudinal,1.0,1
+Q16916,Macul,05m,05m_Valle_Longitudinal,1.0,1
+Q16918,Maipú,05m,05m_Valle_Longitudinal,0.788,1
+Q16918,Maipú,05m,05m_Cordillera_Costa,0.212,0
+Q16925,María Pinto,05m,05m_Cordillera_Costa,0.986,1
+Q51032,Melipilla,05m,05m_Cordillera_Costa,0.995,1
+Q201076,Ñuñoa,05m,05m_Valle_Longitudinal,1.0,1
+Q51062,Padre Hurtado,05m,05m_Valle_Longitudinal,0.629,1
+Q51062,Padre Hurtado,05m,05m_Cordillera_Costa,0.371,0
+Q51070,Paine,05m,05m_Precordillera,0.184,0
+Q51070,Paine,05m,05m_Valle_Longitudinal,0.322,1
+Q51070,Paine,05m,05m_Cordillera,0.034,0
+Q51070,Paine,05m,05m_Cordillera_Costa,0.449,0
+Q51084,Pedro Aguirre Cerda,05m,05m_Valle_Longitudinal,1.0,1
+Q51098,Peñaflor,05m,05m_Valle_Longitudinal,0.821,1
+Q51098,Peñaflor,05m,05m_Cordillera_Costa,0.179,0
+Q51100,Peñalolén,05m,05m_Precordillera,0.356,0
+Q51100,Peñalolén,05m,05m_Valle_Longitudinal,0.554,1
+Q51100,Peñalolén,05m,05m_Cordillera,0.09,0
+Q51113,Pirque,05m,05m_Precordillera,0.488,0
+Q51113,Pirque,05m,05m_Valle_Longitudinal,0.293,1
+Q51113,Pirque,05m,05m_Cordillera,0.218,0
+Q51587,Providencia,05m,05m_Valle_Longitudinal,1.0,1
+Q51591,Pudahuel,05m,05m_Valle_Longitudinal,0.712,1
+Q51591,Pudahuel,05m,05m_Cordillera_Costa,0.288,0
+Q51594,Puente Alto,05m,05m_Precordillera,0.249,0
+Q51594,Puente Alto,05m,05m_Valle_Longitudinal,0.75,1
+Q51612,Quilicura,05m,05m_Precordillera,0.053,0
+Q51612,Quilicura,05m,05m_Valle_Longitudinal,0.947,1
+Q56113,Quinta Normal,05m,05m_Valle_Longitudinal,1.0,1
+Q56117,Recoleta,05m,05m_Valle_Longitudinal,1.0,1
+Q56119,Renca,05m,05m_Valle_Longitudinal,1.0,1
+Q56136,San Bernardo,05m,05m_Valle_Longitudinal,1.0,1
+Q187838,San Joaquín,05m,05m_Valle_Longitudinal,1.0,1
+Q187847,San José de Maipo,05m,05m_Precordillera,0.1,1
+Q187847,San José de Maipo,05m,05m_Cordillera,0.887,0
+Q187862,San Miguel,05m,05m_Valle_Longitudinal,1.0,1
+Q187885,San Pedro,05m,05m_Cordillera_Costa,0.978,1
+Q187919,San Ramón,05m,05m_Valle_Longitudinal,1.0,1
+Q188002,Santiago,05m,05m_Valle_Longitudinal,1.0,1
+Q188038,Talagante,05m,05m_Valle_Longitudinal,0.988,1
+Q188170,Tiltil,05m,05m_Precordillera,0.102,0
+Q188170,Tiltil,05m,05m_Valle_Longitudinal,0.285,0
+Q188170,Tiltil,05m,05_Cordillera_Costa,0.034,0
+Q188170,Tiltil,05m,05m_Cordillera_Costa,0.577,1
+Q201036,Vitacura,05m,05m_Precordillera,0.27,0
+Q201036,Vitacura,05m,05m_Valle_Longitudinal,0.73,1
+Q3663,Bulnes,08a,08a_Valle_Longitudinal,1.0,1
+Q23660244,Chillán,08a,08a_Valle_Longitudinal,1.0,1
+Q3779,Chillán Viejo,08a,08a_Valle_Longitudinal,1.0,1
+Q23660634,Chillán Viejo,08a,08a_Valle_Longitudinal,1.0,1
+Q3796,Cobquecura,08a,08a_Litoral,0.896,1
+Q3796,Cobquecura,08a,08a_Cordillera_Costa,0.065,0
+Q3796,Cobquecura,08a,07_Litoral,0.028,0
+Q3807,Coelemu,08a,08a_Litoral,0.509,0
+Q3807,Coelemu,08a,08a_Cordillera_Costa,0.458,1
+Q3807,Coelemu,08a,08b_Litoral,0.027,0
+Q3814,Coihueco,08a,08a_Cordillera,0.202,0
+Q3814,Coihueco,08a,08a_Precordillera,0.573,0
+Q3814,Coihueco,08a,08a_Valle_Longitudinal,0.225,1
+Q13037,El Carmen,08a,08a_Precordillera,0.358,0
+Q13037,El Carmen,08a,08a_Valle_Longitudinal,0.642,1
+Q51048,Ninhue,08a,08a_Cordillera_Costa,0.373,0
+Q51048,Ninhue,08a,08a_Valle_Longitudinal,0.623,1
+Q201070,Ñiquén,08a,07_Valle_Longitudinal,0.051,0
+Q201070,Ñiquén,08a,08a_Valle_Longitudinal,0.949,1
+Q51090,Pemuco,08a,08a_Precordillera,0.09,0
+Q51090,Pemuco,08a,08a_Valle_Longitudinal,0.908,1
+Q51106,Pinto,08a,08a_Cordillera,0.484,0
+Q51106,Pinto,08a,08a_Precordillera,0.332,0
+Q51106,Pinto,08a,08a_Valle_Longitudinal,0.174,1
+Q51119,Portezuelo,08a,08a_Cordillera_Costa,0.775,1
+Q51119,Portezuelo,08a,08a_Valle_Longitudinal,0.225,0
+Q56109,Quillón,08a,08b_Valle_Longitudinal,0.036,0
+Q56109,Quillón,08a,08a_Cordillera_Costa,0.51,0
+Q56109,Quillón,08a,08a_Valle_Longitudinal,0.425,1
+Q56109,Quillón,08a,08b_Cordillera_Costa,0.028,0
+Q56115,Quirihue,08a,08a_Litoral,0.051,0
+Q56115,Quirihue,08a,08a_Cordillera_Costa,0.91,1
+Q56115,Quirihue,08a,07_Valle_Longitudinal,0.038,0
+Q56125,Ránquil,08a,08a_Cordillera_Costa,0.966,1
+Q56125,Ránquil,08a,08a_Valle_Longitudinal,0.028,0
+Q56137,San Carlos,08a,08a_Valle_Longitudinal,0.997,1
+Q187795,San Fabián,08a,08a_Cordillera,0.438,0
+Q187795,San Fabián,08a,08a_Precordillera,0.494,1
+Q187795,San Fabián,08a,08a_Valle_Longitudinal,0.058,0
+Q187824,San Ignacio,08a,08a_Valle_Longitudinal,0.991,1
+Q187866,San Nicolás,08a,08a_Valle_Longitudinal,1.0,1
+Q200963,Treguaco,08a,08a_Litoral,0.307,0
+Q200963,Treguaco,08a,08a_Cordillera_Costa,0.683,1
+Q201056,Yungay,08a,08b_Valle_Longitudinal,0.035,0
+Q201056,Yungay,08a,08a_Precordillera,0.253,0
+Q201056,Yungay,08a,08a_Valle_Longitudinal,0.709,1
+Q3790,Chépica,06,06_Cordillera_Costa,0.643,0
+Q3790,Chépica,06,07_Cordillera_Costa,0.024,0
+Q3790,Chépica,06,06_Valle_Longitudinal,0.333,1
+Q3782,Chimbarongo,06,06_Valle_Longitudinal,0.719,1
+Q3782,Chimbarongo,06,06_Precordillera,0.264,0
+Q3804,Codegua,06,06_Cordillera,0.223,0
+Q3804,Codegua,06,06_Valle_Longitudinal,0.33,1
+Q3804,Codegua,06,06_Precordillera,0.446,0
+Q3833,Coinco,06,06_Valle_Longitudinal,1.0,1
+Q3847,Coltauco,06,06_Cordillera_Costa,0.609,0
+Q3847,Coltauco,06,06_Valle_Longitudinal,0.381,1
+Q13035,Doñihue,06,06_Cordillera_Costa,0.462,0
+Q13035,Doñihue,06,06_Valle_Longitudinal,0.538,1
+Q13068,Graneros,06,06_Cordillera_Costa,0.304,0
+Q13068,Graneros,06,06_Valle_Longitudinal,0.696,1
+Q14458,La Estrella,06,06_Cordillera_Costa,1.0,1
+Q14480,Las Cabras,06,06_Cordillera_Costa,0.989,1
+Q14496,Litueche,06,06_Litoral,0.287,0
+Q14496,Litueche,06,06_Cordillera_Costa,0.698,1
+Q16899,Lolol,06,06_Cordillera_Costa,0.977,1
+Q16899,Lolol,06,07_Cordillera_Costa,0.023,0
+Q16915,Machalí,06,06_Cordillera,0.769,0
+Q16915,Machalí,06,06_Valle_Longitudinal,0.02,1
+Q16915,Machalí,06,06_Precordillera,0.205,0
+Q16919,Malloa,06,06_Valle_Longitudinal,0.606,1
+Q16919,Malloa,06,06_Precordillera,0.394,0
+Q16921,Marchigüe,06,06_Litoral,0.04,0
+Q16921,Marchigüe,06,06_Cordillera_Costa,0.96,1
+Q51035,Mostazal,06,05m_Precordillera,0.022,0
+Q51035,Mostazal,06,06_Cordillera,0.363,0
+Q51035,Mostazal,06,06_Cordillera_Costa,0.081,0
+Q51035,Mostazal,06,06_Valle_Longitudinal,0.262,0
+Q51035,Mostazal,06,06_Precordillera,0.26,1
+Q51042,Nancagua,06,06_Cordillera_Costa,0.178,0
+Q51042,Nancagua,06,06_Valle_Longitudinal,0.822,1
+Q51045,Navidad,06,06_Litoral,0.938,1
+Q51053,Olivar,06,06_Valle_Longitudinal,1.0,1
+Q51074,Palmilla,06,06_Cordillera_Costa,1.0,1
+Q51082,Paredones,06,06_Litoral,0.588,1
+Q51082,Paredones,06,06_Cordillera_Costa,0.381,0
+Q51082,Paredones,06,07_Cordillera_Costa,0.027,0
+Q51095,Peralillo,06,06_Cordillera_Costa,1.0,1
+Q51097,Peumo,06,06_Cordillera_Costa,0.968,1
+Q51097,Peumo,06,06_Valle_Longitudinal,0.032,1
+Q51104,Pichidegua,06,06_Cordillera_Costa,1.0,1
+Q23660186,Pichilemu,06,06_Litoral,0.82,1
+Q23660186,Pichilemu,06,06_Cordillera_Costa,0.176,0
+Q51117,Placilla,06,06_Cordillera_Costa,0.343,0
+Q51117,Placilla,06,06_Valle_Longitudinal,0.657,1
+Q2098355,Pumanque,06,06_Cordillera_Costa,0.999,1
+Q56112,Quinta de Tilcoco,06,06_Valle_Longitudinal,1.0,1
+Q23660166,Rancagua,06,06_Cordillera_Costa,0.277,0
+Q23660166,Rancagua,06,06_Valle_Longitudinal,0.686,1
+Q23660166,Rancagua,06,05m_Cordillera_Costa,0.037,0
+Q56120,Rengo,06,06_Cordillera,0.264,0
+Q56120,Rengo,06,06_Valle_Longitudinal,0.324,1
+Q56120,Rengo,06,06_Precordillera,0.413,0
+Q56121,Requínoa,06,06_Cordillera,0.172,0
+Q56121,Requínoa,06,06_Valle_Longitudinal,0.29,1
+Q56121,Requínoa,06,06_Precordillera,0.537,0
+Q23660251,San Fernando,06,06_Cordillera,0.589,1
+Q23660251,San Fernando,06,06_Valle_Longitudinal,0.094,0
+Q23660251,San Fernando,06,06_Precordillera,0.307,0
+Q187936,San Vicente de Tagua Tagua,06,06_Cordillera_Costa,0.401,0
+Q187936,San Vicente de Tagua Tagua,06,06_Valle_Longitudinal,0.599,1
+Q187969,Santa Cruz,06,06_Cordillera_Costa,0.879,1
+Q187969,Santa Cruz,06,06_Valle_Longitudinal,0.121,0
+Q2217,Alto Hospicio,01b,01b_Cordillera_Costa,0.752,0
+Q2217,Alto Hospicio,01b,01b_Litoral,0.248,1
+Q3731,Camiña,01b,01b_Pampa,0.215,0
+Q3731,Camiña,01b,01b_Cordillera,0.102,0
+Q3731,Camiña,01b,01b_Precordillera,0.683,1
+Q3839,Colchane,01b,01b_Cordillera,0.993,1
+Q13081,Huara,01b,01b_Cordillera_Costa,0.181,0
+Q13081,Huara,01b,01b_Pampa,0.358,1
+Q13081,Huara,01b,01b_Litoral,0.055,0
+Q13081,Huara,01b,01b_Cordillera,0.119,0
+Q13081,Huara,01b,01b_Precordillera,0.28,0
+Q23660233,Iquique,01b,01b_Cordillera_Costa,0.532,1
+Q23660233,Iquique,01b,01b_Litoral,0.462,0
+Q51102,Pica,01b,01b_Pampa,0.125,1
+Q51102,Pica,01b,01b_Cordillera,0.726,0
+Q51102,Pica,01b,01b_Precordillera,0.145,0
+Q23660626,Pozo Almonte,01b,01b_Pampa,1.0,1
+Q2206,Algarrobo,05,05_Litoral,1.0,1
+Q3668,Cabildo,05,05_Precordillera,0.492,0
+Q3668,Cabildo,05,05_Cordillera,0.159,0
+Q3668,Cabildo,05,05_Cordillera_Costa,0.349,1
+Q3728,Calle Larga,05,05_Precordillera,0.753,1
+Q3728,Calle Larga,05,05_Cordillera,0.218,0
+Q3738,Cartagena,05,05_Litoral,0.413,1
+Q3738,Cartagena,05,05_Cordillera_Costa,0.571,0
+Q3742,Casablanca,05,05_Litoral,0.279,0
+Q3742,Casablanca,05,05_Cordillera_Costa,0.704,1
+Q3747,Catemu,05,05_Precordillera,0.557,0
+Q3747,Catemu,05,05_Cordillera_Costa,0.443,1
+Q3860,Concón,05,05_Litoral,1.0,1
+Q13040,El Quisco,05,05_Litoral,1.0,1
+Q13041,El Tabo,05,05_Litoral,1.0,1
+Q13071,Hijuelas,05,05_Cordillera_Costa,1.0,1
+Q3713,La Calera,05,05_Cordillera_Costa,1.0,1
+Q14457,La Cruz,05,05_Cordillera_Costa,1.0,1
+Q23660206,La Ligua,05,05_Litoral,0.413,1
+Q23660206,La Ligua,05,05_Cordillera_Costa,0.583,0
+Q14493,Limache,05,05_Litoral,0.185,0
+Q14493,Limache,05,05_Cordillera_Costa,0.815,1
+Q14498,Llay-Llay,05,05_Precordillera,0.337,0
+Q14498,Llay-Llay,05,05_Cordillera_Costa,0.65,1
+Q23660195,Los Andes,05,05_Precordillera,0.118,0
+Q23660195,Los Andes,05,05_Cordillera,0.867,1
+Q51049,Nogales,05,05_Cordillera_Costa,1.0,1
+Q51058,Olmué,05,05_Cordillera_Costa,0.981,1
+Q51078,Panquehue,05,05_Precordillera,1.0,1
+Q51079,Papudo,05,05_Litoral,0.988,1
+Q51096,Petorca,05,05_Precordillera,0.42,1
+Q51096,Petorca,05,05_Cordillera,0.218,0
+Q51096,Petorca,05,05_Cordillera_Costa,0.341,0
+Q23660192,Puchuncaví,05,05_Litoral,0.847,1
+Q23660192,Puchuncaví,05,05_Cordillera_Costa,0.141,0
+Q51604,Putaendo,05,05_Precordillera,0.465,1
+Q51604,Putaendo,05,05_Cordillera,0.531,0
+Q31936374,Quillota,05,05_Litoral,0.21,0
+Q31936374,Quillota,05,05_Cordillera_Costa,0.79,1
+Q23660236,Quilpué,05,05_Litoral,0.144,0
+Q23660236,Quilpué,05,05_Cordillera_Costa,0.835,1
+Q23660236,Quilpué,05,05m_Cordillera_Costa,0.022,0
+Q56114,Quintero,05,05_Litoral,0.997,1
+Q56123,Rinconada,05,05m_Precordillera,0.023,0
+Q56123,Rinconada,05,05_Precordillera,0.977,1
+Q23660190,San Antonio,05,05_Litoral,0.521,1
+Q23660190,San Antonio,05,05_Cordillera_Costa,0.43,0
+Q23660190,San Antonio,05,05m_Cordillera_Costa,0.05,0
+Q187784,San Esteban,05,05_Precordillera,0.26,1
+Q187784,San Esteban,05,05_Cordillera,0.724,0
+Q23660221,San Felipe,05,05_Precordillera,1.0,1
+Q187991,Santa María,05,05_Precordillera,0.836,1
+Q187991,Santa María,05,05_Cordillera,0.164,0
+Q188011,Santo Domingo,05,05_Litoral,0.957,0
+Q188011,Santo Domingo,05,05m_Cordillera_Costa,0.037,0
+Q23660191,Valparaíso,05,05_Litoral,0.806,1
+Q23660191,Valparaíso,05,05_Cordillera_Costa,0.193,0
+Q23660271,Villa Alemana,05,05_Litoral,0.052,0
+Q23660271,Villa Alemana,05,05_Cordillera_Costa,0.948,1
+Q23660201,Viña del Mar,05,05_Litoral,0.999,1
+Q23660193,Zapallar,05,05_Litoral,0.697,1
+Q23660193,Zapallar,05,05_Cordillera_Costa,0.296,0

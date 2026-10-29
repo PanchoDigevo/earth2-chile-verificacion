@@ -226,8 +226,20 @@ def actualizar_quebradas():
     s = re.sub(r"<!-- direccion:html -->.*?<!-- /direccion:html -->", "<!-- direccion:html -->" + direccion.html() + "<!-- /direccion:html -->", s, count=1, flags=re.S)
     s = re.sub(r"/\* direccion:css \*/.*?/\* /direccion:css \*/", "/* direccion:css */" + direccion.CSS + "/* /direccion:css */", s, count=1, flags=re.S)
     s = re.sub(r"<!-- direccion:js -->.*?<!-- /direccion:js -->", lambda m: "<!-- direccion:js -->" + direccion.js() + "<!-- /direccion:js -->", s, count=1, flags=re.S)
+    import aviso_oficial                              # avisos oficiales de la DMC que tocan las comunas de la página
+    extra = ('<p><strong>Por qué el indicador de esta página puede marcar «bajo» igual:</strong> usa la lluvia de los modelos '
+             'globales, que reparten los chaparrones en bloques de 6 horas. Lo peligroso es una lluvia concentrada en poco tiempo, '
+             'como la del 13 de octubre. <span id="aviso-umbral"></span> Ante cualquier diferencia, mandan las indicaciones oficiales.</p>')
+    caja = aviso_oficial.html(extra, modo="comunas", ids=QUEBRADAS_COMUNAS, lugar="Santiago oriente")
+    s = re.sub(r"<!-- avisos:html -->.*?<!-- /avisos:html -->", lambda m: "<!-- avisos:html -->" + caja + "<!-- /avisos:html -->", s, count=1, flags=re.S)
+    s = re.sub(r"/\* avisos:css \*/.*?/\* /avisos:css \*/", lambda m: "/* avisos:css */" + aviso_oficial.CSS + "/* /avisos:css */", s, count=1, flags=re.S)
     open(ruta, "w", encoding="utf-8").write(s)
     print("quebradas.html: barra y bloques comunes actualizados")
+
+
+# Comunas de la pestaña Quebradas (Wikidata, como verificacion/comunas.csv): Lo Barnechea, Las Condes, La Reina, Peñalolén,
+# Vitacura y San José de Maipo, donde nacen las quebradas de Santiago oriente.
+QUEBRADAS_COMUNAS = ["Q14502", "Q14484", "Q14466", "Q51100", "Q201036", "Q187847"]
 
 
 if __name__ == "__main__":

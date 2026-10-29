@@ -201,11 +201,27 @@ footer p{max-width:85ch}
 .etapas p{margin:0}
 @media (max-width:560px){.etapas li{grid-template-columns:1fr}}
 
-.aviso-oficial{border:1px solid var(--medio);border-left:6px solid var(--medio);background:color-mix(in srgb,var(--medio) 12%,var(--surface));
-  border-radius:var(--radius);padding:14px 16px;display:grid;gap:6px}
-.aviso-oficial strong.t{font-family:var(--font-display);font-size:17px}
-.aviso-oficial p{max-width:80ch;margin:0}
-.aviso-oficial .enlaces{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:15px}
+.avisos-dmc{border:1px solid var(--medio,#c98500);border-left:6px solid var(--medio,#c98500);background:color-mix(in srgb,var(--medio,#c98500) 9%,var(--surface));
+  border-radius:var(--radius);padding:14px 16px;display:grid;gap:8px}
+.avisos-dmc[hidden]{display:none}
+.avisos-dmc.hay-alerta{border-color:#e06a00;border-left-color:#e06a00;background:color-mix(in srgb,#e06a00 9%,var(--surface))}
+.avisos-dmc.hay-alarma{border-color:var(--alto,#d03b3b);border-left-color:var(--alto,#d03b3b);background:color-mix(in srgb,var(--alto,#d03b3b) 9%,var(--surface))}
+.avisos-dmc.sin{border-color:var(--border,#ccc);border-left-color:var(--border,#ccc);background:none;padding:8px 14px}
+.avisos-dmc strong.t{font-family:var(--font-display);font-size:17px}
+.avisos-dmc p{max-width:80ch;margin:0}
+.avisos-dmc ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.avisos-dmc li{display:grid;gap:2px}
+.avisos-dmc .nivel{display:inline-block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;border-radius:4px;
+  padding:1px 6px;margin-right:6px;color:#1a1a1a;background:var(--medio,#c98500)}
+.avisos-dmc .nivel.alerta{background:#e06a00;color:#fff}
+.avisos-dmc .nivel.alarma{background:var(--alto,#d03b3b);color:#fff}
+.avisos-dmc .cuando,.avisos-dmc .donde{font-size:14px;color:var(--muted)}
+.avisos-dmc details{font-size:14px}
+.avisos-dmc details table{border-collapse:collapse;margin:6px 0;font-size:13px}
+.avisos-dmc details th,.avisos-dmc details td{border:1px solid var(--border,#ccc);padding:2px 6px;text-align:left}
+.avisos-dmc .enlaces{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:15px}
+.avisos-dmc .pie{font-size:13px;color:var(--muted)}
+@media (max-width:600px){.avisos-dmc details{overflow-x:auto}}
 
 .tormenta-vivo{border:1px solid var(--alto);border-left:6px solid var(--alto);background:color-mix(in srgb,var(--alto) 10%,var(--surface));
   border-radius:var(--radius);padding:14px 16px;display:grid;gap:6px}
@@ -599,7 +615,7 @@ ul.limites{margin:0;padding-left:1.2em;display:grid;gap:6px;max-width:75ch}
 </section>
 <section class="card" aria-labelledby="etapas-t"><div class="sec-head"><h2 id="etapas-t">En qué etapa estamos</h2></div><ul class="etapas"><li class="hecho"><span class="tag">Funciona hoy</span><p>Verificación diaria de tres pronósticos globales de 25 km (AIFS, IFS y GFS, que bajamos ya calculados) y corrección por estación (medida: baja el error entre 19 y 28 %), junto a la referencia oficial: el pronóstico y el modelo WRF de la Dirección Meteorológica de Chile, verificados con la misma vara. Sobre eso: pronóstico por comuna a 48 h y 15 días, 16 escenarios con el ensamble de IA de ECMWF, dos avisos de tormenta (ambiente a 72 h y salto de rayos del GOES-19 cada 5 min), monitor de lluvia y nieve en la cordillera, quebradas quemadas con respuesta por dirección, 76 cámaras públicas y el gemelo del lugar con la nieve pintada sobre el terreno.</p></li><li class="curso"><span class="tag">En curso</span><p>Correr nosotros, en las GPUs del POD, modelos globales de Earth-2. FourCastNet 3 ya corre en una GPU del POD de Santiago y sus primeras corridas comprobadas aparecen en Tu zona como FCN3, pero todavía no llega en cada corrida: falta que la función corra la hora que se le pide. Después, AIFS en el POD (para comprobar que da lo mismo que el de ECMWF).</p></li><li class="pendiente"><span class="tag">Por entrenar</span><p>CorrDiff-Chile, el zoom de 25 a 4 km. NVIDIA entrega la receta, pero los modelos ya entrenados solo existen para Estados Unidos y Taiwán y no sirven para Chile. Hay que entrenarlo con 22 años de simulación del clima chileno a 4 km (SAAG-WRF). Todavía no existe: nada de lo que se ve hoy en el sitio usa CorrDiff. <a href="zoom.html">Mira en una tormenta real qué cambia de 25 a 4 km</a>.</p></li></ul></section>
 <div class="aviso"><p class="small">Apoyo a la decisión, no una alerta. Las alertas oficiales son de la <a href="https://www.meteochile.gob.cl/" rel="noopener">Dirección Meteorológica de Chile</a> y de <a href="https://www.senapred.cl/" rel="noopener">SENAPRED</a>.</p></div>
-<footer><p>Actualizado el 29 oct, 17:35 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
+<footer><p>Actualizado el 29 oct, 18:48 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
 </div>
 
 <script>

@@ -201,11 +201,27 @@ footer p{max-width:85ch}
 .etapas p{margin:0}
 @media (max-width:560px){.etapas li{grid-template-columns:1fr}}
 
-.aviso-oficial{border:1px solid var(--medio);border-left:6px solid var(--medio);background:color-mix(in srgb,var(--medio) 12%,var(--surface));
-  border-radius:var(--radius);padding:14px 16px;display:grid;gap:6px}
-.aviso-oficial strong.t{font-family:var(--font-display);font-size:17px}
-.aviso-oficial p{max-width:80ch;margin:0}
-.aviso-oficial .enlaces{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:15px}
+.avisos-dmc{border:1px solid var(--medio,#c98500);border-left:6px solid var(--medio,#c98500);background:color-mix(in srgb,var(--medio,#c98500) 9%,var(--surface));
+  border-radius:var(--radius);padding:14px 16px;display:grid;gap:8px}
+.avisos-dmc[hidden]{display:none}
+.avisos-dmc.hay-alerta{border-color:#e06a00;border-left-color:#e06a00;background:color-mix(in srgb,#e06a00 9%,var(--surface))}
+.avisos-dmc.hay-alarma{border-color:var(--alto,#d03b3b);border-left-color:var(--alto,#d03b3b);background:color-mix(in srgb,var(--alto,#d03b3b) 9%,var(--surface))}
+.avisos-dmc.sin{border-color:var(--border,#ccc);border-left-color:var(--border,#ccc);background:none;padding:8px 14px}
+.avisos-dmc strong.t{font-family:var(--font-display);font-size:17px}
+.avisos-dmc p{max-width:80ch;margin:0}
+.avisos-dmc ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.avisos-dmc li{display:grid;gap:2px}
+.avisos-dmc .nivel{display:inline-block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;border-radius:4px;
+  padding:1px 6px;margin-right:6px;color:#1a1a1a;background:var(--medio,#c98500)}
+.avisos-dmc .nivel.alerta{background:#e06a00;color:#fff}
+.avisos-dmc .nivel.alarma{background:var(--alto,#d03b3b);color:#fff}
+.avisos-dmc .cuando,.avisos-dmc .donde{font-size:14px;color:var(--muted)}
+.avisos-dmc details{font-size:14px}
+.avisos-dmc details table{border-collapse:collapse;margin:6px 0;font-size:13px}
+.avisos-dmc details th,.avisos-dmc details td{border:1px solid var(--border,#ccc);padding:2px 6px;text-align:left}
+.avisos-dmc .enlaces{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:15px}
+.avisos-dmc .pie{font-size:13px;color:var(--muted)}
+@media (max-width:600px){.avisos-dmc details{overflow-x:auto}}
 
 .tormenta-vivo{border:1px solid var(--alto);border-left:6px solid var(--alto);background:color-mix(in srgb,var(--alto) 10%,var(--surface));
   border-radius:var(--radius);padding:14px 16px;display:grid;gap:6px}
@@ -469,7 +485,7 @@ footer p{max-width:85ch}
   <p>CorrDiff-Chile va a aprender con miles de pares como este a pasar de la imagen de la izquierda a la de la derecha. Cuando exista, recibirá el pronóstico global y entregará el detalle a 4 km, y se medirá en este sitio contra las estaciones. La simulación a 4 km tampoco es perfecta: es la mejor referencia abierta que hay para enseñarle la geografía de Chile.</p>
   <p class="small muted">Fuentes: SAAG-WRF, NCAR RDA d616000 (Liu et al. 2025), CC BY 4.0; ERA5 de ECMWF/Copernicus (copia ARCO de Google), CC BY 4.0; METAR de la DGAC, archivo de Iowa State University (IEM). Periodo: 2021-06-28T10 a 2021-06-28T10 UTC. Cómo se arma: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion/blob/main/entrenamiento/antes_despues.py" rel="noopener">entrenamiento/antes_despues.py</a>.</p>
 </section>
-<footer><p>Actualizado el 29 oct, 17:35 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
+<footer><p>Actualizado el 29 oct, 18:48 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
 </div>
 <script>
 (function(){

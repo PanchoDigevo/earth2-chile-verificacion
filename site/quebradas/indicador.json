@@ -1,11 +1,11 @@
 {
-"generado": "2026-10-29T17:24Z",
+"generado": "2026-10-29T17:40Z",
 "lluvia_prevista": {
 "AIFS": {
-"corrida": "20261029_06",
+"corrida": "20261029_12",
 "mm6": 0.0,
 "mm24": 0.1,
-"mm48": 1.2
+"mm48": 1.5
 },
 "GFS": {
 "corrida": "20261029_12",

@@ -51,6 +51,7 @@ JS = r"""<script>
   const corto = s => esc(String(s || "").replace(/ de (enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre) del? \d{4}/gi, ""));
   const hora = t => new Date(t * 1000).toLocaleString("es-CL", {timeZone: "America/Santiago", weekday: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23"});
   const plural = (n, s, p) => n + " " + (n === 1 ? s : p);
+  const y = l => l.length > 1 ? l.slice(0, -1).join(", ") + " y " + l[l.length - 1] : (l[0] || "");
   function vigentes() {
     const ahora = Date.now() / 1000;
     return (D.avisos || []).filter(a => !a.hasta_ts || a.hasta_ts > ahora);
@@ -68,7 +69,7 @@ JS = r"""<script>
   function item(a, partes, fijo) {
     const t = (a.tipo || "Aviso").toLowerCase();
     const donde = fijo ? fijo : partes !== undefined
-      ? (partes && partes.length ? "En la " + partes.join(", ") + " de la comuna" : "")
+      ? (partes && partes.length ? "En la " + y(partes) + " de la comuna" : "")
       : (a.zonas_texto || []).join(" · ");
     return `<li><div><span class="nivel ${t}">${esc(a.tipo)}</span><strong>${esc(a.fenomeno)}</strong>${a.observacion ? " · " + esc(a.observacion) : ""}</div>
       <div class="cuando">${cuando(a)}</div>${donde ? `<div class="donde">${esc(donde)}</div>` : ""}
@@ -107,7 +108,7 @@ JS = r"""<script>
     const lista = vigentes().filter(a => a.comunas && ids.some(i => i in a.comunas));
     if (!lista.length) { caja.hidden = true; return; }
     clases(lista);
-    const donde = a => ids.filter(i => i in a.comunas).map(i => (D.nombres[i] || i) + (a.comunas[i].length ? " (" + a.comunas[i].join(", ") + ")" : "")).join(", ");
+    const donde = a => ids.filter(i => i in a.comunas).map(i => (D.nombres[i] || i) + (a.comunas[i].length ? " (" + y(a.comunas[i]) + ")" : "")).join(", ");
     caja.innerHTML = `<strong class="t">Dirección Meteorológica de Chile: ${conteo(lista)} vigente${lista.length === 1 ? "" : "s"} en ${esc(lugar)}</strong>
       <ul>${lista.map(a => item(a, undefined, "Comunas: " + donde(a))).join("")}</ul>${EXTRA}` + pie().replace("__EXTRA__", "");
     caja.hidden = false;

@@ -34,8 +34,10 @@ def cargar():
     pron.to_csv(CONSOLIDADO, index=False, compression="gzip")
     for c in ("run", "valid"):
         pron[c] = pd.to_datetime(pron[c], format="mixed").astype("datetime64[ns]")
+    pron["icao"] = pron.icao.astype(str).astype(object)          # misma clase de texto en ambos lados del cruce
     obs = pd.concat([pd.read_csv(f) for f in sorted(glob.glob(os.path.join(DATA, "dmc_obs", "*.csv.gz")))], ignore_index=True)
     obs["time"] = pd.to_datetime(obs.time).astype("datetime64[ns]")
+    obs["icao"] = obs.icao.astype(str).astype(object)
     obs = obs.dropna(subset=["temp_c"]).sort_values("time")
     return pron, obs
 

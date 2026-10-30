@@ -21,6 +21,9 @@ on:
       solo:
         description: "Solo estas partes de pronóstico, p. ej. ifs:2025-05b,aifs:2025-07b (vacío = todas). Salta lo medido"
         default: ""
+      previa:
+        description: "Número de una corrida anterior cuyas partes (medido y pronósticos) se suman a esta (vacío = ninguna)"
+        default: ""
       paralelo:
         description: "Partes de pronóstico a la vez (ECMWF frena con muchas: 6 para IFS y AIFS)"
         default: "15"
@@ -174,6 +177,16 @@ jobs:
           pattern: puntosdmc-*
           path: historico/data/puntos_dmc
           merge-multiple: true
+      - if: ${{ inputs.previa != '' }}
+        name: Partes de la corrida ${{ inputs.previa }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p previa historico/data/dmc_obs historico/data/puntos_dmc
+          gh run download ${{ inputs.previa }} -p 'medido-*' -p 'puntosdmc-*' -D previa || echo "sin partes en la corrida previa"
+          find previa -path '*medido-*' -name '*.csv.gz' -exec cp -n {} historico/data/dmc_obs/ \;
+          find previa -path '*puntosdmc-*' -name '*.csv' -exec cp -n {} historico/data/puntos_dmc/ \;
+          ls historico/data/dmc_obs | wc -l; ls historico/data/puntos_dmc | wc -l
       - name: Pronósticos consolidados de la corrida anterior (se suman a las partes nuevas)
         env:
           GH_TOKEN: ${{ github.token }}

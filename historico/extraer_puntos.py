@@ -6,7 +6,7 @@ estación: temperatura a 2 m, precipitación acumulada desde el inicio de la cor
 
 Uso: python extraer_puntos.py --modelo aifs|ifs|gfs --desde 2026-10-01 --hasta 2026-10-03
 Salida: data/puntos/{MODELO}_{desde}_{hasta}.csv con columnas modelo,run,lead_h,valid,icao,t_fc,tp_fc,u_fc,v_fc,g_fc"""
-import argparse, csv, datetime as dt, json, os, re, sys, time, urllib.error, urllib.request
+import argparse, csv, datetime as dt, http.client, json, os, re, sys, time, urllib.error, urllib.request
 import eccodes as ec
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
@@ -40,7 +40,7 @@ def get(url, rango=None, intentos=8):
             if e.code in (429, 500, 502, 503, 504):
                 time.sleep(min(90, 2 * 2 ** i)); continue
             raise
-        except (urllib.error.URLError, TimeoutError, OSError):
+        except (urllib.error.URLError, TimeoutError, OSError, http.client.HTTPException):   # incluye lecturas cortadas
             time.sleep(min(90, 2 * 2 ** i))
     print("  sin respuesta tras", intentos, "intentos:", url); return None
 

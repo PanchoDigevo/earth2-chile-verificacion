@@ -18,6 +18,12 @@ on:
       modelos:
         description: "Modelos, separados por coma"
         default: "aifs,ifs,gfs"
+      solo:
+        description: "Solo estas partes de pronóstico, p. ej. ifs:2025-05b,aifs:2025-07b (vacío = todas). Salta lo medido"
+        default: ""
+      paralelo:
+        description: "Partes de pronóstico a la vez (ECMWF frena con muchas: 6 para IFS y AIFS)"
+        default: "15"
 permissions:
   contents: write
   actions: write
@@ -66,6 +72,7 @@ jobs:
           import calendar, datetime as dt, json
           a0, m0 = map(int, "${{ inputs.desde }}".split("-")); a1, m1 = map(int, "${{ inputs.hasta }}".split("-"))
           modelos = [m.strip() for m in "${{ inputs.modelos }}".split(",") if m.strip()]
+          solo = {x.strip() for x in "${{ inputs.solo }}".split(",") if x.strip()}
           hoy = dt.date.today(); meses, trozos = [], []
           a, m = a0, m0
           while (a, m) <= (a1, m1):
@@ -75,6 +82,8 @@ jobs:
                   d1 = min(d1, hoy - dt.timedelta(days=1))
                   if d0 <= d1:
                       for mod in modelos:
+                          if solo and f"{mod}:{a}-{m:02d}{'a' if d0.day == 1 else 'b'}" not in solo:
+                              continue
                           trozos.append({"modelo": mod, "mes": f"{a}-{m:02d}{'a' if d0.day == 1 else 'b'}", "desde": d0.isoformat(), "hasta": d1.isoformat()})
               a, m = (a + 1, 1) if m == 12 else (a, m + 1)
           print("meses=" + json.dumps(meses)); print("trozos=" + json.dumps({"include": trozos}))
@@ -82,6 +91,7 @@ jobs:
 
   medido:
     needs: preparar
+    if: ${{ inputs.solo == '' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
     strategy:
@@ -113,7 +123,7 @@ jobs:
     timeout-minutes: 300
     strategy:
       fail-fast: false
-      max-parallel: 15
+      max-parallel: ${{ fromJSON(inputs.paralelo) }}
       matrix: ${{ fromJSON(needs.preparar.outputs.trozos) }}
     steps:
       - uses: actions/checkout@v4
@@ -127,8 +137,10 @@ jobs:
           name: catalogo-dmc
           path: historico
       - name: Extraer ${{ matrix.modelo }} ${{ matrix.mes }}
-        run: python historico/extraer_puntos.py --modelo ${{ matrix.modelo }} --desde ${{ matrix.desde }} --hasta ${{ matrix.hasta }} --puntos historico/estaciones_dmc.csv --salida historico/data/puntos_dmc
-      - uses: actions/upload-artifact@v4
+        # se corta antes del límite del trabajo para subir lo avanzado (el CSV se escribe día a día)
+        run: timeout 280m python historico/extraer_puntos.py --modelo ${{ matrix.modelo }} --desde ${{ matrix.desde }} --hasta ${{ matrix.hasta }} --puntos historico/estaciones_dmc.csv --salida historico/data/puntos_dmc || echo "cortado o con error; se sube lo avanzado"
+      - if: always()
+        uses: actions/upload-artifact@v4
         with:
           name: puntosdmc-${{ matrix.modelo }}-${{ matrix.mes }}
           path: historico/data/puntos_dmc/*.csv
@@ -162,12 +174,11 @@ jobs:
           pattern: puntosdmc-*
           path: historico/data/puntos_dmc
           merge-multiple: true
-      - if: ${{ inputs.modo == 'solo_analizar' }}
-        name: Pronósticos consolidados de la corrida anterior
+      - name: Pronósticos consolidados de la corrida anterior (se suman a las partes nuevas)
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          id=$(gh run list -w historico-dmc.yml -s success -L 20 --json databaseId -q '.[].databaseId' | while read r; do gh run view $r --json jobs -q '.jobs[].name' | grep -q '^analizar' && echo $r && break; done)
+          id=$(gh api "repos/${{ github.repository }}/actions/artifacts?name=pronosticos-dmc&per_page=1" -q '.artifacts[0].workflow_run.id // empty')
           [ -n "$id" ] && gh run download $id -n pronosticos-dmc -D historico/data || echo "sin artefacto previo"
       - run: python historico/analizar_dmc.py
       - uses: actions/upload-artifact@v4

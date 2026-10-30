@@ -8,7 +8,8 @@ data/dmc_obs/AAAA-MM.csv.gz (dmc_historico.py: 00, 06, 12 y 18 UTC). Salidas en 
   dmc_correccion_estaciones.csv   modelo, lead_h, icao, n, mae_global, mae_corregido (2026)
   dmc_correccion_plazos.csv       igual, por modelo y plazo
   dmc_viento_estaciones.csv       modelo, lead_h, icao, n, w_mae, w_sesgo            (m/s)
-Los pronósticos consolidados (data/pronosticos_dmc.csv.gz) quedan como artefacto del flujo, no en el repo (pesan).
+Los pronósticos consolidados (data/pronosticos_dmc.csv.gz) quedan como artefacto del flujo, no en el repo (pesan); cada
+corrida parte del consolidado anterior y le suma sus partes, así se pueden completar partes sueltas (input "solo").
 
 Uso: python analizar_dmc.py"""
 import glob, os, sys
@@ -24,14 +25,13 @@ CONSOLIDADO = os.path.join(DATA, "pronosticos_dmc.csv.gz")
 
 
 def cargar():
-    partes = [pd.read_csv(f) for f in sorted(glob.glob(os.path.join(DATA, "puntos_dmc", "*.csv")))]
-    if partes:
-        pron = pd.concat(partes, ignore_index=True).drop_duplicates(subset=["modelo", "run", "lead_h", "icao"], keep="last")
-        pron.to_csv(CONSOLIDADO, index=False, compression="gzip")
-    elif os.path.exists(CONSOLIDADO):
-        pron = pd.read_csv(CONSOLIDADO)
-    else:
+    # lo consolidado de la corrida anterior primero y las partes nuevas después: en un duplicado gana lo nuevo
+    partes = [pd.read_csv(CONSOLIDADO)] if os.path.exists(CONSOLIDADO) else []
+    partes += [pd.read_csv(f) for f in sorted(glob.glob(os.path.join(DATA, "puntos_dmc", "*.csv")))]
+    if not partes:
         sys.exit("sin pronósticos en data/puntos_dmc ni data/pronosticos_dmc.csv.gz")
+    pron = pd.concat(partes, ignore_index=True).drop_duplicates(subset=["modelo", "run", "lead_h", "icao"], keep="last")
+    pron.to_csv(CONSOLIDADO, index=False, compression="gzip")
     for c in ("run", "valid"):
         pron[c] = pd.to_datetime(pron[c], format="mixed").astype("datetime64[ns]")
     obs = pd.concat([pd.read_csv(f) for f in sorted(glob.glob(os.path.join(DATA, "dmc_obs", "*.csv.gz")))], ignore_index=True)

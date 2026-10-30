@@ -2,7 +2,8 @@
 las tormentas que se intensifican (salto de rayos, tormentas.json),
 METAR de las últimas 12 horas, la lluvia de las estaciones dentro de las cuencas cordilleranas
 (site/cordillera/cuencas.geojson) de Tobalaba, Pudahuel, Santo Domingo y Viña del Mar, y la lluvia horaria de las
-últimas 26 horas en las estaciones DMC cercanas a las quebradas (mensajes SYNOP, estaciones/synop.py).
+últimas 26 horas en las estaciones DMC cercanas a las quebradas (mensajes SYNOP, estaciones/synop.py) y la última
+lectura de toda la red de estaciones automáticas de la DMC (dmc.json, API de la DMC con DMC_USUARIO y DMC_TOKEN).
 
 Corre cada 10 minutos en GitHub Actions (envivo.yml) y escribe rayos.json, metar.json y lluvia.json en la carpeta indicada,
 que el workflow guarda en la rama datos-en-vivo (un solo commit que se reemplaza, para no llenar el historial).
@@ -10,12 +11,13 @@ Es incremental: rayos.json guarda qué archivos GLM ya se procesaron. La página
 raw.githubusercontent.com. No es un aviso; las alertas oficiales son de la DMC y SENAPRED.
 
 Uso: python envivo/actualizar.py --salida datos/envivo"""
-import argparse, datetime as dt, json, math, os, re, sys, urllib.request
+import argparse, datetime as dt, json, math, os, re, sys, urllib.parse, urllib.request
 import netCDF4, numpy as np
 from shapely.geometry import Point
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "estaciones"))
 import synop  # noqa: E402
+import dmc  # noqa: E402
 import salto_rayos  # noqa: E402
 
 LAT0, LAT1, LON0, LON1 = -38.5, -28.5, -74.5, -68.0
@@ -31,6 +33,8 @@ COMUNAS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "verifi
 ACTIVA_MIN = 30               # una tormenta con salto en los últimos 30 minutos se muestra como "intensificándose"
 KM_CHILE = 25                 # tormentas a más de 25 km de toda comuna (casi siempre del lado argentino) no se marcan
 REGISTRO_DIAS = 30
+DMC_CADA_MIN = 10             # la red DMC llega cada 10 minutos; la respuesta pesa ~8 MB
+DMC_VIGENTE_H = 3             # estaciones sin lectura en las últimas 3 horas no se muestran
 
 
 def get(url, timeout=60):
@@ -179,6 +183,47 @@ def lluvia(ruta):
     print(f"lluvia: {len(filas)} reportes SYNOP; con lluvia en 26 h: {', '.join(llovio) or 'ninguna'}", flush=True)
 
 
+def dmc_ahora(ruta):
+    """Última lectura de cada estación automática de la DMC: temperatura, humedad, viento medio de 10 minutos y su
+    máximo (km/h; la API los da en nudos), dirección y agua caída en 6 y 24 h. Sin los secretos no hace nada."""
+    ahora = dt.datetime.now(dt.timezone.utc).timestamp()
+    try:
+        if ahora - json.load(open(ruta, encoding="utf-8"))["generado"] < DMC_CADA_MIN * 60:
+            print("dmc: se mantiene la lectura de hace menos de 10 min", flush=True); return
+    except Exception:
+        pass
+    u, t = os.environ.get("DMC_USUARIO", "").strip(), os.environ.get("DMC_TOKEN", "").strip()
+    if not u or not t:
+        print("dmc: faltan DMC_USUARIO y DMC_TOKEN", flush=True); return
+    resp = dmc.get(dmc.API.format(q=urllib.parse.urlencode({"usuario": u, "token": t})), intentos=1)
+    if not resp or "datosEstaciones" not in resp:
+        print("dmc: la API no entregó datos; se mantiene la lectura anterior", flush=True); return
+    num = lambda v: float(x) if (x := dmc.numero(v)) != "" else None
+    kmh = lambda v: None if (x := num(v)) is None else round(x * 1.852)
+    est = []
+    for e in resp["datosEstaciones"]:
+        s, datos = e.get("estacion") or {}, [d for d in e.get("datos") or [] if d.get("momento")]
+        if not datos or s.get("latitud") in (None, ""):
+            continue
+        d = max(datos, key=lambda d: str(d["momento"]))
+        try:
+            tt = int(dt.datetime.strptime(str(d["momento"])[:16], "%Y-%m-%d %H:%M").replace(tzinfo=dt.timezone.utc).timestamp())
+        except ValueError:
+            continue
+        if ahora - tt > DMC_VIGENTE_H * 3600:
+            continue
+        est.append({"c": str(s.get("codigoNacional")), "n": str(s.get("nombreEstacion") or "").strip(),
+                    "lat": float(s["latitud"]), "lon": float(s["longitud"]), "alt": num(s.get("altura")), "t": tt,
+                    "temp": num(d.get("temperatura")), "hr": num(d.get("humedadRelativa")),
+                    "v": kmh(d.get("fuerzaDelVientoPromedio10Minutos")), "dir": num(d.get("direccionDelVientoPromedio10Minutos")),
+                    "r": kmh(d.get("fuerzaDelViento10MinutosMax")), "mm6": num(d.get("aguaCaida6Horas")), "mm24": num(d.get("aguaCaida24Horas"))})
+    if not est:
+        print("dmc: ninguna estación con lectura reciente; se mantiene la anterior", flush=True); return
+    json.dump({"generado": int(ahora), "fuente": "Dirección Meteorológica de Chile, red de estaciones meteorológicas automáticas (datos provisorios)",
+               "estaciones": sorted(est, key=lambda e: -e["lat"])}, open(ruta, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
+    print(f"dmc: {len(est)} estaciones con lectura de las últimas {DMC_VIGENTE_H} h", flush=True)
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(); ap.add_argument("--salida", required=True); a = ap.parse_args()
     os.makedirs(a.salida, exist_ok=True)
@@ -191,3 +236,7 @@ if __name__ == "__main__":
         lluvia(os.path.join(a.salida, "lluvia.json"))
     except Exception as e:                      # la lluvia no debe frenar los rayos ni el METAR
         print("lluvia: falló esta vuelta:", e, flush=True)
+    try:
+        dmc_ahora(os.path.join(a.salida, "dmc.json"))
+    except Exception as e:
+        print("dmc: falló esta vuelta:", type(e).__name__, flush=True)   # sin el detalle: podría llevar la URL con el token

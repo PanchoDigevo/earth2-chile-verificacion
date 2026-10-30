@@ -1,6 +1,7 @@
 """Pestaña "En vivo" (site/envivo.html): rayos de los últimos 90 minutos sobre la zona central (GOES-19 GLM),
 METAR de las últimas 12 horas, lluvia medida en las estaciones DMC más cercanas (SYNOP) y la última corrida de cada
-modelo para la Quebrada de Apoquindo, con lo medido en los bloques que ya pasaron.
+modelo para la Quebrada de Apoquindo, con lo medido en los bloques que ya pasaron. Encima, como capa del mapa, la
+última lectura de toda la red de estaciones automáticas de la DMC (dmc.json): temperatura, viento, racha o lluvia.
 
 La página es un armazón que se genera con el resto del sitio; los datos los lee el navegador desde la rama
 datos-en-vivo (envivo/actualizar.py, cada 10 minutos) y desde el seguimiento horario de pronósticos
@@ -36,6 +37,15 @@ td.parcial{color:var(--muted)}
 .estado-vivo{font-size:14.5px;color:var(--muted)}
 .estado-vivo.atrasado{color:inherit;background:color-mix(in srgb,var(--medio) 12%,var(--surface));border-left:4px solid var(--medio);padding:8px 12px;border-radius:6px}
 .leaflet-container{font-family:var(--font-body)}
+.dmc-chip{display:inline-block;transform:translate(-50%,-50%);padding:1px 5px;border-radius:9px;font:600 11.5px/1.35 var(--font-body);
+  white-space:nowrap;border:1px solid rgba(0,0,0,.25);box-shadow:0 1px 2px rgba(0,0,0,.2);cursor:pointer}
+.dmc-var{display:flex;gap:6px;flex-wrap:wrap}
+.dmc-var button{font:inherit;font-size:14px;padding:5px 11px;border-radius:16px;border:1px solid var(--line);background:var(--surface);color:inherit;cursor:pointer}
+.dmc-var button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.ley-dmc{display:flex;gap:4px;flex-wrap:wrap;font-size:12.5px}
+.ley-dmc span{padding:1px 7px;border-radius:9px;border:1px solid rgba(0,0,0,.2)}
+#dmc-tabla td,#dmc-tabla th{font-size:13.5px}
+.dmc-resumen{font-size:14.5px}
 .leaflet-control-attribution{font-size:10px}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .leaflet-tile{filter:brightness(.78) contrast(1.05)}}
 :root[data-theme="dark"] .leaflet-tile{filter:brightness(.78) contrast(1.05)}
@@ -158,9 +168,62 @@ JS = r"""
 </script>
 """
 
+# Capa de la red DMC: un número por estación sobre el mapa, con la variable que se elige; la tabla completa abajo.
+JS_DMC = r"""
+<script>
+(function(){
+  const RAW = "__RAW__", mapa = window.MAPA_VIVO; if (!mapa) return;
+  const capa = L.layerGroup().addTo(mapa);
+  const hora = s => new Date(s * 1000).toLocaleTimeString("es-CL", {timeZone: "America/Santiago", hour: "2-digit", minute: "2-digit", hourCycle: "h23"});
+  const n1 = v => v == null ? "–" : v.toLocaleString("es-CL", {maximumFractionDigits: 1});
+  const RUMBO = ["N", "NE", "E", "SE", "S", "SO", "O", "NO"];
+  const rumbo = g => g == null ? "" : RUMBO[Math.round(g / 45) % 8];
+  // escalas: [hasta, fondo, texto]; colores medios que se leen en tema claro y oscuro
+  const ESC = {
+    temp: {k: "temp", u: "°", t: "Temperatura", e: [[0, "#3b6fd8", "#fff"], [10, "#8db8f0", "#10213a"], [20, "#a6d49a", "#132b10"], [30, "#f0b04a", "#3a2600"], [99, "#d9462f", "#fff"]], l: ["bajo 0 °C", "0 a 10", "10 a 20", "20 a 30", "30 o más"]},
+    v: {k: "v", u: "", t: "Viento", e: [[20, "#d5dde1", "#1d2a30"], [40, "#a6d49a", "#132b10"], [60, "#f0b04a", "#3a2600"], [80, "#e07b39", "#fff"], [999, "#c62f2f", "#fff"]], l: ["bajo 20 km/h", "20 a 40", "40 a 60", "60 a 80", "80 o más"]},
+    r: {k: "r", u: "", t: "Racha", e: [[20, "#d5dde1", "#1d2a30"], [40, "#a6d49a", "#132b10"], [60, "#f0b04a", "#3a2600"], [80, "#e07b39", "#fff"], [999, "#c62f2f", "#fff"]], l: ["bajo 20 km/h", "20 a 40", "40 a 60", "60 a 80", "80 o más"]},
+    mm24: {k: "mm24", u: "", t: "Lluvia 24 h", e: [[0, "#eef2f4", "#55636b"], [5, "#a9d3f5", "#0e2a44"], [20, "#5aa0e6", "#08203a"], [50, "#2f6fc7", "#fff"], [9999, "#6a3fb5", "#fff"]], l: ["0 mm", "hasta 5", "5 a 20", "20 a 50", "más de 50"]},
+  };
+  const color = (esc, v) => { for (const [h, f, t] of esc.e) if (v <= h) return [f, t]; return esc.e[esc.e.length - 1].slice(1); };
+  let datos = null, actual = "temp";
+  const ficha = e => `<strong>${e.n}</strong> <span style="opacity:.75">· ${e.alt != null ? Math.round(e.alt).toLocaleString("es-CL") + " m · " : ""}${hora(e.t)}</span><br>` +
+    `${n1(e.temp)} °C${e.hr != null ? " · humedad " + Math.round(e.hr) + " %" : ""}<br>` +
+    `Viento ${e.v ?? "–"} km/h ${rumbo(e.dir)}${e.r != null ? ", racha " + e.r + " km/h" : ""}<br>` +
+    `Lluvia: ${n1(e.mm6)} mm en 6 h, ${n1(e.mm24)} mm en 24 h`;
+  function pintar() {
+    if (!datos) return; const esc = ESC[actual]; capa.clearLayers();
+    datos.estaciones.forEach(e => { const v = e[esc.k]; if (v == null) return; const [f, t] = color(esc, v);
+      const txt = esc.k === "temp" ? Math.round(v) + "°" : esc.k === "mm24" ? n1(v) : String(v);
+      L.marker([e.lat, e.lon], {icon: L.divIcon({className: "", html: `<span class="dmc-chip" style="background:${f};color:${t}">${txt}</span>`, iconSize: [0, 0]}), keyboard: false})
+        .bindTooltip(ficha(e)).addTo(capa); });
+    document.querySelectorAll(".dmc-var button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === actual));
+    document.getElementById("ley-dmc").innerHTML = esc.e.map(([h, f, t], i) => `<span style="background:${f};color:${t}">${esc.l[i]}</span>`).join("");
+  }
+  document.querySelectorAll(".dmc-var button").forEach(b => b.addEventListener("click", () => { actual = b.dataset.v; pintar(); }));
+  document.getElementById("dmc-chile").addEventListener("click", () => { if (datos) { mapa.fitBounds(datos.estaciones.map(e => [e.lat, e.lon]), {padding: [20, 20]}); document.getElementById("mapa-vivo").scrollIntoView({behavior: "smooth", block: "start"}); } });
+  async function leer() {
+    let d; try { const r = await fetch(RAW + "/datos-en-vivo/envivo/dmc.json?t=" + Date.now()); if (!r.ok) throw 0; d = await r.json(); } catch (e) { return; }
+    datos = d; const E = d.estaciones, ahora = Date.now() / 1000, atraso = Math.round((ahora - d.generado) / 60);
+    const max = k => E.filter(e => e[k] != null).reduce((a, e) => !a || e[k] > a[k] ? e : a, null);
+    const min = k => E.filter(e => e[k] != null).reduce((a, e) => !a || e[k] < a[k] ? e : a, null);
+    const cal = max("temp"), fri = min("temp"), rac = max("r"), llu = E.filter(e => (e.mm24 || 0) >= 1).length, mll = max("mm24");
+    document.getElementById("dmc-resumen").innerHTML = `<strong>${E.length}</strong> estaciones con lectura de las últimas 3 horas (consulta de las ${hora(d.generado)}${atraso > 30 ? `, <strong>atrasada ${atraso} min</strong>` : ""}). ` +
+      (cal ? `Más calor: ${cal.n}, ${n1(cal.temp)} °C. ` : "") + (fri ? `Más frío: ${fri.n}, ${n1(fri.temp)} °C. ` : "") +
+      (rac && rac.r ? `Racha más fuerte: ${rac.n}, ${rac.r} km/h. ` : "") +
+      (llu ? `${llu} con 1 mm o más de lluvia en 24 h; la mayor, ${mll.n} con ${n1(mll.mm24)} mm.` : "Ninguna midió 1 mm o más de lluvia en 24 h.");
+    document.querySelector("#dmc-tabla tbody").innerHTML = E.map(e => `<tr${(e.mm24 || 0) >= 1 ? ' class="lluvia"' : ""}><td class="l">${e.n}<br><span class="small muted">${e.alt != null ? Math.round(e.alt).toLocaleString("es-CL") + " m · " : ""}${hora(e.t)}</span></td>
+      <td class="num">${n1(e.temp)}</td><td class="num">${e.hr != null ? Math.round(e.hr) : "–"}</td><td class="num">${e.v ?? "–"} <span class="small muted">${rumbo(e.dir)}</span></td><td class="num">${e.r ?? "–"}</td><td class="num">${n1(e.mm6)}</td><td class="num">${n1(e.mm24)}</td></tr>`).join("");
+    pintar();
+  }
+  leer(); setInterval(leer, 5 * 60000);
+})();
+</script>
+"""
+
 
 def pagina(head, escribir, ahora):
-    html = f"""{head("En vivo · Earth-2 Chile", "Rayos de los últimos 90 minutos sobre la zona central de Chile, lo que miden los aeródromos y lo que pronostican los modelos para las quebradas de Santiago oriente. Se actualiza cada unos 10 minutos.")}
+    html = f"""{head("En vivo · Earth-2 Chile", "Rayos de los últimos 90 minutos sobre la zona central de Chile, lo que miden ahora las estaciones de la DMC en todo el país y lo que pronostican los modelos para las quebradas de Santiago oriente. Se actualiza cada unos 10 minutos.")}
 <body>
 {nav("envivo")}
 <div class="wrap">
@@ -188,6 +251,13 @@ def pagina(head, escribir, ahora):
       <div class="tabla"><table id="lluvia"><thead><tr><th class="l">Estación</th><th>Última hora</th><th>6 h</th><th>24 h</th><th class="l">Hasta</th></tr></thead><tbody><tr><td class="l" colspan="5">Cargando…</td></tr></tbody></table></div>
       <p class="iso-vivo" id="iso-vivo"></p>
       <p class="small muted">Milímetros medidos por los pluviómetros de las estaciones automáticas de la {d("DMC", definicion="Dirección Meteorológica de Chile. Sus estaciones envían cada hora un mensaje SYNOP a la red de la Organización Meteorológica Mundial con la lluvia de la última hora.")}, de la más cercana a la Quebrada de Apoquindo a la más lejana, bajo 1.500 m. Llegan cada hora con unos 30 a 60 minutos de atraso y son provisorios. «s/d»: faltan horas. Quinta Normal y Pudahuel informan la lluvia cada 6 h: su «última hora» puede faltar y sus 6 y 24 h van hasta su último informe de 6 h. Los puntos del mapa son estas estaciones; rellenos, si midieron 1 mm o más en 24 h. Detalle en <a href="metodo.html#estaciones">Método</a>.</p></div>
+    <div class="card" id="dmc"><h2>Lo que miden ahora las estaciones de la DMC</h2>
+      <p class="dmc-resumen" id="dmc-resumen" aria-live="polite">Cargando la red de la DMC…</p>
+      <div class="dmc-var" role="group" aria-label="Variable que se muestra en el mapa"><button type="button" data-v="temp" aria-pressed="true">Temperatura</button><button type="button" data-v="v">Viento</button><button type="button" data-v="r">Racha</button><button type="button" data-v="mm24">Lluvia 24 h</button><button type="button" id="dmc-chile">Ver todo Chile</button></div>
+      <div class="ley-dmc" id="ley-dmc"></div>
+      <p class="small muted">Cada número del mapa es la última lectura de una {d("estación automática de la DMC", definicion="La Dirección Meteorológica de Chile opera unas 150 estaciones meteorológicas automáticas de Arica a la Antártica; miden cada minuto y publican cada 10. Aquí se leen con su API de Servicios Climáticos.")}; pasa el cursor o toca un número para ver la estación completa. Viento: promedio de 10 minutos; racha: el máximo de esos 10 minutos; ambos en km/h. Datos provisorios de la DMC, sin revisar; se leen cada 10 minutos. La verificación de los pronósticos en cada estación está en <a href="zona.html">Tu zona</a>.</p>
+      <details><summary>Todas las estaciones, de norte a sur</summary>
+        <div class="tabla"><table id="dmc-tabla"><thead><tr><th class="l">Estación</th><th>°C</th><th>Humedad %</th><th>Viento km/h</th><th>Racha</th><th>Lluvia 6 h</th><th>24 h</th></tr></thead><tbody></tbody></table></div></details></div>
     <div class="card"><h2>Lo que miden los aeródromos</h2>
       <div class="tabla"><table id="metar"><thead><tr><th class="l">Hora</th><th class="l">Aeródromo</th><th>Temp.</th><th>Viento</th><th>Ráfaga</th><th class="l">Tiempo</th></tr></thead><tbody></tbody></table></div>
       <p class="small muted">Reportes METAR de las últimas 12 horas, del más reciente al más antiguo; las filas con lluvia van marcadas. Los aeródromos chilenos no informan milímetros.</p></div>
@@ -200,6 +270,7 @@ def pagina(head, escribir, ahora):
 {pie(ahora)}
 </div>
 {JS.replace("__RAW__", RAW)}
+{JS_DMC.replace("__RAW__", RAW)}
 {direccion.js()}
 {JS_DEF}
 </body>

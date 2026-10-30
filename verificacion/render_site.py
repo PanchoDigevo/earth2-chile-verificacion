@@ -445,6 +445,21 @@ JS_MAPA = r"""
     document.querySelectorAll('[data-estado-txt]').forEach(el => el.textContent = st.estado === 'g' ? 'sin corregir' : 'corregido por estación');
   }
 
+  // Última lectura de la red DMC (rama datos-en-vivo, cada 10 min): se lee al elegir la primera estación DMC
+  let dmcAhora = null, dmcPedido = false;
+  function ahora(e){
+    if (redDe(e) !== 'dmc') return '';
+    if (!dmcPedido) { dmcPedido = true;
+      fetch('https://raw.githubusercontent.com/PanchoDigevo/earth2-chile-verificacion/datos-en-vivo/envivo/dmc.json?t=' + Date.now())
+        .then(r => r.ok ? r.json() : null).then(d => { if (d) { dmcAhora = {}; d.estaciones.forEach(x => dmcAhora['D' + x.c] = x); ficha(); } }).catch(() => {}); }
+    const x = dmcAhora && dmcAhora[e.icao]; if (!x) return '';
+    const h = new Date(x.t * 1000).toLocaleTimeString('es-CL', {timeZone: 'America/Santiago', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'});
+    const R = ['N','NE','E','SE','S','SO','O','NO'], rumbo = x.dir == null ? '' : ' del ' + R[Math.round(x.dir / 45) % 8];
+    return `<div class="ahora-dmc"><span class="lbl">Ahora, a las ${h}</span>
+      <p><strong>${fmt(x.temp)} °C</strong>${x.hr != null ? ` · humedad ${Math.round(x.hr)} %` : ''} · viento ${x.v ?? '–'} km/h${rumbo}${x.r != null ? `, racha ${x.r} km/h` : ''} · lluvia ${fmt(x.mm24)} mm en 24 h</p>
+      <p class="muted small">Lectura provisoria de la estación, sin revisar. Todas en el mapa de <a href="envivo.html#dmc">En vivo</a>.</p></div>`;
+  }
+
   function ficha(){
     const box = document.getElementById('ficha'); const e = porId[st.sel]; if (!box || !e) return;
     const x = e.m[st.modelo];
@@ -463,6 +478,7 @@ JS_MAPA = r"""
     const filas = ['AIFS','IFS','GFS'].map(m => { const y = e.m[m]; return `<tr${m === st.modelo ? ' class="actual"' : ''}><td class="l">${m}</td><td class="num">${y ? fmt(y.g) + ' °C' : '–'}</td><td class="num">${y ? fmt(y.c) + ' °C' : '–'}</td></tr>`; }).join('');
     const n = x ? x.n : 0;
     box.innerHTML = `<div class="ficha-cab"><h2>${e.nombre}</h2><p class="muted small">${e.region}${e.elev != null ? ' · ' + e.elev.toLocaleString('es-CL') + ' m de altura' : ''}</p></div>
+      ${ahora(e)}
       ${cuerpo}
       ${x && x.movil != null ? `<p class="small">Corregir con los últimos 45 días en vez de 2025: ${fmt(x.movil)} °C frente a ${fmt(x.fija)} °C. ${x.gana === 'móvil' ? 'Aquí gana la corrección móvil.' : x.gana === 'fija' ? 'Aquí gana la corrección de 2025.' : 'Aquí dan casi lo mismo.'}</p>` : ''}
       ${x && x.deriva != null ? `<p class="small"><span class="chip medio"><i></i>En deriva</span> En los últimos 30 días, este modelo pronosticó aquí ${fmt(Math.abs(x.deriva))} °C más ${x.deriva < 0 ? 'frío' : 'calor'} de lo que corresponde a su error de 2025.</p>` : ''}
@@ -570,6 +586,9 @@ CSS = """
   --bueno:#2fbf2f; --medio:#e0a428; --alto:#ee6a6a; --sin:#7d8c99; color-scheme:dark}
 *{box-sizing:border-box}
 body:not([data-red="dmc"]) .est.red-dmc,body[data-red="dmc"] .est.red-aero{display:none}
+.ahora-dmc{background:var(--accent-soft);border-radius:8px;padding:8px 12px;margin:6px 0 10px}
+.ahora-dmc p{margin:2px 0}
+.ahora-dmc .lbl{font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
 html,body{margin:0}
 body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
 a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}

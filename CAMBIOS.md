@@ -4,6 +4,11 @@ Lo hecho, en orden inverso y en simple. Los commits automáticos (verificación,
 
 Sitio: https://panchodigevo.github.io/earth2-chile-verificacion/
 
+## 30-oct-2026
+
+- **Lo que miden ahora las ~150 estaciones de la DMC, en el sitio.** Cada 10 minutos, dentro de la vuelta de En vivo (`envivo/actualizar.py`, `dmc.json` en la rama datos-en-vivo), se lee la última medición de toda la red de estaciones automáticas de la DMC: temperatura, humedad, viento, racha y lluvia en 6 y 24 h. En **En vivo** aparece como un número por estación sobre el mapa, con botones para cambiar entre temperatura, viento, racha y lluvia, uno para ver todo Chile, un resumen (más calor, más frío, racha más fuerte, dónde llovió) y la tabla completa de norte a sur. En **Tu zona**, la ficha de cada estación DMC empieza con su lectura del momento. Son datos provisorios de la DMC, sin revisar.
+- **Verificación en la red DMC, en curso.** `historico-dmc.yml` ya bajó lo medido en las estaciones DMC (ene-2025 a oct-2026) y los pronósticos de GFS; 22 partes de IFS y AIFS (sobre todo may-nov 2025) se cortaron porque ECMWF frenó las descargas con 15 a la vez. El flujo ahora puede repetir solo las partes que faltan (input `solo`, de a pocas con `paralelo`), sube lo avanzado si una parte se corta y suma lo nuevo a lo anterior. Cuando termine, Tu zona tendrá el selector "Red: Aeródromos / Estaciones DMC".
+
 ## 29-oct-2026
 
 - **Los avisos, alertas y alarmas de la DMC aparecen solos en el sitio, por comuna.** Cada hora se lee el Sistema de Alerta Meteorológica de la DMC (`estaciones/dmc_avisos.py`) y se calcula qué comunas toca cada uno, con la parte de la comuna (cordillera, precordillera, valle, litoral...), cruzando las zonas oficiales de la DMC con los límites comunales de la Biblioteca del Congreso (`estaciones/zonas_dmc.py`, una vez). Se ven: en **Resumen, Tu zona y En vivo**, todos los vigentes del país con su horario y la tabla de intensidad de la DMC; en **Pronóstico**, solo los de la comuna elegida (o una línea que dice que no hay); en **Quebradas**, los que tocan Santiago oriente. Reemplaza el aviso que se cargaba a mano (`site/aviso_oficial.json`, borrado). Las alertas de SENAPRED siguen enlazadas, no copiadas.

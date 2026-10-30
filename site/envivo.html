@@ -769,7 +769,7 @@ const MON = (function(){
   </div>
 </div>
 <div class="aviso"><p class="small">Apoyo a la decisión, no una alerta. Las alertas oficiales son de la <a href="https://www.meteochile.gob.cl/" rel="noopener">Dirección Meteorológica de Chile</a> y de <a href="https://www.senapred.cl/" rel="noopener">SENAPRED</a>.</p></div>
-<footer><p>Actualizado el 30 oct, 15:38 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
+<footer><p>Actualizado el 30 oct, 15:48 (hora de Chile). Datos abiertos: ECMWF (AIFS e IFS, CC-BY 4.0), NOAA (GFS y METAR, dominio público), Iowa Environmental Mesonet, DMC (estaciones automáticas, SYNOP vía Ogimet), Copernicus (DEM y Sentinel-2), OpenStreetMap (ODbL), SERNAGEOMIN. <a href="metodo.html">Cómo se calcula</a> · Código abierto: <a href="https://github.com/PanchoDigevo/earth2-chile-verificacion" rel="noopener">GitHub</a>.</p><p><em>Información de apoyo a la decisión. No reemplaza los avisos ni las alertas oficiales de la Dirección Meteorológica de Chile ni de SENAPRED.</em></p></footer>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -915,11 +915,12 @@ const MON = (function(){
       const txt = esc.k === "temp" ? Math.round(v) + "°" : esc.k === "mm24" ? n1(v) : String(v);
       L.marker([e.lat, e.lon], {icon: L.divIcon({className: "", html: `<span class="dmc-chip" style="background:${f};color:${t}">${txt}</span>`, iconSize: [0, 0]}), keyboard: false})
         .bindTooltip(ficha(e)).addTo(capa); });
-    document.querySelectorAll(".dmc-var button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === actual));
+    document.querySelectorAll(".dmc-var button[data-v]").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === actual));
     document.getElementById("ley-dmc").innerHTML = esc.e.map(([h, f, t], i) => `<span style="background:${f};color:${t}">${esc.l[i]}</span>`).join("");
   }
-  document.querySelectorAll(".dmc-var button").forEach(b => b.addEventListener("click", () => { actual = b.dataset.v; pintar(); }));
-  document.getElementById("dmc-chile").addEventListener("click", () => { if (datos) { mapa.fitBounds(datos.estaciones.map(e => [e.lat, e.lon]), {padding: [20, 20]}); document.getElementById("mapa-vivo").scrollIntoView({behavior: "smooth", block: "start"}); } });
+  document.querySelectorAll(".dmc-var button[data-v]").forEach(b => b.addEventListener("click", () => { actual = b.dataset.v; pintar(); }));
+  // Chile continental (sin la Antártica ni Rapa Nui, que alejarían demasiado el mapa; siguen dibujadas)
+  document.getElementById("dmc-chile").addEventListener("click", () => { if (datos) { mapa.fitBounds(datos.estaciones.filter(e => e.lat > -56 && e.lon > -76).map(e => [e.lat, e.lon]), {padding: [20, 20]}); document.getElementById("mapa-vivo").scrollIntoView({behavior: "smooth", block: "start"}); } });
   async function leer() {
     let d; try { const r = await fetch(RAW + "/datos-en-vivo/envivo/dmc.json?t=" + Date.now()); if (!r.ok) throw 0; d = await r.json(); } catch (e) { return; }
     datos = d; const E = d.estaciones, ahora = Date.now() / 1000, atraso = Math.round((ahora - d.generado) / 60);

@@ -212,7 +212,7 @@ def dmc_ahora(ruta):
             continue
         if ahora - tt > DMC_VIGENTE_H * 3600:
             continue
-        est.append({"c": str(s.get("codigoNacional")), "n": str(s.get("nombreEstacion") or "").strip(),
+        est.append({"c": str(s.get("codigoNacional")), "n": dmc.texto(s.get("nombreEstacion")),
                     "lat": float(s["latitud"]), "lon": float(s["longitud"]), "alt": num(s.get("altura")), "t": tt,
                     "temp": num(d.get("temperatura")), "hr": num(d.get("humedadRelativa")),
                     "v": kmh(d.get("fuerzaDelVientoPromedio10Minutos")), "dir": num(d.get("direccionDelVientoPromedio10Minutos")),

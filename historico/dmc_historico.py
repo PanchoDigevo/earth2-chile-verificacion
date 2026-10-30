@@ -59,6 +59,15 @@ def registros(x):
     return []
 
 
+def texto(v):
+    """Nombres con los acentos dañados por la API ("astronÃ³mico" -> "astronómico")."""
+    s = str(v or "").strip()
+    try:
+        return s.encode("latin-1").decode("utf-8") if ("Ã" in s or "Â" in s) else s
+    except UnicodeError:
+        return s
+
+
 def num(v):
     m = NUM.search(str(v)) if v not in (None, "") else None
     return float(m.group(0)) if m else None
@@ -77,7 +86,7 @@ def catalogo():
         cod = str(e.get("codigoNacional") or "").strip()
         if not cod:
             continue
-        filas.append({"icao": "D" + cod, "nombre": e.get("nombreEstacion", ""), "lat": e.get("latitud"), "lon": e.get("longitud"),
+        filas.append({"icao": "D" + cod, "nombre": texto(e.get("nombreEstacion", "")), "lat": e.get("latitud"), "lon": e.get("longitud"),
                       "elev": e.get("altura", ""), "codigo": cod, "wmo": e.get("CodigoOMM") or e.get("codigoOMM") or "",
                       "oaci": e.get("codigoOACI", ""), "region": e.get("NombreRegion", ""), "zona": e.get("zonaGeografica", "")})
     if not filas:

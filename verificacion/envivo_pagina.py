@@ -197,11 +197,12 @@ JS_DMC = r"""
       const txt = esc.k === "temp" ? Math.round(v) + "°" : esc.k === "mm24" ? n1(v) : String(v);
       L.marker([e.lat, e.lon], {icon: L.divIcon({className: "", html: `<span class="dmc-chip" style="background:${f};color:${t}">${txt}</span>`, iconSize: [0, 0]}), keyboard: false})
         .bindTooltip(ficha(e)).addTo(capa); });
-    document.querySelectorAll(".dmc-var button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === actual));
+    document.querySelectorAll(".dmc-var button[data-v]").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === actual));
     document.getElementById("ley-dmc").innerHTML = esc.e.map(([h, f, t], i) => `<span style="background:${f};color:${t}">${esc.l[i]}</span>`).join("");
   }
-  document.querySelectorAll(".dmc-var button").forEach(b => b.addEventListener("click", () => { actual = b.dataset.v; pintar(); }));
-  document.getElementById("dmc-chile").addEventListener("click", () => { if (datos) { mapa.fitBounds(datos.estaciones.map(e => [e.lat, e.lon]), {padding: [20, 20]}); document.getElementById("mapa-vivo").scrollIntoView({behavior: "smooth", block: "start"}); } });
+  document.querySelectorAll(".dmc-var button[data-v]").forEach(b => b.addEventListener("click", () => { actual = b.dataset.v; pintar(); }));
+  // Chile continental (sin la Antártica ni Rapa Nui, que alejarían demasiado el mapa; siguen dibujadas)
+  document.getElementById("dmc-chile").addEventListener("click", () => { if (datos) { mapa.fitBounds(datos.estaciones.filter(e => e.lat > -56 && e.lon > -76).map(e => [e.lat, e.lon]), {padding: [20, 20]}); document.getElementById("mapa-vivo").scrollIntoView({behavior: "smooth", block: "start"}); } });
   async function leer() {
     let d; try { const r = await fetch(RAW + "/datos-en-vivo/envivo/dmc.json?t=" + Date.now()); if (!r.ok) throw 0; d = await r.json(); } catch (e) { return; }
     datos = d; const E = d.estaciones, ahora = Date.now() / 1000, atraso = Math.round((ahora - d.generado) / 60);

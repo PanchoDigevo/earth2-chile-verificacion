@@ -39,6 +39,17 @@ def get(url, intentos=3):
     return None
 
 
+def texto(v):
+    """Nombres que la API entrega con los acentos dañados ("astronÃ³mico" -> "astronómico")."""
+    s = str(v or "").strip()
+    if "Ã" in s or "Â" in s:
+        try:
+            return s.encode("latin-1").decode("utf-8")
+        except UnicodeError:
+            pass
+    return s
+
+
 def numero(v):
     m = NUM.search(str(v)) if v not in (None, "") else None
     return m.group(0) if m else ""
@@ -62,7 +73,7 @@ def main():
             mom = str(d.get("momento") or "")
             if not mom.endswith(":00:00"):          # solo la hora en punto
                 continue
-            fila = {"momento": mom[:16], "codigo": est.get("codigoNacional"), "nombre": est.get("nombreEstacion"),
+            fila = {"momento": mom[:16], "codigo": est.get("codigoNacional"), "nombre": texto(est.get("nombreEstacion")),
                     "lat": est.get("latitud"), "lon": est.get("longitud"), "altura_m": est.get("altura")}
             fila.update({c: numero(d.get(k)) for c, k in CAMPOS.items()})
             nuevas[(fila["momento"], str(fila["codigo"]))] = fila

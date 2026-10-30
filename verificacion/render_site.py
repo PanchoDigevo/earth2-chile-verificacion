@@ -205,6 +205,11 @@ def datos_estaciones_dmc():
         if not m:
             continue
         nom = str(r.nombre).strip()
+        if "Ã" in nom:                               # acentos dañados por la API de la DMC en catálogos antiguos
+            try:
+                nom = nom.encode("latin-1").decode("utf-8")
+            except UnicodeError:
+                pass
         out.append({"icao": r.icao, "red": "dmc", "nombre": nom, "region": str(getattr(r, "region", "") or ""),
                     "elev": None if pd.isna(r.elev) else int(float(r.elev)), "lat": float(r.lat), "lon": float(r.lon), "m": m})
     return sorted(out, key=lambda e: -e["lat"])

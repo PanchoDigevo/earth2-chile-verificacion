@@ -186,7 +186,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-10-29,320019,San Felipe Escuela Agrícola,-32.7553,-70.7069,662.0,Valparaíso,27.7,13.2,0.0
 2026-10-29,320041,Viña del Mar  Ad. (Torquemada),-32.9494,-71.4761,140.0,Viña del Mar,20.2,15.2,0.0
 2026-10-29,320045,"Llay Llay, Las Peñas",-32.8814,-70.9131,423.0,Llaillay,24.9,15.3,0.0
-2026-10-29,320049,Chincolco Liceo agrícola,-32.2225,-70.8317,665.0,Petorca,25.0,-48.8,0.1
+2026-10-29,320049,Chincolco Liceo agrícola,-32.2225,-70.8317,665.0,Petorca,25.0,-48.8,0.2
 2026-10-29,320051,Los Libertadores,-32.8456,-70.1192,2955.0,Los Andes,,,0.0
 2026-10-29,320055,Catemu,-32.7589,-70.9428,443.0,Catemu,23.2,12.7,0.0
 2026-10-29,320056,"Quintero, Climatológica",-32.7842,-71.5228,5.0,Quintero,20.2,16.0,0.0
@@ -197,7 +197,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-10-29,320124,"Quillota, Liceo Agrícola",-32.9072,-71.2714,123.0,Quillota,23.7,15.1,0.0
 2026-10-29,320127,"Planta Transmisora Quintero, Armada",-32.8036,-71.4844,73.0,Quintero,20.2,15.3,0.0
 2026-10-29,330006,"Jardín Botánico (ex Parque Fauna), Viña del Mar",-33.045,-71.5019,50.0,Viña del Mar,21.3,-47.5,0.1
-2026-10-29,330007,"Rodelillo, Ad.",-33.0653,-71.5564,335.0,Viña del Mar,19.5,13.7,0.2
+2026-10-29,330007,"Rodelillo, Ad.",-33.0653,-71.5564,335.0,Viña del Mar,19.5,13.7,0.3
 2026-10-29,330019,"Eulogio Sánchez, Tobalaba Ad.",-33.4553,-70.5486,649.0,La Reina,21.8,12.4,0.0
 2026-10-29,330020,"Quinta Normal, Santiago",-33.445,-70.6828,520.0,Estación Central,21.9,14.0,0.0
 2026-10-29,330021,Pudahuel Santiago,-33.3783,-70.7878,474.0,Pudahuel,22.1,13.9,0.0
@@ -214,7 +214,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-10-29,330121,Curacaví Ad.,-33.4111,-71.1678,203.0,Curacaví,20.9,15.4,0.0
 2026-10-29,330122,"Aguas Andinas, La Florida",-33.545,-70.5483,670.0,La Florida,21.3,12.5,0.0
 2026-10-29,330160,"El Milagro, Buin",-33.7544,-70.7644,460.0,Buin,21.3,12.5,0.0
-2026-10-29,330161,"San Antonio, Lo Zarate",-33.5305,-71.5061,103.0,Cartagena,18.8,15.5,0.0
+2026-10-29,330161,"San Antonio, Lo Zarate",-33.5305,-71.5061,103.0,Cartagena,18.8,15.5,0.2
 2026-10-29,330162,Colina (Reg.),-33.1622,-70.6431,755.0,Colina,19.6,11.8,0.0
 2026-10-29,330163,Peldehue Ad.,-33.1139,-70.6858,670.0,Colina,21.3,11.3,0.0
 2026-10-29,330193,Llanos de Caleu - La Dormida,-33.0494,-71.0014,1450.0,Tiltil,20.2,11.7,0.0

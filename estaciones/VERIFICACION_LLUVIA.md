@@ -1,6 +1,6 @@
 # Lluvia pronosticada frente a lluvia medida
 
-Actualizado el 31-10-2026 12:29 (hora de Chile) por `estaciones/verificar_lluvia.py`. Bloques de 6 h del seguimiento
+Actualizado el 31-10-2026 16:31 (hora de Chile) por `estaciones/verificar_lluvia.py`. Bloques de 6 h del seguimiento
 horario (`hindcast/seguimiento/pronosticos.csv`) comparados con la estación DMC más cercana bajo 1.500 m
 (mensajes SYNOP, `estaciones/datos/synop/`). Un bloque cuenta como lluvioso desde 1 mm en 6 h.
 
@@ -13,15 +13,15 @@ Estación usada para cada punto:
 
 | Modelo | Plazo | Bloques | Bloques con lluvia medida | Avisados por el modelo | Falsas alarmas | Error medio (mm) | Lluvia medida / pronosticada |
 |---|---|---|---|---|---|---|---|
-| AIFS | hasta 24 h | 752 | 84 | 84 | 243 | +0,9 | 601,6 / 1276,4 |
-| AIFS | hasta 48 h | 688 | 84 | 84 | 255 | +0,7 | 599,7 / 1106,8 |
-| AIFS | hasta 72 h | 624 | 60 | 60 | 179 | +0,7 | 381,5 / 789,7 |
-| GFS | hasta 24 h | 752 | 84 | 83 | 204 | +0,9 | 601,6 / 1292,9 |
-| GFS | hasta 48 h | 688 | 84 | 81 | 152 | +0,7 | 599,7 / 1064,1 |
-| GFS | hasta 72 h | 624 | 60 | 53 | 117 | +0,3 | 381,5 / 556,7 |
-| IFS | hasta 24 h | 752 | 84 | 73 | 203 | +1,3 | 601,6 / 1577,4 |
-| IFS | hasta 48 h | 688 | 84 | 77 | 186 | +1,0 | 599,7 / 1258,0 |
-| IFS | hasta 72 h | 624 | 60 | 57 | 178 | +1,2 | 381,5 / 1143,7 |
+| AIFS | hasta 24 h | 768 | 84 | 84 | 259 | +0,9 | 604,0 / 1304,9 |
+| AIFS | hasta 48 h | 704 | 84 | 84 | 271 | +0,8 | 602,1 / 1131,6 |
+| AIFS | hasta 72 h | 640 | 60 | 60 | 191 | +0,7 | 383,9 / 809,7 |
+| GFS | hasta 24 h | 768 | 84 | 83 | 216 | +0,9 | 604,0 / 1312,5 |
+| GFS | hasta 48 h | 704 | 84 | 81 | 164 | +0,7 | 602,1 / 1099,7 |
+| GFS | hasta 72 h | 640 | 60 | 53 | 129 | +0,3 | 383,9 / 591,8 |
+| IFS | hasta 24 h | 764 | 84 | 73 | 212 | +1,3 | 603,4 / 1590,1 |
+| IFS | hasta 48 h | 704 | 84 | 77 | 201 | +1,0 | 602,1 / 1280,0 |
+| IFS | hasta 72 h | 640 | 60 | 57 | 185 | +1,2 | 383,9 / 1159,7 |
 
 Los pluviómetros miden un punto; el modelo, el promedio de una celda de unos 25 km. Datos de estación provisorios,
 sin control de calidad. No es un aviso: las alertas oficiales son de la DMC y SENAPRED.

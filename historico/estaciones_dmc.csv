@@ -1,0 +1,151 @@
+icao,nombre,lat,lon,elev,codigo,wmo,oaci,region,zona
+D170001,Visviri Tenencia,-17.59500,-69.47750,4084,170001,85403,,Arica y Parinacota,Cordillera
+D180005,"Chacalluta, Arica Ap.",-18.35555,-70.34028,51,180005,85406,SCAR,Arica y Parinacota,Litoral
+D180017,Putre,-18.20000,-69.56250,3532,180017,85405,,Arica y Parinacota,PreCordillera
+D180018,"Defensa Civil, Arica",-18.49111,-70.30139,71,180018,85407,,Arica y Parinacota,Litoral
+D180042,"Cerro Sombrero, Arica",-18.51250,-70.26556,122,180042,85408,,Arica y Parinacota,Litoral
+D190010,Colchane,-19.27694,-68.63972,3700,190010,,,TarapacÃ¡,Cordillera
+D200006,Diego Aracena Iquique Ap.,-20.54917,-70.18111,48,200006,85418,SCDA,TarapacÃ¡,Litoral
+D200007,"La Huayca, Pozo Almonte",-20.42167,-69.62750,992,200007,85419,,TarapacÃ¡,Valle
+D200010,"UNAP (Universidad Arturo Prat), Iquique",-20.27083,-70.13083,30,200010,85416,,TarapacÃ¡,Litoral
+D210901,OllagÃ¼e ,-21.22417,-68.25583,3708,210901,85424,SCOY,Antofagasta,Cordillera
+D220002,"El Loa, Calama Ad.",-22.49806,-68.89250,2326,220002,85432,SCCF,Antofagasta,PreCordillera
+D220026,"Chorrillos, Calama",-22.45000,-68.91028,2298,220026,,,Antofagasta,PreCordillera
+D220027,Tocopilla (C.D.P),-22.06389,-70.18611,81,220027,,,Antofagasta,Litoral
+D220028,"Maria Elena, Salitrera",-22.34333,-69.67167,1292,220028,,,Antofagasta,Valle
+D230001,Cerro Moreno Antofagasta Ap.,-23.45361,-70.44528,139,230001,85442,SCFA,Antofagasta,Litoral
+D230002,"Universidad CatÃ³lica del Norte, Antofagasta",-23.68083,-70.41111,31,230002,85443,,Antofagasta,Litoral
+D230004,Toconao,-23.18611,-68.00556,2495,230004,85439,,Antofagasta,Cordillera
+D230021,"Llano de Chajnantor, observatorio APEX",-23.00583,-67.75917,5000,230021,85438,,Antofagasta,Valle
+D230022,Mejillones,-23.10917,-70.44333,31,230022,85440,,Antofagasta,Litoral
+D240005,"Cerro Paranal, observatorio astronÃ³mico",-24.62750,-70.40472,2648,240005,85448,,Antofagasta,Litoral
+D250005,Taltal,-25.41111,-70.48417,37,250005,85455,,Antofagasta,Litoral
+D260010," Ad. Ricardo GarcÃ­a Posada, El Salvador",-26.31305,-69.75139,1597,260010,,,Atacama,Valle
+D270001,Mataveri  Isla de Pascua Ap.,-27.15889,-109.43250,69,270001,85469,SCIP,ValparaÃ­so,Litoral
+D270008,"Desierto de Atacama, Caldera  Ad.",-27.25444,-70.78111,204,270008,85467,SCAT,Atacama,Secano Costero
+D270009,CopiapÃ³ Universidad de Atacama,-27.35889,-70.35333,362,270009,85471,,Atacama,Valle
+D270022,"Copiapo, Cerro Antenas",-27.36278,-70.28305,946,270022,,,Atacama,Secano Interior
+D280010,Freirina Nicolasa,-28.51694,-71.01000,156,280010,85484,,Atacama,Valle
+D280028,"Alto del Carmen, Los Sauces",-28.77778,-70.47055,854,280028,,,Atacama,Valle
+D290004,"La Florida, La Serena Ad.",-29.91444,-71.20667,146,290004,85488,SCSE,Coquimbo,Secano Costero
+D290013,"Cerro la Silla, observatorio astronÃ³mico",-29.25833,-70.73444,2377,290013,85487,,Coquimbo,PreCordillera
+D300024,Ovalle Escuela AgrÃ­cola,-30.58000,-71.18667,310,300024,85504,,Coquimbo,Valle
+D300034,El Tololo,-30.16833,-70.80361,2154,300034,85490,,Coquimbo,PreCordillera
+D300046,"VicuÃ±a, Parque Los Pimientos",-30.03361,-70.69722,642,300046,85502,,Coquimbo,Valle
+D300047,"Monte Patria, Municipalidad",-30.69833,-70.95778,406,300047,85510,,Coquimbo,Valle
+D310023,Canela Baja (Liceo Padre JosÃ© Herde),-31.39000,-71.41278,343,310023,85524,,Coquimbo,Secano Costero
+D310024,Liceo Samuel RomÃ¡n Rojas (CombarbalÃ¡),-31.18805,-70.99889,936,310024,85523,,Coquimbo,PreCordillera
+D310040,"Vivero Conaf, Illapel",-31.63250,-71.15194,333,310040,85525,,Coquimbo,Valle
+D310044,Salamanca Pisco Capel,-31.78722,-70.95944,516,310044,,,Coquimbo,Valle
+D320019,San Felipe Escuela AgrÃ­cola,-32.75528,-70.70694,662,320019,85537,,ValparaÃ­so,Valle
+D320041,ViÃ±a del Mar  Ad. (Torquemada),-32.94944,-71.47611,140,320041,85556,SCVM,ValparaÃ­so,Litoral
+D320045,"Llay Llay, Las PeÃ±as",-32.88139,-70.91305,423,320045,85538,,ValparaÃ­so,Valle
+D320049,Chincolco Liceo agrÃ­cola,-32.22250,-70.83167,665,320049,85533,,ValparaÃ­so,Valle
+D320051,Los Libertadores,-32.84555,-70.11917,2955,320051,85539,,ValparaÃ­so,Cordillera
+D320055,Catemu,-32.75889,-70.94278,443,320055,,,ValparaÃ­so,Valle
+D320056,"Quintero, ClimatolÃ³gica",-32.78417,-71.52278,5,320056,85544,,ValparaÃ­so,Litoral
+D320063,Zapallar Catapilco,-32.56139,-71.29778,81,320063,85535,,ValparaÃ­so,Valle
+D320121,El TÃ¡rtaro (Putaendo),-32.57083,-70.70417,933,320121,,,ValparaÃ­so,Valle
+D320122,Panquehue,-32.76917,-70.83500,519,320122,,,ValparaÃ­so,Valle
+D320123,"San Esteban, Liceo",-32.80111,-70.57805,835,320123,,,ValparaÃ­so,Valle
+D320124,"Quillota, Liceo AgrÃ­cola",-32.90722,-71.27139,123,320124,,,ValparaÃ­so,Valle
+D320127,"Planta Transmisora Quintero, Armada",-32.80361,-71.48444,73,320127,,,ValparaÃ­so,Litoral
+D330006,"JardÃ­n BotÃ¡nico (ex Parque Fauna), ViÃ±a del Mar",-33.04500,-71.50194,50,330006,85545,,ValparaÃ­so,Secano Costero
+D330007,"Rodelillo, Ad.",-33.06528,-71.55639,335,330007,85560,SCRD,ValparaÃ­so,Litoral
+D330019,"Eulogio SÃ¡nchez, Tobalaba Ad.",-33.45528,-70.54861,649,330019,85580,SCTB,Metropolitana de Santiago,PreCordillera
+D330020,"Quinta Normal, Santiago",-33.44500,-70.68278,520,330020,85577,SCQN,Metropolitana de Santiago,Valle
+D330021,Pudahuel Santiago ,-33.37833,-70.78778,474,330021,85574,SCEL,Metropolitana de Santiago,Valle
+D330030,"Santo Domingo, Ad.",-33.65611,-71.61333,77,330030,85586,SCSN,ValparaÃ­so,Litoral
+D330031,"Juan FernÃ¡ndez, EstaciÃ³n MeteorolÃ³gica.",-33.63583,-78.83305,40,330031,85585,,ValparaÃ­so,Litoral
+D330071,Talagante,-33.67028,-70.84944,390,330071,85568,,Metropolitana de Santiago,Valle
+D330075,RÃ­o Clarillo,-33.72833,-70.49667,876,330075,85595,,Metropolitana de Santiago,PreCordillera
+D330076,Chorombo Hacienda,-33.52944,-71.22917,145,330076,85566,,Metropolitana de Santiago,Valle
+D330077,El Colorado,-33.35000,-70.29361,2750,330077,85594,,Metropolitana de Santiago,Cordillera
+D330111,Lo Prado Cerro San Francisco,-33.45806,-70.94861,1068,330111,85571,,Metropolitana de Santiago,PreCordillera
+D330112,San JosÃ©  GuayacÃ¡n,-33.61528,-70.35055,928,330112,85593,,Metropolitana de Santiago,PreCordillera
+D330113,El Paico,-33.70639,-71.00805,275,330113,85569,,Metropolitana de Santiago,Valle
+D330114,San Pablo - DASA,-33.44222,-70.74667,490,330114,85572,,Metropolitana de Santiago,Valle
+D330118,Lo Pinto,-33.26805,-70.73222,512,330118,85570,,Metropolitana de Santiago,Valle
+D330121,CuracavÃ­ Ad.,-33.41111,-71.16778,203,330121,85567,,Metropolitana de Santiago,Valle
+D330122,"Aguas Andinas, La Florida",-33.54500,-70.54833,670,330122,85565,,Metropolitana de Santiago,PreCordillera
+D330160,"El Milagro, Buin",-33.75444,-70.76444,460,330160,85591,,Metropolitana de Santiago,Valle
+D330161,"San Antonio, Lo Zarate",-33.53055,-71.50611,103,330161,85588,,ValparaÃ­so,Litoral
+D330162,Colina (Reg.),-33.16222,-70.64306,755,330162,85596,,Metropolitana de Santiago,Valle
+D330163,Peldehue Ad.,-33.11389,-70.68583,670,330163,85597,SCPD,Metropolitana de Santiago,Valle
+D330193,Llanos de Caleu - La Dormida,-33.04944,-71.00139,1450,330193,,,Metropolitana de Santiago,PreCordillera
+D340031,"General Freire, CuricÃ³ Ad.",-34.96944,-71.21694,229,340031,85629,SCIC,Del Maule,Valle
+D340045,Rancagua,-34.17222,-70.77611,482,340045,85608,,Del Libertador Gral. Bernardo  O'Higgins,Valle
+D340048,QuimÃ¡vida,-34.21500,-70.99694,316,340048,85607,,Del Libertador Gral. Bernardo  O'Higgins,Valle
+D340066,Nilahue - La Quebrada,-34.66083,-71.73528,81,340066,85619,,Del Libertador Gral. Bernardo  O'Higgins,Secano Interior
+D340093,Portezuelo-Codelco,-34.19833,-70.57917,1185,340093,85610,,Del Libertador Gral. Bernardo  O'Higgins,PreCordillera
+D340115,Pichilemu aerÃ³dromo,-34.39417,-72.01861,25,340115,85620,,Del Libertador Gral. Bernardo  O'Higgins,Litoral
+D350028,Panguilemo,-35.37778,-71.60111,119,350028,85631,,Del Maule,Valle
+D350901,Escuela de ArtillerÃ­a Linares,-35.83694,-71.59278,160,350901,,,Del Maule,Valle
+D360011,"General Bernardo O'Higgins, ChillÃ¡n Ad.",-36.58583,-72.03667,152,360011,85672,SCCH,De Ãuble,Valle
+D360019,"Carriel Sur, ConcepciÃ³n Ap.",-36.78055,-73.06639,8,360019,85682,SCIE,Del BiobÃ­o,Litoral
+D360046,ChillÃ¡n Mayulermo,-36.82805,-71.86694,397,360046,85673,,De Ãuble,Valle
+D360047,Retiro Copihue,-36.07555,-71.75805,162,360047,85663,,Del Maule,Valle
+D360097,Liceo Polivalente San NicolÃ¡s,-36.50556,-72.21944,118,360097,,,De Ãuble,Secano Interior
+D370033,"MarÃ­a Dolores, Los Angeles Ad.",-37.39694,-72.42389,114,370033,85703,SCGE,Del BiobÃ­o,Valle
+D370036,"El HuertÃ³n liceo agrÃ­cola, Los Ãngeles",-37.45694,-72.27500,173,370036,85704,,Del BiobÃ­o,Valle
+D370067,"Angol, HÃºsares",-37.79583,-72.68444,69,370067,85715,,De La AraucanÃ­a,Valle
+D370077,"La Colcha, Arauco",-37.42500,-73.35250,144,370077,,,Del BiobÃ­o,Valle
+D380013,"Maquehue, Temuco Ad.",-38.76778,-72.63194,93,380013,85743,SCTC,De La AraucanÃ­a,Valle
+D380018,Lonquimay,-38.45500,-71.36194,912,380018,85735,,De La AraucanÃ­a,PreCordillera
+D380029,La AraucanÃ­a Ad.,-38.93444,-72.65333,98,380029,85744,SCQP,De La AraucanÃ­a,Valle
+D380032,Rucamanque-UFRO,-38.66083,-72.60555,344,380032,85739,,De La AraucanÃ­a,Valle
+D380033,Maquehue-UFRO,-38.83778,-72.69444,74,380033,85745,,De La AraucanÃ­a,Valle
+D380063,Victoria (Reg.),-38.22889,-72.34333,336,380063,85726,,De La AraucanÃ­a,Valle
+D380080,Lequecahue TirÃºa Ad.,-38.35944,-73.48833,152,380080,85731,SCQK,Del BiobÃ­o,Litoral
+D380082,Isla Mocha Ad.,-38.38389,-73.86917,6,380082,,SCIM,Del BiobÃ­o,Litoral
+D390006,"Pichoy, Valdivia Ad.",-39.65667,-73.08722,18,390006,85766,SCVD,De Los RÃ­os,Valle
+D390015,Isla Teja  (Universidad Austral Valdivia),-39.79944,-73.25833,15,390015,85770,,De Los RÃ­os,Litoral
+D390028,Villarrica,-39.19000,-72.11222,393,390028,85756,,De La AraucanÃ­a,Valle
+D390029,Panguipulli,-39.63444,-72.34389,229,390029,85764,,De Los RÃ­os,Valle
+D390043,Corral ESSAL,-39.89000,-73.42611,24,390043,85768,,De Los RÃ­os,Litoral
+D390056,PucÃ³n AerÃ³dromo,-39.29111,-71.91694,268,390056,,,De La AraucanÃ­a,Valle
+D400013,Juan Kalt Bode (FundaciÃ³n Adolfo Matthei),-40.59056,-73.11222,53,400013,85781,,De Los Lagos,Valle
+D400058,"La UniÃ³n, Agrotec",-40.31000,-73.00389,60,400058,,,De Los RÃ­os,Valle
+D400060,"Fundo el MaitÃ©n, Paillaco",-40.08361,-72.65889,194,400060,,,De Los RÃ­os,Valle
+D400061,Purranque,-40.86667,-73.02361,75,400061,,,De Los Lagos,Valle
+D410005,El Tepual  Puerto Montt Ap.,-41.44750,-73.09583,90,410005,85799,SCTE,De Los Lagos,Valle
+D410026,Ancud Liceo AgrÃ­cola,-41.86611,-73.81639,31,410026,85817,,De Los Lagos,Litoral
+D410027,"Escuela Mirasol, Puerto Montt",-41.47944,-72.96889,100,410027,85798,,De Los Lagos,Litoral
+D410040,Puerto Varas ESSAL,-41.32444,-72.97667,70,410040,85794,,De Los Lagos,Litoral
+D420015,Nueva ChaitÃ©n,-42.78528,-72.83500,26,420015,85829,SCTN,De Los Lagos,Litoral
+D430001,QuellÃ³n Ad.,-43.13361,-73.63278,13,430001,85831,SCON,De Los Lagos,Litoral
+D430002,FutaleufÃº Ad.,-43.18889,-71.85222,350,430002,85832,SCFT,De Los Lagos,Valle
+D430009,Melinka Ad.,-43.89778,-73.73944,11,430009,85837,SCMK,AysÃ©n del Gral. Carlos IbÃ¡Ã±ez del Campo,Litoral
+D440004,Cisnes Puyuhuapi,-44.32333,-72.55528,11,440004,85842,,AysÃ©n del Gral. Carlos IbÃ¡Ã±ez del Campo,Litoral
+D450001,Puerto AysÃ©n Ad.,-45.39944,-72.67722,10,450001,85862,SCAS,AysÃ©n del Gral. Carlos IbÃ¡Ã±ez del Campo,Valle
+D450004,"Teniente Vidal, Coyhaique Ad.",-45.59083,-72.10222,299,450004,85864,SCCY,AysÃ©n del Gral. Carlos IbÃ¡Ã±ez del Campo,Valle
+D450005,Balmaceda Ad.,-45.91833,-71.67778,517,450005,85874,SCBA,AysÃ©n del Gral. Carlos IbÃ¡Ã±ez del Campo,Valle
+D450022,"Mirador Marchant, Coyhaique",-45.52528,-72.09806,438,450022,85865,,AysÃ©n del Gral. Carlos IbÃ¡Ã±ez del Campo,Valle
+D480002,"Villa O""Higgins subcomisarÃ­a",-48.47139,-72.56028,280,480002,85900,,AysÃ©n del Gral. Carlos IbÃ¡Ã±ez del Campo,Valle
+D510005,"Teniente Gallardo, Puerto Natales Ad.",-51.66722,-72.52889,69,510005,85920,SCNT,Magallanes y de la AntÃ¡rtica Chilena,Valle
+D510020,"RÃ­o Serrano, Torres del Paine",-51.21667,-72.97028,22,510020,,,Magallanes y de la AntÃ¡rtica Chilena,Valle
+D520006,"Carlos IbaÃ±ez, Punta Arenas Ap.",-53.00167,-70.83861,43,520006,85934,SCCI,Magallanes y de la AntÃ¡rtica Chilena,Litoral
+D520012,Instituto de la Patagonia (Jorge Schytte),-53.13000,-70.88750,11,520012,85928,,Magallanes y de la AntÃ¡rtica Chilena,Litoral
+D520014,Punta Arenas Unidad Aeropolicial,-53.15278,-70.92639,53,520014,85933,,Magallanes y de la AntÃ¡rtica Chilena,Litoral
+D520015,Magallanes Villa Tehuelche,-52.42889,-71.41611,176,520015,85926,,Magallanes y de la AntÃ¡rtica Chilena,Valle
+D520030,"Cerro Sombrero, Estrecho de Magallanes",-52.77639,-69.29472,64,520030,85927,,Magallanes y de la AntÃ¡rtica Chilena,Litoral
+D530005,"Fuentes MartÃ­nez, Porvenir Ad.",-53.25361,-70.32611,25,530005,85940,SCFM,Magallanes y de la AntÃ¡rtica Chilena,Litoral
+D530008,Escuela Alberto Hurtado,-53.16694,-70.94528,60,530008,85938,,Magallanes y de la AntÃ¡rtica Chilena,Litoral
+D540008,"Pampa Guanaco, Tierra del Fuego ",-54.05083,-68.80389,150,540008,85956,,Magallanes y de la AntÃ¡rtica Chilena,Secano Costero
+D550001,"Guardiamarina ZaÃ±artu, Pto Williams Ad.",-54.93167,-67.61556,12,550001,85968,SCGZ,Magallanes y de la AntÃ¡rtica Chilena,Litoral
+D950001,"C.M.A. Eduardo Frei Montalva, AntÃ¡rtica ",-62.19194,-58.97972,45,950001,89056,SCRM,Magallanes y de la AntÃ¡rtica Chilena,Litoral
+D950008,Glaciar UniÃ³n,-79.76833,-82.91139,768,950008,,,Magallanes y de la AntÃ¡rtica Chilena,Valle
+D950009,Carvajal - INACH,-67.77583,-68.88833,30,950009,,,Magallanes y de la AntÃ¡rtica Chilena,Litoral
+D950010,Punta. Py - INACH,-64.90528,-63.73722,55,950010,,,Magallanes y de la AntÃ¡rtica Chilena,Litoral
+D950011,Gabriel Gonzalez Videla - INACH,-64.82389,-62.85778,5,950011,,,Magallanes y de la AntÃ¡rtica Chilena,Litoral
+D950012,Boonen Rivera,-63.53750,-57.40889,16,950012,,,Magallanes y de la AntÃ¡rtica Chilena,Litoral
+D950013,"Base O""Higgins - INACH",-63.32167,-57.89778,10,950013,,,Magallanes y de la AntÃ¡rtica Chilena,Litoral
+D950014,Base Prat - INACH,-62.47889,-59.66389,5,950014,,,Magallanes y de la AntÃ¡rtica Chilena,Litoral
+D950015,Punta ArmonÃ­a,-62.30361,-59.19667,37,950015,,,Magallanes y de la AntÃ¡rtica Chilena,Litoral
+D950016,Escudero,-62.20278,-58.96167,55,950016,,,Magallanes y de la AntÃ¡rtica Chilena,Litoral
+D950017,Cabo Melville,-62.02055,-57.62444,123,950017,,,Magallanes y de la AntÃ¡rtica Chilena,Litoral
+D950018,PeÃ±Ã³n Escuela de MontaÃ±a,-79.79222,-82.98722,863,950018,,,Magallanes y de la AntÃ¡rtica Chilena,Valle
+D950019,Islote D' Hainaut,-63.90278,-60.79306,18,950019,,,Magallanes y de la AntÃ¡rtica Chilena,Valle
+D950020,Islote Alcock,-64.24000,-61.13139,102,950020,,,Magallanes y de la AntÃ¡rtica Chilena,Valle
+D950021,Base J,-66.00805,-65.33917,3,950021,,,Magallanes y de la AntÃ¡rtica Chilena,Valle
+D950023,Isla Livington,-62.68000,-60.41222,154,950023,,,Magallanes y de la AntÃ¡rtica Chilena,Valle

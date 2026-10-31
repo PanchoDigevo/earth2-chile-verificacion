@@ -30,14 +30,22 @@ def cargar():
     partes += [pd.read_csv(f) for f in sorted(glob.glob(os.path.join(DATA, "puntos_dmc", "*.csv")))]
     if not partes:
         sys.exit("sin pronósticos en data/puntos_dmc ni data/pronosticos_dmc.csv.gz")
-    pron = pd.concat(partes, ignore_index=True).drop_duplicates(subset=["modelo", "run", "lead_h", "icao"], keep="last")
+    pron = pd.concat(partes, ignore_index=True)
+    # una parte cortada por el límite de tiempo puede dejar la última línea a medias: esas filas se descartan
+    for c in ("lead_h", "t_fc", "tp_fc", "u_fc", "v_fc", "g_fc"):
+        pron[c] = pd.to_numeric(pron.get(c), errors="coerce")
+    for c in ("run", "valid"):
+        pron[c] = pd.to_datetime(pron[c], format="mixed", errors="coerce")
+    pron = pron.dropna(subset=["run", "valid", "lead_h"]).drop_duplicates(subset=["modelo", "run", "lead_h", "icao"], keep="last")
     pron.to_csv(CONSOLIDADO, index=False, compression="gzip")
     for c in ("run", "valid"):
-        pron[c] = pd.to_datetime(pron[c], format="mixed").astype("datetime64[ns]")
+        pron[c] = pron[c].astype("datetime64[ns]")
     pron["icao"] = pron.icao.astype(str).astype(object)          # misma clase de texto en ambos lados del cruce
     obs = pd.concat([pd.read_csv(f) for f in sorted(glob.glob(os.path.join(DATA, "dmc_obs", "*.csv.gz")))], ignore_index=True)
     obs["time"] = pd.to_datetime(obs.time).astype("datetime64[ns]")
     obs["icao"] = obs.icao.astype(str).astype(object)
+    for c in ("temp_c", "viento_ms"):
+        obs[c] = pd.to_numeric(obs[c], errors="coerce")
     obs = obs.dropna(subset=["temp_c"]).sort_values("time")
     return pron, obs
 

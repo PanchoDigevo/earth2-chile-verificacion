@@ -22,7 +22,7 @@ on:
         description: "Solo estas partes de pronóstico, p. ej. ifs:2025-05b,aifs:2025-07b (vacío = todas). Salta lo medido"
         default: ""
       previa:
-        description: "Número de una corrida anterior cuyas partes (medido y pronósticos) se suman a esta (vacío = ninguna)"
+        description: "Números de corridas anteriores (separados por espacio, la más nueva primero) cuyas partes se suman a esta (vacío = ninguna)"
         default: ""
       paralelo:
         description: "Partes de pronóstico a la vez (ECMWF frena con muchas: 6 para IFS y AIFS)"
@@ -178,15 +178,20 @@ jobs:
           path: historico/data/puntos_dmc
           merge-multiple: true
       - if: ${{ inputs.previa != '' }}
-        name: Partes de la corrida ${{ inputs.previa }}
+        name: Partes de las corridas ${{ inputs.previa }}
+        # varias corridas separadas por espacio, la más nueva primero: en una parte repetida gana la primera
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          mkdir -p previa historico/data/dmc_obs historico/data/puntos_dmc
-          gh run download ${{ inputs.previa }} -p 'medido-*' -p 'puntosdmc-*' -D previa || echo "sin partes en la corrida previa"
-          find previa -path '*medido-*' -name '*.csv.gz' -exec cp -n {} historico/data/dmc_obs/ \;
-          find previa -path '*puntosdmc-*' -name '*.csv' -exec cp -n {} historico/data/puntos_dmc/ \;
-          ls historico/data/dmc_obs | wc -l; ls historico/data/puntos_dmc | wc -l
+          mkdir -p historico/data/dmc_obs historico/data/puntos_dmc
+          for id in ${{ inputs.previa }}; do
+            rm -rf previa; mkdir previa
+            gh run download $id -p 'medido-*' -p 'puntosdmc-*' -p 'catalogo-dmc' -D previa || echo "sin partes en la corrida $id"
+            find previa -path '*medido-*' -name '*.csv.gz' -exec cp -n {} historico/data/dmc_obs/ \;
+            find previa -path '*puntosdmc-*' -name '*.csv' -exec cp -n {} historico/data/puntos_dmc/ \;
+            find previa -path '*catalogo-dmc*' -name 'estaciones_dmc.csv' -exec cp -n {} historico/ \;
+          done
+          ls historico/data/dmc_obs | wc -l; ls historico/data/puntos_dmc | wc -l; wc -l historico/estaciones_dmc.csv
       - name: Pronósticos consolidados de la corrida anterior (se suman a las partes nuevas)
         env:
           GH_TOKEN: ${{ github.token }}

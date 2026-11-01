@@ -3619,3 +3619,48 @@ emision,indice,ciudad,icao,fecha,dia,tmin,tmax,lluvia,texto
 2026-11-01 05:59:13,stgoo,Santiago Sector Oriente,SCTB,2026-11-03,2,11,20,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nubosidad parcial
 2026-11-01 05:59:13,stgoo,Santiago Sector Oriente,SCTB,2026-11-04,3,10,23,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial / noche: Despejado
 2026-11-01 05:59:13,stgoo,Santiago Sector Oriente,SCTB,2026-11-05,4,11,27,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-01 12:47:56,stgoc,Santiago Sector Centro,,2026-11-01,0,,23,1,mañana: Nublado / tarde: Nubosidad parcial variando a nublado y chubascos débiles / noche: Nubosidad parcial
+2026-11-01 12:47:56,stgoc,Santiago Sector Centro,,2026-11-02,1,11,22,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-01 12:47:56,stgoc,Santiago Sector Centro,,2026-11-03,2,10,20,0,"madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial, ocasionalmente nublado / noche: Despejado"
+2026-11-01 12:47:56,stgoc,Santiago Sector Centro,,2026-11-04,3,9,23,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Despejado
+2026-11-01 12:47:56,stgoc,Santiago Sector Centro,,2026-11-05,4,10,27,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-01 12:48:09,stgop,Santiago Sector Poniente,SCEL,2026-11-01,0,,22,1,mañana: Nublado / tarde: Nublado y chubascos débiles con viento entre 25 y 40 km/h / noche: Nubosidad parcial
+2026-11-01 12:48:09,stgop,Santiago Sector Poniente,SCEL,2026-11-02,1,11,22,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-01 12:48:09,stgop,Santiago Sector Poniente,SCEL,2026-11-03,2,10,20,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Despejado
+2026-11-01 12:48:09,stgop,Santiago Sector Poniente,SCEL,2026-11-04,3,9,23,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-01 12:48:09,stgop,Santiago Sector Poniente,SCEL,2026-11-05,4,10,27,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-01 12:48:21,stgoo,Santiago Sector Oriente,SCTB,2026-11-01,0,,21,1,"mañana: Nublado / tarde: Nublado, chubascos y probable tormenta eléctrica / noche: Nublado"
+2026-11-01 12:48:21,stgoo,Santiago Sector Oriente,SCTB,2026-11-02,1,12,22,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nubosidad parcial
+2026-11-01 12:48:21,stgoo,Santiago Sector Oriente,SCTB,2026-11-03,2,11,20,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nubosidad parcial
+2026-11-01 12:48:21,stgoo,Santiago Sector Oriente,SCTB,2026-11-04,3,10,23,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-01 12:48:21,stgoo,Santiago Sector Oriente,SCTB,2026-11-05,4,11,27,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-01 12:49:03,melipilla,Melipilla,,2026-11-01,0,,22,1,mañana: Nublado / tarde: Nublado y chubascos aislados con viento entre 25 y 40 km/h / noche: Nubosidad parcial
+2026-11-01 12:49:03,melipilla,Melipilla,,2026-11-02,1,12,20,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-01 12:49:03,melipilla,Melipilla,,2026-11-03,2,10,18,0,madrugada: Nubosidad parcial / mañana: Despejado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-01 12:49:03,melipilla,Melipilla,,2026-11-04,3,9,22,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-01 12:49:03,melipilla,Melipilla,,2026-11-05,4,10,26,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-01 12:49:14,snjosemaipo,San José de Maipo,,2026-11-01,0,,20,1,"mañana: Nublado / tarde: Nublado, chubascos y probable tormenta eléctrica con viento entre 25 y 40 km/h / noche: Nublado"
+2026-11-01 12:49:14,snjosemaipo,San José de Maipo,,2026-11-02,1,9,20,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nubosidad parcial
+2026-11-01 12:49:14,snjosemaipo,San José de Maipo,,2026-11-03,2,8,18,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nubosidad parcial
+2026-11-01 12:49:14,snjosemaipo,San José de Maipo,,2026-11-04,3,7,21,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-01 12:49:14,snjosemaipo,San José de Maipo,,2026-11-05,4,8,25,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-01 12:49:22,stgos,Santiago Sector Sur,,2026-11-01,0,,22,1,mañana: Nublado / tarde: Nublado y chubascos / noche: Nubosidad parcial
+2026-11-01 12:49:22,stgos,Santiago Sector Sur,,2026-11-02,1,10,21,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-01 12:49:22,stgos,Santiago Sector Sur,,2026-11-03,2,9,19,0,"madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial, ocasionalmente nublado / noche: Despejado"
+2026-11-01 12:49:22,stgos,Santiago Sector Sur,,2026-11-04,3,8,22,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-01 12:49:22,stgos,Santiago Sector Sur,,2026-11-05,4,9,26,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-01 12:49:57,curacavi,Curacaví,,2026-11-01,0,,23,1,mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nubosidad parcial
+2026-11-01 12:49:57,curacavi,Curacaví,,2026-11-02,1,11,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-01 12:49:57,curacavi,Curacaví,,2026-11-03,2,9,19,0,madrugada: Nubosidad parcial / mañana: Despejado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-01 12:49:57,curacavi,Curacaví,,2026-11-04,3,8,23,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-01 12:49:57,curacavi,Curacaví,,2026-11-05,4,9,27,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-01 12:50:20,stacruz,Santa Cruz,,2026-11-01,0,,25,1,mañana: Nublado / tarde: Nublado y chubascos débiles / noche: Nubosidad parcial
+2026-11-01 12:50:20,stacruz,Santa Cruz,,2026-11-02,1,11,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Despejado
+2026-11-01 12:50:20,stacruz,Santa Cruz,,2026-11-03,2,8,19,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-01 12:50:20,stacruz,Santa Cruz,,2026-11-04,3,7,22,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-01 12:50:20,stacruz,Santa Cruz,,2026-11-05,4,9,24,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-01 12:50:34,snfernando,San Fernando,,2026-11-01,0,,21,1,"mañana: Nublado / tarde: Nublado, chubascos y probable tormenta eléctrica / noche: Nublado y chubascos aislados variando a nubosidad parcial"
+2026-11-01 12:50:34,snfernando,San Fernando,,2026-11-02,1,9,20,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nubosidad parcial
+2026-11-01 12:50:34,snfernando,San Fernando,,2026-11-03,2,8,18,0,madrugada: Nubosidad parcial / mañana: Despejado / tarde: Nublado / noche: Nubosidad parcial
+2026-11-01 12:50:34,snfernando,San Fernando,,2026-11-04,3,7,21,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-01 12:50:34,snfernando,San Fernando,,2026-11-05,4,8,24,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado

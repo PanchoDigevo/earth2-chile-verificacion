@@ -618,6 +618,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-01,290004,"La Florida, La Serena Ad.",-29.9144,-71.2067,146.0,La Serena,21.7,13.2,0.0
 2026-11-01,290013,"Cerro la Silla, observatorio astronómico",-29.2583,-70.7344,2377.0,La Higuera,14.7,5.6,
 2026-11-01,300024,Ovalle Escuela Agrícola,-30.58,-71.1867,310.0,Ovalle,27.2,11.9,0.0
+2026-11-01,300034,El Tololo,-30.1683,-70.8036,2154.0,La Serena,15.2,-36.6,0.0
 2026-11-01,300046,"Vicuña, Parque Los Pimientos",-30.0336,-70.6972,642.0,Vicuña,28.0,11.0,0.0
 2026-11-01,300047,"Monte Patria, Municipalidad",-30.6983,-70.9578,406.0,Monte Patria,27.5,12.8,0.0
 2026-11-01,310023,Canela Baja (Liceo Padre José Herde),-31.39,-71.4128,343.0,Los Vilos,22.5,11.3,0.0
@@ -659,7 +660,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-01,330161,"San Antonio, Lo Zarate",-33.5305,-71.5061,103.0,Cartagena,20.7,14.2,0.0
 2026-11-01,330162,Colina (Reg.),-33.1622,-70.6431,755.0,Colina,22.2,12.1,0.0
 2026-11-01,330163,Peldehue Ad.,-33.1139,-70.6858,670.0,Colina,24.1,13.1,0.0
-2026-11-01,330193,Llanos de Caleu - La Dormida,-33.0494,-71.0014,1450.0,Tiltil,15.5,7.3,0.0
+2026-11-01,330193,Llanos de Caleu - La Dormida,-33.0494,-71.0014,1450.0,Tiltil,15.5,7.3,0.1
 2026-11-01,340031,"General Freire, Curicó Ad.",-34.9694,-71.2169,229.0,Curicó,24.1,12.6,0.0
 2026-11-01,340045,Rancagua,-34.1722,-70.7761,482.0,Rancagua,21.8,10.9,0.0
 2026-11-01,340048,Quimávida,-34.215,-70.9969,316.0,Doñihue,22.7,11.6,0.0
@@ -681,7 +682,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-01,380018,Lonquimay,-38.455,-71.3619,912.0,Lonquimay,15.4,7.8,0.0
 2026-11-01,380029,La Araucanía Ad.,-38.9344,-72.6533,98.0,Temuco,17.2,3.7,0.0
 2026-11-01,380032,Rucamanque-UFRO,-38.6608,-72.6056,344.0,Temuco,17.3,7.9,0.0
-2026-11-01,380033,Maquehue-UFRO,-38.8378,-72.6944,74.0,Temuco,18.7,6.0,0.0
+2026-11-01,380033,Maquehue-UFRO,-38.8378,-72.6944,74.0,Temuco,18.7,6.0,0.1
 2026-11-01,380063,Victoria (Reg.),-38.2289,-72.3433,336.0,Victoria,19.2,9.4,0.0
 2026-11-01,380080,Lequecahue Tirúa Ad.,-38.3594,-73.4883,152.0,Tirúa,15.9,6.6,0.0
 2026-11-01,380082,Isla Mocha Ad.,-38.3839,-73.8692,6.0,Tirúa,15.9,6.6,0.0
@@ -702,13 +703,13 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-01,420015,Nueva Chaitén,-42.7853,-72.835,26.0,Chaitén,14.8,10.0,2.4
 2026-11-01,430001,Quellón Ad.,-43.1336,-73.6328,13.0,Quellón,16.5,7.7,2.4
 2026-11-01,430002,Futaleufú Ad.,-43.1889,-71.8522,350.0,Futaleufú,14.3,6.6,0.0
-2026-11-01,430009,Melinka Ad.,-43.8978,-73.7394,11.0,Aysén,13.6,8.6,1.8
-2026-11-01,440004,Cisnes Puyuhuapi,-44.3233,-72.5553,11.0,Cisnes,13.5,7.3,3.1
+2026-11-01,430009,Melinka Ad.,-43.8978,-73.7394,11.0,Aysén,13.6,8.6,2.2
+2026-11-01,440004,Cisnes Puyuhuapi,-44.3233,-72.5553,11.0,Cisnes,13.5,7.3,3.3
 2026-11-01,450001,Puerto Aysén Ad.,-45.3994,-72.6772,10.0,Aysén,10.9,7.5,12.8
 2026-11-01,450004,"Teniente Vidal, Coyhaique Ad.",-45.5908,-72.1022,299.0,Coyhaique,12.1,5.3,0.2
 2026-11-01,450005,Balmaceda Ad.,-45.9183,-71.6778,517.0,Coyhaique,11.3,3.3,0.4
 2026-11-01,450022,"Mirador Marchant, Coyhaique",-45.5253,-72.0981,438.0,Coyhaique,9.5,4.6,5.8
-2026-11-01,480002,Villa OHiggins subcomisaría,-48.4714,-72.5603,280.0,Cisnes,11.6,4.4,1.9
+2026-11-01,480002,Villa OHiggins subcomisaría,-48.4714,-72.5603,280.0,Cisnes,11.6,4.4,2.1
 2026-11-01,510005,"Teniente Gallardo, Puerto Natales Ad.",-51.6672,-72.5289,69.0,Natales,12.1,1.9,0.6
 2026-11-01,510020,"Río Serrano, Torres del Paine",-51.2167,-72.9703,22.0,Torres del Paine,12.5,5.3,0.1
 2026-11-01,520006,"Carlos Ibañez, Punta Arenas Ap.",-53.0017,-70.8386,43.0,Punta Arenas,12.5,3.9,0.6
@@ -719,7 +720,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-01,530005,"Fuentes Martínez, Porvenir Ad.",-53.2536,-70.3261,25.0,Porvenir,13.8,3.0,0.3
 2026-11-01,530008,Escuela Alberto Hurtado,-53.1669,-70.9453,60.0,Punta Arenas,12.3,5.2,0.1
 2026-11-01,540008,"Pampa Guanaco, Tierra del Fuego",-54.0508,-68.8039,150.0,Timaukel,13.5,3.7,0.0
-2026-11-01,550001,"Guardiamarina Zañartu, Pto Williams Ad.",-54.9317,-67.6156,12.0,Cabo de Hornos (Ex-Navarino),13.0,1.7,0.0
+2026-11-01,550001,"Guardiamarina Zañartu, Pto Williams Ad.",-54.9317,-67.6156,12.0,Cabo de Hornos (Ex-Navarino),13.0,1.7,0.2
 2026-11-01,950001,"C.M.A. Eduardo Frei Montalva, Antártica",-62.1919,-58.9797,45.0,Antártica,0.7,-1.3,1.0
 2026-11-01,950008,Glaciar Unión,-79.7683,-82.9114,768.0,Antártica,-10.3,-10.6,
 2026-11-01,950009,Carvajal - INACH,-67.7758,-68.8883,30.0,Antártica,-1.2,-3.1,

@@ -1,6 +1,6 @@
 # Lluvia pronosticada frente a lluvia medida
 
-Actualizado el 02-11-2026 15:47 (hora de Chile) por `estaciones/verificar_lluvia.py`. Bloques de 6 h del seguimiento
+Actualizado el 02-11-2026 22:45 (hora de Chile) por `estaciones/verificar_lluvia.py`. Bloques de 6 h del seguimiento
 horario (`hindcast/seguimiento/pronosticos.csv`) comparados con la estación DMC más cercana bajo 1.500 m
 (mensajes SYNOP, `estaciones/datos/synop/`). Un bloque cuenta como lluvioso desde 1 mm en 6 h.
 
@@ -14,14 +14,14 @@ Estación usada para cada punto:
 | Modelo | Plazo | Bloques | Bloques con lluvia medida | Avisados por el modelo | Falsas alarmas | Error medio (mm) | Lluvia medida / pronosticada |
 |---|---|---|---|---|---|---|---|
 | AIFS | hasta 24 h | 824 | 84 | 84 | 294 | +1,0 | 604,0 / 1415,4 |
-| AIFS | hasta 48 h | 808 | 84 | 84 | 313 | +0,8 | 602,1 / 1253,9 |
-| AIFS | hasta 72 h | 748 | 60 | 60 | 236 | +0,7 | 383,9 / 918,8 |
+| AIFS | hasta 48 h | 810 | 84 | 84 | 315 | +0,8 | 602,1 / 1259,8 |
+| AIFS | hasta 72 h | 752 | 60 | 60 | 240 | +0,7 | 383,9 / 927,3 |
 | GFS | hasta 24 h | 854 | 84 | 83 | 240 | +0,9 | 604,0 / 1372,9 |
-| GFS | hasta 48 h | 812 | 84 | 81 | 189 | +0,7 | 602,1 / 1192,8 |
-| GFS | hasta 72 h | 748 | 60 | 53 | 160 | +0,5 | 383,9 / 721,2 |
+| GFS | hasta 48 h | 816 | 84 | 81 | 189 | +0,7 | 602,1 / 1193,3 |
+| GFS | hasta 72 h | 752 | 60 | 53 | 160 | +0,4 | 383,9 / 721,8 |
 | IFS | hasta 24 h | 824 | 84 | 73 | 248 | +1,3 | 604,0 / 1714,6 |
-| IFS | hasta 48 h | 808 | 84 | 77 | 246 | +1,1 | 602,1 / 1481,9 |
-| IFS | hasta 72 h | 748 | 60 | 57 | 229 | +1,2 | 383,9 / 1298,9 |
+| IFS | hasta 48 h | 810 | 84 | 77 | 248 | +1,1 | 602,1 / 1487,4 |
+| IFS | hasta 72 h | 752 | 60 | 57 | 232 | +1,2 | 383,9 / 1302,6 |
 
 Los pluviómetros miden un punto; el modelo, el promedio de una celda de unos 25 km. Datos de estación provisorios,
 sin control de calidad. No es un aviso: las alertas oficiales son de la DMC y SENAPRED.

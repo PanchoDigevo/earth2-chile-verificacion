@@ -1235,7 +1235,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-05,330075,Río Clarillo,-33.7283,-70.4967,876.0,Pirque,25.4,8.4,0.0
 2026-11-05,330076,Chorombo Hacienda,-33.5294,-71.2292,145.0,María Pinto,25.1,7.0,
 2026-11-05,330077,El Colorado,-33.35,-70.2936,2750.0,Lo Barnechea,10.0,3.0,0.0
-2026-11-05,330111,Lo Prado Cerro San Francisco,-33.4581,-70.9486,1068.0,Pudahuel,22.2,10.3,0.0
+2026-11-05,330111,Lo Prado Cerro San Francisco,-33.4581,-70.9486,1068.0,Pudahuel,22.2,10.3,0.1
 2026-11-05,330112,San José  Guayacán,-33.6153,-70.3506,928.0,San José de Maipo,24.0,7.2,0.0
 2026-11-05,330113,El Paico,-33.7064,-71.0081,275.0,El Monte,25.7,7.9,0.0
 2026-11-05,330114,San Pablo - DASA,-33.4422,-70.7467,490.0,Pudahuel,25.7,9.2,0.0
@@ -1246,7 +1246,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-05,330161,"San Antonio, Lo Zarate",-33.5305,-71.5061,103.0,Cartagena,20.4,6.4,0.0
 2026-11-05,330162,Colina (Reg.),-33.1622,-70.6431,755.0,Colina,25.2,10.6,0.0
 2026-11-05,330163,Peldehue Ad.,-33.1139,-70.6858,670.0,Colina,26.4,7.8,0.0
-2026-11-05,330193,Llanos de Caleu - La Dormida,-33.0494,-71.0014,1450.0,Tiltil,20.0,9.5,0.0
+2026-11-05,330193,Llanos de Caleu - La Dormida,-33.0494,-71.0014,1450.0,Tiltil,20.0,9.5,0.1
 2026-11-05,340031,"General Freire, Curicó Ad.",-34.9694,-71.2169,229.0,Curicó,22.8,8.9,0.0
 2026-11-05,340045,Rancagua,-34.1722,-70.7761,482.0,Rancagua,23.5,9.1,0.0
 2026-11-05,340048,Quimávida,-34.215,-70.9969,316.0,Doñihue,25.0,9.1,0.0
@@ -1263,24 +1263,24 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-05,370033,"María Dolores, Los Angeles Ad.",-37.3969,-72.4239,114.0,Los Angeles,19.3,3.8,1.2
 2026-11-05,370036,"El Huertón liceo agrícola, Los Ángeles",-37.4569,-72.275,173.0,Los Angeles,19.1,7.6,0.8
 2026-11-05,370067,"Angol, Húsares",-37.7958,-72.6844,69.0,Angol,19.1,7.6,0.8
-2026-11-05,370077,"La Colcha, Arauco",-37.425,-73.3525,144.0,Curanilahue,16.7,9.7,2.5
+2026-11-05,370077,"La Colcha, Arauco",-37.425,-73.3525,144.0,Curanilahue,16.7,9.7,3.1
 2026-11-05,380013,"Maquehue, Temuco Ad.",-38.7678,-72.6319,93.0,Temuco,16.1,9.9,4.0
-2026-11-05,380018,Lonquimay,-38.455,-71.3619,912.0,Lonquimay,14.1,5.6,5.3
+2026-11-05,380018,Lonquimay,-38.455,-71.3619,912.0,Lonquimay,14.1,5.6,5.5
 2026-11-05,380029,La Araucanía Ad.,-38.9344,-72.6533,98.0,Temuco,15.4,10.3,9.6
 2026-11-05,380032,Rucamanque-UFRO,-38.6608,-72.6056,344.0,Temuco,14.1,7.1,0.0
 2026-11-05,380033,Maquehue-UFRO,-38.8378,-72.6944,74.0,Temuco,16.0,9.7,5.4
-2026-11-05,380063,Victoria (Reg.),-38.2289,-72.3433,336.0,Victoria,15.0,8.2,6.5
+2026-11-05,380063,Victoria (Reg.),-38.2289,-72.3433,336.0,Victoria,15.0,8.2,7.1
 2026-11-05,380080,Lequecahue Tirúa Ad.,-38.3594,-73.4883,152.0,Tirúa,14.4,11.0,0.0
 2026-11-05,380082,Isla Mocha Ad.,-38.3839,-73.8692,6.0,Tirúa,14.4,11.0,0.0
 2026-11-05,390006,"Pichoy, Valdivia Ad.",-39.6567,-73.0872,18.0,Mariquina,15.2,10.3,5.0
 2026-11-05,390015,Isla Teja  (Universidad Austral Valdivia),-39.7994,-73.2583,15.0,Valdivia,16.8,8.7,1.0
-2026-11-05,390028,Villarrica,-39.19,-72.1122,393.0,Villarrica,14.5,8.2,9.7
-2026-11-05,390029,Panguipulli,-39.6344,-72.3439,229.0,Panguipulli,14.6,8.0,13.3
-2026-11-05,390043,Corral ESSAL,-39.89,-73.4261,24.0,Corral,16.7,7.7,2.3
-2026-11-05,390056,Pucón Aeródromo,-39.2911,-71.9169,268.0,Pucón,14.3,7.9,16.5
-2026-11-05,400013,Juan Kalt Bode (Fundación Adolfo Matthei),-40.5906,-73.1122,53.0,Osorno,15.2,9.4,2.3
-2026-11-05,400058,"La Unión, Agrotec",-40.31,-73.0039,60.0,La Unión,16.9,9.5,3.9
-2026-11-05,400060,"Fundo el Maitén, Paillaco",-40.0836,-72.6589,194.0,Paillaco,14.2,7.3,12.9
+2026-11-05,390028,Villarrica,-39.19,-72.1122,393.0,Villarrica,14.5,8.2,11.2
+2026-11-05,390029,Panguipulli,-39.6344,-72.3439,229.0,Panguipulli,14.6,8.0,13.6
+2026-11-05,390043,Corral ESSAL,-39.89,-73.4261,24.0,Corral,16.7,7.1,2.3
+2026-11-05,390056,Pucón Aeródromo,-39.2911,-71.9169,268.0,Pucón,14.3,7.9,16.6
+2026-11-05,400013,Juan Kalt Bode (Fundación Adolfo Matthei),-40.5906,-73.1122,53.0,Osorno,15.2,9.4,2.4
+2026-11-05,400058,"La Unión, Agrotec",-40.31,-73.0039,60.0,La Unión,16.9,9.5,4.0
+2026-11-05,400060,"Fundo el Maitén, Paillaco",-40.0836,-72.6589,194.0,Paillaco,14.2,7.3,13.1
 2026-11-05,400061,Purranque,-40.8667,-73.0236,75.0,Purrangue,14.7,8.3,1.9
 2026-11-05,410005,El Tepual  Puerto Montt Ap.,-41.4475,-73.0958,90.0,Puerto Montt,13.9,8.5,5.8
 2026-11-05,410026,Ancud Liceo Agrícola,-41.8661,-73.8164,31.0,Ancud,15.9,9.6,0.8
@@ -1291,10 +1291,10 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-05,430002,Futaleufú Ad.,-43.1889,-71.8522,350.0,Futaleufú,14.4,5.7,1.6
 2026-11-05,430009,Melinka Ad.,-43.8978,-73.7394,11.0,Aysén,15.2,8.4,1.0
 2026-11-05,440004,Cisnes Puyuhuapi,-44.3233,-72.5553,11.0,Cisnes,14.3,6.7,2.0
-2026-11-05,450001,Puerto Aysén Ad.,-45.3994,-72.6772,10.0,Aysén,14.6,7.7,3.2
-2026-11-05,450004,"Teniente Vidal, Coyhaique Ad.",-45.5908,-72.1022,299.0,Coyhaique,15.2,5.1,0.8
+2026-11-05,450001,Puerto Aysén Ad.,-45.3994,-72.6772,10.0,Aysén,14.6,7.7,3.3
+2026-11-05,450004,"Teniente Vidal, Coyhaique Ad.",-45.5908,-72.1022,299.0,Coyhaique,15.2,5.1,1.0
 2026-11-05,450005,Balmaceda Ad.,-45.9183,-71.6778,517.0,Coyhaique,12.3,3.5,1.3
-2026-11-05,450022,"Mirador Marchant, Coyhaique",-45.5253,-72.0981,438.0,Coyhaique,12.3,5.4,1.7
+2026-11-05,450022,"Mirador Marchant, Coyhaique",-45.5253,-72.0981,438.0,Coyhaique,12.3,5.4,1.8
 2026-11-05,480002,Villa OHiggins subcomisaría,-48.4714,-72.5603,280.0,Cisnes,15.3,3.7,0.0
 2026-11-05,510005,"Teniente Gallardo, Puerto Natales Ad.",-51.6672,-72.5289,69.0,Natales,11.6,-0.9,0.0
 2026-11-05,510020,"Río Serrano, Torres del Paine",-51.2167,-72.9703,22.0,Torres del Paine,13.4,2.5,0.0

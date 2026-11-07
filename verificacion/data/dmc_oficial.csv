@@ -9864,3 +9864,23 @@ emision,indice,ciudad,icao,fecha,dia,tmin,tmax,lluvia,texto
 2026-11-07 05:26:59,angeles,Los Ángeles,SCGE,2026-11-09,2,13,24,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado con viento entre 25 y 40 km/h / noche: Nubosidad parcial con viento entre 25 y 40 km/h
 2026-11-07 05:26:59,angeles,Los Ángeles,SCGE,2026-11-10,3,12,27,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
 2026-11-07 05:26:59,angeles,Los Ángeles,SCGE,2026-11-11,4,10,26,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Despejado
+2026-11-07 07:13:17,pmontt,Puerto Montt,SCTE,2026-11-07,0,,18,0,"mañana: Nubosidad parcial, ocasionalmente nublado / tarde: Despejado / noche: Despejado"
+2026-11-07 07:13:17,pmontt,Puerto Montt,SCTE,2026-11-08,1,10,21,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Despejado / noche: Despejado
+2026-11-07 07:13:17,pmontt,Puerto Montt,SCTE,2026-11-09,2,11,21,0,madrugada: Despejado / mañana: Nublado / tarde: Despejado / noche: Despejado
+2026-11-07 07:13:17,pmontt,Puerto Montt,SCTE,2026-11-10,3,8,22,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-07 07:13:17,pmontt,Puerto Montt,SCTE,2026-11-11,4,9,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-07 07:13:31,ranco,Lago Ranco,,2026-11-07,0,,20,0,mañana: Nublado variando a despejado / tarde: Despejado con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h / noche: Despejado
+2026-11-07 07:13:31,ranco,Lago Ranco,,2026-11-08,1,7,23,0,madrugada: Despejado / mañana: Nubosidad parcial / tarde: Despejado / noche: Despejado
+2026-11-07 07:13:31,ranco,Lago Ranco,,2026-11-09,2,9,23,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Despejado / noche: Despejado
+2026-11-07 07:13:31,ranco,Lago Ranco,,2026-11-10,3,8,22,0,madrugada: Despejado / mañana: Nubosidad parcial / tarde: Despejado / noche: Despejado
+2026-11-07 07:13:31,ranco,Lago Ranco,,2026-11-11,4,10,22,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-07 07:14:08,temuco,Temuco,SCQP,2026-11-07,0,,23,0,mañana: Nublado y niebla variando a nubosidad parcial / tarde: Despejado / noche: Despejado
+2026-11-07 07:14:08,temuco,Temuco,SCQP,2026-11-08,1,7,28,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-07 07:14:08,temuco,Temuco,SCQP,2026-11-09,2,10,26,0,madrugada: Despejado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Despejado
+2026-11-07 07:14:08,temuco,Temuco,SCQP,2026-11-10,3,11,24,0,madrugada: Nublado / mañana: Nublado / tarde: Despejado / noche: Despejado
+2026-11-07 07:14:08,temuco,Temuco,SCQP,2026-11-11,4,9,26,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-07 07:15:46,valdivia,Valdivia,SCVD,2026-11-07,0,,23,0,mañana: Nubosidad parcial y neblina variando a despejado / tarde: Despejado / noche: Despejado
+2026-11-07 07:15:46,valdivia,Valdivia,SCVD,2026-11-08,1,9,26,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-07 07:15:46,valdivia,Valdivia,SCVD,2026-11-09,2,9,25,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-07 07:15:46,valdivia,Valdivia,SCVD,2026-11-10,3,9,22,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-07 07:15:46,valdivia,Valdivia,SCVD,2026-11-11,4,10,25,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Nubosidad parcial

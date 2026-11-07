@@ -1418,7 +1418,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-06,380063,Victoria (Reg.),-38.2289,-72.3433,336.0,Victoria,17.3,4.2,0.0
 2026-11-06,380080,Lequecahue Tirúa Ad.,-38.3594,-73.4883,152.0,Tirúa,16.0,4.2,0.0
 2026-11-06,380082,Isla Mocha Ad.,-38.3839,-73.8692,6.0,Tirúa,16.0,4.2,0.0
-2026-11-06,390006,"Pichoy, Valdivia Ad.",-39.6567,-73.0872,18.0,Mariquina,21.0,2.3,0.0
+2026-11-06,390006,"Pichoy, Valdivia Ad.",-39.6567,-73.0872,18.0,Mariquina,21.0,2.3,0.2
 2026-11-06,390015,Isla Teja  (Universidad Austral Valdivia),-39.7994,-73.2583,15.0,Valdivia,21.1,4.9,0.0
 2026-11-06,390028,Villarrica,-39.19,-72.1122,393.0,Villarrica,17.9,5.2,0.0
 2026-11-06,390029,Panguipulli,-39.6344,-72.3439,229.0,Panguipulli,19.1,4.9,0.0

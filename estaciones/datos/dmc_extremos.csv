@@ -1346,7 +1346,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-06,270009,Copiapó Universidad de Atacama,-27.3589,-70.3533,362.0,Copiapó,23.9,16.2,0.0
 2026-11-06,270022,"Copiapo, Cerro Antenas",-27.3628,-70.2831,946.0,Copiapó,20.3,11.9,0.1
 2026-11-06,280010,Freirina Nicolasa,-28.5169,-71.01,156.0,Freirina,25.6,13.2,0.0
-2026-11-06,280028,"Alto del Carmen, Los Sauces",-28.7778,-70.4706,854.0,Alto del Carmen,24.4,13.5,0.0
+2026-11-06,280028,"Alto del Carmen, Los Sauces",-28.7778,-70.4706,854.0,Alto del Carmen,24.6,13.5,0.0
 2026-11-06,290004,"La Florida, La Serena Ad.",-29.9144,-71.2067,146.0,La Serena,21.5,14.4,0.0
 2026-11-06,290013,"Cerro la Silla, observatorio astronómico",-29.2583,-70.7344,2377.0,La Higuera,15.2,9.3,
 2026-11-06,300024,Ovalle Escuela Agrícola,-30.58,-71.1867,310.0,Ovalle,25.0,10.0,0.0
@@ -1414,7 +1414,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-06,380018,Lonquimay,-38.455,-71.3619,912.0,Lonquimay,15.3,2.0,0.0
 2026-11-06,380029,La Araucanía Ad.,-38.9344,-72.6533,98.0,Temuco,19.0,3.0,0.0
 2026-11-06,380032,Rucamanque-UFRO,-38.6608,-72.6056,344.0,Temuco,16.9,4.7,0.0
-2026-11-06,380033,Maquehue-UFRO,-38.8378,-72.6944,74.0,Temuco,19.1,4.5,0.0
+2026-11-06,380033,Maquehue-UFRO,-38.8378,-72.6944,74.0,Temuco,19.1,4.5,0.1
 2026-11-06,380063,Victoria (Reg.),-38.2289,-72.3433,336.0,Victoria,17.3,4.2,0.0
 2026-11-06,380080,Lequecahue Tirúa Ad.,-38.3594,-73.4883,152.0,Tirúa,16.0,4.2,0.0
 2026-11-06,380082,Isla Mocha Ad.,-38.3839,-73.8692,6.0,Tirúa,16.0,4.2,0.0
@@ -1451,7 +1451,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-06,520030,"Cerro Sombrero, Estrecho de Magallanes",-52.7764,-69.2947,64.0,Primavera,15.1,1.9,0.0
 2026-11-06,530005,"Fuentes Martínez, Porvenir Ad.",-53.2536,-70.3261,25.0,Porvenir,14.7,6.4,0.0
 2026-11-06,530008,Escuela Alberto Hurtado,-53.1669,-70.9453,60.0,Punta Arenas,14.1,6.4,0.0
-2026-11-06,540008,"Pampa Guanaco, Tierra del Fuego",-54.0508,-68.8039,150.0,Timaukel,15.1,5.1,0.0
+2026-11-06,540008,"Pampa Guanaco, Tierra del Fuego",-54.0508,-68.8039,150.0,Timaukel,15.1,5.1,1.0
 2026-11-06,550001,"Guardiamarina Zañartu, Pto Williams Ad.",-54.9317,-67.6156,12.0,Cabo de Hornos (Ex-Navarino),13.6,5.1,0.0
 2026-11-06,950001,"C.M.A. Eduardo Frei Montalva, Antártica",-62.1919,-58.9797,45.0,Antártica,1.0,-1.6,0.6
 2026-11-06,950008,Glaciar Unión,-79.7683,-82.9114,768.0,Antártica,-26.0,-27.0,

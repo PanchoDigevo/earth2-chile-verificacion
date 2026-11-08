@@ -10924,3 +10924,18 @@ emision,indice,ciudad,icao,fecha,dia,tmin,tmax,lluvia,texto
 2026-11-08 06:04:33,combarbala,Combarbalá,,2026-11-10,2,11,29,0,madrugada: Nublado / mañana: Despejado / tarde: Despejado / noche: Despejado
 2026-11-08 06:04:33,combarbala,Combarbalá,,2026-11-11,3,13,31,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
 2026-11-08 06:04:33,combarbala,Combarbalá,,2026-11-12,4,14,30,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-08 06:33:06,linares,Linares,,2026-11-08,0,,33,0,mañana: Nubosidad parcial y neblina variando a despejado / tarde: Despejado / noche: Despejado
+2026-11-08 06:33:06,linares,Linares,,2026-11-09,1,12,24,0,madrugada: Nubosidad parcial / mañana: Nublado / tarde: Nublado / noche: Cubierto
+2026-11-08 06:33:06,linares,Linares,,2026-11-10,2,14,27,0,madrugada: Cubierto / mañana: Nubosidad parcial / tarde: Despejado / noche: Despejado
+2026-11-08 06:33:06,linares,Linares,,2026-11-11,3,12,30,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-08 06:33:06,linares,Linares,,2026-11-12,4,12,29,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-08 06:33:20,parral,Parral,,2026-11-08,0,,33,0,mañana: Nubosidad parcial y neblina variando a despejado / tarde: Despejado / noche: Despejado
+2026-11-08 06:33:20,parral,Parral,,2026-11-09,1,11,25,0,madrugada: Nubosidad parcial / mañana: Nublado / tarde: Nublado / noche: Cubierto
+2026-11-08 06:33:20,parral,Parral,,2026-11-10,2,10,27,0,madrugada: Cubierto / mañana: Nubosidad parcial / tarde: Despejado / noche: Despejado
+2026-11-08 06:33:20,parral,Parral,,2026-11-11,3,10,30,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-08 06:33:20,parral,Parral,,2026-11-12,4,11,29,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-08 10:23:39,calama,Calama,SCCF,2026-11-08,0,,29,0,mañana: Nubosidad parcial con viento entre 40 y 60 km/h / tarde: Nubosidad parcial con viento entre 40 y 60 km/h / noche: Nubosidad parcial con viento entre 25 y 40 km/h
+2026-11-08 10:23:39,calama,Calama,SCCF,2026-11-09,1,7,27,0,madrugada: Nubosidad parcial con viento entre 40 y 60 km/h / mañana: Nubosidad parcial con viento entre 25 y 40 km/h / tarde: Despejado con viento entre 40 y 60 km/h / noche: Despejado con viento entre 25 y 40 km/h
+2026-11-08 10:23:39,calama,Calama,SCCF,2026-11-10,2,8,27,0,madrugada: Despejado con viento entre 40 y 60 km/h / mañana: Despejado con viento entre 25 y 40 km/h / tarde: Despejado con viento entre 40 y 60 km/h / noche: Despejado con viento entre 25 y 40 km/h
+2026-11-08 10:23:39,calama,Calama,SCCF,2026-11-11,3,7,28,0,madrugada: Despejado con viento entre 25 y 40 km/h / mañana: Despejado con viento entre 25 y 40 km/h / tarde: Despejado con viento entre 40 y 60 km/h / noche: Despejado con viento entre 25 y 40 km/h
+2026-11-08 10:23:39,calama,Calama,SCCF,2026-11-12,4,7,27,0,madrugada: Despejado con viento entre 25 y 40 km/h / mañana: Despejado con viento entre 25 y 40 km/h / tarde: Nubosidad parcial con viento entre 40 y 60 km/h / noche: Nubosidad parcial con viento entre 25 y 40 km/h

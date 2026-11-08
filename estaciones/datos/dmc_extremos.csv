@@ -1541,7 +1541,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-07,330163,Peldehue Ad.,-33.1139,-70.6858,670.0,Colina,27.0,3.9,0.0
 2026-11-07,330193,Llanos de Caleu - La Dormida,-33.0494,-71.0014,1450.0,Tiltil,21.0,2.8,0.0
 2026-11-07,340031,"General Freire, Curicó Ad.",-34.9694,-71.2169,229.0,Curicó,27.8,7.6,0.0
-2026-11-07,340045,Rancagua,-34.1722,-70.7761,482.0,Rancagua,13.2,8.1,
+2026-11-07,340045,Rancagua,-34.1722,-70.7761,482.0,Rancagua,26.2,5.1,0.0
 2026-11-07,340048,Quimávida,-34.215,-70.9969,316.0,Doñihue,27.9,5.7,0.0
 2026-11-07,340066,Nilahue - La Quebrada,-34.6608,-71.7353,81.0,Pumanque,28.0,4.9,0.0
 2026-11-07,340093,Portezuelo-Codelco,-34.1983,-70.5792,1185.0,Rancagua,22.7,5.4,0.0
@@ -1598,9 +1598,9 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-07,520030,"Cerro Sombrero, Estrecho de Magallanes",-52.7764,-69.2947,64.0,Primavera,16.0,6.3,0.0
 2026-11-07,530005,"Fuentes Martínez, Porvenir Ad.",-53.2536,-70.3261,25.0,Porvenir,15.3,9.2,0.0
 2026-11-07,530008,Escuela Alberto Hurtado,-53.1669,-70.9453,60.0,Punta Arenas,14.7,8.9,0.0
-2026-11-07,540008,"Pampa Guanaco, Tierra del Fuego",-54.0508,-68.8039,150.0,Timaukel,14.4,6.3,0.0
+2026-11-07,540008,"Pampa Guanaco, Tierra del Fuego",-54.0508,-68.8039,150.0,Timaukel,14.4,6.3,0.2
 2026-11-07,550001,"Guardiamarina Zañartu, Pto Williams Ad.",-54.9317,-67.6156,12.0,Cabo de Hornos (Ex-Navarino),15.7,8.0,0.0
-2026-11-07,950001,"C.M.A. Eduardo Frei Montalva, Antártica",-62.1919,-58.9797,45.0,Antártica,1.3,-0.1,0.2
+2026-11-07,950001,"C.M.A. Eduardo Frei Montalva, Antártica",-62.1919,-58.9797,45.0,Antártica,1.3,-0.1,0.4
 2026-11-07,950009,Carvajal - INACH,-67.7758,-68.8883,30.0,Antártica,-0.5,-0.5,
 2026-11-07,950010,Punta. Py - INACH,-64.9053,-63.7372,55.0,Antártica,0.6,0.6,
 2026-11-07,950011,Gabriel Gonzalez Videla - INACH,-64.8239,-62.8578,5.0,Antártica,0.9,0.5,

@@ -1645,6 +1645,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-08,290004,"La Florida, La Serena Ad.",-29.9144,-71.2067,146.0,La Serena,21.6,12.4,0.0
 2026-11-08,290013,"Cerro la Silla, observatorio astronómico",-29.2583,-70.7344,2377.0,La Higuera,21.4,18.1,
 2026-11-08,300024,Ovalle Escuela Agrícola,-30.58,-71.1867,310.0,Ovalle,28.2,13.1,0.0
+2026-11-08,300034,El Tololo,-30.1683,-70.8036,2154.0,La Serena,26.6,18.4,0.0
 2026-11-08,300046,"Vicuña, Parque Los Pimientos",-30.0336,-70.6972,642.0,Vicuña,33.3,13.5,0.0
 2026-11-08,300047,"Monte Patria, Municipalidad",-30.6983,-70.9578,406.0,Monte Patria,33.0,10.8,0.0
 2026-11-08,310023,Canela Baja (Liceo Padre José Herde),-31.39,-71.4128,343.0,Los Vilos,27.0,8.9,0.0
@@ -1652,24 +1653,24 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-08,310040,"Vivero Conaf, Illapel",-31.6325,-71.1519,333.0,La Serena,31.4,9.1,0.0
 2026-11-08,310044,Salamanca Pisco Capel,-31.7872,-70.9594,516.0,Salamanca,31.4,9.1,0.0
 2026-11-08,320019,San Felipe Escuela Agrícola,-32.7553,-70.7069,662.0,Valparaíso,36.8,8.3,0.0
-2026-11-08,320041,Viña del Mar  Ad. (Torquemada),-32.9494,-71.4761,140.0,Viña del Mar,21.8,10.3,0.0
+2026-11-08,320041,Viña del Mar  Ad. (Torquemada),-32.9494,-71.4761,140.0,Viña del Mar,21.8,10.3,0.3
 2026-11-08,320045,"Llay Llay, Las Peñas",-32.8814,-70.9131,423.0,Llaillay,34.1,8.5,0.0
 2026-11-08,320049,Chincolco Liceo agrícola,-32.2225,-70.8317,665.0,Petorca,32.5,6.9,0.0
 2026-11-08,320051,Los Libertadores,-32.8456,-70.1192,2955.0,Los Andes,,,0.0
 2026-11-08,320055,Catemu,-32.7589,-70.9428,443.0,Catemu,30.7,7.7,0.0
-2026-11-08,320056,"Quintero, Climatológica",-32.7842,-71.5228,5.0,Quintero,20.4,8.0,0.0
+2026-11-08,320056,"Quintero, Climatológica",-32.7842,-71.5228,5.0,Quintero,20.4,8.0,0.3
 2026-11-08,320063,Zapallar Catapilco,-32.5614,-71.2978,81.0,Zapallar,27.6,4.5,0.0
 2026-11-08,320121,El Tártaro (Putaendo),-32.5708,-70.7042,933.0,Putaendo,33.8,6.7,0.0
 2026-11-08,320122,Panquehue,-32.7692,-70.835,519.0,Panquehue,33.4,9.9,0.0
 2026-11-08,320123,"San Esteban, Liceo",-32.8011,-70.5781,835.0,San Esteban,34.8,9.2,0.0
-2026-11-08,320124,"Quillota, Liceo Agrícola",-32.9072,-71.2714,123.0,Quillota,29.0,7.6,0.0
+2026-11-08,320124,"Quillota, Liceo Agrícola",-32.9072,-71.2714,123.0,Quillota,29.0,7.6,0.1
 2026-11-08,320127,"Planta Transmisora Quintero, Armada",-32.8036,-71.4844,73.0,Quintero,22.1,8.7,0.0
-2026-11-08,330006,"Jardín Botánico (ex Parque Fauna), Viña del Mar",-33.045,-71.5019,50.0,Viña del Mar,23.8,-4.3,0.0
-2026-11-08,330007,"Rodelillo, Ad.",-33.0653,-71.5564,335.0,Viña del Mar,23.4,13.2,0.0
+2026-11-08,330006,"Jardín Botánico (ex Parque Fauna), Viña del Mar",-33.045,-71.5019,50.0,Viña del Mar,23.8,-4.3,0.3
+2026-11-08,330007,"Rodelillo, Ad.",-33.0653,-71.5564,335.0,Viña del Mar,23.4,13.2,0.8
 2026-11-08,330019,"Eulogio Sánchez, Tobalaba Ad.",-33.4553,-70.5486,649.0,La Reina,31.9,10.7,0.0
 2026-11-08,330020,"Quinta Normal, Santiago",-33.445,-70.6828,520.0,Estación Central,33.5,10.0,0.0
 2026-11-08,330021,Pudahuel Santiago,-33.3783,-70.7878,474.0,Pudahuel,32.8,9.7,0.0
-2026-11-08,330030,"Santo Domingo, Ad.",-33.6561,-71.6133,77.0,Santo Domingo,22.7,8.2,0.0
+2026-11-08,330030,"Santo Domingo, Ad.",-33.6561,-71.6133,77.0,Santo Domingo,22.7,8.2,0.2
 2026-11-08,330031,"Juan Fernández, Estación Meteorológica.",-33.6358,-78.8331,40.0,Juan Fernández,17.0,13.6,0.0
 2026-11-08,330071,Talagante,-33.6703,-70.8494,390.0,Talagante,,,0.0
 2026-11-08,330075,Río Clarillo,-33.7283,-70.4967,876.0,Pirque,33.8,8.1,0.0
@@ -1683,7 +1684,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-08,330121,Curacaví Ad.,-33.4111,-71.1678,203.0,Curacaví,33.7,8.2,0.0
 2026-11-08,330122,"Aguas Andinas, La Florida",-33.545,-70.5483,670.0,La Florida,31.4,9.4,0.0
 2026-11-08,330160,"El Milagro, Buin",-33.7544,-70.7644,460.0,Buin,31.4,9.4,0.0
-2026-11-08,330161,"San Antonio, Lo Zarate",-33.5305,-71.5061,103.0,Cartagena,24.7,7.9,0.0
+2026-11-08,330161,"San Antonio, Lo Zarate",-33.5305,-71.5061,103.0,Cartagena,24.7,7.9,0.2
 2026-11-08,330162,Colina (Reg.),-33.1622,-70.6431,755.0,Colina,32.9,12.4,0.0
 2026-11-08,330163,Peldehue Ad.,-33.1139,-70.6858,670.0,Colina,33.6,7.1,0.0
 2026-11-08,330193,Llanos de Caleu - La Dormida,-33.0494,-71.0014,1450.0,Tiltil,25.4,13.6,0.0
@@ -1708,7 +1709,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-08,380018,Lonquimay,-38.455,-71.3619,912.0,Lonquimay,27.3,1.1,0.0
 2026-11-08,380029,La Araucanía Ad.,-38.9344,-72.6533,98.0,Temuco,26.9,8.6,0.0
 2026-11-08,380032,Rucamanque-UFRO,-38.6608,-72.6056,344.0,Temuco,25.0,8.5,0.0
-2026-11-08,380033,Maquehue-UFRO,-38.8378,-72.6944,74.0,Temuco,26.3,6.0,0.0
+2026-11-08,380033,Maquehue-UFRO,-38.8378,-72.6944,74.0,Temuco,26.3,6.0,0.1
 2026-11-08,380063,Victoria (Reg.),-38.2289,-72.3433,336.0,Victoria,27.5,4.3,0.0
 2026-11-08,380080,Lequecahue Tirúa Ad.,-38.3594,-73.4883,152.0,Tirúa,23.3,11.4,0.0
 2026-11-08,380082,Isla Mocha Ad.,-38.3839,-73.8692,6.0,Tirúa,23.3,11.4,0.0
@@ -1738,12 +1739,12 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-08,510005,"Teniente Gallardo, Puerto Natales Ad.",-51.6672,-72.5289,69.0,Natales,18.3,10.2,0.0
 2026-11-08,510020,"Río Serrano, Torres del Paine",-51.2167,-72.9703,22.0,Torres del Paine,19.1,12.4,0.0
 2026-11-08,520006,"Carlos Ibañez, Punta Arenas Ap.",-53.0017,-70.8386,43.0,Punta Arenas,17.7,6.8,0.0
-2026-11-08,520012,Instituto de la Patagonia (Jorge Schytte),-53.13,-70.8875,11.0,Punta Arenas,16.5,7.0,0.0
-2026-11-08,520014,Punta Arenas Unidad Aeropolicial,-53.1528,-70.9264,53.0,Punta Arenas,17.1,7.7,0.0
+2026-11-08,520012,Instituto de la Patagonia (Jorge Schytte),-53.13,-70.8875,11.0,Punta Arenas,16.5,7.0,0.1
+2026-11-08,520014,Punta Arenas Unidad Aeropolicial,-53.1528,-70.9264,53.0,Punta Arenas,17.1,7.7,1.0
 2026-11-08,520015,Magallanes Villa Tehuelche,-52.4289,-71.4161,176.0,Laguna Blanca,18.9,4.6,0.0
 2026-11-08,520030,"Cerro Sombrero, Estrecho de Magallanes",-52.7764,-69.2947,64.0,Primavera,18.4,5.4,0.0
 2026-11-08,530005,"Fuentes Martínez, Porvenir Ad.",-53.2536,-70.3261,25.0,Porvenir,17.3,6.6,0.0
-2026-11-08,530008,Escuela Alberto Hurtado,-53.1669,-70.9453,60.0,Punta Arenas,16.9,7.4,0.8
+2026-11-08,530008,Escuela Alberto Hurtado,-53.1669,-70.9453,60.0,Punta Arenas,16.9,7.4,2.7
 2026-11-08,540008,"Pampa Guanaco, Tierra del Fuego",-54.0508,-68.8039,150.0,Timaukel,16.0,3.9,0.2
 2026-11-08,550001,"Guardiamarina Zañartu, Pto Williams Ad.",-54.9317,-67.6156,12.0,Cabo de Hornos (Ex-Navarino),18.3,3.8,0.0
 2026-11-08,950001,"C.M.A. Eduardo Frei Montalva, Antártica",-62.1919,-58.9797,45.0,Antártica,1.2,-0.1,0.2
@@ -1753,7 +1754,8 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-08,950011,Gabriel Gonzalez Videla - INACH,-64.8239,-62.8578,5.0,Antártica,-0.3,-0.5,
 2026-11-08,950012,Boonen Rivera,-63.5375,-57.4089,16.0,Antártica,3.4,2.0,
 2026-11-08,950013,Base OHiggins - INACH,-63.3217,-57.8978,10.0,Antártica,3.4,2.0,
-2026-11-08,950018,Peñón Escuela de Montaña,-79.7922,-82.9872,863.0,Antártica,-23.3,-23.7,
-2026-11-08,950019,Islote D Hainaut,-63.9028,-60.7931,18.0,Antártica,-23.3,-23.7,
+2026-11-08,950018,Peñón Escuela de Montaña,-79.7922,-82.9872,863.0,Antártica,-21.2,-23.7,
+2026-11-08,950019,Islote D Hainaut,-63.9028,-60.7931,18.0,Antártica,-21.2,-23.7,
 2026-11-08,950020,Islote Alcock,-64.24,-61.1314,102.0,Antártica,-0.8,-0.8,
 2026-11-08,950021,Base J,-66.0081,-65.3392,3.0,Antártica,-0.9,-1.5,
+2026-11-08,950023,Isla Livington,-62.68,-60.4122,154.0,Antártica,-0.9,-0.9,

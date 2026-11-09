@@ -12499,3 +12499,38 @@ emision,indice,ciudad,icao,fecha,dia,tmin,tmax,lluvia,texto
 2026-11-09 17:29:24,tololo,El Tololo,,2026-11-12,2,13,25,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Despejado / noche: Despejado
 2026-11-09 17:29:24,tololo,El Tololo,,2026-11-13,3,12,24,0,madrugada: Nubosidad parcial / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
 2026-11-09 17:29:24,tololo,El Tololo,,2026-11-14,4,11,23,0,madrugada: Nublado / mañana: Nublado / tarde: Despejado / noche: Despejado
+2026-11-09 18:03:46,visviri,Visviri,,2026-11-10,0,1,21,1,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nublado y probable tormenta eléctrica con viento entre 25 y 40 km/h / noche: Nublado
+2026-11-09 18:03:46,visviri,Visviri,,2026-11-11,1,1,20,1,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Cubierto y chubascos con viento entre 25 y 40 km/h / noche: Nublado
+2026-11-09 18:03:46,visviri,Visviri,,2026-11-12,2,0,20,1,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Cubierto y chubascos con viento entre 25 y 40 km/h / noche: Nublado
+2026-11-09 18:03:46,visviri,Visviri,,2026-11-13,3,0,19,1,madrugada: Nublado / mañana: Nublado / tarde: Cubierto y chubascos con viento entre 25 y 40 km/h / noche: Nublado
+2026-11-09 18:03:46,visviri,Visviri,,2026-11-14,4,1,19,1,madrugada: Nublado / mañana: Nublado / tarde: Cubierto y chubascos con viento entre 25 y 40 km/h / noche: Nublado
+2026-11-09 18:04:39,putre,Putre,,2026-11-10,0,9,19,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nubosidad parcial
+2026-11-09 18:04:39,putre,Putre,,2026-11-11,1,8,19,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nubosidad parcial
+2026-11-09 18:04:39,putre,Putre,,2026-11-12,2,8,18,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nubosidad parcial
+2026-11-09 18:04:39,putre,Putre,,2026-11-13,3,7,17,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-09 18:04:39,putre,Putre,,2026-11-14,4,7,17,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-09 18:06:02,colchane,Colchane,,2026-11-10,0,2,23,1,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado y probable tormenta eléctrica con viento entre 25 y 40 km/h / noche: Nubosidad parcial con viento entre 25 y 40 km/h
+2026-11-09 18:06:02,colchane,Colchane,,2026-11-11,1,1,22,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado con viento entre 25 y 40 km/h / noche: Nubosidad parcial con viento entre 25 y 40 km/h
+2026-11-09 18:06:02,colchane,Colchane,,2026-11-12,2,0,21,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado con viento entre 25 y 40 km/h / noche: Nublado con viento entre 25 y 40 km/h
+2026-11-09 18:06:02,colchane,Colchane,,2026-11-13,3,1,21,1,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Cubierto y chubascos con viento entre 25 y 40 km/h / noche: Nublado con viento entre 25 y 40 km/h
+2026-11-09 18:06:02,colchane,Colchane,,2026-11-14,4,2,20,1,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Cubierto y chubascos con viento entre 25 y 40 km/h / noche: Nublado con viento entre 25 y 40 km/h
+2026-11-09 18:08:21,ollague,Ollagüe,,2026-11-10,0,3,25,0,madrugada: Nubosidad parcial / mañana: Despejado / tarde: Nubosidad parcial con viento entre 40 y 60 km/h / noche: Nubosidad parcial con viento entre 25 y 40 km/h
+2026-11-09 18:08:21,ollague,Ollagüe,,2026-11-11,1,4,25,0,madrugada: Nubosidad parcial / mañana: Despejado / tarde: Nubosidad parcial con viento entre 40 y 60 km/h / noche: Despejado con viento entre 25 y 40 km/h
+2026-11-09 18:08:21,ollague,Ollagüe,,2026-11-12,2,3,24,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial con viento entre 40 y 60 km/h / noche: Nubosidad parcial con viento entre 25 y 40 km/h
+2026-11-09 18:08:21,ollague,Ollagüe,,2026-11-13,3,3,24,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado con viento entre 40 y 60 km/h / noche: Nublado con viento entre 25 y 40 km/h
+2026-11-09 18:08:21,ollague,Ollagüe,,2026-11-14,4,2,23,0,madrugada: Nubosidad parcial / mañana: Nublado / tarde: Nublado con viento entre 40 y 60 km/h / noche: Nubosidad parcial con viento entre 25 y 40 km/h
+2026-11-09 18:11:08,mejillones,Mejillones,,2026-11-10,0,17,26,0,madrugada: Despejado variando a nublado / mañana: Nublado variando a despejado / tarde: Nubosidad parcial variando a nublado con viento entre 25 y 40 km/h / noche: Despejado con viento entre 25 y 40 km/h
+2026-11-09 18:11:08,mejillones,Mejillones,,2026-11-11,1,17,26,0,madrugada: Despejado variando a nublado / mañana: Cubierto / tarde: Nublado con viento entre 25 y 40 km/h / noche: Nublado
+2026-11-09 18:11:08,mejillones,Mejillones,,2026-11-12,2,17,25,0,madrugada: Nublado / mañana: Cubierto / tarde: Nublado con viento entre 25 y 40 km/h variando a nubosidad parcial / noche: Despejado
+2026-11-09 18:11:08,mejillones,Mejillones,,2026-11-13,3,17,25,0,madrugada: Despejado variando a nublado / mañana: Nublado variando a nubosidad parcial / tarde: Nubosidad parcial con viento entre 25 y 40 km/h / noche: Nubosidad parcial
+2026-11-09 18:11:08,mejillones,Mejillones,,2026-11-14,4,17,25,0,madrugada: Despejado variando a nublado / mañana: Nublado / tarde: Nubosidad parcial con viento entre 25 y 40 km/h / noche: Despejado
+2026-11-09 18:11:48,antofagasta,Antofagasta,SCFA,2026-11-10,0,18,23,0,madrugada: Nublado / mañana: Nublado / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado variando a nublado
+2026-11-09 18:11:48,antofagasta,Antofagasta,SCFA,2026-11-11,1,18,22,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado con viento entre 25 y 40 km/h / noche: Cubierto
+2026-11-09 18:11:48,antofagasta,Antofagasta,SCFA,2026-11-12,2,18,22,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado con viento entre 25 y 40 km/h / noche: Cubierto
+2026-11-09 18:11:48,antofagasta,Antofagasta,SCFA,2026-11-13,3,18,22,0,madrugada: Cubierto / mañana: Nublado variando a nubosidad parcial / tarde: Nubosidad parcial variando a nublado con viento entre 25 y 40 km/h / noche: Nublado
+2026-11-09 18:11:48,antofagasta,Antofagasta,SCFA,2026-11-14,4,18,22,0,madrugada: Cubierto / mañana: Nublado / tarde: Nubosidad parcial con viento entre 25 y 40 km/h / noche: Nubosidad parcial
+2026-11-09 18:12:19,taltal,Taltal,,2026-11-10,0,18,26,0,madrugada: Cubierto / mañana: Cubierto variando a nublado / tarde: Despejado / noche: Despejado
+2026-11-09 18:12:19,taltal,Taltal,,2026-11-11,1,17,26,0,madrugada: Cubierto / mañana: Cubierto variando a despejado / tarde: Despejado / noche: Despejado variando a nublado
+2026-11-09 18:12:19,taltal,Taltal,,2026-11-12,2,18,25,0,madrugada: Cubierto / mañana: Cubierto / tarde: Despejado / noche: Despejado variando a nublado
+2026-11-09 18:12:19,taltal,Taltal,,2026-11-13,3,18,25,0,madrugada: Cubierto / mañana: Cubierto / tarde: Despejado / noche: Nubosidad parcial variando a nublado
+2026-11-09 18:12:19,taltal,Taltal,,2026-11-14,4,18,25,0,madrugada: Cubierto / mañana: Nublado variando a nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial

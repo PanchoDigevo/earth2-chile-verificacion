@@ -14284,3 +14284,83 @@ emision,indice,ciudad,icao,fecha,dia,tmin,tmax,lluvia,texto
 2026-11-11 06:42:10,antartica,Península Antártica,SCRM,2026-11-13,2,0,1,1,"madrugada: Cubierto, lluvia y neblina / mañana: Cubierto, lluvia y neblina con viento entre 60 y 80 km/h / tarde: Cubierto, lluvia y neblina con viento entre 60 y 80 km/h / noche: Cubierto y chubascos de aguanieve con viento entre 60 y 80 km/h y ráfagas de viento hasta 100 km/h"
 2026-11-11 06:42:10,antartica,Península Antártica,SCRM,2026-11-14,3,-1,0,1,"madrugada: Cubierto, chubascos de nieve aislados y neblina con viento entre 60 y 80 km/h y ráfagas de viento hasta 100 km/h variando a nublado / mañana: Nublado con viento entre 60 y 80 km/h / tarde: Nubosidad parcial, ocasionalmente nublado / noche: Nubosidad parcial"
 2026-11-11 06:42:10,antartica,Península Antártica,SCRM,2026-11-15,4,-2,0,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial variando a nublado / noche: Nublado
+2026-11-11 07:49:21,copiapo,Copiapó,,2026-11-11,0,,30,0,mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-11 07:49:21,copiapo,Copiapó,,2026-11-12,1,16,29,0,madrugada: Despejado variando a cubierto / mañana: Cubierto variando a despejado / tarde: Despejado / noche: Despejado
+2026-11-11 07:49:21,copiapo,Copiapó,,2026-11-13,2,16,28,0,madrugada: Despejado variando a cubierto / mañana: Cubierto variando a despejado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-11 07:49:21,copiapo,Copiapó,,2026-11-14,3,16,28,0,madrugada: Despejado variando a cubierto / mañana: Cubierto variando a despejado / tarde: Despejado / noche: Despejado
+2026-11-11 07:49:21,copiapo,Copiapó,,2026-11-15,4,16,28,0,madrugada: Despejado variando a cubierto / mañana: Cubierto variando a despejado / tarde: Despejado / noche: Despejado
+2026-11-11 07:49:30,huasco,Huasco,,2026-11-11,0,,24,0,mañana: Despejado / tarde: Despejado con viento entre 25 y 40 km/h / noche: Nubosidad parcial variando a nublado
+2026-11-11 07:49:30,huasco,Huasco,,2026-11-12,1,17,23,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado / noche: Cubierto
+2026-11-11 07:49:30,huasco,Huasco,,2026-11-13,2,17,23,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado / noche: Cubierto
+2026-11-11 07:49:30,huasco,Huasco,,2026-11-14,3,17,24,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado variando a despejado / noche: Despejado variando a cubierto
+2026-11-11 07:49:30,huasco,Huasco,,2026-11-15,4,16,24,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado variando a despejado con viento entre 25 y 40 km/h / noche: Despejado con viento entre 25 y 40 km/h
+2026-11-11 07:49:41,freirina,Freirina,,2026-11-11,0,,26,0,mañana: Despejado / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado
+2026-11-11 07:49:41,freirina,Freirina,,2026-11-12,1,13,25,0,madrugada: Cubierto / mañana: Cubierto variando a despejado / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado
+2026-11-11 07:49:41,freirina,Freirina,,2026-11-13,2,14,25,0,madrugada: Cubierto / mañana: Cubierto variando a despejado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-11 07:49:41,freirina,Freirina,,2026-11-14,3,14,25,0,madrugada: Cubierto / mañana: Cubierto variando a despejado / tarde: Despejado / noche: Despejado
+2026-11-11 07:49:41,freirina,Freirina,,2026-11-15,4,14,25,0,madrugada: Cubierto / mañana: Cubierto variando a despejado / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado con viento entre 25 y 40 km/h
+2026-11-11 07:49:59,caldera,Caldera,,2026-11-11,0,,24,0,mañana: Cubierto variando a despejado / tarde: Despejado / noche: Despejado variando a nublado
+2026-11-11 07:49:59,caldera,Caldera,,2026-11-12,1,17,23,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado / noche: Cubierto
+2026-11-11 07:49:59,caldera,Caldera,,2026-11-13,2,17,23,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado / noche: Cubierto
+2026-11-11 07:49:59,caldera,Caldera,,2026-11-14,3,17,24,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado variando a despejado / noche: Despejado variando a cubierto
+2026-11-11 07:49:59,caldera,Caldera,,2026-11-15,4,16,24,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado variando a despejado / noche: Despejado variando a cubierto
+2026-11-11 09:24:08,rapanui,Isla de Pascua,,2026-11-11,0,,22,0,"mañana: Nublado, ocasionalmente nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial"
+2026-11-11 09:24:08,rapanui,Isla de Pascua,,2026-11-12,1,16,24,0,"madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial, ocasionalmente nublado / noche: Nubosidad parcial, ocasionalmente nublado"
+2026-11-11 09:24:08,rapanui,Isla de Pascua,,2026-11-13,2,19,24,1,madrugada: Nublado / mañana: Nublado con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h / tarde: Nublado y chubascos con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h / noche: Nublado y chubascos con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h
+2026-11-11 09:24:08,rapanui,Isla de Pascua,,2026-11-14,3,17,22,1,"madrugada: Nublado y chubascos con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h / mañana: Nublado y chubascos con viento entre 25 y 40 km/h / tarde: Nublado con viento entre 25 y 40 km/h / noche: Nubosidad parcial, ocasionalmente nublado"
+2026-11-11 09:24:08,rapanui,Isla de Pascua,,2026-11-15,4,16,22,0,"madrugada: Nubosidad parcial, ocasionalmente nublado / mañana: Nubosidad parcial, ocasionalmente nublado / tarde: Nubosidad parcial, ocasionalmente nublado / noche: Nubosidad parcial, ocasionalmente nublado"
+2026-11-11 12:32:23,andes,Los Andes,,2026-11-11,0,,35,0,mañana: Despejado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-11 12:32:23,andes,Los Andes,,2026-11-12,1,10,35,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Despejado
+2026-11-11 12:32:23,andes,Los Andes,,2026-11-13,2,9,31,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Nubosidad parcial
+2026-11-11 12:32:23,andes,Los Andes,,2026-11-14,3,12,28,0,madrugada: Nublado / mañana: Cubierto / tarde: Nublado / noche: Nublado
+2026-11-11 12:32:23,andes,Los Andes,,2026-11-15,4,12,24,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-11 12:32:23,snfelipe,San Felipe,,2026-11-11,0,,35,0,mañana: Despejado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-11 12:32:23,snfelipe,San Felipe,,2026-11-12,1,10,35,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Despejado
+2026-11-11 12:32:23,snfelipe,San Felipe,,2026-11-13,2,9,31,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Nubosidad parcial
+2026-11-11 12:32:23,snfelipe,San Felipe,,2026-11-14,3,12,28,0,madrugada: Nublado / mañana: Cubierto / tarde: Nublado / noche: Nublado
+2026-11-11 12:32:23,snfelipe,San Felipe,,2026-11-15,4,12,24,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-11 12:32:41,stgoc,Santiago Sector Centro,,2026-11-11,0,,33,0,mañana: Despejado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-11 12:32:41,stgoc,Santiago Sector Centro,,2026-11-12,1,12,34,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-11 12:32:41,stgoc,Santiago Sector Centro,,2026-11-13,2,13,30,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Despejado / noche: Nubosidad parcial
+2026-11-11 12:32:41,stgoc,Santiago Sector Centro,,2026-11-14,3,13,25,0,madrugada: Nublado / mañana: Cubierto / tarde: Nublado / noche: Nublado
+2026-11-11 12:32:41,stgoc,Santiago Sector Centro,,2026-11-15,4,13,23,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-11 12:33:00,colina,Colina,,2026-11-11,0,,34,0,mañana: Despejado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-11 12:33:00,colina,Colina,,2026-11-12,1,11,34,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-11 12:33:00,colina,Colina,,2026-11-13,2,12,30,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Despejado / noche: Nubosidad parcial
+2026-11-11 12:33:00,colina,Colina,,2026-11-14,3,13,25,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado / noche: Nublado
+2026-11-11 12:33:00,colina,Colina,,2026-11-15,4,12,23,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-11 12:33:12,melipilla,Melipilla,,2026-11-11,0,,32,0,mañana: Despejado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-11 12:33:12,melipilla,Melipilla,,2026-11-12,1,12,32,0,madrugada: Despejado variando a nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-11 12:33:12,melipilla,Melipilla,,2026-11-13,2,14,27,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-11 12:33:12,melipilla,Melipilla,,2026-11-14,3,15,24,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado / noche: Nublado
+2026-11-11 12:33:12,melipilla,Melipilla,,2026-11-15,4,14,22,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-11 12:33:23,curacavi,Curacaví,,2026-11-11,0,,33,0,mañana: Despejado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-11 12:33:23,curacavi,Curacaví,,2026-11-12,1,12,33,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-11 12:33:23,curacavi,Curacaví,,2026-11-13,2,13,29,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-11 12:33:23,curacavi,Curacaví,,2026-11-14,3,15,24,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado / noche: Nublado
+2026-11-11 12:33:23,curacavi,Curacaví,,2026-11-15,4,14,22,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-11 12:33:37,stgon,Santiago Sector Norte,,2026-11-11,0,,34,0,mañana: Despejado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-11 12:33:37,stgon,Santiago Sector Norte,,2026-11-12,1,11,34,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-11 12:33:37,stgon,Santiago Sector Norte,,2026-11-13,2,12,30,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Despejado / noche: Nubosidad parcial
+2026-11-11 12:33:37,stgon,Santiago Sector Norte,,2026-11-14,3,13,25,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado / noche: Nublado
+2026-11-11 12:33:37,stgon,Santiago Sector Norte,,2026-11-15,4,12,23,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-11 12:34:01,stgos,Santiago Sector Sur,,2026-11-11,0,,34,0,mañana: Despejado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-11 12:34:01,stgos,Santiago Sector Sur,,2026-11-12,1,11,34,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-11 12:34:01,stgos,Santiago Sector Sur,,2026-11-13,2,12,29,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Despejado / noche: Nubosidad parcial
+2026-11-11 12:34:01,stgos,Santiago Sector Sur,,2026-11-14,3,13,24,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado / noche: Nublado
+2026-11-11 12:34:01,stgos,Santiago Sector Sur,,2026-11-15,4,13,23,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-11 12:34:16,stgop,Santiago Sector Poniente,SCEL,2026-11-11,0,,34,0,mañana: Despejado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-11 12:34:16,stgop,Santiago Sector Poniente,SCEL,2026-11-12,1,12,34,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-11 12:34:16,stgop,Santiago Sector Poniente,SCEL,2026-11-13,2,13,30,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Despejado / noche: Nubosidad parcial
+2026-11-11 12:34:16,stgop,Santiago Sector Poniente,SCEL,2026-11-14,3,13,25,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado / noche: Nublado
+2026-11-11 12:34:16,stgop,Santiago Sector Poniente,SCEL,2026-11-15,4,13,23,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-11 12:34:37,stgoo,Santiago Sector Oriente,SCTB,2026-11-11,0,,33,0,mañana: Despejado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-11 12:34:37,stgoo,Santiago Sector Oriente,SCTB,2026-11-12,1,13,34,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-11 12:34:37,stgoo,Santiago Sector Oriente,SCTB,2026-11-13,2,13,29,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Despejado / noche: Nubosidad parcial
+2026-11-11 12:34:37,stgoo,Santiago Sector Oriente,SCTB,2026-11-14,3,12,26,0,madrugada: Nubosidad parcial / mañana: Cubierto / tarde: Nublado / noche: Nublado
+2026-11-11 12:34:37,stgoo,Santiago Sector Oriente,SCTB,2026-11-15,4,13,23,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-11 12:34:50,snjosemaipo,San José de Maipo,,2026-11-11,0,,33,0,mañana: Despejado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-11 12:34:50,snjosemaipo,San José de Maipo,,2026-11-12,1,10,33,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-11 12:34:50,snjosemaipo,San José de Maipo,,2026-11-13,2,12,29,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Despejado / noche: Nubosidad parcial
+2026-11-11 12:34:50,snjosemaipo,San José de Maipo,,2026-11-14,3,12,27,0,madrugada: Nubosidad parcial / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-11 12:34:50,snjosemaipo,San José de Maipo,,2026-11-15,4,14,22,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado

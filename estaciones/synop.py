@@ -137,7 +137,7 @@ def guardar(nuevas):
         with open(ruta, "w", newline="", encoding="utf-8") as fh:
             w = csv.DictWriter(fh, fieldnames=CAMPOS); w.writeheader()
             for k in sorted(previas, key=lambda k: (k[1], k[0])):
-                w.writerow({c: ("" if previas[k][c] is None else previas[k][c]) for c in CAMPOS})
+                w.writerow({c: ("" if previas[k].get(c) is None else previas[k][c]) for c in CAMPOS})
         total += len(previas)
     return total
 

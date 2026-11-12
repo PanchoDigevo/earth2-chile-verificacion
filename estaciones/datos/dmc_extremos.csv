@@ -2058,7 +2058,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-11,170001,Visviri Tenencia,-17.595,-69.4775,4084.0,General Lagos,21.7,0.3,4.6
 2026-11-11,180005,"Chacalluta, Arica Ap.",-18.3556,-70.3403,51.0,Arica,26.0,21.6,0.0
 2026-11-11,180017,Putre,-18.2,-69.5625,3532.0,Putre,19.0,8.9,0.0
-2026-11-11,180018,"Defensa Civil, Arica",-18.4911,-70.3014,71.0,Arica,24.8,21.5,0.0
+2026-11-11,180018,"Defensa Civil, Arica",-18.4911,-70.3014,71.0,Arica,25.8,21.5,0.0
 2026-11-11,180042,"Cerro Sombrero, Arica",-18.5125,-70.2656,122.0,Arica,27.9,21.8,0.0
 2026-11-11,190010,Colchane,-19.2769,-68.6397,3700.0,Colchane,25.1,2.5,1.0
 2026-11-11,200006,Diego Aracena Iquique Ap.,-20.5492,-70.1811,48.0,Iquique,26.4,22.1,0.0
@@ -2075,10 +2075,10 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-11,230021,"Llano de Chajnantor, observatorio APEX",-23.0058,-67.7592,5000.0,San Pedro de Atacama,7.5,-3.3,
 2026-11-11,230022,Mejillones,-23.1092,-70.4433,31.0,Mejillones,28.4,19.8,0.0
 2026-11-11,240005,"Cerro Paranal, observatorio astronómico",-24.6275,-70.4047,2648.0,Taltal,22.8,16.0,
-2026-11-11,250005,Taltal,-25.4111,-70.4842,37.0,Antofagasta,24.6,18.5,0.0
+2026-11-11,250005,Taltal,-25.4111,-70.4842,37.0,Antofagasta,24.6,18.5,0.1
 2026-11-11,260010,"Ad. Ricardo García Posada, El Salvador",-26.3131,-69.7514,1597.0,Diego de Almagro,30.4,14.9,0.0
 2026-11-11,270001,Mataveri  Isla de Pascua Ap.,-27.1589,-109.4325,69.0,Isla de Pascua,22.2,15.4,0.0
-2026-11-11,270008,"Desierto de Atacama, Caldera  Ad.",-27.2544,-70.7811,204.0,Caldera,24.1,13.8,0.0
+2026-11-11,270008,"Desierto de Atacama, Caldera  Ad.",-27.2544,-70.7811,204.0,Caldera,24.1,13.8,0.1
 2026-11-11,270009,Copiapó Universidad de Atacama,-27.3589,-70.3533,362.0,Copiapó,28.2,15.2,0.0
 2026-11-11,270022,"Copiapo, Cerro Antenas",-27.3628,-70.2831,946.0,Copiapó,27.0,13.8,0.0
 2026-11-11,280010,Freirina Nicolasa,-28.5169,-71.01,156.0,Freirina,25.6,11.3,0.0
@@ -2130,7 +2130,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-11,330163,Peldehue Ad.,-33.1139,-70.6858,670.0,Colina,33.7,9.9,0.0
 2026-11-11,330193,Llanos de Caleu - La Dormida,-33.0494,-71.0014,1450.0,Tiltil,24.1,12.7,0.0
 2026-11-11,340031,"General Freire, Curicó Ad.",-34.9694,-71.2169,229.0,Curicó,30.5,13.7,0.0
-2026-11-11,340045,Rancagua,-34.1722,-70.7761,482.0,Rancagua,27.2,11.7,0.0
+2026-11-11,340045,Rancagua,-34.1722,-70.7761,482.0,Rancagua,30.2,11.7,0.0
 2026-11-11,340048,Quimávida,-34.215,-70.9969,316.0,Doñihue,31.2,13.2,0.0
 2026-11-11,340066,Nilahue - La Quebrada,-34.6608,-71.7353,81.0,Pumanque,27.8,9.8,0.0
 2026-11-11,340093,Portezuelo-Codelco,-34.1983,-70.5792,1185.0,Rancagua,26.9,13.5,0.0
@@ -2164,7 +2164,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-11,400058,"La Unión, Agrotec",-40.31,-73.0039,60.0,La Unión,23.1,9.7,0.0
 2026-11-11,400060,"Fundo el Maitén, Paillaco",-40.0836,-72.6589,194.0,Paillaco,21.6,9.8,0.0
 2026-11-11,400061,Purranque,-40.8667,-73.0236,75.0,Purrangue,21.9,7.2,0.0
-2026-11-11,410005,El Tepual  Puerto Montt Ap.,-41.4475,-73.0958,90.0,Puerto Montt,18.5,7.4,0.0
+2026-11-11,410005,El Tepual  Puerto Montt Ap.,-41.4475,-73.0958,90.0,Puerto Montt,18.5,7.4,0.2
 2026-11-11,410026,Ancud Liceo Agrícola,-41.8661,-73.8164,31.0,Ancud,19.6,9.7,0.0
 2026-11-11,410027,"Escuela Mirasol, Puerto Montt",-41.4794,-72.9689,100.0,Puerto Montt,17.9,9.7,
 2026-11-11,410040,Puerto Varas ESSAL,-41.3244,-72.9767,70.0,Puerto Varas,20.0,8.9,0.0
@@ -2199,4 +2199,4 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-11,950016,Escudero,-62.2028,-58.9617,55.0,Antártica,0.5,0.5,
 2026-11-11,950017,Cabo Melville,-62.0206,-57.6244,123.0,Antártica,0.5,0.5,
 2026-11-11,950021,Base J,-66.0081,-65.3392,3.0,Antártica,-0.6,-1.0,
-2026-11-11,950023,Isla Livington,-62.68,-60.4122,154.0,Antártica,-0.3,-0.3,
+2026-11-11,950023,Isla Livington,-62.68,-60.4122,154.0,Antártica,-0.3,-1.4,

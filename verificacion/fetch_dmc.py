@@ -4,7 +4,7 @@ Dos productos de meteochile.gob.cl:
 
 1. El modelo WRF de la DMC, desde su servicio oficial getDatosModelo (pide usuario y token: secretos DMC_USUARIO y
    DMC_TOKEN). Entrega las últimas cinco corridas por estación con su día, hora (00 o 12 UTC) y condición de borde: GFS
-   ("WRF-DMC") o ECMWF ("WRF-DMC-EC"), hora a hora en UTC: temperatura, viento (se supone en nudos; ver NUDO), humedad y agua caída en 6 h. Se guarda
+   ("WRF-DMC") o ECMWF ("WRF-DMC-EC"), hora a hora en UTC: temperatura, viento (en nudos; ver NUDO), humedad y agua caída en 6 h. Se guarda
    como modelo externo en data/puntos_<modelo>_<corrida>.csv (columnas modelo, run, lead_h, icao, t_fc, w_fc, tp_fc, rr6),
    que verify.py empareja con los METAR igual que a los demás modelos. Hasta el 29-oct-2026 se leía el meteograma público
    y la hora de corrida se suponía; el supuesto rotulaba mal la corrida de las 12 UTC y esos datos se borraron.
@@ -27,7 +27,8 @@ FUENTES = {"gfs": "WRF-DMC", "ecmwf": "WRF-DMC-EC"}
 VARIABLES = {"T": "t", "VV": "w", "RR6h": "rr6"}
 # Viento: el meteograma lo rotula "m/s", pero el 29-oct-2026 los 20 primeros pares contra METAR daban sesgo +3,5 m/s en
 # todas las estaciones (Calama 22,6 "m/s" con 12,9 medidos); leídos como nudos, sesgo -0,6 y error 1,5, como GFS e IFS.
-# Supuesto declarado: vienen en nudos. Revisar con más días (verif_puntos.csv, modelo WRF-DMC).
+# Comprobado el 12-nov-2026 con ~7.500 pares por condición de borde: como nudos, sesgo -0,6 y error 1,6 m/s (igual que
+# AIFS, IFS y GFS); como m/s, sesgo +3,0 y error 3,4. Vienen en nudos.
 NUDO = 0.514444
 DIAS_PUNTOS, DIAS_OFICIAL = 3, 90
 

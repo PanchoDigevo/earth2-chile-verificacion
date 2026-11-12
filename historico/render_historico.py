@@ -210,6 +210,9 @@ def pagina_eventos(r, ahora):
   {detalle}
 </article>""")
 
+    tormentas, idx_t = seccion_tormentas()
+    if tormentas:
+        bloques.insert(0, tormentas); indice.insert(0, idx_t)
     lluvia = ordenar(r.get("lluvia", pd.DataFrame()))
     filas_ll = [f"<tr><td class='l'>{x.modelo}</td><td class='num'>{int(x.lead_h)} h</td><td class='num'>{entero(x.n)}</td>"
                 f"<td class='num'>{num(100 * x.frec_obs, 0, ' %')}</td><td class='num'>{num(100 * x.pod, 0, ' %')}</td><td class='num'>{num(100 * x.far, 0, ' %')}</td></tr>"
@@ -220,7 +223,7 @@ def pagina_eventos(r, ahora):
   {tabla(["Modelo", "Anticipación", "Días comparados", "Días con lluvia", "Acertó cuando llovió", "Avisó en falso"], filas_ll)}
 </section>""" if filas_ll else ""
 
-    html = f"""{head("Eventos 2026 · Earth-2 Chile", "Qué lluvia anunciaban los modelos AIFS, IFS y GFS 72, 48 y 24 horas antes de los eventos de 2026 en Chile, y si de verdad llovió.")}
+    html = f"""{head("Eventos 2026 · Earth-2 Chile", "Qué lluvia anunciaban los modelos AIFS, IFS y GFS 72, 48 y 24 horas antes de los eventos de 2026 en Chile, si de verdad llovió, y cómo les fue a los avisos de tormenta.")}
 <body>
 {nav("eventos")}
 <div class="wrap">
@@ -240,6 +243,66 @@ def pagina_eventos(r, ahora):
 </html>
 """
     return escribir("eventos.html", html.replace("</style>", CSS_EXTRA + "</style>", 1))
+
+
+TORMENTAS = os.path.join(AQUI, "..", "hindcast")
+# Lo que el salto de rayos no marcó, revisado a mano (hindcast/salto_rayos/LEEME.md).
+NO_MARCO = [
+    ("13 de octubre, Estación Central", "tornado EF0 hacia las 16:30; el aviso más cercano fue Colina, a unos 33 km. El ambiente a 72 h sí marcaba «tormentas posibles»."),
+    ("21 de octubre, Retiro (Maule)", "tornado EF0/EF1 hacia las 14:00, sin aviso a esa hora. El ambiente a 72 h marcaba «tormentas posibles»."),
+    ("28 y 29 de agosto, Biobío, Ñuble y la costa", "16 tornados y trombas en 48 horas, sin ningún aviso: tormentas de invierno, bajas y con pocos rayos. "
+     "El ambiente a 72 h marcaba «tormentas fuertes posibles» en Coelemu y Yungay."),
+]
+
+
+def seccion_tormentas():
+    """Los dos avisos de tormenta probados contra lo que pasó: salto de rayos (hindcast/salto_rayos) y ambiente a 72 h
+    (hindcast/tormentas_gfs)."""
+    try:
+        av = pd.read_csv(os.path.join(TORMENTAS, "salto_rayos", "avisos.csv"))
+        dias = pd.read_csv(os.path.join(TORMENTAS, "salto_rayos", "resumen.csv"))
+    except Exception:
+        return "", ""
+    clase = av.que_paso.fillna("sin revisar").str.split(":").str[0].str.strip()
+    sev = clase.str.startswith("severo")
+    prob, noat = clase == "probable", clase == "no atribuible"
+    sinrep = clase.str.startswith("sin reportes")
+    hora = lambda t: f"{t.day} {MESES[t.month - 1]}, {t:%H:%M}"      # hora_chile ya viene en hora de Chile
+    filas = [f"<tr><td class='l'>{hora(pd.Timestamp(x.hora_chile))}</td><td class='l'>{x.comuna_cercana}</td>"
+             f"<td class='l small'>{str(x.que_paso).split(':', 1)[1].strip()}</td></tr>" for x in av[sev].itertuples(index=False)]
+    falsas, revisados = int(sinrep.sum()), int((clase != "sin revisar").sum())
+    sin_revisar = len(av) - revisados
+    texto_72 = ""
+    try:
+        g = pd.read_csv(os.path.join(TORMENTAS, "tormentas_gfs", "resumen.csv"))
+        x = g[(g.escala == "día") & (g.nivel == 1)].iloc[0]
+        texto_72 = (f"<h3>Para planificar: el ambiente a 72 horas</h3><p class='small'>Con los ingredientes de GFS (inestabilidad, tapa, disparador y "
+                    f"cizalle) y cortes publicados, probado en {entero(x.casos)} días-aeródromo de Valparaíso a La Araucanía (oct-2025 a oct-2026): "
+                    f"de las <strong>{int(x.tormentas_metar)}</strong> tormentas que informaron los aeródromos, había marcado <strong>{int(x.aciertos)}</strong> "
+                    f"({int(x.detecta_pct)} %) el día anterior. Pero el {int(x.falsa_alarma_pct)} % de sus marcas no tuvo tormenta en ese aeródromo: el "
+                    f"aeródromo solo ve unos 15 km a la redonda y varios informan tormenta de forma irregular. Por eso se muestra como ambiente "
+                    f"(«tormentas posibles») dentro del pronóstico, nunca como aviso destacado.</p>")
+    except Exception:
+        pass
+    no_marco = "".join(f"<li><strong>{a}</strong>: {b}</li>" for a, b in NO_MARCO)
+    html = f"""<article class="card evento" id="tormentas">
+  <div class="sec-head"><div class="eyebrow">Enero a octubre de 2026</div><h2>Los dos avisos de tormenta: ¿sirven?</h2>
+  <p class="imp">Desde el tornado de Requínoa (26 de octubre) el sitio tiene dos avisos de tormenta. Se probaron hacia atrás con los
+  umbrales publicados, sin ajustarlos a ningún evento chileno, y cada aviso se contrastó a mano con prensa, SENAPRED y la DMC.</p></div>
+  <h3>Para reaccionar: el salto de rayos</h3>
+  <p class="small">Cada 5 minutos se busca en los rayos del satélite GOES-19 una tormenta cuya tasa de rayos se dispare (Schultz y otros).
+  En {len(dias)} días con tormenta en algún aeródromo entre Iquique y Concepción, dio <strong>{len(av)} avisos en Chile</strong>:
+  <strong>{int(sev.sum())}</strong> con tiempo severo cerca y a esa hora, {int(prob.sum())} probables (con la hora sin precisar),
+  {int(noat.sum())} con daño que no se puede atribuir al chubasco y {falsas} sin reportes{f" ({sin_revisar} todavía sin revisar)" if sin_revisar else ""}.
+  «Sin reportes» no es lo mismo que «sin daño»: a lo más {num(100 * falsas / max(revisados, 1), 0)} % de falsas alarmas, parecido al {d("36 %", definicion="Tasa de falsas alarmas del salto de rayos medida en Estados Unidos (Schultz y otros, 2011).")} de Estados Unidos.</p>
+  <div class="tabla"><table><thead><tr><th class="l">Aviso</th><th class="l">Cerca de</th><th class="l">Qué pasó</th></tr></thead><tbody>{''.join(filas)}</tbody></table></div>
+  <h3>Lo que no marcó</h3><ul class="small">{no_marco}</ul>
+  {texto_72}
+  <div class="lectura"><p><strong>Lectura.</strong> El salto de rayos sirve para las tormentas de primavera y verano con mucha actividad
+  eléctrica (granizo, aluviones por chubasco, tornados como el de Requínoa); no ve los tornados de invierno, con pocos rayos. Para esos
+  está el ambiente a 72 horas. Por eso van los dos. Ninguno es una alerta oficial.</p></div>
+</article>"""
+    return html, '<a href="#tormentas">Tormentas</a>'
 
 
 # ---------- Método ----------

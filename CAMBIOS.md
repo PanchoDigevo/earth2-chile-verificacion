@@ -15,6 +15,9 @@ Revisión general del sitio; se arregló lo que estaba quieto o mal contado.
 - **Escenarios a 15 días al día**: GitHub los largaba con unas 7 horas de atraso (y a veces se cortaban), así que Pronóstico mostraba la corrida "atrasada" casi todo el día. Ahora los dispara el bucle de En vivo apenas ECMWF publica el ensamble (09:00 y 21:00 UTC) y se saltan si la corrida ya está hecha. Los días que ya pasaron no se muestran en la lista de 15 días (Pronóstico y Gemelo).
 - **Verificación histórica al día cada semana**: Método y la corrección por estación quedaban en octubre porque solo corrían a mano. Ahora `historico.yml` (lunes) y `historico-dmc.yml` (miércoles) suman el mes anterior y el actual.
 - **Resumen**: la franja de cifras y "En qué etapa estamos" cuentan también las 141 estaciones automáticas de la DMC.
+- **Eventos: «Los dos avisos de tormenta: ¿sirven?»** El resultado de la prueba del salto de rayos y del ambiente a 72 h ya estaba medido (`hindcast/salto_rayos/`, `hindcast/tormentas_gfs/`) pero no se mostraba: 24 avisos en Chile, 8 con tiempo severo cerca y a esa hora (entre ellos el tornado de Requínoa), lo que no marcó (Estación Central, Retiro, los tornados de invierno del Biobío) y cuánto acierta el ambiente a 72 h. En vivo enlaza ahí.
+- **Eventos y Método se volvían a generar con un error**: una línea de `historico/render_historico.py` solo funcionaba en Python 3.12 y el flujo usa 3.11. Corregida.
+- **El viento del WRF de la DMC viene en nudos**: era un supuesto; con ~7.500 comparaciones queda comprobado (leído en nudos se equivoca como AIFS, IFS y GFS; en m/s, el doble).
 
 ## 30-oct-2026
 

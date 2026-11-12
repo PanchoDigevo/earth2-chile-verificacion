@@ -331,6 +331,11 @@ def mancuerna(cp24):
 
 
 def pagina_metodo(r, n_pares, n_corridas, n_est, ahora):
+    try:                       # último mes con comparaciones (el histórico se suma cada semana)
+        a, m = map(int, str(r["mensual"].mes.max()).split("-"))
+        hasta_txt = f"{MESES_LARGO[m - 1]} de {a}"
+    except Exception:
+        hasta_txt = "hoy"
     cp = ordenar(r.get("correccion_plazos", pd.DataFrame()))
     sec_corr = ""
     if not cp.empty:
@@ -373,7 +378,7 @@ def pagina_metodo(r, n_pares, n_corridas, n_est, ahora):
                             + "".join(f"<td class='num'>{num(v, 2)}</td>" for v in row.values) + "</tr>")
         sec_temp = f"""<section>
   <div class="sec-head"><h2>Qué tan bien pronostican la temperatura</h2>
-  <p class="muted">Error medio de la temperatura a 2 m, sin corregir, en enero de 2025 a octubre de 2026: {entero(n_pares)} comparaciones de {entero(n_corridas)} corridas en {n_est} aeródromos. {d("Sesgo")} negativo: el modelo pronostica más frío de lo que ocurre.</p></div>
+  <p class="muted">Error medio de la temperatura a 2 m, sin corregir, de enero de 2025 a {hasta_txt}: {entero(n_pares)} comparaciones de {entero(n_corridas)} corridas en {n_est} aeródromos. {d("Sesgo")} negativo: el modelo pronostica más frío de lo que ocurre.</p></div>
   {tabla(["Modelo", "Plazo", "Comparaciones", "Error medio", "Sesgo"], f_pl)}
   <details><summary>Por mes, a 24 h</summary><div class="body">{tabla(["Mes", "Comparaciones"] + [f"{m} (°C)" for m in cols], f_me)}</div></details>
   <details><summary>Por aeródromo, a 24 h</summary><div class="body">{tabla(["Aeródromo"] + [f"{m} (°C)" for m in ORDEN if not es.empty and m in set(es.modelo)], f_es)}</div></details>

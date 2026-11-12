@@ -21,7 +21,7 @@ concurrency:
 jobs:
   leer:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -43,6 +43,13 @@ jobs:
           DMC_USUARIO: ${{ secrets.DMC_USUARIO }}
           DMC_TOKEN: ${{ secrets.DMC_TOKEN }}
         run: python estaciones/dmc.py
+      - name: Día completo de la red DMC (una vez al día; horas que faltan y resumen para el riesgo de incendio)
+        continue-on-error: true
+        timeout-minutes: 20
+        env:
+          DMC_USUARIO: ${{ secrets.DMC_USUARIO }}
+          DMC_TOKEN: ${{ secrets.DMC_TOKEN }}
+        run: python estaciones/dmc.py --rellenar 3
       - name: Lluvia pronosticada frente a medida
         run: python estaciones/verificar_lluvia.py
       - name: Guardar

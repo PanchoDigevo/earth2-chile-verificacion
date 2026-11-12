@@ -51,7 +51,7 @@ def estacion_para(p, est):
     return min(cand)
 
 
-def observado(obs, wmo, fin_utc):
+def observado(obs, wmo, fin_utc, _total=True):
     """Lluvia medida en las 6 h que terminan en fin_utc, o None si faltan datos."""
     o = obs.get(wmo, {})
     r = o.get(fin_utc)
@@ -60,7 +60,22 @@ def observado(obs, wmo, fin_utc):
     horas = [o.get(fin_utc - dt.timedelta(hours=k)) for k in range(6)]
     if all(h and h["mm_1h"] != "" for h in horas):
         return round(sum(float(h["mm_1h"]) for h in horas), 1)
+    # desde el 28-oct-2026 las estaciones con observador informan a las 12 UTC la lluvia de 24 h y no la de 6 h:
+    # el bloque es ese total menos los tres bloques de 6 h anteriores
+    if _total and r and r.get("mm_24h") not in (None, ""):
+        previos = [observado(obs, wmo, fin_utc - dt.timedelta(hours=6 * k), False) for k in (1, 2, 3)]
+        if all(x is not None for x in previos):
+            return round(max(float(r["mm_24h"]) - sum(previos), 0.0), 1)
     return None
+
+
+def medido_24h(obs, wmo, fin_utc):
+    """Lluvia medida en las 24 h que terminan en fin_utc (el total informado, o la suma de cuatro bloques de 6 h)."""
+    r = obs.get(wmo, {}).get(fin_utc)
+    if r and r.get("mm_24h") not in (None, ""):
+        return float(r["mm_24h"])
+    bloques = [observado(obs, wmo, fin_utc - dt.timedelta(hours=6 * k)) for k in range(4)]
+    return None if any(b is None for b in bloques) else round(sum(bloques), 1)
 
 
 def main():

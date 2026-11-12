@@ -250,7 +250,8 @@ if __name__ == "__main__":
 ETAPAS = [
     ("Funciona hoy", "hecho",
      "Verificación diaria de tres pronósticos globales de 25 km (AIFS, IFS y GFS, que bajamos ya calculados) y corrección por estación "
-     "(medida: baja el error entre 19 y 28 %), junto a la referencia oficial: el pronóstico y el modelo WRF de la Dirección Meteorológica "
+     "(medida: baja el error entre 19 y 28 %) en 21 aeródromos y en 141 estaciones automáticas de la Dirección Meteorológica de Chile, "
+     "con lo que mide cada una en este momento, junto a la referencia oficial: el pronóstico y el modelo WRF de la Dirección Meteorológica "
      "de Chile, verificados con la misma vara. Sobre eso: pronóstico por comuna a 48 h y 15 días, 16 escenarios con el ensamble de IA de ECMWF, "
      "dos avisos de tormenta (ambiente a 72 h y salto de rayos del GOES-19 cada 5 min), monitor de lluvia y nieve en la cordillera, "
      "quebradas quemadas con respuesta por dirección, 76 cámaras públicas y el gemelo del lugar con la nieve pintada sobre el terreno."),

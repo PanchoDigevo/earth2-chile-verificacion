@@ -279,7 +279,7 @@ def escenarios_comunas(run, chile, pch, fechas):
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--fecha")
+    ap = argparse.ArgumentParser(); ap.add_argument("--fecha"); ap.add_argument("--forzar", action="store_true")
     a = ap.parse_args()
     os.makedirs(DATA, exist_ok=True)
     comunas = list(csv.DictReader(open(os.path.join(AQUI, "comunas.csv"), encoding="utf-8")))
@@ -287,6 +287,12 @@ def main():
     chile = list(csv.DictReader(open(os.path.join(AQUI, "..", "verificacion", "comunas.csv"), encoding="utf-8")))   # las 352 comunas
     puntos = [(float(c["lat"]), float(c["lon"])) for c in comunas + faenas + chile]
     run = ultima_corrida(dt.date.fromisoformat(a.fecha) if a.fecha else None)
+    try:
+        hecha = json.load(open(os.path.join(DATA, "actual.json"), encoding="utf-8"))["corrida"]
+    except Exception:
+        hecha = None
+    if hecha == f"{run:%Y-%m-%dT%H:%MZ}" and not a.forzar:     # lo dispara En vivo dos veces al día y queda el cron de respaldo
+        print("corrida AIFS-ENS", run, "ya procesada; nada que hacer"); return
     PASOS, MADRUGADA = pasos(run, 18), pasos(run, 6)
     print("corrida AIFS-ENS:", run, flush=True)
     t0 = time.time()

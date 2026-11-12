@@ -2,6 +2,8 @@ name: historico
 # Verificación retroactiva: extrae por meses los pronósticos históricos de AIFS, IFS y GFS en las estaciones,
 # baja el METAR histórico, consolida, analiza y publica historico.html. Todo lo pesado corre aquí, no en el Mac.
 on:
+  schedule:
+    - cron: "15 5 * * 1"         # cada lunes: el mes anterior y el actual (lo ya guardado se conserva y se suma)
   workflow_dispatch:
     inputs:
       desde:
@@ -33,9 +35,10 @@ jobs:
           python3 - <<'PY' >> "$GITHUB_OUTPUT"
           import calendar, datetime as dt, json, os
           solo = "${{ inputs.solo_analizar }}" == "true"
-          a0, m0 = map(int, "${{ inputs.desde }}".split("-")); a1, m1 = map(int, "${{ inputs.hasta }}".split("-"))
-          modelos = [m.strip() for m in "${{ inputs.modelos }}".split(",") if m.strip()]
           hoy = dt.date.today()
+          previo = (hoy.replace(day=1) - dt.timedelta(days=1)).strftime("%Y-%m")   # el programado: mes anterior y actual
+          a0, m0 = map(int, ("${{ inputs.desde }}" or previo).split("-")); a1, m1 = map(int, ("${{ inputs.hasta }}" or hoy.strftime("%Y-%m")).split("-"))
+          modelos = [m.strip() for m in ("${{ inputs.modelos }}" or "aifs,ifs,gfs").split(",") if m.strip()]
           inc = []
           a, m = a0, m0
           while (a, m) <= (a1, m1) and not solo:
@@ -69,7 +72,7 @@ jobs:
     timeout-minutes: 300
     strategy:
       fail-fast: false
-      max-parallel: 15
+      max-parallel: 6              # ECMWF frena las descargas con muchas a la vez
       matrix: ${{ fromJSON(needs.preparar.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4

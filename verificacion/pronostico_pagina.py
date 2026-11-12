@@ -422,10 +422,12 @@ JS = r"""
     const box = $('quince'), q = D15 && D15.comunas[sel];
     if (!q || !q.length) { box.innerHTML = '<p class="vacio">Los 15 días se calculan una vez al día; todavía no están para esta comuna.</p>'; $('quince-pie').textContent = ''; return; }
     const aj = d && d.aj15 ? d.aj15 : {}, bx = aj.tmax || 0, bn = aj.tmin || 0;
-    const dias = q.map(x => ({f: fecha(x.f), tx: x.tmax.map(v => v - bx), tn: x.tmin[1] == null ? null : x.tmin.map(v => v - bn), p1: x.p1, ll: x.ll, v: x.v, nub: x.nub}));
+    const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+    // los días que ya pasaron no se muestran (la corrida del ensamble puede ser de ayer)
+    const dias = q.map(x => ({f: fecha(x.f), tx: x.tmax.map(v => v - bx), tn: x.tmin[1] == null ? null : x.tmin.map(v => v - bn), p1: x.p1, ll: x.ll, v: x.v, nub: x.nub}))
+      .filter(x => x.f.d >= hoy);
     const lo = Math.floor(Math.min(...dias.map(x => x.tn ? x.tn[0] : x.tx[0]))), hi = Math.ceil(Math.max(...dias.map(x => x.tx[2])));
     const pos = v => 100 * (v - lo) / Math.max(hi - lo, 1);
-    const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
     box.innerHTML = dias.map(x => { const dif = Math.round((x.f.d - hoy) / 864e5), nom = dif === 0 ? 'Hoy' : dif === 1 ? 'Mañana' : DIA3[x.f.d.getDay()][0].toUpperCase() + DIA3[x.f.d.getDay()].slice(1);
       const a = x.tn ? x.tn[0] : x.tx[0], b = x.tx[2], a2 = x.tn ? x.tn[1] : x.tx[1], b2 = x.tx[1];
       return `<div class="q-fila"><div class="dia">${nom}<small>${x.f.d.getDate()}/${x.f.d.getMonth() + 1}</small></div><div class="ic">${icono(CIELO(x.nub, x.ll[0], 15), 22)}</div>

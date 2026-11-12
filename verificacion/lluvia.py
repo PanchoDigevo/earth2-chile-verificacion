@@ -5,9 +5,10 @@ Pareja de cada aeródromo: la estación SYNOP que transmite lluvia más cercana,
 DESNIVEL_M de diferencia de altura (casi siempre la del mismo aeródromo, a menos de 1 km), salvo las de EXCLUIDAS.
 Sin pareja, no se compara.
 
-Lluvia medida en 24 h: los cuatro bloques de 6 h que terminan en la hora válida; cada bloque es el total de 6 h que
-informan las estaciones con observador o la suma de las 6 lluvias horarias (estaciones/verificar_lluvia.py). Si falta
-un bloque, ese día no se compara. Lluvia pronosticada: acumulado al plazo menos acumulado 24 h antes, en el punto de
+Lluvia medida en 24 h: el total de 24 h que informan las estaciones con observador a las 12 UTC (desde el 28-oct-2026)
+o los cuatro bloques de 6 h que terminan en la hora válida; cada bloque es el total de 6 h que informan las estaciones
+con observador o la suma de las 6 lluvias horarias (estaciones/verificar_lluvia.py). Si falta un bloque, ese día no
+se compara. Lluvia pronosticada: acumulado al plazo menos acumulado 24 h antes, en el punto de
 grilla más cercano. Fuentes del pronóstico: data/pronostico_puntos.csv (columna tp_fc, pipeline diario) y
 historico/data/pronosticos.csv.gz (corridas de 00 y 12 UTC desde el 1-oct-2026, cuando empiezan los SYNOP).
 
@@ -23,7 +24,7 @@ AQUI = os.path.dirname(os.path.abspath(__file__))
 ESTACIONES = os.path.join(AQUI, "..", "estaciones")
 sys.path.insert(0, ESTACIONES)
 import synop                                       # noqa: E402
-from verificar_lluvia import observado, km         # noqa: E402
+from verificar_lluvia import medido_24h, km           # noqa: E402
 
 AERODROMOS = os.path.join(AQUI, "..", "historico", "estaciones.csv")
 HIST = os.path.join(AQUI, "..", "historico", "data", "pronosticos.csv.gz")
@@ -62,12 +63,6 @@ def leer_obs(est=None):
     for r in synop.leer(set(est)):
         obs.setdefault(r["wmo"], {})[dt.datetime.strptime(r["hora_utc"], "%Y-%m-%d %H:%M").replace(tzinfo=UTC)] = r
     return obs
-
-
-def medido_24h(obs, wmo, fin):
-    """mm en las 24 h que terminan en fin (UTC), o None si falta alguno de los cuatro bloques de 6 h."""
-    bloques = [observado(obs, wmo, fin - dt.timedelta(hours=6 * k)) for k in range(4)]
-    return None if any(b is None for b in bloques) else round(sum(bloques), 1)
 
 
 def pronosticos():

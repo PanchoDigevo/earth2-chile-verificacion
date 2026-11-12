@@ -13,6 +13,7 @@ on:
         default: "340"
 permissions:
   contents: write
+  actions: write
 concurrency:
   group: envivo
   cancel-in-progress: false
@@ -49,9 +50,19 @@ jobs:
           DMC_USUARIO: ${{ secrets.DMC_USUARIO }}
           DMC_TOKEN: ${{ secrets.DMC_TOKEN }}
           DESTINO: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
+          GH_TOKEN: ${{ github.token }}
         run: |
-          fin=$(( $(date +%s) + MINUTOS * 60 )); i=0; ultimo_archivo=$(md5sum archivo/index.json 2>/dev/null | cut -c1-32)
+          fin=$(( $(date +%s) + MINUTOS * 60 )); i=0; ultimo_archivo=$(md5sum archivo/index.json 2>/dev/null | cut -c1-32); turno_esc=""
           while :; do
+            # Escenarios a 15 días: el cron de GitHub los larga con horas de atraso; este bucle, que corre siempre, los
+            # dispara cuando ECMWF ya publicó el ensamble (00 UTC desde las 09:00, 12 UTC desde las 21:00), una vez por turno
+            hm=$(date -u +%H%M); turno=""
+            if [ "$hm" -ge 2100 ]; then turno="$(date -u +%F)T21:00"; elif [ "$hm" -ge 0900 ]; then turno="$(date -u +%F)T09:00"; fi
+            if [ -n "$turno" ] && [ "$turno" != "$turno_esc" ]; then
+              n=$(gh run list -w escenarios.yml -L 5 --json createdAt -q "[.[] | select(.createdAt >= \"${turno}\")] | length" 2>/dev/null || echo 1)
+              [ "$n" = "0" ] && gh workflow run escenarios.yml --ref main && echo "escenarios: disparados ($turno)"
+              turno_esc=$turno
+            fi
             python envivo/actualizar.py --salida datos/envivo || echo "::warning::falló esta vuelta; se reintenta en 5 minutos"
             python envivo/camaras.py datos/envivo/camaras archivo || echo "::warning::cámaras: falló esta vuelta"
             if [ "$(md5sum archivo/index.json 2>/dev/null | cut -c1-32)" != "$ultimo_archivo" ]; then   # solo cuando entró un cuadro nuevo al archivo (cada 3 h)

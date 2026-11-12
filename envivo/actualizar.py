@@ -166,7 +166,7 @@ def lluvia(ruta):
         en = [i for i, g in cuencas if g.contains(Point(float(e["lon"]), float(e["lat"])))]
         if d <= RADIO_KM or w == "85594" or en:
             est.append({"wmo": w, "nombre": e["nombre"], "lat": float(e["lat"]), "lon": float(e["lon"]), "alt": int(e["altura_m"]), "km": round(d, 1),
-                        "cuencas": en})
+                        "cuencas": en, "codigo": e.get("codigo", "")})
     filas = synop.recientes(26)
     if not filas:
         print("lluvia: Ogimet no entregó datos; se mantiene la lectura anterior", flush=True); return
@@ -174,10 +174,17 @@ def lluvia(ruta):
     for f in filas:
         t = int(dt.datetime.strptime(f["hora_utc"], "%Y-%m-%d %H:%M").replace(tzinfo=dt.timezone.utc).timestamp())
         obs.setdefault(f["wmo"], {})[t] = [t, f["mm_1h"], f["mm_6h"], f["temp_c"]]
+    # los totales de 6 y 24 h de la API de la DMC (lectura anterior de dmc.json): si al SYNOP le falta una hora, la
+    # página los usa en vez de dejar la suma sin datos
+    try:
+        api = {x["c"]: [x["t"], x.get("mm6"), x.get("mm24")] for x in json.load(open(os.path.join(os.path.dirname(ruta), "dmc.json"), encoding="utf-8"))["estaciones"]}
+    except Exception:
+        api = {}
     json.dump({"generado": int(dt.datetime.now(dt.timezone.utc).timestamp()),
                "fuente": "Estaciones automáticas de la DMC, mensajes SYNOP de la OMM vía Ogimet (datos provisorios)",
                "estaciones": sorted(est, key=lambda e: e["km"]),
-               "obs": {w: [v[t] for t in sorted(v)] for w, v in obs.items() if any(e["wmo"] == w for e in est)}},
+               "obs": {w: [v[t] for t in sorted(v)] for w, v in obs.items() if any(e["wmo"] == w for e in est)},
+               "dmc": {e["wmo"]: api[e["codigo"]] for e in est if e["codigo"] in api}},
               open(ruta, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
     llovio = sorted({f["wmo"] for f in filas if (f["mm_1h"] or 0) > 0 or (f["mm_6h"] or 0) > 0})
     print(f"lluvia: {len(filas)} reportes SYNOP; con lluvia en 26 h: {', '.join(llovio) or 'ninguna'}", flush=True)

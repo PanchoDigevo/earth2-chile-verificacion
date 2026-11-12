@@ -162,7 +162,8 @@ JS = r"""
   async function quince() {
     const [q, e] = await Promise.all([j('datos/pronostico_15d.json'), j('datos/escenarios_15d.json')]);
     const d = q && q.comunas[G.comuna];
-    if (d) $('#g-quince').innerHTML = d.map(x => { const dd = new Date(x.f + 'T12:00');
+    const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+    if (d) $('#g-quince').innerHTML = d.filter(x => new Date(x.f + 'T12:00') >= hoy).map(x => { const dd = new Date(x.f + 'T12:00');
       return `<div class="q"><span class="d">${DIA3[dd.getDay()]} ${dd.getDate()}</span>${icono(CIELO(x.nub, x.ll[0], 15), 22)}<span class="mx">${n(x.tmax[1])}°</span><span class="mn">${x.tmin[1] == null ? '' : n(x.tmin[1]) + '°'}</span><span class="p">${x.p1 >= 20 ? n(x.p1) + ' %' : ''}</span></div>`; }).join('');
     const c = e && e.comunas[G.comuna];
     if (c) { const casos = e.escenarios.map(s => { const a = c.p[s.id] || []; let m = 0, i = -1; a.forEach((v, k) => { if (v > m) { m = v; i = k; } }); return [s, m, i]; }).filter(x => x[1] >= 10).sort((a, b) => b[1] - a[1]).slice(0, 6);

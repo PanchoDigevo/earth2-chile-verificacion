@@ -4,6 +4,8 @@ name: historico-dmc
 # históricos de AIFS, IFS y GFS en esos puntos (historico/extraer_puntos.py --puntos), y el análisis con la corrección por
 # estación aprendida con 2025 y medida en 2026 (historico/analizar_dmc.py). Los resultados alimentan Tu zona.
 on:
+  schedule:
+    - cron: "15 5 * * 3"         # cada miércoles: el mes anterior y el actual, sumados a lo anterior
   workflow_dispatch:
     inputs:
       modo:
@@ -25,8 +27,8 @@ on:
         description: "Números de corridas anteriores (separados por espacio, la más nueva primero) cuyas partes se suman a esta (vacío = ninguna)"
         default: ""
       paralelo:
-        description: "Partes de pronóstico a la vez (ECMWF frena con muchas: 6 para IFS y AIFS)"
-        default: "15"
+        description: "Partes de pronóstico a la vez (ECMWF frena con muchas: 4 para IFS y AIFS)"
+        default: "4"
 permissions:
   contents: write
   actions: write
@@ -35,7 +37,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   probar:
-    if: ${{ inputs.modo == 'probar' }}
+    if: ${{ (inputs.modo || 'completo') == 'probar' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -49,7 +51,7 @@ jobs:
         run: python historico/dmc_historico.py --probar
 
   preparar:
-    if: ${{ inputs.modo == 'completo' }}
+    if: ${{ (inputs.modo || 'completo') == 'completo' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     outputs:
@@ -73,10 +75,11 @@ jobs:
         run: |
           python3 - <<'PY' >> "$GITHUB_OUTPUT"
           import calendar, datetime as dt, json
-          a0, m0 = map(int, "${{ inputs.desde }}".split("-")); a1, m1 = map(int, "${{ inputs.hasta }}".split("-"))
-          modelos = [m.strip() for m in "${{ inputs.modelos }}".split(",") if m.strip()]
-          solo = {x.strip() for x in "${{ inputs.solo }}".split(",") if x.strip()}
           hoy = dt.date.today(); meses, trozos = [], []
+          previo = (hoy.replace(day=1) - dt.timedelta(days=1)).strftime("%Y-%m")   # el programado: mes anterior y actual
+          a0, m0 = map(int, ("${{ inputs.desde }}" or previo).split("-")); a1, m1 = map(int, ("${{ inputs.hasta }}" or hoy.strftime("%Y-%m")).split("-"))
+          modelos = [m.strip() for m in ("${{ inputs.modelos }}" or "aifs,ifs,gfs").split(",") if m.strip()]
+          solo = {x.strip() for x in "${{ inputs.solo }}".split(",") if x.strip()}
           a, m = a0, m0
           while (a, m) <= (a1, m1):
               meses.append(f"{a}-{m:02d}")
@@ -94,7 +97,7 @@ jobs:
 
   medido:
     needs: preparar
-    if: ${{ inputs.solo == '' }}
+    if: ${{ !inputs.solo }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
     strategy:
@@ -126,7 +129,7 @@ jobs:
     timeout-minutes: 300
     strategy:
       fail-fast: false
-      max-parallel: ${{ fromJSON(inputs.paralelo) }}
+      max-parallel: ${{ fromJSON(inputs.paralelo || '4') }}
       matrix: ${{ fromJSON(needs.preparar.outputs.trozos) }}
     steps:
       - uses: actions/checkout@v4
@@ -150,7 +153,7 @@ jobs:
 
   analizar:
     needs: [preparar, medido, extraer]
-    if: ${{ always() && (inputs.modo == 'solo_analizar' || needs.preparar.result == 'success') }}
+    if: ${{ always() && ((inputs.modo || 'completo') == 'solo_analizar' || needs.preparar.result == 'success') }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -160,24 +163,24 @@ jobs:
           python-version: "3.11"
           cache: pip
       - run: pip install -r historico/requirements.txt
-      - if: ${{ inputs.modo == 'completo' }}
+      - if: ${{ (inputs.modo || 'completo') == 'completo' }}
         uses: actions/download-artifact@v4
         with:
           name: catalogo-dmc
           path: historico
-      - if: ${{ inputs.modo == 'completo' }}
+      - if: ${{ (inputs.modo || 'completo') == 'completo' }}
         uses: actions/download-artifact@v4
         with:
           pattern: medido-*
           path: historico/data/dmc_obs
           merge-multiple: true
-      - if: ${{ inputs.modo == 'completo' }}
+      - if: ${{ (inputs.modo || 'completo') == 'completo' }}
         uses: actions/download-artifact@v4
         with:
           pattern: puntosdmc-*
           path: historico/data/puntos_dmc
           merge-multiple: true
-      - if: ${{ inputs.previa != '' }}
+      - if: ${{ inputs.previa }}
         name: Partes de las corridas ${{ inputs.previa }}
         # varias corridas separadas por espacio, la más nueva primero: en una parte repetida gana la primera
         env:

@@ -4,6 +4,18 @@ Lo hecho, en orden inverso y en simple. Los commits automáticos (verificación,
 
 Sitio: https://panchodigevo.github.io/earth2-chile-verificacion/
 
+## 12-nov-2026
+
+Revisión general del sitio; se arregló lo que estaba quieto o mal contado.
+
+- **La lluvia por aeródromo había quedado en el 27 de octubre** (Tu zona). Desde el 28-oct las estaciones con observador de la DMC informan a las 9 de la mañana la lluvia de 24 horas en vez de la de 6 horas, y el lector solo entendía la de 6. Ahora lee las dos (`estaciones/synop.py`, columna `mm_24h`), y los días perdidos se rellenan releyendo los mensajes desde el 28-oct y los pronósticos de esas semanas.
+- **Pronóstico oficial de la DMC, bien contado** (Resumen): la redacción de la tarde ya parte en mañana y se estaba contando como "hoy", así que "Hoy" tenía el doble de comparaciones. La anticipación se cuenta ahora desde el día de redacción (`fetch_dmc.py`, `dmc_oficial.py`).
+- **Riesgo de incendio de la DMC contra lo medido**: no aparecía porque el servicio abierto solo da ventanas de 6 horas y el workflow no alcanza a leerlas todas. Una vez al día se baja el día completo de cada estación (datos cada 15 minutos, `estaciones/dmc.py --rellenar`) y con eso se compara; de paso se completan las horas que faltaban en `estaciones/datos/dmc/`.
+- **En vivo, lluvia de 24 h sin "s/d"**: si al mensaje SYNOP le falta una hora, la tabla usa el total que informa la API de la DMC.
+- **Escenarios a 15 días al día**: GitHub los largaba con unas 7 horas de atraso (y a veces se cortaban), así que Pronóstico mostraba la corrida "atrasada" casi todo el día. Ahora los dispara el bucle de En vivo apenas ECMWF publica el ensamble (09:00 y 21:00 UTC) y se saltan si la corrida ya está hecha. Los días que ya pasaron no se muestran en la lista de 15 días (Pronóstico y Gemelo).
+- **Verificación histórica al día cada semana**: Método y la corrección por estación quedaban en octubre porque solo corrían a mano. Ahora `historico.yml` (lunes) y `historico-dmc.yml` (miércoles) suman el mes anterior y el actual.
+- **Resumen**: la franja de cifras y "En qué etapa estamos" cuentan también las 141 estaciones automáticas de la DMC.
+
 ## 30-oct-2026
 
 - **Lo que miden ahora las ~150 estaciones de la DMC, en el sitio.** Cada 10 minutos, dentro de la vuelta de En vivo (`envivo/actualizar.py`, `dmc.json` en la rama datos-en-vivo), se lee la última medición de toda la red de estaciones automáticas de la DMC: temperatura, humedad, viento, racha y lluvia en 6 y 24 h. En **En vivo** aparece como un número por estación sobre el mapa, con botones para cambiar entre temperatura, viento, racha y lluvia, uno para ver todo Chile, un resumen (más calor, más frío, racha más fuerte, dónde llovió) y la tabla completa de norte a sur. En **Tu zona**, la ficha de cada estación DMC empieza con su lectura del momento. Son datos provisorios de la DMC, sin revisar.

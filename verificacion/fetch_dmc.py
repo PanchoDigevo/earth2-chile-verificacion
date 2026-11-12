@@ -188,7 +188,9 @@ def oficial():
             if not any(tramos) and not tmin and not tmax:
                 continue
             filas.append({"emision": emision.group(1), "indice": indice.group(1), "ciudad": ciudad.group(1) if ciudad else indice.group(1),
-                          "icao": OFICIAL.get(indice.group(1), ""), "fecha": (dia0 + dt.timedelta(days=k)).isoformat(), "dia": k,
+                          "icao": OFICIAL.get(indice.group(1), ""), "fecha": (dia0 + dt.timedelta(days=k)).isoformat(),
+                          # anticipación desde el día de redacción: la redacción de la tarde ya parte en mañana
+                          "dia": (dia0 + dt.timedelta(days=k) - dt.date.fromisoformat(emision.group(1)[:10])).days,
                           "tmin": tmin.strip(), "tmax": tmax.strip(), "lluvia": int(any(LLUVIA.search(t) for t in tramos)),
                           "texto": " / ".join(f"{n}: {t}" for n, t in zip(TRAMOS, tramos) if t)})
     return filas

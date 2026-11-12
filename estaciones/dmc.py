@@ -9,12 +9,23 @@ Una sola consulta (getDatosRecientesRedEma) trae las últimas 12 horas de toda l
 10 minutos, ~8 MB). Se guarda solo la lectura de cada hora en punto, con temperatura, humedad, viento, presión y agua
 caída, en un CSV por mes: estaciones/datos/dmc/AAAA-MM.csv (horas en UTC). Incluye estaciones que no envían SYNOP.
 
-Uso: DMC_USUARIO=... DMC_TOKEN=... python estaciones/dmc.py"""
-import csv, json, os, re, sys, time, urllib.parse, urllib.request
+Una vez al día, --rellenar (getDatosRecientesEma/<código>/<año>/<mes>: el mes completo de una estación, cada 15
+minutos) completa las horas en punto que faltan en esos CSV (el workflow no corre a todas las horas) y escribe el
+resumen de cada día ya cerrado (00 a 24 UTC) en estaciones/datos/dmc_diario.csv: máxima, mínima, humedad mínima,
+viento medio de 10 minutos máximo y racha máxima (km/h) y n = lecturas del día (96 si están todas). Con eso se verifica
+el pronóstico de riesgo de incendio de la DMC (verificacion/dmc_oficial.py).
+
+Uso: DMC_USUARIO=... DMC_TOKEN=... python estaciones/dmc.py [--rellenar [DÍAS]]"""
+import csv, datetime as dt, json, os, re, sys, time, urllib.parse, urllib.request
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 CARPETA = os.path.join(AQUI, "datos", "dmc")
 API = "https://climatologia.meteochile.gob.cl/application/servicios/getDatosRecientesRedEma?{q}"
+MES = "https://climatologia.meteochile.gob.cl/application/servicios/getDatosRecientesEma/{c}/{a}/{m:02d}?{q}"
+DIARIO = os.path.join(AQUI, "datos", "dmc_diario.csv")
+CATALOGO = os.path.join(AQUI, "..", "historico", "estaciones_dmc.csv")
+C_DIARIO = ["fecha", "codigo", "tmax", "tmin", "hrmin", "vmax_kmh", "racha_kmh", "n"]
+NUDO = 1.852
 UA = {"User-Agent": "earth2-chile-verificacion/estaciones"}
 # columna de salida -> campo de la API (los valores vienen como texto con unidad: "14.5 °C", "6.0 kt")
 CAMPOS = {
@@ -98,5 +109,94 @@ def main():
     return 0
 
 
+def escribir_horas(nuevas):
+    """Mezcla lecturas horarias {(momento, código): fila} en los CSV por mes; las ya guardadas no se reemplazan."""
+    total = 0
+    for mes in sorted({k[0][:7] for k in nuevas}):
+        ruta = os.path.join(CARPETA, f"{mes}.csv")
+        filas = {k: v for k, v in nuevas.items() if k[0][:7] == mes}
+        if os.path.exists(ruta):
+            filas.update({(r["momento"], r["codigo"]): r for r in csv.DictReader(open(ruta, encoding="utf-8"))})
+        with open(ruta, "w", newline="", encoding="utf-8") as fh:
+            w = csv.DictWriter(fh, fieldnames=COLS, extrasaction="ignore"); w.writeheader()
+            for k in sorted(filas):
+                w.writerow(filas[k])
+        total += len(filas)
+    return total
+
+
+def rellenar(dias=3):
+    """Horas que faltan y resumen diario de los últimos días cerrados, desde los datos de 15 minutos de cada estación."""
+    usuario, token = os.environ.get("DMC_USUARIO", "").strip(), os.environ.get("DMC_TOKEN", "").strip()
+    if not usuario or not token:
+        print("DMC rellenar: faltan DMC_USUARIO y DMC_TOKEN"); return 0
+    hoy = dt.datetime.now(dt.timezone.utc).date()
+    ayer = (hoy - dt.timedelta(days=1)).isoformat()
+    previos = {}
+    if os.path.exists(DIARIO):
+        previos = {(r["fecha"], r["codigo"]): r for r in csv.DictReader(open(DIARIO, encoding="utf-8"))}
+    if any(f == ayer and int(r["n"] or 0) >= 90 for (f, _), r in previos.items()) and "--forzar" not in sys.argv:
+        print(f"DMC rellenar: el {ayer} ya está resumido"); return 0
+    est = list(csv.DictReader(open(CATALOGO, encoding="utf-8")))
+    desde = hoy - dt.timedelta(days=dias)
+    meses = sorted({(d.year, d.month) for d in (desde, hoy)})
+    q = urllib.parse.urlencode({"usuario": usuario, "token": token})
+    horas, dia = {}, {}
+    for e in est:
+        for a, m in meses:
+            j = get(MES.format(c=e["codigo"], a=a, m=m, q=q), intentos=2)
+            for d in registros(j):
+                try:
+                    t = dt.datetime.strptime(str(d["momento"])[:16], "%Y-%m-%d %H:%M")
+                except ValueError:
+                    continue
+                if t.date() < desde or t.date() >= hoy:
+                    continue
+                if t.minute == 0:
+                    fila = {"momento": f"{t:%Y-%m-%d %H:%M}", "codigo": e["codigo"], "nombre": e["nombre"], "lat": e["lat"],
+                            "lon": e["lon"], "altura_m": e["elev"]}
+                    fila.update({c: numero(d.get(k)) for c, k in CAMPOS.items()})
+                    horas[(fila["momento"], e["codigo"])] = fila
+                x = dia.setdefault((t.date().isoformat(), e["codigo"]), {"t": [], "hr": [], "v": [], "r": [], "n": 0})
+                x["n"] += 1
+                for c, k in (("t", "temperatura"), ("hr", "humedadRelativa"), ("v", "fuerzaDelVientoPromedio10Minutos"),
+                             ("r", "fuerzaDelViento10MinutosMax")):
+                    if numero(d.get(k)) != "":
+                        x[c].append(float(numero(d.get(k))))
+            time.sleep(1)
+    for (f, c), x in dia.items():
+        previos[(f, c)] = {"fecha": f, "codigo": c, "tmax": max(x["t"], default=""), "tmin": min(x["t"], default=""),
+                           "hrmin": min(x["hr"], default=""), "vmax_kmh": round(max(x["v"]) * NUDO, 1) if x["v"] else "",
+                           "racha_kmh": round(max(x["r"]) * NUDO, 1) if x["r"] else "", "n": x["n"]}
+    with open(DIARIO, "w", newline="", encoding="utf-8") as fh:
+        w = csv.DictWriter(fh, fieldnames=C_DIARIO); w.writeheader()
+        for k in sorted(previos):
+            w.writerow(previos[k])
+    total = escribir_horas(horas) if horas else 0
+    print(f"DMC rellenar: {len(dia)} estación-día resumidos ({len({c for _, c in dia})} estaciones), "
+          f"{len(horas)} lecturas horarias; {total} filas en los meses tocados")
+    return 0
+
+
+def registros(x):
+    """La lista de lecturas (diccionarios con 'momento') dentro de la respuesta, sin suponer su forma exacta."""
+    if isinstance(x, list):
+        if x and isinstance(x[0], dict) and "momento" in x[0]:
+            return x
+        x = list(x)
+    elif isinstance(x, dict):
+        x = list(x.values())
+    else:
+        return []
+    for y in x:
+        r = registros(y)
+        if r:
+            return r
+    return []
+
+
 if __name__ == "__main__":
+    if "--rellenar" in sys.argv:
+        i = sys.argv.index("--rellenar")
+        sys.exit(rellenar(int(sys.argv[i + 1]) if len(sys.argv) > i + 1 and sys.argv[i + 1].isdigit() else 3))
     sys.exit(main())

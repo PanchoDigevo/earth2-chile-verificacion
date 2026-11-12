@@ -3,13 +3,14 @@ Pascua y Juan Fernández).
 
 Las estaciones de la Dirección Meteorológica de Chile (DMC) envían cada hora un mensaje SYNOP al Sistema Mundial de
 Telecomunicación de la OMM, con la lluvia de la última hora (grupo 6RRR5 de la sección 333) y la temperatura. Las que
-tienen observador (Quinta Normal, Pudahuel) informan a las 00/06/12/18 UTC la lluvia de 6 h en vez de la de 1 h.
+tienen observador (Quinta Normal, Pudahuel) informan a las 00/06/18 UTC la lluvia de 6 h en vez de la de 1 h, y desde el
+28-oct-2026 a las 12 UTC la de 24 h (grupo 6RRR4, o 7RRRR de la sección 333) en vez de la de 6 h.
 Los mensajes son datos esenciales de libre intercambio (Resolución 40 de la OMM); se leen desde Ogimet, que los
 redistribuye sin clave. Se pide un bloque de 2 días por consulta, con pausas y reintentos acotados.
 
 Guarda un CSV por mes en estaciones/datos/synop/AAAA-MM.csv (una fila por estación y hora; las estaciones están en
 catalogo.csv, con nombre, coordenadas y altura):
-  wmo, hora_utc, mm_1h, mm_6h, temp_c      (vacío = no informado; 0 = informó que no llovió)
+  wmo, hora_utc, mm_1h, mm_6h, temp_c, mm_24h   (vacío = no informado; 0 = informó que no llovió)
 
 Uso:
   python estaciones/synop.py                    -> agrega las últimas 48 h
@@ -21,7 +22,7 @@ import argparse, csv, datetime as dt, os, re, time, urllib.request
 AQUI = os.path.dirname(os.path.abspath(__file__))
 CATALOGO = os.path.join(AQUI, "catalogo.csv")
 CARPETA = os.path.join(AQUI, "datos", "synop")
-CAMPOS = ["wmo", "hora_utc", "mm_1h", "mm_6h", "temp_c"]
+CAMPOS = ["wmo", "hora_utc", "mm_1h", "mm_6h", "temp_c", "mm_24h"]
 OGIMET = "https://www.ogimet.com/cgi-bin/getsynop?block={b}&begin={0:%Y%m%d%H}00&end={1:%Y%m%d%H}00"
 LISTA = "https://www.ogimet.com/display_stations.php?lang=en&tipo=AND&isyn=&oaci=&nombre=&estado=Chile&Send=Send"
 COLUMNAS_CAT = ["red", "codigo", "wmo", "nombre", "lat", "lon", "altura_m", "lectura", "nota"]
@@ -74,7 +75,7 @@ def decodificar(linea):
         if x in ("333", "555", "444", "222"):
             sec = int(x[0]); continue
         (s1 if sec == 1 else s3 if sec == 3 else []).append(x)
-    out = {"wmo": p[0], "hora_utc": f"{hora:%Y-%m-%d %H:%M}", "mm_1h": None, "mm_6h": None, "temp_c": None}
+    out = {"wmo": p[0], "hora_utc": f"{hora:%Y-%m-%d %H:%M}", "mm_1h": None, "mm_6h": None, "temp_c": None, "mm_24h": None}
     for x in s1[2:]:                                 # se saltan iRixhVV y Nddff
         if len(x) != 5:
             continue
@@ -82,6 +83,8 @@ def decodificar(linea):
             out["temp_c"] = (-1 if x[1] == "1" else 1) * int(x[2:]) / 10
         elif x[0] == "6" and x[4] == "1":
             out["mm_6h"] = mm(x[1:4])
+        elif x[0] == "6" and x[4] == "4":
+            out["mm_24h"] = mm(x[1:4])
     seis = [x for x in s3 if len(x) == 5 and x[0] == "6"]
     if seis:                                         # el último grupo 6 de la sección 3 (antes van los de radiación)
         x = seis[-1]
@@ -89,6 +92,9 @@ def decodificar(linea):
             out["mm_1h"] = mm(x[1:4])
         elif x[4] == "1" and out["mm_6h"] is None:
             out["mm_6h"] = mm(x[1:4])
+    siete = [x for x in s3 if len(x) == 5 and x[0] == "7" and "/" not in x]
+    if siete and out["mm_24h"] is None and hora.hour == 12:   # 7RRRR: 24 h en décimas; 9999 = traza
+        out["mm_24h"] = 0.0 if siete[0][1:] == "9999" else int(siete[0][1:]) / 10
     return out
 
 

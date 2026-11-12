@@ -858,7 +858,12 @@ def pagina_resumen(est, ahora, ll=None):
         franja.append(f'<div><span class="v">{num(c["aifs_g"], 1)}<small> °C</small></span><p>{d("error medio")} de la mejor IA global ({d("AIFS")}) al pronosticar mañana, en 2026</p></div>')
     if "mejora_min" in c:
         franja.append(f'<div><span class="v">{num(c["mejora_min"], 0)}–{num(c["mejora_max"], 0)}<small> %</small></span><p>menos error con el {d("corrección por estación", "ajuste chileno")}, aprendido en 2025 y probado en 2026</p></div>')
-    franja.append(f'<div><span class="v">{n_est}</span><p>aeródromos, de Arica a Punta Arenas, contra los que se mide cada pronóstico cuatro veces al día</p></div>')
+    n_dmc = len(datos_estaciones_dmc())
+    if n_dmc:
+        franja.append(f'<div><span class="v">{n_est + n_dmc}</span><p>puntos de medición contra los que se verifica cada pronóstico: '
+                      f'{n_est} aeródromos y {n_dmc} estaciones automáticas de la Dirección Meteorológica de Chile</p></div>')
+    else:
+        franja.append(f'<div><span class="v">{n_est}</span><p>aeródromos, de Arica a Punta Arenas, contra los que se mide cada pronóstico cuatro veces al día</p></div>')
     franja.append(f'<div><span class="v">{len(com)}</span><p>comunas con pronóstico a 48 horas y 15 días, con su margen de duda</p></div>')
 
     puertas = []

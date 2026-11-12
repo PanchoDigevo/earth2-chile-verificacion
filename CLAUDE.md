@@ -35,7 +35,7 @@ Regla: los cambios de régimen (El Niño, olas de calor marinas) se detectan des
 
 ## Próximos pasos técnicos
 
-1. Sitio: serie de 30 días, precipitación (ya hay lluvia medida en `estaciones/`); más estaciones DMC cuando haya token; acceso a la DGA. (IFS y GFS ya se comparan; el mapa ya colorea por error y modelo.)
+1. Sitio: serie de 30 días; acceso a la DGA (captcha: lo pide Pancho). Hecho: IFS, GFS, WRF de la DMC y su pronóstico oficial comparados; lluvia medida por aeródromo; 141 estaciones DMC en Tu zona y en vivo; avisos de tormenta probados (Eventos). Los cron de GitHub se atrasan horas: lo que debe salir a tiempo lo dispara el bucle de `envivo.yml`; `historico.yml` y `historico-dmc.yml` corren cada semana.
 2. Hindcast: catálogo de eventos (`hindcast/eventos/`), capa de lluvia, capa de superficie para RM y V Región, cruce con la verdad. Resultado: "de N eventos, M marcados con X h de anticipación".
 3. Página de aviso simulado: cómo se ve el mensaje para un municipio.
 4. Capa de superficie y mapa de quebradas quemadas (primera venta, sin GPU): Sentinel-2 dNBR del verano 2026 sobre Santiago oriente (incendio de enero sobre San Carlos de Apoquindo, ~1.012 ha), DEM Copernicus 30 m → pendiente, cauces OSM/DGA, humedad SMAP, catálogo de remociones en masa de SERNAGEOMIN. Salida: GeoJSON de cuencas de quebrada con quema × pendiente × historial, publicado en `site/quebradas.html` sobre el mapa de Natural Earth + teselas abiertas. Luego, umbral de intensidad-duración tipo USGS por cuenca para el aviso. Eventos: `hindcast/eventos/eventos_2026.csv`.

@@ -13,6 +13,9 @@ on:
       desde:
         description: "Rellenar desde esta fecha (YYYY-MM-DD, UTC; vacío = últimas 48 h)"
         default: ""
+      dias_dmc:
+        description: "Días cerrados de la red DMC a rellenar (datos cada 15 min; vacío = 3, una vez al día)"
+        default: ""
 permissions:
   contents: write
 concurrency:
@@ -21,7 +24,7 @@ concurrency:
 jobs:
   leer:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 55
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -45,11 +48,12 @@ jobs:
         run: python estaciones/dmc.py
       - name: Día completo de la red DMC (una vez al día; horas que faltan y resumen para el riesgo de incendio)
         continue-on-error: true
-        timeout-minutes: 20
+        timeout-minutes: 30
         env:
           DMC_USUARIO: ${{ secrets.DMC_USUARIO }}
           DMC_TOKEN: ${{ secrets.DMC_TOKEN }}
-        run: python estaciones/dmc.py --rellenar 3
+          DIAS: ${{ inputs.dias_dmc }}
+        run: python estaciones/dmc.py --rellenar ${DIAS:-3} ${DIAS:+--forzar}
       - name: Lluvia pronosticada frente a medida
         run: python estaciones/verificar_lluvia.py
       - name: Guardar

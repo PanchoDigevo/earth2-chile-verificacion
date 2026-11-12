@@ -7,8 +7,9 @@
    fuera. Por día de anticipación: 0 es el mismo día (la DMC publica solo la máxima), 1 es mañana... hasta 4. De cada día
    de emisión se usa la última redacción. Las comparaciones se acumulan en data/verif_dmc_oficial.csv.
 2. El pronóstico de riesgo de incendio (estaciones/datos/dmc_riesgo_pron.csv): máxima, humedad mínima y viento máximo de hoy
-   y mañana en ~150 estaciones, contra lo medido: el día completo de dmc_diario.csv (API, datos cada 15 minutos) o, si no
-   está, la máxima de dmc_extremos.csv y la humedad y el viento de dmc_riesgo_obs.csv con al menos MIN_LECTURAS lecturas. También la regla 30-30-30 (más de 30 °C, menos de 30 % de humedad y viento sobre
+   y mañana en ~150 estaciones, contra lo medido: máxima de dmc_extremos.csv, humedad mínima del día completo de
+   dmc_diario.csv (API, cada 15 minutos; si falta, dmc_riesgo_obs.csv con MIN_LECTURAS lecturas) y viento máximo de
+   dmc_riesgo_obs.csv (el del servicio parece racha: ~1,5 veces el viento medio de la API) con al menos MIN_6H ventanas. También la regla 30-30-30 (más de 30 °C, menos de 30 % de humedad y viento sobre
    30 km/h): cuántas veces la previó y cuántas se dio. Se recalcula cada vez desde los archivos de estaciones/.
 
 seccion() arma la tarjeta "Contra el pronóstico oficial" de la portada. Uso: python dmc_oficial.py (lo llama verify.py)."""
@@ -21,8 +22,8 @@ SALIDA = os.path.join(AQUI, "data", "verif_dmc_oficial.csv")
 EST = os.path.join(AQUI, "..", "estaciones", "datos")
 EXTREMOS, R_PRON, R_OBS, DIARIO = (os.path.join(EST, f) for f in ("dmc_extremos.csv", "dmc_riesgo_pron.csv", "dmc_riesgo_obs.csv",
                                                                   "dmc_diario.csv"))
-MIN_DIARIO = 80               # lecturas de 15 min en el día (de 96) para usar el resumen diario de la API
-VIENTO_DIARIO = "vmax_kmh"    # viento medio de 10 minutos máximo; ver el diagnóstico de riesgo()
+MIN_DIARIO = 80               # lecturas en el día para usar el resumen diario de la API (dmc_diario.csv)
+MIN_6H = 3                    # ventanas de 6 h del servicio abierto para usar su viento máximo del día
 UMBRAL = 1.0
 MIN_LECTURAS = 10
 DIAS = {0: "Hoy", 1: "Mañana", 2: "En 2 días", 3: "En 3 días", 4: "En 4 días"}
@@ -122,31 +123,33 @@ def treinta(t, h, v):
 def riesgo():
     """Pares pronóstico-medido del riesgo de incendio por estación, día y anticipación (0 hoy, 1 mañana)."""
     pr, ob, ext, di = leer(R_PRON), leer(R_OBS), leer(EXTREMOS), leer(DIARIO)
-    if not di.empty:
-        # el día completo desde la API (datos cada 15 min): el servicio abierto solo da ventanas de 6 h y el workflow no
-        # alcanza a leerlas todas
-        di = di[di.n >= MIN_DIARIO]
-        if not ob.empty:
-            c = di.merge(ob[ob.n >= 3], on=["fecha", "codigo"], suffixes=("", "_6h"))
-            if len(c):
-                print("riesgo, viento del servicio de 6 h frente a la API (diferencia media, km/h): "
-                      f"medio 10 min {(c.vmax - c.vmax_kmh).abs().mean():.1f}, racha {(c.vmax - c.racha_kmh).abs().mean():.1f} ({len(c)} estación-día)")
-        ob = di.rename(columns={VIENTO_DIARIO: "vmax"})[["fecha", "codigo", "tmax", "hrmin", "vmax"]].assign(n=MIN_LECTURAS)
-    if pr.empty or ob.empty:
+    if pr.empty:
         return pd.DataFrame()
+    # máxima: extremos del día del servicio abierto; humedad mínima: el día completo de la API (cada 15 min). El viento
+    # del servicio es cerca de 1,5 veces el máximo del viento medio de 10 min de la API (parece racha, que pocas estaciones
+    # informan en la API): se usa el del servicio, solo donde sus ventanas de 6 h cubren el día (MIN_6H lecturas)
+    partes = []
+    if not di.empty:
+        partes.append(di[di.n >= MIN_DIARIO][["fecha", "codigo", "tmax", "hrmin"]])
+    if not ob.empty:
+        partes.append(ob[ob.n >= MIN_LECTURAS][["fecha", "codigo", "tmax", "hrmin"]])
+    if not partes:
+        return pd.DataFrame()
+    med = pd.concat(partes).drop_duplicates(subset=["fecha", "codigo"]).rename(columns={"tmax": "tmax_api", "hrmin": "hrmin_obs"})
+    if not ext.empty:
+        med = med.merge(ext[["fecha", "codigo", "tmax"]].rename(columns={"tmax": "tmax_obs"}), on=["fecha", "codigo"], how="left")
+        med["tmax_obs"] = med.tmax_obs.fillna(med.tmax_api)
+    else:
+        med["tmax_obs"] = med.tmax_api
+    if not ob.empty:
+        med = med.merge(ob[ob.n >= MIN_6H][["fecha", "codigo", "vmax"]].rename(columns={"vmax": "vmax_obs"}), on=["fecha", "codigo"], how="left")
+    else:
+        med["vmax_obs"] = float("nan")
     hoy = dt.datetime.now(dt.timezone.utc).date().isoformat()
     pr = pr[pr.fecha < hoy].copy()
     pr["emision_dia"] = pr.emitido.str[:10]
     pr = pr.sort_values("emitido").drop_duplicates(subset=["emision_dia", "codigo", "fecha"], keep="first")
-    ob = ob[ob.n >= MIN_LECTURAS]
-    j = pr.merge(ob[["fecha", "codigo", "hrmin", "vmax", "tmax"]].rename(columns={"hrmin": "hrmin_obs", "vmax": "vmax_obs", "tmax": "tmax6_obs"}),
-                 on=["fecha", "codigo"])
-    if not ext.empty:
-        j = j.merge(ext[["fecha", "codigo", "tmax"]].rename(columns={"tmax": "tmax_obs"}), on=["fecha", "codigo"], how="left")
-        j["tmax_obs"] = j.tmax_obs.fillna(j.tmax6_obs)
-    else:
-        j["tmax_obs"] = j.tmax6_obs
-    return j
+    return pr.merge(med[["fecha", "codigo", "tmax_obs", "hrmin_obs", "vmax_obs"]], on=["fecha", "codigo"])
 
 
 def resumen_riesgo(j=None):
@@ -155,11 +158,14 @@ def resumen_riesgo(j=None):
         return []
     out = []
     for dia, g in j.groupby("dia"):
-        fc, ob = treinta(g.tmax, g.hrmin, g.vmax), treinta(g.tmax_obs, g.hrmin_obs, g.vmax_obs)
+        v = g.dropna(subset=["vmax", "vmax_obs"])
+        fc, ob = treinta(v.tmax, v.hrmin, v.vmax), treinta(v.tmax_obs, v.hrmin_obs, v.vmax_obs)
         out.append({"dia": int(dia), "n": int(len(g)), "mae_tmax": float((g.tmax - g.tmax_obs).abs().mean()),
-                    "mae_hr": float((g.hrmin - g.hrmin_obs).abs().mean()), "mae_v": float((g.vmax - g.vmax_obs).abs().mean()),
-                    "sesgo_v": float((g.vmax - g.vmax_obs).mean()), "ocurrio": int(ob.sum()), "previsto": int(fc.sum()),
-                    "acertado": int((ob & fc).sum()), "desde": str(g.fecha.min()), "hasta": str(g.fecha.max()), "estaciones": int(g.codigo.nunique())})
+                    "sesgo_tmax": float((g.tmax - g.tmax_obs).mean()),
+                    "mae_hr": float((g.hrmin - g.hrmin_obs).abs().mean()), "mae_v": float((v.vmax - v.vmax_obs).abs().mean()) if len(v) else None,
+                    "sesgo_v": float((v.vmax - v.vmax_obs).mean()) if len(v) else None, "n_v": int(len(v)),
+                    "ocurrio": int(ob.sum()), "previsto": int(fc.sum()), "acertado": int((ob & fc).sum()),
+                    "desde": str(g.fecha.min()), "hasta": str(g.fecha.max()), "estaciones": int(g.codigo.nunique())})
     return out
 
 
@@ -231,12 +237,14 @@ def seccion():
     if rr:
         filas = "".join(
             f'<tr><td class="l">{DIAS.get(r["dia"], r["dia"])}</td><td class="num">{num(r["mae_tmax"])} °C</td><td class="num">{num(r["mae_hr"], 0)} %</td>'
-            f'<td class="num">{num(r["mae_v"], 0)} km/h</td><td class="num">{r["n"]}</td><td class="l small">{r["ocurrio"]} medidos, {r["acertado"]} de ellos previstos · '
+            f'<td class="num">{"–" if r["mae_v"] is None else num(r["mae_v"], 0) + " km/h"}</td><td class="num">{r["n"]}</td><td class="l small">{r["ocurrio"]} medidos, {r["acertado"]} de ellos previstos · '
             f'{r["previsto"] - r["acertado"]} previstos que no se dieron</td></tr>' for r in rr)
         verif = (f'<div class="tabla"><table><thead><tr><th class="l">Pronóstico para</th><th>Error máxima</th><th>Error humedad mín.</th><th>Error viento máx.</th>'
                  f'<th>{d("comparaciones")}</th><th class="l">Días 30-30-30 (estación-día)</th></tr></thead><tbody>{filas}</tbody></table></div>'
                  f'<p class="small muted">Del {dia_txt(rr[0]["desde"])} al {dia_txt(max(r["hasta"] for r in rr))}, {max(r["estaciones"] for r in rr)} estaciones. Lo medido sale de la '
-                 f'misma red: el día completo (de 21 a 21 h en horario de verano) con sus lecturas cada 15 minutos.</p>')
+                 f'misma red: la máxima y la humedad mínima del día completo (de 21 a 21 h en horario de verano); el viento, de las ventanas de 6 h del '
+                 f'mismo servicio, solo en las {rr[0]["n_v"]} estación-día que las tienen casi completas (por eso la regla 30-30-30 se cuenta solo ahí). '
+                 f'En promedio, la máxima pronosticada queda {num(-rr[0]["sesgo_tmax"], 1)} °C bajo la medida. Pocos días todavía: las cifras cambian.</p>')
     else:
         verif = '<p class="small muted">La comparación con lo medido aparece cuando se cierre el primer día completo de lecturas.</p>'
     riesgo_html = f'<h3>Riesgo de incendio</h3>{previsto}{verif}'

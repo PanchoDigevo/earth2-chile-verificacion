@@ -2334,7 +2334,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-12,530008,Escuela Alberto Hurtado,-53.1669,-70.9453,60.0,Punta Arenas,15.1,1.3,0.0
 2026-11-12,540008,"Pampa Guanaco, Tierra del Fuego",-54.0508,-68.8039,150.0,Timaukel,14.7,-0.9,0.0
 2026-11-12,550001,"Guardiamarina Zañartu, Pto Williams Ad.",-54.9317,-67.6156,12.0,Cabo de Hornos (Ex-Navarino),13.0,4.9,0.0
-2026-11-12,950001,"C.M.A. Eduardo Frei Montalva, Antártica",-62.1919,-58.9797,45.0,Antártica,1.2,-2.1,0.0
+2026-11-12,950001,"C.M.A. Eduardo Frei Montalva, Antártica",-62.1919,-58.9797,45.0,Antártica,1.2,-2.1,1.0
 2026-11-12,950008,Glaciar Unión,-79.7683,-82.9114,768.0,Antártica,-19.0,-19.3,
 2026-11-12,950009,Carvajal - INACH,-67.7758,-68.8883,30.0,Antártica,-0.3,-3.3,
 2026-11-12,950010,Punta. Py - INACH,-64.9053,-63.7372,55.0,Antártica,-1.4,-1.8,

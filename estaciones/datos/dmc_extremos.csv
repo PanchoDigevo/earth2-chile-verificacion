@@ -2212,7 +2212,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-12,210901,Ollagüe,-21.2242,-68.2558,3708.0,Ollague,24.0,0.7,0.0
 2026-11-12,220002,"El Loa, Calama Ad.",-22.4981,-68.8925,2326.0,Calama,28.5,9.5,0.0
 2026-11-12,220026,"Chorrillos, Calama",-22.45,-68.9103,2298.0,Calama,28.5,12.0,0.0
-2026-11-12,220027,Tocopilla (C.D.P),-22.0639,-70.1861,81.0,Tocopilla,28.5,12.0,0.0
+2026-11-12,220027,Tocopilla (C.D.P),-22.0639,-70.1861,81.0,Tocopilla,,,0.0
 2026-11-12,220028,"Maria Elena, Salitrera",-22.3433,-69.6717,1292.0,María Elena,37.1,11.3,0.0
 2026-11-12,230001,Cerro Moreno Antofagasta Ap.,-23.4536,-70.4453,139.0,Antofagasta,23.3,19.8,0.0
 2026-11-12,230002,"Universidad Católica del Norte, Antofagasta",-23.6808,-70.4111,31.0,Antofagasta,24.1,20.0,0.0
@@ -2223,7 +2223,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-12,250005,Taltal,-25.4111,-70.4842,37.0,Antofagasta,23.8,18.1,0.0
 2026-11-12,260010,"Ad. Ricardo García Posada, El Salvador",-26.3131,-69.7514,1597.0,Diego de Almagro,28.4,14.9,0.0
 2026-11-12,270001,Mataveri  Isla de Pascua Ap.,-27.1589,-109.4325,69.0,Isla de Pascua,24.1,14.6,0.0
-2026-11-12,270008,"Desierto de Atacama, Caldera  Ad.",-27.2544,-70.7811,204.0,Caldera,22.4,16.3,0.1
+2026-11-12,270008,"Desierto de Atacama, Caldera  Ad.",-27.2544,-70.7811,204.0,Caldera,22.4,16.3,0.2
 2026-11-12,270009,Copiapó Universidad de Atacama,-27.3589,-70.3533,362.0,Copiapó,28.0,16.3,0.0
 2026-11-12,270022,"Copiapo, Cerro Antenas",-27.3628,-70.2831,946.0,Copiapó,26.8,12.6,0.0
 2026-11-12,280010,Freirina Nicolasa,-28.5169,-71.01,156.0,Freirina,24.9,15.5,0.0
@@ -2295,7 +2295,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-12,380018,Lonquimay,-38.455,-71.3619,912.0,Lonquimay,25.8,5.6,0.0
 2026-11-12,380029,La Araucanía Ad.,-38.9344,-72.6533,98.0,Temuco,20.0,11.3,0.0
 2026-11-12,380032,Rucamanque-UFRO,-38.6608,-72.6056,344.0,Temuco,19.7,9.8,0.0
-2026-11-12,380033,Maquehue-UFRO,-38.8378,-72.6944,74.0,Temuco,21.7,10.2,0.0
+2026-11-12,380033,Maquehue-UFRO,-38.8378,-72.6944,74.0,Temuco,21.7,10.2,0.1
 2026-11-12,380063,Victoria (Reg.),-38.2289,-72.3433,336.0,Victoria,21.3,9.4,0.0
 2026-11-12,380080,Lequecahue Tirúa Ad.,-38.3594,-73.4883,152.0,Tirúa,17.8,7.3,0.0
 2026-11-12,380082,Isla Mocha Ad.,-38.3839,-73.8692,6.0,Tirúa,17.8,7.3,0.0
@@ -2342,7 +2342,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-12,950014,Base Prat - INACH,-62.4789,-59.6639,5.0,Antártica,0.9,0.0,
 2026-11-12,950016,Escudero,-62.2028,-58.9617,55.0,Antártica,0.2,0.1,
 2026-11-12,950017,Cabo Melville,-62.0206,-57.6244,123.0,Antártica,0.2,0.1,
-2026-11-12,950018,Peñón Escuela de Montaña,-79.7922,-82.9872,863.0,Antártica,-22.4,-23.1,
-2026-11-12,950019,Islote D Hainaut,-63.9028,-60.7931,18.0,Antártica,-22.4,-23.1,
+2026-11-12,950018,Peñón Escuela de Montaña,-79.7922,-82.9872,863.0,Antártica,-20.5,-23.1,
+2026-11-12,950019,Islote D Hainaut,-63.9028,-60.7931,18.0,Antártica,-20.5,-23.1,
 2026-11-12,950021,Base J,-66.0081,-65.3392,3.0,Antártica,-0.5,-2.5,
 2026-11-12,950023,Isla Livington,-62.68,-60.4122,154.0,Antártica,-1.7,-1.7,

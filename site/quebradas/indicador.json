@@ -1,23 +1,16 @@
 {
-"generado": "2026-11-13T10:22Z",
+"generado": "2026-11-13T17:55Z",
 "lluvia_prevista": {
-"AIFS": {
-"corrida": "20261113_00",
-"mm6": 0.0,
-"mm24": 0.0,
-"mm48": 0.1
-},
 "GFS": {
-"corrida": "20261113_06",
+"corrida": "20261113_12",
 "mm6": 0.0,
 "mm24": 0.0,
-"mm48": 0.9
+"mm48": 2.6
 }
 },
 "mm6": 0.0,
 "mm24": 0.0,
 "horas_lluvia_7d": {
-"SCTB": 1,
 "SCEL": 2
 },
 "factor_antecedente": 1.04,

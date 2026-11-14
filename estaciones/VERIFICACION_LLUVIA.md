@@ -1,6 +1,6 @@
 # Lluvia pronosticada frente a lluvia medida
 
-Actualizado el 14-11-2026 16:26 (hora de Chile) por `estaciones/verificar_lluvia.py`. Bloques de 6 h del seguimiento
+Actualizado el 14-11-2026 20:20 (hora de Chile) por `estaciones/verificar_lluvia.py`. Bloques de 6 h del seguimiento
 horario (`hindcast/seguimiento/pronosticos.csv`) comparados con la estación DMC más cercana bajo 1.500 m
 (mensajes SYNOP, `estaciones/datos/synop/`). Un bloque cuenta como lluvioso desde 1 mm en 6 h.
 
@@ -19,7 +19,7 @@ Estación usada para cada punto:
 | GFS | hasta 24 h | 1496 | 96 | 95 | 277 | +0,6 | 634,0 / 1553,4 |
 | GFS | hasta 48 h | 1426 | 96 | 93 | 224 | +0,5 | 629,3 / 1328,4 |
 | GFS | hasta 72 h | 1364 | 72 | 65 | 192 | +0,3 | 413,5 / 881,8 |
-| IFS | hasta 24 h | 1458 | 96 | 85 | 328 | +1,1 | 634,0 / 2269,8 |
+| IFS | hasta 24 h | 1464 | 96 | 85 | 328 | +1,1 | 634,0 / 2269,8 |
 | IFS | hasta 48 h | 1400 | 96 | 89 | 289 | +0,9 | 629,3 / 1864,6 |
 | IFS | hasta 72 h | 1338 | 72 | 69 | 311 | +1,0 | 411,9 / 1732,7 |
 

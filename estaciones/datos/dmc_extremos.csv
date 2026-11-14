@@ -2368,7 +2368,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-13,240005,"Cerro Paranal, observatorio astronómico",-24.6275,-70.4047,2648.0,Taltal,21.4,16.6,
 2026-11-13,250005,Taltal,-25.4111,-70.4842,37.0,Antofagasta,25.4,19.6,0.0
 2026-11-13,260010,"Ad. Ricardo García Posada, El Salvador",-26.3131,-69.7514,1597.0,Diego de Almagro,28.6,15.7,0.0
-2026-11-13,270001,Mataveri  Isla de Pascua Ap.,-27.1589,-109.4325,69.0,Isla de Pascua,24.5,20.8,0.0
+2026-11-13,270001,Mataveri  Isla de Pascua Ap.,-27.1589,-109.4325,69.0,Isla de Pascua,24.5,20.8,16.8
 2026-11-13,270008,"Desierto de Atacama, Caldera  Ad.",-27.2544,-70.7811,204.0,Caldera,22.4,17.0,0.0
 2026-11-13,270009,Copiapó Universidad de Atacama,-27.3589,-70.3533,362.0,Copiapó,27.4,17.9,0.0
 2026-11-13,270022,"Copiapo, Cerro Antenas",-27.3628,-70.2831,946.0,Copiapó,26.4,13.4,0.0
@@ -2385,20 +2385,20 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-13,310040,"Vivero Conaf, Illapel",-31.6325,-71.1519,333.0,La Serena,25.3,15.6,0.0
 2026-11-13,310044,Salamanca Pisco Capel,-31.7872,-70.9594,516.0,Salamanca,25.3,15.6,0.0
 2026-11-13,320019,San Felipe Escuela Agrícola,-32.7553,-70.7069,662.0,Valparaíso,34.9,14.8,0.0
-2026-11-13,320041,Viña del Mar  Ad. (Torquemada),-32.9494,-71.4761,140.0,Viña del Mar,20.4,14.2,0.0
+2026-11-13,320041,Viña del Mar  Ad. (Torquemada),-32.9494,-71.4761,140.0,Viña del Mar,20.4,14.2,1.4
 2026-11-13,320045,"Llay Llay, Las Peñas",-32.8814,-70.9131,423.0,Llaillay,28.0,15.0,0.0
 2026-11-13,320049,Chincolco Liceo agrícola,-32.2225,-70.8317,665.0,Petorca,28.2,-48.3,0.0
 2026-11-13,320051,Los Libertadores,-32.8456,-70.1192,2955.0,Los Andes,,,0.0
 2026-11-13,320055,Catemu,-32.7589,-70.9428,443.0,Catemu,25.4,14.1,0.0
-2026-11-13,320056,"Quintero, Climatológica",-32.7842,-71.5228,5.0,Quintero,19.1,16.4,0.0
+2026-11-13,320056,"Quintero, Climatológica",-32.7842,-71.5228,5.0,Quintero,19.1,16.4,1.1
 2026-11-13,320063,Zapallar Catapilco,-32.5614,-71.2978,81.0,Zapallar,21.7,13.9,0.0
 2026-11-13,320121,El Tártaro (Putaendo),-32.5708,-70.7042,933.0,Putaendo,32.1,13.1,0.0
 2026-11-13,320122,Panquehue,-32.7692,-70.835,519.0,Panquehue,28.6,15.1,0.0
 2026-11-13,320123,"San Esteban, Liceo",-32.8011,-70.5781,835.0,San Esteban,33.9,15.7,0.0
 2026-11-13,320124,"Quillota, Liceo Agrícola",-32.9072,-71.2714,123.0,Quillota,24.4,12.8,0.0
-2026-11-13,320127,"Planta Transmisora Quintero, Armada",-32.8036,-71.4844,73.0,Quintero,20.8,12.8,0.0
-2026-11-13,330006,"Jardín Botánico (ex Parque Fauna), Viña del Mar",-33.045,-71.5019,50.0,Viña del Mar,20.8,-48.6,0.0
-2026-11-13,330007,"Rodelillo, Ad.",-33.0653,-71.5564,335.0,Viña del Mar,19.8,14.4,0.4
+2026-11-13,320127,"Planta Transmisora Quintero, Armada",-32.8036,-71.4844,73.0,Quintero,20.8,12.8,0.1
+2026-11-13,330006,"Jardín Botánico (ex Parque Fauna), Viña del Mar",-33.045,-71.5019,50.0,Viña del Mar,20.8,-48.6,1.5
+2026-11-13,330007,"Rodelillo, Ad.",-33.0653,-71.5564,335.0,Viña del Mar,19.8,14.4,5.1
 2026-11-13,330019,"Eulogio Sánchez, Tobalaba Ad.",-33.4553,-70.5486,649.0,La Reina,31.4,16.3,0.0
 2026-11-13,330020,"Quinta Normal, Santiago",-33.445,-70.6828,520.0,Estación Central,32.0,15.4,0.0
 2026-11-13,330021,Pudahuel Santiago,-33.3783,-70.7878,474.0,Pudahuel,32.3,15.7,0.0
@@ -2441,7 +2441,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-13,380018,Lonquimay,-38.455,-71.3619,912.0,Lonquimay,29.2,1.8,0.0
 2026-11-13,380029,La Araucanía Ad.,-38.9344,-72.6533,98.0,Temuco,27.4,6.9,0.0
 2026-11-13,380032,Rucamanque-UFRO,-38.6608,-72.6056,344.0,Temuco,25.6,9.4,0.0
-2026-11-13,380033,Maquehue-UFRO,-38.8378,-72.6944,74.0,Temuco,27.0,8.2,0.0
+2026-11-13,380033,Maquehue-UFRO,-38.8378,-72.6944,74.0,Temuco,27.0,8.2,0.1
 2026-11-13,380063,Victoria (Reg.),-38.2289,-72.3433,336.0,Victoria,27.0,9.8,0.0
 2026-11-13,380080,Lequecahue Tirúa Ad.,-38.3594,-73.4883,152.0,Tirúa,23.5,9.0,0.0
 2026-11-13,380082,Isla Mocha Ad.,-38.3839,-73.8692,6.0,Tirúa,23.5,9.0,0.0
@@ -2475,7 +2475,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-13,520012,Instituto de la Patagonia (Jorge Schytte),-53.13,-70.8875,11.0,Punta Arenas,13.5,6.4,0.0
 2026-11-13,520014,Punta Arenas Unidad Aeropolicial,-53.1528,-70.9264,53.0,Punta Arenas,13.9,8.4,0.0
 2026-11-13,520015,Magallanes Villa Tehuelche,-52.4289,-71.4161,176.0,Laguna Blanca,14.8,3.1,1.2
-2026-11-13,520030,"Cerro Sombrero, Estrecho de Magallanes",-52.7764,-69.2947,64.0,Primavera,15.0,3.8,0.0
+2026-11-13,520030,"Cerro Sombrero, Estrecho de Magallanes",-52.7764,-69.2947,64.0,Primavera,15.0,3.8,0.4
 2026-11-13,530005,"Fuentes Martínez, Porvenir Ad.",-53.2536,-70.3261,25.0,Porvenir,14.1,4.0,0.0
 2026-11-13,530008,Escuela Alberto Hurtado,-53.1669,-70.9453,60.0,Punta Arenas,13.5,6.4,0.0
 2026-11-13,540008,"Pampa Guanaco, Tierra del Fuego",-54.0508,-68.8039,150.0,Timaukel,14.2,1.4,0.1

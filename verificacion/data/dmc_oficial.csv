@@ -17549,3 +17549,93 @@ emision,indice,ciudad,icao,fecha,dia,tmin,tmax,lluvia,texto
 2026-11-14 06:04:06,vdelmar,Viña del Mar,,2026-11-16,2,13,18,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
 2026-11-14 06:04:06,vdelmar,Viña del Mar,,2026-11-17,3,11,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
 2026-11-14 06:04:06,vdelmar,Viña del Mar,,2026-11-18,4,10,22,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-14 06:33:16,constitucion,Constitución,,2026-11-14,0,,20,0,mañana: Cubierto / tarde: Nublado con viento entre 25 y 40 km/h / noche: Nublado variando a cubierto con viento entre 25 y 40 km/h
+2026-11-14 06:33:16,constitucion,Constitución,,2026-11-15,1,15,19,1,madrugada: Nublado con viento entre 25 y 40 km/h / mañana: Nublado y chubascos aislados con viento entre 25 y 40 km/h / tarde: Nublado y chubascos aislados con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h / noche: Nublado y chubascos débiles con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h
+2026-11-14 06:33:16,constitucion,Constitución,,2026-11-16,2,15,18,1,madrugada: Nublado y chubascos aislados / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 06:33:16,constitucion,Constitución,,2026-11-17,3,14,18,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 06:33:16,constitucion,Constitución,,2026-11-18,4,13,19,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 06:56:21,curico,Curicó,SCIC,2026-11-14,0,,28,0,mañana: Cubierto variando a nublado / tarde: Nubosidad parcial / noche: Nublado variando a cubierto
+2026-11-14 06:56:21,curico,Curicó,SCIC,2026-11-15,1,15,25,1,madrugada: Nublado / mañana: Nublado y chubascos aislados / tarde: Nublado y chubascos aislados con viento entre 25 y 40 km/h / noche: Nublado con viento entre 25 y 40 km/h
+2026-11-14 06:56:21,curico,Curicó,SCIC,2026-11-16,2,14,23,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 06:56:21,curico,Curicó,SCIC,2026-11-17,3,13,23,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nublado
+2026-11-14 06:56:21,curico,Curicó,SCIC,2026-11-18,4,11,24,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 06:56:21,molina,Molina,,2026-11-14,0,,28,0,mañana: Cubierto variando a nublado / tarde: Nubosidad parcial / noche: Nublado variando a cubierto
+2026-11-14 06:56:21,molina,Molina,,2026-11-15,1,15,25,1,madrugada: Nublado / mañana: Nublado y chubascos aislados / tarde: Nublado y chubascos aislados con viento entre 25 y 40 km/h / noche: Nublado con viento entre 25 y 40 km/h
+2026-11-14 06:56:21,molina,Molina,,2026-11-16,2,14,23,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 06:56:21,molina,Molina,,2026-11-17,3,13,23,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nublado
+2026-11-14 06:56:21,molina,Molina,,2026-11-18,4,11,24,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 06:56:34,concepcion,Concepción,SCIE,2026-11-14,0,,22,0,mañana: Cubierto / tarde: Nublado con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h / noche: Nublado con viento entre 25 y 40 km/h
+2026-11-14 06:56:34,concepcion,Concepción,SCIE,2026-11-15,1,15,20,1,madrugada: Nubosidad parcial con viento entre 25 y 40 km/h / mañana: Nublado y chubascos aislados con viento entre 25 y 40 km/h / tarde: Nublado y chubascos aislados con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h / noche: Nublado y chubascos débiles con viento entre 25 y 40 km/h
+2026-11-14 06:56:34,concepcion,Concepción,SCIE,2026-11-16,2,14,17,1,madrugada: Nublado y chubascos débiles con viento entre 25 y 40 km/h / mañana: Nublado y chubascos aislados con viento entre 25 y 40 km/h / tarde: Nublado y chubascos aislados / noche: Nublado
+2026-11-14 06:56:34,concepcion,Concepción,SCIE,2026-11-17,3,13,18,1,madrugada: Nublado / mañana: Nublado y chubascos aislados / tarde: Nublado y chubascos / noche: Nublado
+2026-11-14 06:56:34,concepcion,Concepción,SCIE,2026-11-18,4,12,17,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos aislados / tarde: Nublado / noche: Nublado
+2026-11-14 06:56:43,talcahuano,Talcahuano,,2026-11-14,0,,22,0,mañana: Cubierto / tarde: Nublado con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h / noche: Nublado con viento entre 25 y 40 km/h
+2026-11-14 06:56:43,talcahuano,Talcahuano,,2026-11-15,1,15,20,1,madrugada: Nubosidad parcial con viento entre 25 y 40 km/h / mañana: Nublado y chubascos aislados con viento entre 25 y 40 km/h / tarde: Nublado y chubascos aislados con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h / noche: Nublado y chubascos débiles con viento entre 25 y 40 km/h
+2026-11-14 06:56:43,talcahuano,Talcahuano,,2026-11-16,2,14,17,1,madrugada: Nublado y chubascos débiles con viento entre 25 y 40 km/h / mañana: Nublado y chubascos aislados con viento entre 25 y 40 km/h / tarde: Nublado y chubascos aislados / noche: Nublado
+2026-11-14 06:56:43,talcahuano,Talcahuano,,2026-11-17,3,13,18,1,madrugada: Nublado / mañana: Nublado y chubascos aislados / tarde: Nublado y chubascos / noche: Nublado
+2026-11-14 06:56:43,talcahuano,Talcahuano,,2026-11-18,4,12,17,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos aislados / tarde: Nublado / noche: Nublado
+2026-11-14 06:56:52,lota,Lota,,2026-11-14,0,,22,0,mañana: Cubierto / tarde: Nublado con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h / noche: Nublado con viento entre 25 y 40 km/h
+2026-11-14 06:56:52,lota,Lota,,2026-11-15,1,15,20,1,madrugada: Nubosidad parcial con viento entre 25 y 40 km/h / mañana: Nublado y chubascos aislados con viento entre 25 y 40 km/h / tarde: Nublado y chubascos aislados con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h / noche: Nublado y chubascos débiles con viento entre 25 y 40 km/h
+2026-11-14 06:56:52,lota,Lota,,2026-11-16,2,14,17,1,madrugada: Nublado y chubascos débiles con viento entre 25 y 40 km/h / mañana: Nublado y chubascos aislados con viento entre 25 y 40 km/h / tarde: Nublado y chubascos aislados / noche: Nublado
+2026-11-14 06:56:52,lota,Lota,,2026-11-17,3,13,18,1,madrugada: Nublado / mañana: Nublado y chubascos aislados / tarde: Nublado y chubascos / noche: Nublado
+2026-11-14 06:56:52,lota,Lota,,2026-11-18,4,12,17,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos aislados / tarde: Nublado / noche: Nublado
+2026-11-14 06:59:00,serena,La Serena/Coquimbo,SCSE,2026-11-14,0,,21,1,mañana: Cubierto y llovizna débil variando a nublado / tarde: Nublado / noche: Nublado
+2026-11-14 06:59:00,serena,La Serena/Coquimbo,SCSE,2026-11-15,1,17,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 06:59:00,serena,La Serena/Coquimbo,SCSE,2026-11-16,2,15,20,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 06:59:00,serena,La Serena/Coquimbo,SCSE,2026-11-17,3,14,21,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nublado
+2026-11-14 06:59:00,serena,La Serena/Coquimbo,SCSE,2026-11-18,4,13,22,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nublado
+2026-11-14 07:47:26,vdelmar,Viña del Mar,,2026-11-14,0,,19,1,mañana: Cubierto y llovizna fuerte / tarde: Cubierto con viento entre 25 y 40 km/h / noche: Cubierto
+2026-11-14 07:47:26,vdelmar,Viña del Mar,,2026-11-15,1,14,19,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 07:47:26,vdelmar,Viña del Mar,,2026-11-16,2,13,18,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 07:47:26,vdelmar,Viña del Mar,,2026-11-17,3,11,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-14 07:47:26,vdelmar,Viña del Mar,,2026-11-18,4,10,22,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-14 07:47:35,valpo,Valparaíso,,2026-11-14,0,,18,1,mañana: Cubierto y llovizna fuerte / tarde: Cubierto con viento entre 25 y 40 km/h / noche: Cubierto
+2026-11-14 07:47:35,valpo,Valparaíso,,2026-11-15,1,15,18,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 07:47:35,valpo,Valparaíso,,2026-11-16,2,14,17,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 07:47:35,valpo,Valparaíso,,2026-11-17,3,12,20,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-14 07:47:35,valpo,Valparaíso,,2026-11-18,4,11,21,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-14 07:53:02,stgoc,Santiago Sector Centro,,2026-11-14,0,,27,0,mañana: Cubierto y neblina variando a nublado / tarde: Nublado variando a nubosidad parcial / noche: Nublado variando a cubierto
+2026-11-14 07:53:02,stgoc,Santiago Sector Centro,,2026-11-15,1,13,23,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 07:53:02,stgoc,Santiago Sector Centro,,2026-11-16,2,12,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 07:53:02,stgoc,Santiago Sector Centro,,2026-11-17,3,12,22,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nublado
+2026-11-14 07:53:02,stgoc,Santiago Sector Centro,,2026-11-18,4,10,23,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-14 07:53:10,stgop,Santiago Sector Poniente,SCEL,2026-11-14,0,,26,0,mañana: Cubierto y neblina variando a nublado / tarde: Nublado variando a nubosidad parcial / noche: Nublado variando a cubierto
+2026-11-14 07:53:10,stgop,Santiago Sector Poniente,SCEL,2026-11-15,1,13,23,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 07:53:10,stgop,Santiago Sector Poniente,SCEL,2026-11-16,2,12,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 07:53:10,stgop,Santiago Sector Poniente,SCEL,2026-11-17,3,12,22,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nublado
+2026-11-14 07:53:10,stgop,Santiago Sector Poniente,SCEL,2026-11-18,4,10,23,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 07:53:16,stgos,Santiago Sector Sur,,2026-11-14,0,,26,0,mañana: Cubierto y neblina variando a nublado / tarde: Nublado variando a nubosidad parcial / noche: Nublado variando a cubierto
+2026-11-14 07:53:16,stgos,Santiago Sector Sur,,2026-11-15,1,11,23,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 07:53:16,stgos,Santiago Sector Sur,,2026-11-16,2,10,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 07:53:16,stgos,Santiago Sector Sur,,2026-11-17,3,10,22,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nublado
+2026-11-14 07:53:16,stgos,Santiago Sector Sur,,2026-11-18,4,8,23,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 07:53:25,curacavi,Curacaví,,2026-11-14,0,,25,0,mañana: Cubierto y neblina variando a nublado / tarde: Nublado / noche: Cubierto
+2026-11-14 07:53:25,curacavi,Curacaví,,2026-11-15,1,11,23,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 07:53:25,curacavi,Curacaví,,2026-11-16,2,10,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 07:53:25,curacavi,Curacaví,,2026-11-17,3,9,22,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 07:53:25,curacavi,Curacaví,,2026-11-18,4,9,23,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 07:53:32,melipilla,Melipilla,,2026-11-14,0,,25,0,mañana: Cubierto y neblina variando a nublado / tarde: Nublado / noche: Cubierto
+2026-11-14 07:53:32,melipilla,Melipilla,,2026-11-15,1,12,22,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 07:53:32,melipilla,Melipilla,,2026-11-16,2,11,20,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 07:53:32,melipilla,Melipilla,,2026-11-17,3,10,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 07:53:32,melipilla,Melipilla,,2026-11-18,4,10,22,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 07:53:39,rancagua,Rancagua,,2026-11-14,0,,27,0,mañana: Cubierto y neblina variando a nublado / tarde: Nublado / noche: Nublado variando a cubierto
+2026-11-14 07:53:39,rancagua,Rancagua,,2026-11-15,1,13,23,1,madrugada: Nublado y chubascos aislados / mañana: Nublado y chubascos aislados / tarde: Nublado / noche: Nublado
+2026-11-14 07:53:39,rancagua,Rancagua,,2026-11-16,2,11,20,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nublado y chubascos
+2026-11-14 07:53:39,rancagua,Rancagua,,2026-11-17,3,10,20,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nublado y chubascos
+2026-11-14 07:53:39,rancagua,Rancagua,,2026-11-18,4,10,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 07:53:45,rengo,Rengo,,2026-11-14,0,,27,0,mañana: Cubierto y neblina variando a nublado / tarde: Nublado / noche: Nublado variando a cubierto
+2026-11-14 07:53:45,rengo,Rengo,,2026-11-15,1,13,23,1,madrugada: Nublado y chubascos aislados / mañana: Nublado y chubascos aislados / tarde: Nublado / noche: Nublado
+2026-11-14 07:53:45,rengo,Rengo,,2026-11-16,2,11,20,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nublado y chubascos
+2026-11-14 07:53:45,rengo,Rengo,,2026-11-17,3,10,20,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nublado y chubascos
+2026-11-14 07:53:45,rengo,Rengo,,2026-11-18,4,10,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 07:53:52,snfernando,San Fernando,,2026-11-14,0,,26,0,mañana: Cubierto y neblina variando a nublado / tarde: Nublado / noche: Nublado variando a cubierto
+2026-11-14 07:53:52,snfernando,San Fernando,,2026-11-15,1,12,22,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nublado
+2026-11-14 07:53:52,snfernando,San Fernando,,2026-11-16,2,10,19,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 07:53:52,snfernando,San Fernando,,2026-11-17,3,9,19,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 07:53:52,snfernando,San Fernando,,2026-11-18,4,9,20,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 07:53:59,stacruz,Santa Cruz,,2026-11-14,0,,27,0,mañana: Cubierto y neblina variando a nublado / tarde: Nublado / noche: Cubierto
+2026-11-14 07:53:59,stacruz,Santa Cruz,,2026-11-15,1,11,24,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos aislados con viento entre 25 y 40 km/h / noche: Nublado con viento entre 25 y 40 km/h
+2026-11-14 07:53:59,stacruz,Santa Cruz,,2026-11-16,2,9,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 07:53:59,stacruz,Santa Cruz,,2026-11-17,3,9,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-14 07:53:59,stacruz,Santa Cruz,,2026-11-18,4,9,22,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado

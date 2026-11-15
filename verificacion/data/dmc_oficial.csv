@@ -18729,3 +18729,523 @@ emision,indice,ciudad,icao,fecha,dia,tmin,tmax,lluvia,texto
 2026-11-15 08:39:10,combarbala,Combarbalá,,2026-11-17,2,12,22,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
 2026-11-15 08:39:10,combarbala,Combarbalá,,2026-11-18,3,13,23,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
 2026-11-15 08:39:10,combarbala,Combarbalá,,2026-11-19,4,14,19,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos / noche: Nublado y chubascos aislados
+2026-11-15 14:20:38,antartica,Península Antártica,SCRM,2026-11-16,1,-3,0,1,"madrugada: Cubierto / mañana: Cubierto y neblina variando a nublado / tarde: Nublado variando a cubierto, nevadas débiles y neblina / noche: Cubierto, aguanieve débil y neblina"
+2026-11-15 14:20:38,antartica,Península Antártica,SCRM,2026-11-17,2,0,1,1,"madrugada: Cubierto, chubascos de aguanieve aislados y neblina / mañana: Cubierto y neblina / tarde: Cubierto y neblina / noche: Cubierto y neblina con viento entre 40 y 60 km/h y ráfagas de viento hasta 70 km/h"
+2026-11-15 14:20:38,antartica,Península Antártica,SCRM,2026-11-18,3,-1,1,1,"madrugada: Cubierto, lluvia débil y neblina con viento entre 40 y 60 km/h / mañana: Cubierto variando a nublado / tarde: Nublado variando a cubierto y neblina / noche: Cubierto y neblina"
+2026-11-15 14:20:38,antartica,Península Antártica,SCRM,2026-11-19,4,1,2,1,"madrugada: Cubierto, niebla y llovizna / mañana: Cubierto, niebla y llovizna / tarde: Cubierto y neblina / noche: Cubierto, lluvia y neblina"
+2026-11-15 14:20:38,antartica,Península Antártica,SCRM,2026-11-20,5,1,2,1,"madrugada: Cubierto, lluvia y neblina / mañana: Cubierto, lluvia y neblina / tarde: Cubierto, chubascos y neblina / noche: Cubierto, chubascos y neblina"
+2026-11-15 14:42:13,rapanui,Isla de Pascua,,2026-11-16,1,16,22,0,"madrugada: Nubosidad parcial, ocasionalmente nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial, ocasionalmente nublado con viento entre 25 y 40 km/h / noche: Nubosidad parcial con viento entre 25 y 40 km/h"
+2026-11-15 14:42:13,rapanui,Isla de Pascua,,2026-11-17,2,17,22,1,"madrugada: Nublado, ocasionalmente nubosidad parcial / mañana: Nublado, ocasionalmente nubosidad parcial con viento entre 25 y 40 km/h / tarde: Nublado, ocasionalmente nubosidad parcial con viento entre 25 y 40 km/h / noche: Nublado y chubascos aislados con viento entre 25 y 40 km/h"
+2026-11-15 14:42:13,rapanui,Isla de Pascua,,2026-11-18,3,19,21,1,madrugada: Cubierto y chubascos con viento entre 25 y 40 km/h / mañana: Cubierto y lluvia con viento entre 25 y 40 km/h / tarde: Cubierto y lluvia con viento entre 25 y 40 km/h / noche: Nublado y chubascos con viento entre 25 y 40 km/h
+2026-11-15 14:42:13,rapanui,Isla de Pascua,,2026-11-19,4,18,22,1,"madrugada: Nublado y chubascos ocasionales con viento entre 25 y 40 km/h / mañana: Nubosidad parcial, ocasionalmente nublado y chubascos aislados con viento entre 25 y 40 km/h / tarde: Nubosidad parcial, ocasionalmente nublado y chubascos aislados con viento entre 25 y 40 km/h / noche: Nubosidad parcial, ocasionalmente nublado"
+2026-11-15 14:42:13,rapanui,Isla de Pascua,,2026-11-20,5,17,22,0,"madrugada: Nubosidad parcial, ocasionalmente nublado / mañana: Nubosidad parcial, ocasionalmente nublado / tarde: Nubosidad parcial, ocasionalmente nublado / noche: Nubosidad parcial, ocasionalmente nublado"
+2026-11-15 14:43:09,angol,Angol,,2026-11-16,1,15,21,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nubosidad parcial
+2026-11-15 14:43:09,angol,Angol,,2026-11-17,2,13,21,1,madrugada: Nublado / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nubosidad parcial
+2026-11-15 14:43:09,angol,Angol,,2026-11-18,3,12,22,1,madrugada: Nublado / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 14:43:09,angol,Angol,,2026-11-19,4,12,20,1,madrugada: Nublado y chubascos / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:43:09,angol,Angol,,2026-11-20,5,11,22,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 14:44:29,temuco,Temuco,SCQP,2026-11-16,1,14,20,1,madrugada: Nublado y chubascos aislados / mañana: Nublado y chubascos aislados / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 14:44:29,temuco,Temuco,SCQP,2026-11-17,2,12,20,1,madrugada: Nublado y chubascos aislados / mañana: Nublado / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:44:29,temuco,Temuco,SCQP,2026-11-18,3,11,19,1,madrugada: Nublado y chubascos / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:44:29,temuco,Temuco,SCQP,2026-11-19,4,11,17,1,madrugada: Nublado y chubascos / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:44:29,temuco,Temuco,SCQP,2026-11-20,5,10,18,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 14:47:59,psaavedra,Puerto Saavedra,,2026-11-16,1,14,18,1,madrugada: Nublado y chubascos aislados / mañana: Nublado y chubascos aislados / tarde: Nublado y chubascos débiles con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h / noche: Nublado
+2026-11-15 14:47:59,psaavedra,Puerto Saavedra,,2026-11-17,2,13,17,1,madrugada: Nublado y chubascos aislados / mañana: Nublado y chubascos aislados / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 14:47:59,psaavedra,Puerto Saavedra,,2026-11-18,3,12,17,1,madrugada: Nublado / mañana: Nublado y chubascos / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 14:47:59,psaavedra,Puerto Saavedra,,2026-11-19,4,11,16,1,madrugada: Nublado / mañana: Nublado y chubascos aislados / tarde: Nublado y chubascos aislados / noche: Nubosidad parcial
+2026-11-15 14:47:59,psaavedra,Puerto Saavedra,,2026-11-20,5,10,18,1,madrugada: Nubosidad parcial / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 14:49:36,villarica,Villarrica/Pucón,,2026-11-16,1,13,18,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:49:36,villarica,Villarrica/Pucón,,2026-11-17,2,12,17,1,madrugada: Nublado / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos
+2026-11-15 14:49:36,villarica,Villarrica/Pucón,,2026-11-18,3,11,16,1,madrugada: Nublado y chubascos / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:49:36,villarica,Villarrica/Pucón,,2026-11-19,4,11,15,1,madrugada: Nublado y chubascos / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:49:36,villarica,Villarrica/Pucón,,2026-11-20,5,10,18,1,madrugada: Nublado y chubascos / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:50:47,panguipulli,Panguipulli,,2026-11-16,1,13,17,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos / noche: Nublado y chubascos débiles
+2026-11-15 14:50:47,panguipulli,Panguipulli,,2026-11-17,2,12,18,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 14:50:47,panguipulli,Panguipulli,,2026-11-18,3,12,16,1,madrugada: Nublado y chubascos / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:50:47,panguipulli,Panguipulli,,2026-11-19,4,11,16,1,madrugada: Nublado y chubascos / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:50:47,panguipulli,Panguipulli,,2026-11-20,5,10,18,1,madrugada: Nublado y chubascos / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:52:00,valdivia,Valdivia,SCVD,2026-11-16,1,13,20,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 14:52:00,valdivia,Valdivia,SCVD,2026-11-17,2,12,19,1,madrugada: Nublado / mañana: Nublado y chubascos aislados / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 14:52:00,valdivia,Valdivia,SCVD,2026-11-18,3,11,18,1,madrugada: Nublado y chubascos / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:52:00,valdivia,Valdivia,SCVD,2026-11-19,4,10,18,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:52:00,valdivia,Valdivia,SCVD,2026-11-20,5,10,19,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 14:52:31,ranco,Lago Ranco,,2026-11-16,1,13,19,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:52:31,ranco,Lago Ranco,,2026-11-17,2,12,19,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 14:52:31,ranco,Lago Ranco,,2026-11-18,3,12,16,1,madrugada: Nublado y chubascos / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:52:31,ranco,Lago Ranco,,2026-11-19,4,11,16,1,madrugada: Nublado y chubascos / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:52:31,ranco,Lago Ranco,,2026-11-20,5,10,17,1,madrugada: Nublado y chubascos / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:53:52,riobueno,Río Bueno,,2026-11-16,1,13,21,1,madrugada: Nublado y chubascos aislados / mañana: Nublado / tarde: Nublado y chubascos débiles / noche: Nublado
+2026-11-15 14:53:52,riobueno,Río Bueno,,2026-11-17,2,12,20,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 14:53:52,riobueno,Río Bueno,,2026-11-18,3,12,18,1,madrugada: Nublado / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 14:53:52,riobueno,Río Bueno,,2026-11-19,4,11,18,1,madrugada: Nublado / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:53:52,riobueno,Río Bueno,,2026-11-20,5,10,19,1,madrugada: Nublado / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:53:52,union,La Unión,,2026-11-16,1,13,21,1,madrugada: Nublado y chubascos aislados / mañana: Nublado / tarde: Nublado y chubascos débiles / noche: Nublado
+2026-11-15 14:53:52,union,La Unión,,2026-11-17,2,12,20,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 14:53:52,union,La Unión,,2026-11-18,3,12,18,1,madrugada: Nublado / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 14:53:52,union,La Unión,,2026-11-19,4,11,18,1,madrugada: Nublado / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:53:52,union,La Unión,,2026-11-20,5,10,19,1,madrugada: Nublado / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:54:51,melinka,Melinka,,2026-11-16,1,11,18,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-15 14:54:51,melinka,Melinka,,2026-11-17,2,12,16,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 14:54:51,melinka,Melinka,,2026-11-18,3,12,17,1,madrugada: Nublado y chubascos aislados / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 14:54:51,melinka,Melinka,,2026-11-19,4,11,16,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 14:54:51,melinka,Melinka,,2026-11-20,5,10,15,1,madrugada: Nublado y chubascos / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:56:08,lagoverde,Lago Verde,,2026-11-16,1,10,20,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nublado
+2026-11-15 14:56:08,lagoverde,Lago Verde,,2026-11-17,2,11,17,1,madrugada: Nublado / mañana: Nublado y chubascos aislados / tarde: Nublado / noche: Nublado
+2026-11-15 14:56:08,lagoverde,Lago Verde,,2026-11-18,3,8,18,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 14:56:08,lagoverde,Lago Verde,,2026-11-19,4,8,17,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:56:08,lagoverde,Lago Verde,,2026-11-20,5,6,16,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:58:25,osorno,Osorno,SCJO,2026-11-16,1,13,21,1,madrugada: Nublado y chubascos aislados / mañana: Nublado y chubascos aislados / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 14:58:25,osorno,Osorno,SCJO,2026-11-17,2,12,20,1,madrugada: Nublado y chubascos aislados / mañana: Nublado y chubascos aislados / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:58:25,osorno,Osorno,SCJO,2026-11-18,3,12,19,1,madrugada: Nublado / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:58:25,osorno,Osorno,SCJO,2026-11-19,4,10,19,1,madrugada: Nublado / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:58:25,osorno,Osorno,SCJO,2026-11-20,5,10,18,1,madrugada: Nublado / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:59:19,pmontt,Puerto Montt,SCTE,2026-11-16,1,14,20,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 14:59:19,pmontt,Puerto Montt,SCTE,2026-11-17,2,13,20,1,madrugada: Nublado y chubascos aislados / mañana: Nublado / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 14:59:19,pmontt,Puerto Montt,SCTE,2026-11-18,3,11,19,1,madrugada: Nublado y chubascos aislados / mañana: Nublado y chubascos aislados / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:59:19,pmontt,Puerto Montt,SCTE,2026-11-19,4,10,18,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 14:59:19,pmontt,Puerto Montt,SCTE,2026-11-20,5,10,17,1,madrugada: Nublado y chubascos / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 15:00:10,cochamo,Cochamó,,2026-11-16,1,12,18,1,madrugada: Nublado y chubascos / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 15:00:10,cochamo,Cochamó,,2026-11-17,2,11,18,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos aislados / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 15:00:10,cochamo,Cochamó,,2026-11-18,3,9,17,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 15:00:10,cochamo,Cochamó,,2026-11-19,4,8,17,1,madrugada: Nublado y chubascos / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 15:00:10,cochamo,Cochamó,,2026-11-20,5,8,16,1,madrugada: Nublado y chubascos / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 15:01:17,chaiten,Chaitén,,2026-11-16,1,13,17,1,madrugada: Nublado y chubascos / mañana: Nublado y chubascos / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 15:01:17,chaiten,Chaitén,,2026-11-17,2,13,16,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 15:01:17,chaiten,Chaitén,,2026-11-18,3,11,17,1,madrugada: Nublado / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 15:01:17,chaiten,Chaitén,,2026-11-19,4,10,17,1,madrugada: Nublado y chubascos / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 15:01:17,chaiten,Chaitén,,2026-11-20,5,9,15,1,madrugada: Nublado y chubascos / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 15:02:32,ancud,Ancud,,2026-11-16,1,13,19,1,madrugada: Nublado y chubascos aislados / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 15:02:32,ancud,Ancud,,2026-11-17,2,12,17,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 15:02:32,ancud,Ancud,,2026-11-18,3,11,16,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 15:02:32,ancud,Ancud,,2026-11-19,4,10,16,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 15:02:32,ancud,Ancud,,2026-11-20,5,10,15,1,madrugada: Nublado y chubascos / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 15:03:41,castro,Castro,,2026-11-16,1,14,17,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 15:03:41,castro,Castro,,2026-11-17,2,13,18,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 15:03:41,castro,Castro,,2026-11-18,3,11,16,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 15:03:41,castro,Castro,,2026-11-19,4,9,16,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 15:03:41,castro,Castro,,2026-11-20,5,9,15,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado
+2026-11-15 15:04:34,aysen,Puerto Aysén,SCAS,2026-11-16,1,12,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 15:04:34,aysen,Puerto Aysén,SCAS,2026-11-17,2,11,19,1,madrugada: Nublado / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 15:04:34,aysen,Puerto Aysén,SCAS,2026-11-18,3,10,17,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 15:04:34,aysen,Puerto Aysén,SCAS,2026-11-19,4,9,16,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 15:04:34,aysen,Puerto Aysén,SCAS,2026-11-20,5,8,16,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 15:04:34,cisnes,Puerto Cisnes,,2026-11-16,1,12,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 15:04:34,cisnes,Puerto Cisnes,,2026-11-17,2,11,19,1,madrugada: Nublado / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 15:04:34,cisnes,Puerto Cisnes,,2026-11-18,3,10,17,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 15:04:34,cisnes,Puerto Cisnes,,2026-11-19,4,9,16,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 15:04:34,cisnes,Puerto Cisnes,,2026-11-20,5,8,16,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 15:05:37,coyhaique,Coyhaique,SCCY,2026-11-16,1,9,22,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nublado
+2026-11-15 15:05:37,coyhaique,Coyhaique,SCCY,2026-11-17,2,10,18,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-15 15:05:37,coyhaique,Coyhaique,SCCY,2026-11-18,3,9,17,1,madrugada: Nublado y chubascos / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 15:05:37,coyhaique,Coyhaique,SCCY,2026-11-19,4,8,16,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 15:05:37,coyhaique,Coyhaique,SCCY,2026-11-20,5,7,15,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado
+2026-11-15 15:07:19,balmaceda,Balmaceda,SCBA,2026-11-16,1,9,22,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 15:07:19,balmaceda,Balmaceda,SCBA,2026-11-17,2,9,19,0,madrugada: Nubosidad parcial / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-15 15:07:19,balmaceda,Balmaceda,SCBA,2026-11-18,3,8,17,1,madrugada: Nublado / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos débiles
+2026-11-15 15:07:19,balmaceda,Balmaceda,SCBA,2026-11-19,4,7,16,1,madrugada: Nubosidad parcial / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nubosidad parcial
+2026-11-15 15:07:19,balmaceda,Balmaceda,SCBA,2026-11-20,5,6,15,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado
+2026-11-15 15:08:42,pibanez,Puerto Ingeniero Ibáñez,,2026-11-16,1,14,22,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 15:08:42,pibanez,Puerto Ingeniero Ibáñez,,2026-11-17,2,14,20,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-15 15:08:42,pibanez,Puerto Ingeniero Ibáñez,,2026-11-18,3,12,18,1,madrugada: Nublado / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 15:08:42,pibanez,Puerto Ingeniero Ibáñez,,2026-11-19,4,11,17,1,madrugada: Nubosidad parcial / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nubosidad parcial
+2026-11-15 15:08:42,pibanez,Puerto Ingeniero Ibáñez,,2026-11-20,5,10,16,1,madrugada: Nubosidad parcial / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nubosidad parcial
+2026-11-15 15:10:28,chchico,Chile Chico,,2026-11-16,1,14,23,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 15:10:28,chchico,Chile Chico,,2026-11-17,2,12,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-15 15:10:28,chchico,Chile Chico,,2026-11-18,3,12,19,1,madrugada: Nublado / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 15:10:28,chchico,Chile Chico,,2026-11-19,4,10,19,0,madrugada: Nubosidad parcial / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-15 15:10:28,chchico,Chile Chico,,2026-11-20,5,9,18,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nubosidad parcial
+2026-11-15 15:11:13,cochrane,Cochrane,,2026-11-16,1,10,22,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 15:11:13,cochrane,Cochrane,,2026-11-17,2,13,19,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-15 15:11:13,cochrane,Cochrane,,2026-11-18,3,11,17,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 15:11:13,cochrane,Cochrane,,2026-11-19,4,9,16,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 15:11:13,cochrane,Cochrane,,2026-11-20,5,7,15,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado
+2026-11-15 15:13:48,tortel,Caleta Tortel,,2026-11-16,1,10,19,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nublado
+2026-11-15 15:13:48,tortel,Caleta Tortel,,2026-11-17,2,11,18,1,madrugada: Nubosidad parcial / mañana: Nublado / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 15:13:48,tortel,Caleta Tortel,,2026-11-18,3,12,16,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 15:13:48,tortel,Caleta Tortel,,2026-11-19,4,9,13,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 15:13:48,tortel,Caleta Tortel,,2026-11-20,5,10,12,1,madrugada: Nublado y chubascos / mañana: Nublado y chubascos / tarde: Nublado y chubascos débiles / noche: Nublado
+2026-11-15 15:15:23,ohiggins,Villa O'Higgins,,2026-11-16,1,10,19,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 15:15:23,ohiggins,Villa O'Higgins,,2026-11-17,2,11,19,1,madrugada: Nubosidad parcial / mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nublado
+2026-11-15 15:15:23,ohiggins,Villa O'Higgins,,2026-11-18,3,11,16,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 15:15:23,ohiggins,Villa O'Higgins,,2026-11-19,4,9,14,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 15:15:23,ohiggins,Villa O'Higgins,,2026-11-20,5,7,12,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado
+2026-11-15 15:16:00,quellon,Quellón,,2026-11-16,1,14,17,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 15:16:00,quellon,Quellón,,2026-11-17,2,12,17,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 15:16:00,quellon,Quellón,,2026-11-18,3,11,16,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 15:16:00,quellon,Quellón,,2026-11-19,4,10,16,1,madrugada: Nublado / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 15:16:00,quellon,Quellón,,2026-11-20,5,9,15,1,madrugada: Nublado y chubascos / mañana: Nublado y chubascos / tarde: Nublado y chubascos / noche: Nublado
+2026-11-15 15:16:25,futaleufu,Futaleufú,,2026-11-16,1,10,14,1,madrugada: Nublado / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 15:16:25,futaleufu,Futaleufú,,2026-11-17,2,8,11,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 15:16:25,futaleufu,Futaleufú,,2026-11-18,3,7,13,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 15:16:25,futaleufu,Futaleufú,,2026-11-19,4,5,11,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos / noche: Nublado
+2026-11-15 15:16:25,futaleufu,Futaleufú,,2026-11-20,5,5,10,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 16:11:25,parenas,Punta Arenas,SCCI,2026-11-16,1,7,14,0,madrugada: Nubosidad parcial con viento entre 25 y 40 km/h / mañana: Nubosidad parcial con viento entre 25 y 40 km/h / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 16:11:25,parenas,Punta Arenas,SCCI,2026-11-17,2,4,17,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nublado
+2026-11-15 16:11:25,parenas,Punta Arenas,SCCI,2026-11-18,3,8,17,1,"madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado, ocasionalmente nubosidad parcial y chubascos débiles"
+2026-11-15 16:11:25,parenas,Punta Arenas,SCCI,2026-11-19,4,7,16,0,"madrugada: Nubosidad parcial, ocasionalmente nublado / mañana: Nubosidad parcial, ocasionalmente nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial con viento entre 40 y 60 km/h"
+2026-11-15 16:11:25,parenas,Punta Arenas,SCCI,2026-11-20,5,9,14,0,madrugada: Nublado con viento entre 40 y 60 km/h / mañana: Nublado con viento entre 40 y 60 km/h / tarde: Nubosidad parcial con viento entre 40 y 60 km/h / noche: Nubosidad parcial con viento entre 40 y 60 km/h
+2026-11-15 16:13:37,porvenir,Porvenir,,2026-11-16,1,6,14,0,madrugada: Nubosidad parcial con viento entre 40 y 60 km/h / mañana: Nubosidad parcial con viento entre 40 y 60 km/h / tarde: Nubosidad parcial con viento entre 40 y 60 km/h / noche: Nubosidad parcial con viento entre 25 y 40 km/h
+2026-11-15 16:13:37,porvenir,Porvenir,,2026-11-17,2,4,18,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nublado
+2026-11-15 16:13:37,porvenir,Porvenir,,2026-11-18,3,9,17,1,"madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado, ocasionalmente nubosidad parcial / noche: Nublado"
+2026-11-15 16:13:37,porvenir,Porvenir,,2026-11-19,4,8,16,1,"madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial, ocasionalmente nublado y chubascos débiles / noche: Nubosidad parcial con viento entre 40 y 60 km/h"
+2026-11-15 16:13:37,porvenir,Porvenir,,2026-11-20,5,9,15,0,madrugada: Nublado con viento entre 40 y 60 km/h / mañana: Nublado con viento entre 40 y 60 km/h / tarde: Nubosidad parcial con viento entre 25 y 40 km/h / noche: Nubosidad parcial
+2026-11-15 16:16:37,natales,Puerto Natales,SCNT,2026-11-16,1,4,18,0,"madrugada: Nubosidad parcial, ocasionalmente nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial"
+2026-11-15 16:16:37,natales,Puerto Natales,SCNT,2026-11-17,2,3,21,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nublado
+2026-11-15 16:16:37,natales,Puerto Natales,SCNT,2026-11-18,3,8,18,1,"madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nubosidad parcial, ocasionalmente nublado y chubascos débiles / noche: Nublado, ocasionalmente nubosidad parcial"
+2026-11-15 16:16:37,natales,Puerto Natales,SCNT,2026-11-19,4,6,18,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 16:16:37,natales,Puerto Natales,SCNT,2026-11-20,5,6,15,1,madrugada: Nublado / mañana: Nublado y chubascos débiles / tarde: Nublado / noche: Nubosidad parcial
+2026-11-15 16:18:27,torres,Torres del Paine,,2026-11-16,1,4,18,0,"madrugada: Nubosidad parcial, ocasionalmente nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial"
+2026-11-15 16:18:27,torres,Torres del Paine,,2026-11-17,2,4,22,1,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado y chubascos débiles
+2026-11-15 16:18:27,torres,Torres del Paine,,2026-11-18,3,8,18,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 16:18:27,torres,Torres del Paine,,2026-11-19,4,6,18,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 16:18:27,torres,Torres del Paine,,2026-11-20,5,6,14,1,madrugada: Nublado / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nubosidad parcial
+2026-11-15 16:20:41,pwilliams,Puerto Williams,,2026-11-16,1,5,13,1,madrugada: Nublado y chubascos débiles / mañana: Nublado y chubascos débiles / tarde: Nubosidad parcial con viento entre 40 y 60 km/h / noche: Nubosidad parcial
+2026-11-15 16:20:41,pwilliams,Puerto Williams,,2026-11-17,2,2,18,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nublado
+2026-11-15 16:20:41,pwilliams,Puerto Williams,,2026-11-18,3,7,15,1,madrugada: Nublado / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado
+2026-11-15 16:20:41,pwilliams,Puerto Williams,,2026-11-19,4,7,17,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado con viento entre 25 y 40 km/h / noche: Nublado
+2026-11-15 16:20:41,pwilliams,Puerto Williams,,2026-11-20,5,6,13,1,madrugada: Nublado / mañana: Nublado y chubascos débiles / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos débiles
+2026-11-15 16:30:24,taltal,Taltal,,2026-11-16,1,18,23,0,madrugada: Nubosidad parcial variando a cubierto / mañana: Cubierto / tarde: Nublado variando a despejado / noche: Despejado variando a nublado
+2026-11-15 16:30:24,taltal,Taltal,,2026-11-17,2,19,24,0,madrugada: Cubierto / mañana: Cubierto variando a despejado / tarde: Despejado / noche: Despejado
+2026-11-15 16:30:24,taltal,Taltal,,2026-11-18,3,19,24,0,madrugada: Cubierto / mañana: Nublado variando a nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial variando a nublado
+2026-11-15 16:30:24,taltal,Taltal,,2026-11-19,4,19,24,0,madrugada: Nublado / mañana: Nublado variando a nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 16:30:24,taltal,Taltal,,2026-11-20,5,19,24,0,madrugada: Cubierto / mañana: Cubierto variando a despejado / tarde: Despejado / noche: Despejado
+2026-11-15 16:31:20,salvador,El Salvador,,2026-11-16,1,14,27,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 16:31:20,salvador,El Salvador,,2026-11-17,2,13,27,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 16:31:20,salvador,El Salvador,,2026-11-18,3,13,26,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 16:31:20,salvador,El Salvador,,2026-11-19,4,13,26,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 16:31:20,salvador,El Salvador,,2026-11-20,5,14,29,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 16:32:55,chanaral,Chañaral,,2026-11-16,1,17,22,0,madrugada: Cubierto / mañana: Cubierto variando a nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial variando a nublado
+2026-11-15 16:32:55,chanaral,Chañaral,,2026-11-17,2,18,22,0,madrugada: Cubierto / mañana: Nublado variando a despejado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 16:32:55,chanaral,Chañaral,,2026-11-18,3,17,22,0,madrugada: Nubosidad parcial variando a cubierto / mañana: Cubierto variando a nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 16:32:55,chanaral,Chañaral,,2026-11-19,4,18,22,0,madrugada: Cubierto / mañana: Cubierto variando a nublado / tarde: Nublado / noche: Nublado
+2026-11-15 16:32:55,chanaral,Chañaral,,2026-11-20,5,18,23,0,madrugada: Cubierto / mañana: Cubierto variando a despejado / tarde: Despejado / noche: Despejado
+2026-11-15 16:33:54,visviri,Visviri,,2026-11-16,1,-3,19,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial con viento entre 40 y 60 km/h / noche: Nubosidad parcial con viento entre 25 y 40 km/h
+2026-11-15 16:33:54,visviri,Visviri,,2026-11-17,2,-2,20,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial con viento entre 40 y 60 km/h / noche: Nubosidad parcial con viento entre 25 y 40 km/h
+2026-11-15 16:33:54,visviri,Visviri,,2026-11-18,3,-3,21,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial con viento entre 40 y 60 km/h / noche: Nubosidad parcial con viento entre 25 y 40 km/h
+2026-11-15 16:33:54,visviri,Visviri,,2026-11-19,4,-1,21,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado con viento entre 25 y 40 km/h / noche: Nubosidad parcial con viento entre 25 y 40 km/h
+2026-11-15 16:33:54,visviri,Visviri,,2026-11-20,5,-1,22,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado con viento entre 25 y 40 km/h / noche: Nublado con viento entre 25 y 40 km/h
+2026-11-15 16:35:00,putre,Putre,,2026-11-16,1,6,16,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial con viento entre 25 y 40 km/h / noche: Despejado
+2026-11-15 16:35:00,putre,Putre,,2026-11-17,2,7,17,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial con viento entre 25 y 40 km/h / noche: Nubosidad parcial
+2026-11-15 16:35:00,putre,Putre,,2026-11-18,3,8,18,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial con viento entre 25 y 40 km/h / noche: Nubosidad parcial
+2026-11-15 16:35:00,putre,Putre,,2026-11-19,4,8,18,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado con viento entre 25 y 40 km/h / noche: Nubosidad parcial
+2026-11-15 16:35:00,putre,Putre,,2026-11-20,5,7,20,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado con viento entre 25 y 40 km/h / noche: Nubosidad parcial
+2026-11-15 16:35:08,caldera,Caldera,,2026-11-16,1,16,23,0,madrugada: Cubierto / mañana: Cubierto variando a nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial variando a nublado
+2026-11-15 16:35:08,caldera,Caldera,,2026-11-17,2,17,23,0,madrugada: Cubierto / mañana: Nublado variando a despejado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 16:35:08,caldera,Caldera,,2026-11-18,3,16,23,0,madrugada: Nubosidad parcial variando a cubierto / mañana: Cubierto variando a nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 16:35:08,caldera,Caldera,,2026-11-19,4,17,23,0,madrugada: Cubierto / mañana: Cubierto variando a nublado / tarde: Nublado / noche: Nublado
+2026-11-15 16:35:08,caldera,Caldera,,2026-11-20,5,17,24,0,madrugada: Cubierto / mañana: Cubierto variando a despejado / tarde: Despejado / noche: Despejado
+2026-11-15 16:36:17,colchane,Colchane,,2026-11-16,1,3,22,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado con viento entre 40 y 60 km/h / noche: Despejado con viento entre 25 y 40 km/h
+2026-11-15 16:36:17,colchane,Colchane,,2026-11-17,2,4,23,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial con viento entre 40 y 60 km/h / noche: Nubosidad parcial con viento entre 25 y 40 km/h
+2026-11-15 16:36:17,colchane,Colchane,,2026-11-18,3,0,25,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial con viento entre 40 y 60 km/h / noche: Nubosidad parcial con viento entre 25 y 40 km/h
+2026-11-15 16:36:17,colchane,Colchane,,2026-11-19,4,1,25,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial con viento entre 25 y 40 km/h / noche: Nubosidad parcial con viento entre 25 y 40 km/h
+2026-11-15 16:36:17,colchane,Colchane,,2026-11-20,5,-1,25,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado con viento entre 25 y 40 km/h / noche: Nubosidad parcial con viento entre 25 y 40 km/h
+2026-11-15 16:37:56,copiapo,Copiapó,,2026-11-16,1,16,26,0,madrugada: Nublado variando a cubierto / mañana: Cubierto variando a nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 16:37:56,copiapo,Copiapó,,2026-11-17,2,15,27,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 16:37:56,copiapo,Copiapó,,2026-11-18,3,16,27,0,madrugada: Nubosidad parcial / mañana: Nublado variando a nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 16:37:56,copiapo,Copiapó,,2026-11-19,4,16,26,0,madrugada: Cubierto / mañana: Cubierto variando a nublado / tarde: Nublado / noche: Nublado
+2026-11-15 16:37:56,copiapo,Copiapó,,2026-11-20,5,15,30,0,madrugada: Nubosidad parcial / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-15 16:38:03,pica,Pica,,2026-11-16,1,12,34,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-15 16:38:03,pica,Pica,,2026-11-17,2,13,34,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 16:38:03,pica,Pica,,2026-11-18,3,11,33,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 16:38:03,pica,Pica,,2026-11-19,4,11,34,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 16:38:03,pica,Pica,,2026-11-20,5,11,36,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Despejado / noche: Despejado
+2026-11-15 16:38:37,arica,Arica,SCAR,2026-11-16,1,22,26,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado variando a despejado con viento entre 25 y 40 km/h / noche: Cubierto
+2026-11-15 16:38:37,arica,Arica,SCAR,2026-11-17,2,22,26,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado variando a nubosidad parcial con viento entre 25 y 40 km/h / noche: Cubierto
+2026-11-15 16:38:37,arica,Arica,SCAR,2026-11-18,3,22,26,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado variando a nubosidad parcial con viento entre 25 y 40 km/h / noche: Nublado
+2026-11-15 16:38:37,arica,Arica,SCAR,2026-11-19,4,22,26,0,madrugada: Cubierto / mañana: Cubierto / tarde: Despejado con viento entre 25 y 40 km/h / noche: Nublado
+2026-11-15 16:38:37,arica,Arica,SCAR,2026-11-20,5,22,26,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado variando a despejado con viento entre 25 y 40 km/h / noche: Nublado
+2026-11-15 16:39:45,ollague,Ollagüe,,2026-11-16,1,-1,22,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado con viento entre 40 y 60 km/h / noche: Despejado con viento entre 25 y 40 km/h
+2026-11-15 16:39:45,ollague,Ollagüe,,2026-11-17,2,-1,22,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial con viento entre 40 y 60 km/h / noche: Nubosidad parcial con viento entre 25 y 40 km/h
+2026-11-15 16:39:45,ollague,Ollagüe,,2026-11-18,3,-2,23,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial con viento entre 40 y 60 km/h / noche: Nubosidad parcial con viento entre 25 y 40 km/h
+2026-11-15 16:39:45,ollague,Ollagüe,,2026-11-19,4,-3,23,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial con viento entre 40 y 60 km/h / noche: Nubosidad parcial con viento entre 25 y 40 km/h
+2026-11-15 16:39:45,ollague,Ollagüe,,2026-11-20,5,-4,25,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial con viento entre 40 y 60 km/h / noche: Nubosidad parcial con viento entre 25 y 40 km/h
+2026-11-15 16:39:49,huasco,Huasco,,2026-11-16,1,16,22,0,madrugada: Cubierto / mañana: Cubierto variando a nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 16:39:49,huasco,Huasco,,2026-11-17,2,17,22,0,madrugada: Cubierto / mañana: Nublado variando a nubosidad parcial / tarde: Nubosidad parcial con viento entre 25 y 40 km/h / noche: Nubosidad parcial con viento entre 25 y 40 km/h
+2026-11-15 16:39:49,huasco,Huasco,,2026-11-18,3,16,22,0,madrugada: Nublado / mañana: Nublado variando a nubosidad parcial / tarde: Nubosidad parcial con viento entre 25 y 40 km/h / noche: Nubosidad parcial con viento entre 25 y 40 km/h
+2026-11-15 16:39:49,huasco,Huasco,,2026-11-19,4,17,22,0,madrugada: Cubierto / mañana: Cubierto variando a nublado / tarde: Nublado con viento entre 25 y 40 km/h / noche: Nublado con viento entre 25 y 40 km/h
+2026-11-15 16:39:49,huasco,Huasco,,2026-11-20,5,17,23,0,madrugada: Cubierto / mañana: Cubierto variando a despejado / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado
+2026-11-15 16:42:25,freirina,Freirina,,2026-11-16,1,16,24,0,madrugada: Nublado / mañana: Cubierto variando a nubosidad parcial / tarde: Nubosidad parcial con viento entre 25 y 40 km/h / noche: Nubosidad parcial
+2026-11-15 16:42:25,freirina,Freirina,,2026-11-17,2,14,25,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial con viento entre 25 y 40 km/h / noche: Nubosidad parcial
+2026-11-15 16:42:25,freirina,Freirina,,2026-11-18,3,14,25,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial con viento entre 25 y 40 km/h / noche: Nublado
+2026-11-15 16:42:25,freirina,Freirina,,2026-11-19,4,16,24,0,madrugada: Cubierto / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-15 16:42:25,freirina,Freirina,,2026-11-20,5,15,27,0,madrugada: Nublado / mañana: Nublado variando a despejado / tarde: Despejado / noche: Despejado
+2026-11-15 16:42:43,iquique,Iquique,SCDA,2026-11-16,1,22,26,0,madrugada: Cubierto / mañana: Nublado variando a nubosidad parcial / tarde: Nublado con viento entre 25 y 40 km/h / noche: Cubierto
+2026-11-15 16:42:43,iquique,Iquique,SCDA,2026-11-17,2,22,26,0,madrugada: Cubierto / mañana: Cubierto / tarde: Despejado variando a nublado con viento entre 25 y 40 km/h / noche: Cubierto
+2026-11-15 16:42:43,iquique,Iquique,SCDA,2026-11-18,3,22,25,0,madrugada: Cubierto / mañana: Cubierto / tarde: Despejado con viento entre 25 y 40 km/h / noche: Nublado
+2026-11-15 16:42:43,iquique,Iquique,SCDA,2026-11-19,4,22,26,0,madrugada: Cubierto / mañana: Nublado variando a despejado / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado
+2026-11-15 16:42:43,iquique,Iquique,SCDA,2026-11-20,5,22,26,0,madrugada: Nublado / mañana: Nublado variando a despejado / tarde: Despejado con viento entre 25 y 40 km/h / noche: Nublado
+2026-11-15 16:44:14,calama,Calama,SCCF,2026-11-16,1,7,26,0,madrugada: Despejado con viento entre 25 y 40 km/h / mañana: Despejado con viento entre 25 y 40 km/h / tarde: Despejado con viento entre 40 y 60 km/h / noche: Despejado con viento entre 25 y 40 km/h
+2026-11-15 16:44:14,calama,Calama,SCCF,2026-11-17,2,6,27,0,madrugada: Despejado con viento entre 25 y 40 km/h / mañana: Despejado con viento entre 25 y 40 km/h / tarde: Despejado con viento entre 40 y 60 km/h / noche: Despejado con viento entre 25 y 40 km/h
+2026-11-15 16:44:14,calama,Calama,SCCF,2026-11-18,3,6,27,0,madrugada: Despejado con viento entre 25 y 40 km/h / mañana: Despejado con viento entre 25 y 40 km/h / tarde: Nubosidad parcial con viento entre 40 y 60 km/h / noche: Nubosidad parcial con viento entre 25 y 40 km/h
+2026-11-15 16:44:14,calama,Calama,SCCF,2026-11-19,4,6,27,0,madrugada: Nubosidad parcial con viento entre 25 y 40 km/h / mañana: Nubosidad parcial con viento entre 25 y 40 km/h / tarde: Despejado con viento entre 40 y 60 km/h / noche: Despejado con viento entre 25 y 40 km/h
+2026-11-15 16:44:14,calama,Calama,SCCF,2026-11-20,5,6,28,0,madrugada: Nubosidad parcial con viento entre 25 y 40 km/h / mañana: Nubosidad parcial con viento entre 25 y 40 km/h / tarde: Despejado con viento entre 40 y 60 km/h / noche: Despejado con viento entre 25 y 40 km/h
+2026-11-15 16:45:16,snpedro,San Pedro,,2026-11-16,1,7,30,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado
+2026-11-15 16:45:16,snpedro,San Pedro,,2026-11-17,2,8,31,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado
+2026-11-15 16:45:16,snpedro,San Pedro,,2026-11-18,3,8,31,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial con viento entre 25 y 40 km/h / noche: Nubosidad parcial
+2026-11-15 16:45:16,snpedro,San Pedro,,2026-11-19,4,8,31,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado
+2026-11-15 16:45:16,snpedro,San Pedro,,2026-11-20,5,7,32,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado
+2026-11-15 16:48:53,tocopilla,Tocopilla,,2026-11-16,1,21,24,0,madrugada: Cubierto / mañana: Cubierto / tarde: Despejado variando a nublado con viento entre 25 y 40 km/h / noche: Cubierto
+2026-11-15 16:48:53,tocopilla,Tocopilla,,2026-11-17,2,21,24,0,madrugada: Cubierto / mañana: Cubierto / tarde: Despejado variando a nublado con viento entre 25 y 40 km/h / noche: Cubierto
+2026-11-15 16:48:53,tocopilla,Tocopilla,,2026-11-18,3,21,24,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado variando a nubosidad parcial con viento entre 25 y 40 km/h / noche: Cubierto
+2026-11-15 16:48:53,tocopilla,Tocopilla,,2026-11-19,4,21,25,0,madrugada: Cubierto / mañana: Nublado variando a despejado / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado variando a nublado
+2026-11-15 16:48:53,tocopilla,Tocopilla,,2026-11-20,5,21,24,0,madrugada: Cubierto / mañana: Nublado / tarde: Despejado con viento entre 25 y 40 km/h / noche: Nublado
+2026-11-15 16:52:53,antofagasta,Antofagasta,SCFA,2026-11-16,1,18,24,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado variando a nubosidad parcial con viento entre 25 y 40 km/h / noche: Cubierto
+2026-11-15 16:52:53,antofagasta,Antofagasta,SCFA,2026-11-17,2,19,23,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado con viento entre 25 y 40 km/h / noche: Cubierto con viento entre 25 y 40 km/h
+2026-11-15 16:52:53,antofagasta,Antofagasta,SCFA,2026-11-18,3,19,23,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado variando a nubosidad parcial con viento entre 25 y 40 km/h / noche: Cubierto
+2026-11-15 16:52:53,antofagasta,Antofagasta,SCFA,2026-11-19,4,18,24,0,madrugada: Cubierto / mañana: Nublado / tarde: Despejado con viento entre 25 y 40 km/h / noche: Nublado con viento entre 25 y 40 km/h
+2026-11-15 16:52:53,antofagasta,Antofagasta,SCFA,2026-11-20,5,19,24,0,madrugada: Cubierto / mañana: Nublado / tarde: Despejado con viento entre 25 y 40 km/h / noche: Nublado con viento entre 25 y 40 km/h
+2026-11-15 16:57:38,vallenar,Vallenar,,2026-11-16,1,15,25,0,madrugada: Nublado / mañana: Cubierto variando a nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 16:57:38,vallenar,Vallenar,,2026-11-17,2,13,26,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 16:57:38,vallenar,Vallenar,,2026-11-18,3,13,25,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nublado
+2026-11-15 16:57:38,vallenar,Vallenar,,2026-11-19,4,14,24,0,madrugada: Nublado / mañana: Cubierto / tarde: Nublado / noche: Nublado
+2026-11-15 16:57:38,vallenar,Vallenar,,2026-11-20,5,14,28,0,madrugada: Nublado / mañana: Nublado variando a despejado / tarde: Despejado / noche: Despejado
+2026-11-15 17:01:51,mejillones,Mejillones,,2026-11-16,1,19,26,0,madrugada: Cubierto / mañana: Cubierto variando a despejado / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado variando a nublado
+2026-11-15 17:01:51,mejillones,Mejillones,,2026-11-17,2,19,27,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado variando a despejado con viento entre 25 y 40 km/h / noche: Despejado variando a nublado con viento entre 25 y 40 km/h
+2026-11-15 17:01:51,mejillones,Mejillones,,2026-11-18,3,19,26,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado variando a despejado con viento entre 25 y 40 km/h / noche: Cubierto
+2026-11-15 17:01:51,mejillones,Mejillones,,2026-11-19,4,18,27,0,madrugada: Cubierto / mañana: Nublado variando a despejado / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado con viento entre 25 y 40 km/h
+2026-11-15 17:01:51,mejillones,Mejillones,,2026-11-20,5,18,27,0,madrugada: Cubierto / mañana: Nublado / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado con viento entre 25 y 40 km/h
+2026-11-15 17:07:29,jfernandez,Archipiélago Juan Fernández,,2026-11-16,1,15,17,1,madrugada: Cubierto y chubascos aislados / mañana: Cubierto y chubascos aislados / tarde: Cubierto / noche: Cubierto con viento entre 25 y 40 km/h
+2026-11-15 17:07:29,jfernandez,Archipiélago Juan Fernández,,2026-11-17,2,14,17,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:07:29,jfernandez,Archipiélago Juan Fernández,,2026-11-18,3,13,16,0,madrugada: Nubosidad parcial / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-15 17:07:29,jfernandez,Archipiélago Juan Fernández,,2026-11-19,4,13,17,1,madrugada: Nublado y chubascos aislados / mañana: Nublado y chubascos / tarde: Nublado / noche: Nublado
+2026-11-15 17:07:29,jfernandez,Archipiélago Juan Fernández,,2026-11-20,5,14,17,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-15 17:08:19,papudo,Papudo/Zapallar,,2026-11-16,1,14,20,1,madrugada: Cubierto y llovizna débil / mañana: Cubierto y llovizna débil variando a nublado / tarde: Nublado / noche: Nublado
+2026-11-15 17:08:19,papudo,Papudo/Zapallar,,2026-11-17,2,12,19,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:08:19,papudo,Papudo/Zapallar,,2026-11-18,3,10,20,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nublado
+2026-11-15 17:08:19,papudo,Papudo/Zapallar,,2026-11-19,4,12,19,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-15 17:08:19,papudo,Papudo/Zapallar,,2026-11-20,5,10,20,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:09:03,curico,Curicó,SCIC,2026-11-16,1,14,21,0,madrugada: Cubierto / mañana: Cubierto / tarde: Cubierto / noche: Nublado
+2026-11-15 17:09:03,curico,Curicó,SCIC,2026-11-17,2,13,23,1,"madrugada: Cubierto / mañana: Nublado / tarde: Nublado, chubascos aislados y probable tormenta eléctrica / noche: Nublado, chubascos aislados y probable tormenta eléctrica"
+2026-11-15 17:09:03,curico,Curicó,SCIC,2026-11-18,3,12,24,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:09:03,curico,Curicó,SCIC,2026-11-19,4,12,21,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nublado
+2026-11-15 17:09:03,curico,Curicó,SCIC,2026-11-20,5,10,23,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-15 17:09:03,molina,Molina,,2026-11-16,1,14,21,0,madrugada: Cubierto / mañana: Cubierto / tarde: Cubierto / noche: Nublado
+2026-11-15 17:09:03,molina,Molina,,2026-11-17,2,13,23,1,"madrugada: Cubierto / mañana: Nublado / tarde: Nublado, chubascos aislados y probable tormenta eléctrica / noche: Nublado, chubascos aislados y probable tormenta eléctrica"
+2026-11-15 17:09:03,molina,Molina,,2026-11-18,3,12,24,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:09:03,molina,Molina,,2026-11-19,4,12,21,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nublado
+2026-11-15 17:09:03,molina,Molina,,2026-11-20,5,10,23,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-15 17:09:48,concepcion,Concepción,SCIE,2026-11-16,1,14,17,1,"madrugada: Cubierto, chubascos débiles y probable tormenta eléctrica con viento entre 25 y 40 km/h / mañana: Nublado, chubascos aislados y probable tormenta eléctrica con viento entre 25 y 40 km/h / tarde: Nublado, chubascos aislados y probable tormenta eléctrica / noche: Nublado"
+2026-11-15 17:09:48,concepcion,Concepción,SCIE,2026-11-17,2,13,18,1,"madrugada: Nublado y chubascos aislados / mañana: Nublado y chubascos débiles con viento entre 25 y 40 km/h / tarde: Nublado, chubascos y probable tormenta eléctrica con viento entre 25 y 40 km/h / noche: Nublado, chubascos aislados y probable tormenta eléctrica"
+2026-11-15 17:09:48,concepcion,Concepción,SCIE,2026-11-18,3,12,18,1,madrugada: Cubierto y chubascos aislados / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:09:48,concepcion,Concepción,SCIE,2026-11-19,4,11,17,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:09:48,concepcion,Concepción,SCIE,2026-11-20,5,9,17,0,madrugada: Nubosidad parcial / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-15 17:09:48,lota,Lota,,2026-11-16,1,14,17,1,"madrugada: Cubierto, chubascos débiles y probable tormenta eléctrica con viento entre 25 y 40 km/h / mañana: Nublado, chubascos aislados y probable tormenta eléctrica con viento entre 25 y 40 km/h / tarde: Nublado, chubascos aislados y probable tormenta eléctrica / noche: Nublado"
+2026-11-15 17:09:48,lota,Lota,,2026-11-17,2,13,18,1,"madrugada: Nublado y chubascos aislados / mañana: Nublado y chubascos débiles con viento entre 25 y 40 km/h / tarde: Nublado, chubascos y probable tormenta eléctrica con viento entre 25 y 40 km/h / noche: Nublado, chubascos aislados y probable tormenta eléctrica"
+2026-11-15 17:09:48,lota,Lota,,2026-11-18,3,12,18,1,madrugada: Cubierto y chubascos aislados / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:09:48,lota,Lota,,2026-11-19,4,11,17,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:09:48,lota,Lota,,2026-11-20,5,9,17,0,madrugada: Nubosidad parcial / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-15 17:09:48,talcahuano,Talcahuano,,2026-11-16,1,14,17,1,"madrugada: Cubierto, chubascos débiles y probable tormenta eléctrica con viento entre 25 y 40 km/h / mañana: Nublado, chubascos aislados y probable tormenta eléctrica con viento entre 25 y 40 km/h / tarde: Nublado, chubascos aislados y probable tormenta eléctrica / noche: Nublado"
+2026-11-15 17:09:48,talcahuano,Talcahuano,,2026-11-17,2,13,18,1,"madrugada: Nublado y chubascos aislados / mañana: Nublado y chubascos débiles con viento entre 25 y 40 km/h / tarde: Nublado, chubascos y probable tormenta eléctrica con viento entre 25 y 40 km/h / noche: Nublado, chubascos aislados y probable tormenta eléctrica"
+2026-11-15 17:09:48,talcahuano,Talcahuano,,2026-11-18,3,12,18,1,madrugada: Cubierto y chubascos aislados / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:09:48,talcahuano,Talcahuano,,2026-11-19,4,11,17,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:09:48,talcahuano,Talcahuano,,2026-11-20,5,9,17,0,madrugada: Nubosidad parcial / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-15 17:10:19,talca,Talca,,2026-11-16,1,14,21,0,madrugada: Cubierto / mañana: Cubierto / tarde: Cubierto / noche: Nublado
+2026-11-15 17:10:19,talca,Talca,,2026-11-17,2,14,23,1,"madrugada: Cubierto / mañana: Nublado / tarde: Nublado, chubascos aislados y probable tormenta eléctrica / noche: Nublado, chubascos aislados y probable tormenta eléctrica"
+2026-11-15 17:10:19,talca,Talca,,2026-11-18,3,12,24,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:10:19,talca,Talca,,2026-11-19,4,11,22,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nublado
+2026-11-15 17:10:19,talca,Talca,,2026-11-20,5,9,23,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-15 17:10:21,valpo,Valparaíso,,2026-11-16,1,13,19,1,madrugada: Cubierto y llovizna débil / mañana: Cubierto y llovizna variando a nublado / tarde: Nublado / noche: Nublado
+2026-11-15 17:10:21,valpo,Valparaíso,,2026-11-17,2,12,20,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:10:21,valpo,Valparaíso,,2026-11-18,3,11,21,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nublado
+2026-11-15 17:10:21,valpo,Valparaíso,,2026-11-19,4,12,20,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-15 17:10:21,valpo,Valparaíso,,2026-11-20,5,12,21,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:10:50,vdelmar,Viña del Mar,,2026-11-16,1,14,20,1,madrugada: Cubierto y llovizna débil / mañana: Cubierto y llovizna variando a nublado / tarde: Nublado / noche: Nublado
+2026-11-15 17:10:50,vdelmar,Viña del Mar,,2026-11-17,2,11,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:10:50,vdelmar,Viña del Mar,,2026-11-18,3,10,22,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nublado
+2026-11-15 17:10:50,vdelmar,Viña del Mar,,2026-11-19,4,11,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-15 17:10:50,vdelmar,Viña del Mar,,2026-11-20,5,11,22,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:12:04,linares,Linares,,2026-11-16,1,14,21,1,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado y chubascos aislados / noche: Cubierto y chubascos aislados
+2026-11-15 17:12:04,linares,Linares,,2026-11-17,2,13,22,1,"madrugada: Cubierto / mañana: Nublado y chubascos aislados / tarde: Nublado, chubascos aislados y probable tormenta eléctrica / noche: Nublado, chubascos y probable tormenta eléctrica"
+2026-11-15 17:12:04,linares,Linares,,2026-11-18,3,11,23,1,madrugada: Cubierto y chubascos aislados / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:12:04,linares,Linares,,2026-11-19,4,10,21,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos / noche: Nublado y chubascos aislados
+2026-11-15 17:12:04,linares,Linares,,2026-11-20,5,8,22,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-15 17:12:22,stgoc,Santiago Sector Centro,,2026-11-16,1,14,21,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado / noche: Nublado
+2026-11-15 17:12:22,stgoc,Santiago Sector Centro,,2026-11-17,2,13,22,1,madrugada: Cubierto / mañana: Nublado / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos aislados
+2026-11-15 17:12:22,stgoc,Santiago Sector Centro,,2026-11-18,3,11,24,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:12:22,stgoc,Santiago Sector Centro,,2026-11-19,4,12,20,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nubosidad parcial
+2026-11-15 17:12:22,stgoc,Santiago Sector Centro,,2026-11-20,5,10,22,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:12:45,algarrobo,Algarrobo,,2026-11-16,1,16,19,1,madrugada: Cubierto y llovizna débil / mañana: Cubierto y llovizna débil / tarde: Nublado / noche: Nublado
+2026-11-15 17:12:45,algarrobo,Algarrobo,,2026-11-17,2,12,18,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:12:45,algarrobo,Algarrobo,,2026-11-18,3,10,20,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nublado
+2026-11-15 17:12:45,algarrobo,Algarrobo,,2026-11-19,4,11,19,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-15 17:12:45,algarrobo,Algarrobo,,2026-11-20,5,10,20,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial / noche: Nublado
+2026-11-15 17:12:45,snantonio,San Antonio/Cartagena,SCSN,2026-11-16,1,16,19,1,madrugada: Cubierto y llovizna débil / mañana: Cubierto y llovizna débil / tarde: Nublado / noche: Nublado
+2026-11-15 17:12:45,snantonio,San Antonio/Cartagena,SCSN,2026-11-17,2,12,18,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:12:45,snantonio,San Antonio/Cartagena,SCSN,2026-11-18,3,10,20,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nublado
+2026-11-15 17:12:45,snantonio,San Antonio/Cartagena,SCSN,2026-11-19,4,11,19,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-15 17:12:45,snantonio,San Antonio/Cartagena,SCSN,2026-11-20,5,10,20,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial / noche: Nublado
+2026-11-15 17:13:20,serena,La Serena/Coquimbo,SCSE,2026-11-16,1,14,21,1,madrugada: Cubierto y llovizna débil / mañana: Cubierto y llovizna débil / tarde: Nublado / noche: Nubosidad parcial
+2026-11-15 17:13:20,serena,La Serena/Coquimbo,SCSE,2026-11-17,2,13,22,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:13:20,serena,La Serena/Coquimbo,SCSE,2026-11-18,3,13,22,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:13:20,serena,La Serena/Coquimbo,SCSE,2026-11-19,4,14,23,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-15 17:13:20,serena,La Serena/Coquimbo,SCSE,2026-11-20,5,12,23,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:13:22,snantonioi,San Antonio Interior,,2026-11-16,1,16,21,1,madrugada: Cubierto y llovizna débil / mañana: Cubierto y llovizna débil / tarde: Nublado / noche: Nublado
+2026-11-15 17:13:22,snantonioi,San Antonio Interior,,2026-11-17,2,10,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:13:22,snantonioi,San Antonio Interior,,2026-11-18,3,8,23,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nublado
+2026-11-15 17:13:22,snantonioi,San Antonio Interior,,2026-11-19,4,10,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-15 17:13:22,snantonioi,San Antonio Interior,,2026-11-20,5,9,22,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial / noche: Nublado
+2026-11-15 17:13:36,colina,Colina,,2026-11-16,1,14,22,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado / noche: Nublado
+2026-11-15 17:13:36,colina,Colina,,2026-11-17,2,11,23,1,madrugada: Cubierto / mañana: Nublado / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos aislados
+2026-11-15 17:13:36,colina,Colina,,2026-11-18,3,10,25,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:13:36,colina,Colina,,2026-11-19,4,11,22,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nubosidad parcial
+2026-11-15 17:13:36,colina,Colina,,2026-11-20,5,9,23,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:13:36,stgon,Santiago Sector Norte,,2026-11-16,1,14,22,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado / noche: Nublado
+2026-11-15 17:13:36,stgon,Santiago Sector Norte,,2026-11-17,2,11,23,1,madrugada: Cubierto / mañana: Nublado / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos aislados
+2026-11-15 17:13:36,stgon,Santiago Sector Norte,,2026-11-18,3,10,25,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:13:36,stgon,Santiago Sector Norte,,2026-11-19,4,11,22,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nubosidad parcial
+2026-11-15 17:13:36,stgon,Santiago Sector Norte,,2026-11-20,5,9,23,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:13:45,parral,Parral,,2026-11-16,1,13,21,1,madrugada: Cubierto / mañana: Nublado y chubascos aislados / tarde: Nublado y chubascos aislados / noche: Cubierto y chubascos aislados
+2026-11-15 17:13:45,parral,Parral,,2026-11-17,2,12,21,1,"madrugada: Cubierto / mañana: Nublado y chubascos aislados / tarde: Nublado, chubascos y probable tormenta eléctrica / noche: Cubierto, chubascos y probable tormenta eléctrica"
+2026-11-15 17:13:45,parral,Parral,,2026-11-18,3,11,22,1,madrugada: Cubierto y chubascos aislados / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:13:45,parral,Parral,,2026-11-19,4,10,20,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nublado
+2026-11-15 17:13:45,parral,Parral,,2026-11-20,5,9,22,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-15 17:14:31,melipilla,Melipilla,,2026-11-16,1,15,20,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado / noche: Nublado
+2026-11-15 17:14:31,melipilla,Melipilla,,2026-11-17,2,14,21,0,madrugada: Cubierto / mañana: Nublado / tarde: Nublado / noche: Nubosidad parcial
+2026-11-15 17:14:31,melipilla,Melipilla,,2026-11-18,3,10,23,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:14:31,melipilla,Melipilla,,2026-11-19,4,12,20,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:14:31,melipilla,Melipilla,,2026-11-20,5,10,22,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:14:37,rengo,Rengo,,2026-11-16,1,12,20,1,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado y chubascos aislados / noche: Nublado y chubascos aislados
+2026-11-15 17:14:37,rengo,Rengo,,2026-11-17,2,11,21,1,"madrugada: Cubierto / mañana: Nublado / tarde: Nublado, chubascos y probable tormenta eléctrica / noche: Nublado, chubascos y probable tormenta eléctrica"
+2026-11-15 17:14:37,rengo,Rengo,,2026-11-18,3,10,22,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:14:37,rengo,Rengo,,2026-11-19,4,12,18,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos / noche: Nublado y chubascos aislados
+2026-11-15 17:14:37,rengo,Rengo,,2026-11-20,5,9,20,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:14:46,lebu,Lebu,,2026-11-16,1,13,16,1,"madrugada: Cubierto, chubascos débiles y probable tormenta eléctrica con viento entre 25 y 40 km/h / mañana: Nublado, chubascos aislados y probable tormenta eléctrica con viento entre 25 y 40 km/h / tarde: Nublado, chubascos y probable tormenta eléctrica / noche: Nublado"
+2026-11-15 17:14:46,lebu,Lebu,,2026-11-17,2,12,17,1,"madrugada: Nublado y chubascos aislados / mañana: Nublado, chubascos débiles y probable tormenta eléctrica con viento entre 25 y 40 km/h / tarde: Nublado, chubascos y probable tormenta eléctrica con viento entre 25 y 40 km/h / noche: Nublado y chubascos aislados"
+2026-11-15 17:14:46,lebu,Lebu,,2026-11-18,3,11,17,1,madrugada: Cubierto y chubascos aislados / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:14:46,lebu,Lebu,,2026-11-19,4,10,15,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:14:46,lebu,Lebu,,2026-11-20,5,7,15,0,madrugada: Nubosidad parcial / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-15 17:15:33,curacavi,Curacaví,,2026-11-16,1,15,21,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado / noche: Nublado
+2026-11-15 17:15:33,curacavi,Curacaví,,2026-11-17,2,13,23,0,madrugada: Cubierto / mañana: Nublado / tarde: Nublado / noche: Nubosidad parcial
+2026-11-15 17:15:33,curacavi,Curacaví,,2026-11-18,3,9,25,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:15:33,curacavi,Curacaví,,2026-11-19,4,12,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:15:33,curacavi,Curacaví,,2026-11-20,5,10,23,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:15:40,cauquenes,Cauquenes,,2026-11-16,1,12,21,1,madrugada: Cubierto y chubascos aislados / mañana: Nublado y chubascos aislados / tarde: Nublado y chubascos aislados / noche: Cubierto y chubascos aislados
+2026-11-15 17:15:40,cauquenes,Cauquenes,,2026-11-17,2,12,21,1,"madrugada: Nublado / mañana: Nublado y chubascos aislados / tarde: Nublado, chubascos y probable tormenta eléctrica / noche: Cubierto, chubascos y probable tormenta eléctrica"
+2026-11-15 17:15:40,cauquenes,Cauquenes,,2026-11-18,3,12,23,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:15:40,cauquenes,Cauquenes,,2026-11-19,4,12,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:15:40,cauquenes,Cauquenes,,2026-11-20,5,11,23,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:15:43,andes,Los Andes,,2026-11-16,1,13,22,1,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado y chubascos aislados / noche: Nublado y chubascos aislados
+2026-11-15 17:15:43,andes,Los Andes,,2026-11-17,2,11,23,1,"madrugada: Nublado / mañana: Nublado / tarde: Nublado, chubascos débiles y probable tormenta eléctrica / noche: Nublado, chubascos y probable tormenta eléctrica"
+2026-11-15 17:15:43,andes,Los Andes,,2026-11-18,3,10,24,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:15:43,andes,Los Andes,,2026-11-19,4,11,19,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 17:15:43,andes,Los Andes,,2026-11-20,5,9,21,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:15:43,snfelipe,San Felipe,,2026-11-16,1,13,22,1,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado y chubascos aislados / noche: Nublado y chubascos aislados
+2026-11-15 17:15:43,snfelipe,San Felipe,,2026-11-17,2,11,23,1,"madrugada: Nublado / mañana: Nublado / tarde: Nublado, chubascos débiles y probable tormenta eléctrica / noche: Nublado, chubascos y probable tormenta eléctrica"
+2026-11-15 17:15:43,snfelipe,San Felipe,,2026-11-18,3,10,24,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:15:43,snfelipe,San Felipe,,2026-11-19,4,11,19,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 17:15:43,snfelipe,San Felipe,,2026-11-20,5,9,21,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:16:06,rancagua,Rancagua,,2026-11-16,1,12,20,1,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado y chubascos aislados / noche: Nublado y chubascos aislados
+2026-11-15 17:16:06,rancagua,Rancagua,,2026-11-17,2,11,21,1,"madrugada: Cubierto / mañana: Nublado / tarde: Nublado, chubascos y probable tormenta eléctrica / noche: Nublado, chubascos y probable tormenta eléctrica"
+2026-11-15 17:16:06,rancagua,Rancagua,,2026-11-18,3,10,22,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:16:06,rancagua,Rancagua,,2026-11-19,4,12,18,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos / noche: Nublado y chubascos aislados
+2026-11-15 17:16:06,rancagua,Rancagua,,2026-11-20,5,9,20,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:16:22,vilos,Los Vilos,,2026-11-16,1,15,20,1,madrugada: Cubierto y llovizna débil / mañana: Cubierto y llovizna débil / tarde: Nublado / noche: Nublado
+2026-11-15 17:16:22,vilos,Los Vilos,,2026-11-17,2,14,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:16:22,vilos,Los Vilos,,2026-11-18,3,12,21,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:16:22,vilos,Los Vilos,,2026-11-19,4,13,24,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-15 17:16:22,vilos,Los Vilos,,2026-11-20,5,11,21,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:16:38,stgop,Santiago Sector Poniente,SCEL,2026-11-16,1,14,21,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado / noche: Nublado
+2026-11-15 17:16:38,stgop,Santiago Sector Poniente,SCEL,2026-11-17,2,13,22,1,madrugada: Cubierto / mañana: Nublado / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos aislados
+2026-11-15 17:16:38,stgop,Santiago Sector Poniente,SCEL,2026-11-18,3,11,24,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:16:38,stgop,Santiago Sector Poniente,SCEL,2026-11-19,4,12,20,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nubosidad parcial
+2026-11-15 17:16:38,stgop,Santiago Sector Poniente,SCEL,2026-11-20,5,10,22,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:17:24,ovalle,Ovalle,,2026-11-16,1,13,21,1,madrugada: Cubierto y llovizna débil / mañana: Cubierto y llovizna débil / tarde: Nublado / noche: Nubosidad parcial
+2026-11-15 17:17:24,ovalle,Ovalle,,2026-11-17,2,12,25,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:17:24,ovalle,Ovalle,,2026-11-18,3,11,25,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:17:24,ovalle,Ovalle,,2026-11-19,4,12,25,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:17:24,ovalle,Ovalle,,2026-11-20,5,11,24,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:17:25,constitucion,Constitución,,2026-11-16,1,15,18,1,madrugada: Cubierto y chubascos aislados / mañana: Nublado y chubascos aislados / tarde: Nublado y chubascos aislados / noche: Cubierto y chubascos aislados
+2026-11-15 17:17:25,constitucion,Constitución,,2026-11-17,2,14,18,1,"madrugada: Nublado / mañana: Nublado / tarde: Nublado, chubascos y probable tormenta eléctrica / noche: Cubierto, chubascos y probable tormenta eléctrica"
+2026-11-15 17:17:25,constitucion,Constitución,,2026-11-18,3,13,19,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:17:25,constitucion,Constitución,,2026-11-19,4,12,18,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-15 17:17:25,constitucion,Constitución,,2026-11-20,5,10,20,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial / noche: Nublado
+2026-11-15 17:17:41,stgos,Santiago Sector Sur,,2026-11-16,1,14,21,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado / noche: Nublado
+2026-11-15 17:17:41,stgos,Santiago Sector Sur,,2026-11-17,2,12,22,1,madrugada: Cubierto / mañana: Nublado / tarde: Nublado y chubascos débiles / noche: Nublado y chubascos aislados
+2026-11-15 17:17:41,stgos,Santiago Sector Sur,,2026-11-18,3,9,24,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:17:41,stgos,Santiago Sector Sur,,2026-11-19,4,10,20,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nubosidad parcial
+2026-11-15 17:17:41,stgos,Santiago Sector Sur,,2026-11-20,5,8,22,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:17:51,calera,La Calera/Quillota,,2026-11-16,1,13,18,1,madrugada: Cubierto y llovizna débil / mañana: Cubierto y llovizna débil / tarde: Nublado / noche: Nublado
+2026-11-15 17:17:51,calera,La Calera/Quillota,,2026-11-17,2,12,20,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado / noche: Nubosidad parcial
+2026-11-15 17:17:51,calera,La Calera/Quillota,,2026-11-18,3,10,24,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nublado
+2026-11-15 17:17:51,calera,La Calera/Quillota,,2026-11-19,4,11,22,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-15 17:17:51,calera,La Calera/Quillota,,2026-11-20,5,9,24,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:17:51,olmue,Villa Alemana/Quilpué,,2026-11-16,1,13,18,1,madrugada: Cubierto y llovizna débil / mañana: Cubierto y llovizna débil / tarde: Nublado / noche: Nublado
+2026-11-15 17:17:51,olmue,Villa Alemana/Quilpué,,2026-11-17,2,12,20,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado / noche: Nubosidad parcial
+2026-11-15 17:17:51,olmue,Villa Alemana/Quilpué,,2026-11-18,3,10,24,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nublado
+2026-11-15 17:17:51,olmue,Villa Alemana/Quilpué,,2026-11-19,4,11,22,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-15 17:17:51,olmue,Villa Alemana/Quilpué,,2026-11-20,5,9,24,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:17:53,stacruz,Santa Cruz,,2026-11-16,1,10,21,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado / noche: Nublado
+2026-11-15 17:17:53,stacruz,Santa Cruz,,2026-11-17,2,11,22,0,madrugada: Cubierto / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-15 17:17:53,stacruz,Santa Cruz,,2026-11-18,3,9,23,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:17:53,stacruz,Santa Cruz,,2026-11-19,4,10,19,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:17:53,stacruz,Santa Cruz,,2026-11-20,5,8,21,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:18:04,snfernando,San Fernando,,2026-11-16,1,12,19,1,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado y chubascos aislados / noche: Nublado y chubascos aislados
+2026-11-15 17:18:04,snfernando,San Fernando,,2026-11-17,2,11,20,1,"madrugada: Cubierto / mañana: Nublado / tarde: Nublado, chubascos y probable tormenta eléctrica / noche: Nublado, chubascos y probable tormenta eléctrica"
+2026-11-15 17:18:04,snfernando,San Fernando,,2026-11-18,3,9,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:18:04,snfernando,San Fernando,,2026-11-19,4,11,17,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos / noche: Nublado y chubascos aislados
+2026-11-15 17:18:04,snfernando,San Fernando,,2026-11-20,5,8,19,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:18:11,angeles,Los Ángeles,SCGE,2026-11-16,1,13,20,1,"madrugada: Cubierto, chubascos aislados y probable tormenta eléctrica / mañana: Nublado, chubascos aislados y probable tormenta eléctrica / tarde: Nublado, chubascos aislados y probable tormenta eléctrica / noche: Nublado"
+2026-11-15 17:18:11,angeles,Los Ángeles,SCGE,2026-11-17,2,12,19,1,"madrugada: Nublado / mañana: Nublado y chubascos débiles con viento entre 25 y 40 km/h / tarde: Nublado, chubascos y probable tormenta eléctrica / noche: Nublado, chubascos y probable tormenta eléctrica"
+2026-11-15 17:18:11,angeles,Los Ángeles,SCGE,2026-11-18,3,12,20,1,madrugada: Cubierto y chubascos aislados / mañana: Nublado y chubascos aislados / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:18:11,angeles,Los Ángeles,SCGE,2026-11-19,4,10,19,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nubosidad parcial
+2026-11-15 17:18:11,angeles,Los Ángeles,SCGE,2026-11-20,5,10,20,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-15 17:18:23,illapel,Illapel,,2026-11-16,1,13,21,1,madrugada: Cubierto y llovizna débil / mañana: Cubierto y llovizna débil / tarde: Nublado / noche: Nublado
+2026-11-15 17:18:23,illapel,Illapel,,2026-11-17,2,13,23,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:18:23,illapel,Illapel,,2026-11-18,3,10,24,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:18:23,illapel,Illapel,,2026-11-19,4,14,22,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:18:23,illapel,Illapel,,2026-11-20,5,12,24,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:18:59,pichilemu,Pichilemu,,2026-11-16,1,15,18,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado / noche: Nublado
+2026-11-15 17:18:59,pichilemu,Pichilemu,,2026-11-17,2,13,18,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-15 17:18:59,pichilemu,Pichilemu,,2026-11-18,3,13,19,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:18:59,pichilemu,Pichilemu,,2026-11-19,4,12,18,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-15 17:18:59,pichilemu,Pichilemu,,2026-11-20,5,10,18,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial / noche: Nublado
+2026-11-15 17:19:18,stgoo,Santiago Sector Oriente,SCTB,2026-11-16,1,14,21,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado / noche: Nublado
+2026-11-15 17:19:18,stgoo,Santiago Sector Oriente,SCTB,2026-11-17,2,14,22,1,"madrugada: Nublado / mañana: Nublado / tarde: Nublado, chubascos débiles y probable tormenta eléctrica / noche: Nublado, chubascos aislados y probable tormenta eléctrica"
+2026-11-15 17:19:18,stgoo,Santiago Sector Oriente,SCTB,2026-11-18,3,12,24,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:19:18,stgoo,Santiago Sector Oriente,SCTB,2026-11-19,4,13,20,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-15 17:19:18,stgoo,Santiago Sector Oriente,SCTB,2026-11-20,5,11,22,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:19:24,casablanca,Casablanca,,2026-11-16,1,12,19,1,madrugada: Cubierto y llovizna débil / mañana: Cubierto y llovizna débil / tarde: Nublado / noche: Nublado
+2026-11-15 17:19:24,casablanca,Casablanca,,2026-11-17,2,11,22,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado / noche: Nublado
+2026-11-15 17:19:24,casablanca,Casablanca,,2026-11-18,3,9,25,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nublado
+2026-11-15 17:19:24,casablanca,Casablanca,,2026-11-19,4,10,24,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-15 17:19:24,casablanca,Casablanca,,2026-11-20,5,8,26,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:20:09,vicuna,Vicuña,,2026-11-16,1,14,22,1,madrugada: Nublado y chubascos débiles / mañana: Nublado / tarde: Nublado / noche: Nubosidad parcial
+2026-11-15 17:20:09,vicuna,Vicuña,,2026-11-17,2,14,23,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:20:09,vicuna,Vicuña,,2026-11-18,3,11,25,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:20:09,vicuna,Vicuña,,2026-11-19,4,13,20,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nublado y chubascos aislados
+2026-11-15 17:20:09,vicuna,Vicuña,,2026-11-20,5,12,22,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:20:27,chillan,Chillán,SCCH,2026-11-16,1,13,20,1,madrugada: Cubierto y chubascos aislados / mañana: Nublado y chubascos aislados / tarde: Nublado y chubascos aislados / noche: Cubierto y chubascos aislados
+2026-11-15 17:20:27,chillan,Chillán,SCCH,2026-11-17,2,13,21,1,"madrugada: Cubierto / mañana: Nublado y chubascos débiles con viento entre 25 y 40 km/h / tarde: Nublado, chubascos y probable tormenta eléctrica con viento entre 25 y 40 km/h / noche: Nublado, chubascos aislados y probable tormenta eléctrica"
+2026-11-15 17:20:27,chillan,Chillán,SCCH,2026-11-18,3,12,21,1,madrugada: Cubierto y chubascos aislados / mañana: Nublado y chubascos aislados / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:20:27,chillan,Chillán,SCCH,2026-11-19,4,10,20,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nubosidad parcial
+2026-11-15 17:20:27,chillan,Chillán,SCCH,2026-11-20,5,9,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-15 17:20:27,sancarlos,San Carlos,,2026-11-16,1,13,20,1,madrugada: Cubierto y chubascos aislados / mañana: Nublado y chubascos aislados / tarde: Nublado y chubascos aislados / noche: Cubierto y chubascos aislados
+2026-11-15 17:20:27,sancarlos,San Carlos,,2026-11-17,2,13,21,1,"madrugada: Cubierto / mañana: Nublado y chubascos débiles con viento entre 25 y 40 km/h / tarde: Nublado, chubascos y probable tormenta eléctrica con viento entre 25 y 40 km/h / noche: Nublado, chubascos aislados y probable tormenta eléctrica"
+2026-11-15 17:20:27,sancarlos,San Carlos,,2026-11-18,3,12,21,1,madrugada: Cubierto y chubascos aislados / mañana: Nublado y chubascos aislados / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:20:27,sancarlos,San Carlos,,2026-11-19,4,10,20,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nubosidad parcial
+2026-11-15 17:20:27,sancarlos,San Carlos,,2026-11-20,5,9,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-15 17:21:00,ligua,La Ligua,,2026-11-16,1,14,21,1,madrugada: Cubierto y llovizna débil / mañana: Cubierto y llovizna débil / tarde: Nublado / noche: Nublado
+2026-11-15 17:21:00,ligua,La Ligua,,2026-11-17,2,12,19,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado / noche: Nubosidad parcial
+2026-11-15 17:21:00,ligua,La Ligua,,2026-11-18,3,11,23,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nublado
+2026-11-15 17:21:00,ligua,La Ligua,,2026-11-19,4,12,20,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-15 17:21:00,ligua,La Ligua,,2026-11-20,5,10,21,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:21:03,snjosemaipo,San José de Maipo,,2026-11-16,1,13,18,1,madrugada: Cubierto / mañana: Cubierto / tarde: Nublado y chubascos aislados / noche: Nublado y chubascos aislados
+2026-11-15 17:21:03,snjosemaipo,San José de Maipo,,2026-11-17,2,10,18,1,"madrugada: Nublado / mañana: Nublado / tarde: Nublado, chubascos y probable tormenta eléctrica / noche: Nublado, chubascos aislados y probable tormenta eléctrica"
+2026-11-15 17:21:03,snjosemaipo,San José de Maipo,,2026-11-18,3,8,20,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:21:03,snjosemaipo,San José de Maipo,,2026-11-19,4,9,16,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos / noche: Nublado y chubascos
+2026-11-15 17:21:03,snjosemaipo,San José de Maipo,,2026-11-20,5,7,20,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:21:05,combarbala,Combarbalá,,2026-11-16,1,15,21,1,madrugada: Nublado y chubascos débiles / mañana: Nublado / tarde: Nublado / noche: Nubosidad parcial
+2026-11-15 17:21:05,combarbala,Combarbalá,,2026-11-17,2,12,22,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:21:05,combarbala,Combarbalá,,2026-11-18,3,13,23,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:21:05,combarbala,Combarbalá,,2026-11-19,4,14,19,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nublado y chubascos aislados
+2026-11-15 17:21:05,combarbala,Combarbalá,,2026-11-20,5,13,19,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:22:49,cobquecura,Cobquecura,,2026-11-16,1,14,17,1,madrugada: Cubierto y chubascos aislados / mañana: Cubierto y chubascos aislados / tarde: Nublado y chubascos aislados / noche: Nublado
+2026-11-15 17:22:49,cobquecura,Cobquecura,,2026-11-17,2,13,18,1,"madrugada: Nublado / mañana: Nublado y chubascos débiles con viento entre 25 y 40 km/h / tarde: Nublado, chubascos y probable tormenta eléctrica con viento entre 25 y 40 km/h / noche: Nublado, chubascos aislados y probable tormenta eléctrica"
+2026-11-15 17:22:49,cobquecura,Cobquecura,,2026-11-18,3,14,17,1,madrugada: Cubierto y chubascos aislados / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:22:49,cobquecura,Cobquecura,,2026-11-19,4,11,17,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:22:49,cobquecura,Cobquecura,,2026-11-20,5,8,19,0,madrugada: Despejado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nublado
+2026-11-15 17:23:28,tololo,El Tololo,,2026-11-16,1,11,18,1,madrugada: Nublado y chubascos débiles / mañana: Nublado / tarde: Nublado / noche: Nubosidad parcial
+2026-11-15 17:23:28,tololo,El Tololo,,2026-11-17,2,10,18,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:23:28,tololo,El Tololo,,2026-11-18,3,10,18,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 17:23:28,tololo,El Tololo,,2026-11-19,4,11,17,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 17:23:28,tololo,El Tololo,,2026-11-20,5,11,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado

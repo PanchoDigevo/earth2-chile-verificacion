@@ -2553,31 +2553,31 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-14,330030,"Santo Domingo, Ad.",-33.6561,-71.6133,77.0,Santo Domingo,19.5,16.3,0.0
 2026-11-14,330031,"Juan Fernández, Estación Meteorológica.",-33.6358,-78.8331,40.0,Juan Fernández,20.9,13.0,6.1
 2026-11-14,330071,Talagante,-33.6703,-70.8494,390.0,Talagante,,,0.1
-2026-11-14,330075,Río Clarillo,-33.7283,-70.4967,876.0,Pirque,27.4,14.6,2.5
+2026-11-14,330075,Río Clarillo,-33.7283,-70.4967,876.0,Pirque,27.4,14.6,2.6
 2026-11-14,330076,Chorombo Hacienda,-33.5294,-71.2292,145.0,María Pinto,22.3,15.0,
 2026-11-14,330077,El Colorado,-33.35,-70.2936,2750.0,Lo Barnechea,19.4,11.4,0.4
-2026-11-14,330111,Lo Prado Cerro San Francisco,-33.4581,-70.9486,1068.0,Pudahuel,22.0,12.7,4.9
+2026-11-14,330111,Lo Prado Cerro San Francisco,-33.4581,-70.9486,1068.0,Pudahuel,22.0,12.7,5.0
 2026-11-14,330112,San José  Guayacán,-33.6153,-70.3506,928.0,San José de Maipo,25.8,10.6,0.0
 2026-11-14,330113,El Paico,-33.7064,-71.0081,275.0,El Monte,22.5,15.9,0.0
 2026-11-14,330114,San Pablo - DASA,-33.4422,-70.7467,490.0,Pudahuel,25.4,14.6,0.7
-2026-11-14,330118,Lo Pinto,-33.2681,-70.7322,512.0,Colina,30.1,-28.1,1.9
+2026-11-14,330118,Lo Pinto,-33.2681,-70.7322,512.0,Colina,30.1,-28.1,2.1
 2026-11-14,330121,Curacaví Ad.,-33.4111,-71.1678,203.0,Curacaví,24.1,15.7,0.0
 2026-11-14,330122,"Aguas Andinas, La Florida",-33.545,-70.5483,670.0,La Florida,24.6,14.7,2.7
 2026-11-14,330160,"El Milagro, Buin",-33.7544,-70.7644,460.0,Buin,25.5,13.7,0.0
 2026-11-14,330161,"San Antonio, Lo Zarate",-33.5305,-71.5061,103.0,Cartagena,21.3,15.1,0.1
-2026-11-14,330162,Colina (Reg.),-33.1622,-70.6431,755.0,Colina,28.1,14.8,2.4
+2026-11-14,330162,Colina (Reg.),-33.1622,-70.6431,755.0,Colina,28.1,14.8,2.6
 2026-11-14,330163,Peldehue Ad.,-33.1139,-70.6858,670.0,Colina,29.8,14.2,1.8
-2026-11-14,330193,Llanos de Caleu - La Dormida,-33.0494,-71.0014,1450.0,Tiltil,24.7,13.2,2.9
+2026-11-14,330193,Llanos de Caleu - La Dormida,-33.0494,-71.0014,1450.0,Tiltil,24.7,13.2,3.0
 2026-11-14,340031,"General Freire, Curicó Ad.",-34.9694,-71.2169,229.0,Curicó,25.1,14.8,0.0
 2026-11-14,340045,Rancagua,-34.1722,-70.7761,482.0,Rancagua,23.2,14.3,1.3
 2026-11-14,340048,Quimávida,-34.215,-70.9969,316.0,Doñihue,23.8,15.0,0.0
 2026-11-14,340066,Nilahue - La Quebrada,-34.6608,-71.7353,81.0,Pumanque,22.9,12.5,0.0
-2026-11-14,340093,Portezuelo-Codelco,-34.1983,-70.5792,1185.0,Rancagua,23.1,13.8,1.3
+2026-11-14,340093,Portezuelo-Codelco,-34.1983,-70.5792,1185.0,Rancagua,23.1,13.8,1.5
 2026-11-14,340115,Pichilemu aeródromo,-34.3942,-72.0186,25.0,Pichilemu,19.8,15.8,0.0
 2026-11-14,350028,Panguilemo,-35.3778,-71.6011,119.0,Pelarco,24.8,13.3,0.0
 2026-11-14,350901,Escuela de Artillería Linares,-35.8369,-71.5928,160.0,Linares,27.4,13.9,0.0
 2026-11-14,360019,"Carriel Sur, Concepción Ap.",-36.7805,-73.0664,8.0,Talcahuano,20.6,14.2,0.0
-2026-11-14,360046,Chillán Mayulermo,-36.828,-71.8669,397.0,San Ignacio,24.3,10.5,0.8
+2026-11-14,360046,Chillán Mayulermo,-36.828,-71.8669,397.0,San Ignacio,24.3,10.5,1.2
 2026-11-14,360047,Retiro Copihue,-36.0755,-71.7581,162.0,Retiro,24.3,10.7,0.0
 2026-11-14,360097,Liceo Polivalente San Nicolás,-36.5056,-72.2194,118.0,San Nicolás,24.3,10.7,0.0
 2026-11-14,370033,"María Dolores, Los Angeles Ad.",-37.3969,-72.4239,114.0,Los Angeles,28.5,7.9,0.0
@@ -2626,7 +2626,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-14,530005,"Fuentes Martínez, Porvenir Ad.",-53.2536,-70.3261,25.0,Porvenir,16.2,2.9,0.0
 2026-11-14,530008,Escuela Alberto Hurtado,-53.1669,-70.9453,60.0,Punta Arenas,16.3,6.5,0.0
 2026-11-14,540008,"Pampa Guanaco, Tierra del Fuego",-54.0508,-68.8039,150.0,Timaukel,15.9,1.6,0.0
-2026-11-14,550001,"Guardiamarina Zañartu, Pto Williams Ad.",-54.9317,-67.6156,12.0,Cabo de Hornos (Ex-Navarino),14.1,3.7,0.4
+2026-11-14,550001,"Guardiamarina Zañartu, Pto Williams Ad.",-54.9317,-67.6156,12.0,Cabo de Hornos (Ex-Navarino),14.1,3.7,0.6
 2026-11-14,950001,"C.M.A. Eduardo Frei Montalva, Antártica",-62.1919,-58.9797,45.0,Antártica,1.2,-1.5,0.8
 2026-11-14,950009,Carvajal - INACH,-67.7758,-68.8883,30.0,Antártica,-2.8,-2.8,
 2026-11-14,950010,Punta. Py - INACH,-64.9053,-63.7372,55.0,Antártica,-1.2,-1.3,

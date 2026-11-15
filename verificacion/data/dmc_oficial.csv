@@ -18724,3 +18724,8 @@ emision,indice,ciudad,icao,fecha,dia,tmin,tmax,lluvia,texto
 2026-11-15 05:52:02,ovalle,Ovalle,,2026-11-17,2,13,24,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
 2026-11-15 05:52:02,ovalle,Ovalle,,2026-11-18,3,11,25,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
 2026-11-15 05:52:02,ovalle,Ovalle,,2026-11-19,4,12,24,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 08:39:10,combarbala,Combarbalá,,2026-11-15,0,,24,0,mañana: Nubosidad parcial / tarde: Nubosidad parcial variando a nublado / noche: Nublado
+2026-11-15 08:39:10,combarbala,Combarbalá,,2026-11-16,1,15,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nubosidad parcial
+2026-11-15 08:39:10,combarbala,Combarbalá,,2026-11-17,2,12,22,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 08:39:10,combarbala,Combarbalá,,2026-11-18,3,13,23,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-15 08:39:10,combarbala,Combarbalá,,2026-11-19,4,14,19,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos / noche: Nublado y chubascos aislados

@@ -19799,3 +19799,13 @@ emision,indice,ciudad,icao,fecha,dia,tmin,tmax,lluvia,texto
 2026-11-16 06:05:55,algarrobo,Algarrobo,,2026-11-18,2,10,20,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nublado
 2026-11-16 06:05:55,algarrobo,Algarrobo,,2026-11-19,3,11,19,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Despejado
 2026-11-16 06:05:55,algarrobo,Algarrobo,,2026-11-20,4,10,20,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial / noche: Nublado
+2026-11-16 07:09:32,rancagua,Rancagua,,2026-11-16,0,,20,1,mañana: Cubierto y llovizna / tarde: Cubierto variando a nublado / noche: Nublado
+2026-11-16 07:09:32,rancagua,Rancagua,,2026-11-17,1,11,21,1,"madrugada: Cubierto / mañana: Nublado / tarde: Nublado, chubascos y probable tormenta eléctrica / noche: Nublado, chubascos y probable tormenta eléctrica"
+2026-11-16 07:09:32,rancagua,Rancagua,,2026-11-18,2,10,22,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-16 07:09:32,rancagua,Rancagua,,2026-11-19,3,12,18,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos / noche: Nublado y chubascos aislados
+2026-11-16 07:09:32,rancagua,Rancagua,,2026-11-20,4,9,20,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
+2026-11-16 07:09:45,rengo,Rengo,,2026-11-16,0,,20,1,mañana: Cubierto y llovizna / tarde: Cubierto variando a nublado / noche: Nublado
+2026-11-16 07:09:45,rengo,Rengo,,2026-11-17,1,11,21,1,"madrugada: Cubierto / mañana: Nublado / tarde: Nublado, chubascos y probable tormenta eléctrica / noche: Nublado, chubascos y probable tormenta eléctrica"
+2026-11-16 07:09:45,rengo,Rengo,,2026-11-18,2,10,22,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-16 07:09:45,rengo,Rengo,,2026-11-19,3,12,18,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos / noche: Nublado y chubascos aislados
+2026-11-16 07:09:45,rengo,Rengo,,2026-11-20,4,9,20,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado

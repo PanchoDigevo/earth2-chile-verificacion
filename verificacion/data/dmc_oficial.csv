@@ -19249,3 +19249,33 @@ emision,indice,ciudad,icao,fecha,dia,tmin,tmax,lluvia,texto
 2026-11-15 17:23:28,tololo,El Tololo,,2026-11-18,3,10,18,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado / noche: Nublado
 2026-11-15 17:23:28,tololo,El Tololo,,2026-11-19,4,11,17,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
 2026-11-15 17:23:28,tololo,El Tololo,,2026-11-20,5,11,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-15 19:57:22,curico,Curicó,SCIC,2026-11-16,1,14,21,0,madrugada: Cubierto / mañana: Cubierto / tarde: Cubierto / noche: Nublado
+2026-11-15 19:57:22,curico,Curicó,SCIC,2026-11-17,2,13,23,1,"madrugada: Cubierto / mañana: Nublado / tarde: Nublado, chubascos aislados y probable tormenta eléctrica / noche: Nublado, chubascos aislados y probable tormenta eléctrica"
+2026-11-15 19:57:22,curico,Curicó,SCIC,2026-11-18,3,12,24,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 19:57:22,curico,Curicó,SCIC,2026-11-19,4,12,21,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nublado
+2026-11-15 19:57:22,curico,Curicó,SCIC,2026-11-20,5,10,23,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-15 19:57:22,molina,Molina,,2026-11-16,1,14,21,0,madrugada: Cubierto / mañana: Cubierto / tarde: Cubierto / noche: Nublado
+2026-11-15 19:57:22,molina,Molina,,2026-11-17,2,13,23,1,"madrugada: Cubierto / mañana: Nublado / tarde: Nublado, chubascos aislados y probable tormenta eléctrica / noche: Nublado, chubascos aislados y probable tormenta eléctrica"
+2026-11-15 19:57:22,molina,Molina,,2026-11-18,3,12,24,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 19:57:22,molina,Molina,,2026-11-19,4,12,21,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nublado
+2026-11-15 19:57:22,molina,Molina,,2026-11-20,5,10,23,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-15 19:58:17,cauquenes,Cauquenes,,2026-11-16,1,12,21,1,madrugada: Cubierto y chubascos aislados / mañana: Nublado y chubascos aislados / tarde: Nublado y chubascos aislados / noche: Cubierto y chubascos aislados
+2026-11-15 19:58:17,cauquenes,Cauquenes,,2026-11-17,2,12,21,1,"madrugada: Cubierto / mañana: Nublado y chubascos aislados / tarde: Nublado, chubascos débiles y probable tormenta eléctrica / noche: Nublado, chubascos aislados y probable tormenta eléctrica"
+2026-11-15 19:58:17,cauquenes,Cauquenes,,2026-11-18,3,12,23,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 19:58:17,cauquenes,Cauquenes,,2026-11-19,4,12,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 19:58:17,cauquenes,Cauquenes,,2026-11-20,5,11,23,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 19:58:41,constitucion,Constitución,,2026-11-16,1,15,18,1,madrugada: Cubierto y chubascos aislados / mañana: Nublado y chubascos aislados / tarde: Nublado y chubascos aislados / noche: Cubierto y chubascos aislados
+2026-11-15 19:58:41,constitucion,Constitución,,2026-11-17,2,14,18,1,"madrugada: Nublado / mañana: Nublado / tarde: Nublado, chubascos aislados y probable tormenta eléctrica / noche: Nublado, chubascos aislados y probable tormenta eléctrica"
+2026-11-15 19:58:41,constitucion,Constitución,,2026-11-18,3,13,19,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 19:58:41,constitucion,Constitución,,2026-11-19,4,12,18,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-15 19:58:41,constitucion,Constitución,,2026-11-20,5,10,20,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial / noche: Nublado
+2026-11-15 19:59:12,sancarlos,San Carlos,,2026-11-16,1,13,20,1,madrugada: Cubierto y chubascos aislados / mañana: Nublado y chubascos aislados / tarde: Nublado y chubascos aislados / noche: Cubierto y chubascos aislados
+2026-11-15 19:59:12,sancarlos,San Carlos,,2026-11-17,2,12,21,1,"madrugada: Cubierto / mañana: Nublado y chubascos débiles con viento entre 25 y 40 km/h / tarde: Nublado, chubascos y probable tormenta eléctrica con viento entre 25 y 40 km/h / noche: Nublado, chubascos aislados y probable tormenta eléctrica"
+2026-11-15 19:59:12,sancarlos,San Carlos,,2026-11-18,3,11,21,1,madrugada: Cubierto y chubascos aislados / mañana: Nublado y chubascos aislados / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 19:59:12,sancarlos,San Carlos,,2026-11-19,4,9,20,1,madrugada: Nublado / mañana: Nublado / tarde: Nublado y chubascos aislados / noche: Nubosidad parcial
+2026-11-15 19:59:12,sancarlos,San Carlos,,2026-11-20,5,8,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-15 19:59:25,cobquecura,Cobquecura,,2026-11-16,1,14,17,1,madrugada: Cubierto y chubascos aislados / mañana: Cubierto y chubascos aislados / tarde: Nublado y chubascos aislados / noche: Nublado
+2026-11-15 19:59:25,cobquecura,Cobquecura,,2026-11-17,2,13,18,1,"madrugada: Nublado / mañana: Nublado y chubascos débiles con viento entre 25 y 40 km/h / tarde: Nublado, chubascos y probable tormenta eléctrica con viento entre 25 y 40 km/h / noche: Nublado, chubascos aislados y probable tormenta eléctrica"
+2026-11-15 19:59:25,cobquecura,Cobquecura,,2026-11-18,3,14,17,1,madrugada: Cubierto y chubascos aislados / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 19:59:25,cobquecura,Cobquecura,,2026-11-19,4,11,17,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-15 19:59:25,cobquecura,Cobquecura,,2026-11-20,5,8,19,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial / noche: Nublado

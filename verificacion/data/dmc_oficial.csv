@@ -25564,3 +25564,8 @@ emision,indice,ciudad,icao,fecha,dia,tmin,tmax,lluvia,texto
 2026-11-21 17:42:00,tololo,El Tololo,,2026-11-24,3,11,20,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
 2026-11-21 17:42:00,tololo,El Tololo,,2026-11-25,4,12,22,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
 2026-11-21 17:42:00,tololo,El Tololo,,2026-11-26,5,11,20,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-21 18:03:21,angeles,Los Ángeles,SCGE,2026-11-22,1,8,20,0,madrugada: Nubosidad parcial variando a despejado / mañana: Despejado / tarde: Despejado / noche: Despejado variando a nubosidad parcial
+2026-11-21 18:03:21,angeles,Los Ángeles,SCGE,2026-11-23,2,10,21,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial con viento entre 25 y 40 km/h / noche: Nubosidad parcial
+2026-11-21 18:03:21,angeles,Los Ángeles,SCGE,2026-11-24,3,9,21,0,madrugada: Despejado / mañana: Nubosidad parcial con viento entre 25 y 40 km/h / tarde: Nubosidad parcial con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h / noche: Despejado con viento entre 25 y 40 km/h y ráfagas de viento hasta 60 km/h
+2026-11-21 18:03:21,angeles,Los Ángeles,SCGE,2026-11-25,4,9,25,0,madrugada: Despejado / mañana: Despejado con viento entre 25 y 40 km/h / tarde: Despejado con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h / noche: Despejado con viento entre 25 y 40 km/h y ráfagas de viento hasta 60 km/h
+2026-11-21 18:03:21,angeles,Los Ángeles,SCGE,2026-11-26,5,11,30,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado

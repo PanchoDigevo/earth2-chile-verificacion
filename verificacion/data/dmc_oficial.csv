@@ -26089,3 +26089,48 @@ emision,indice,ciudad,icao,fecha,dia,tmin,tmax,lluvia,texto
 2026-11-22 05:59:28,lota,Lota,,2026-11-24,2,11,22,0,madrugada: Despejado / mañana: Nubosidad parcial / tarde: Nubosidad parcial con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h / noche: Despejado con viento entre 25 y 40 km/h y ráfagas de viento hasta 60 km/h
 2026-11-22 05:59:28,lota,Lota,,2026-11-25,3,12,25,0,madrugada: Despejado / mañana: Despejado con viento entre 25 y 40 km/h / tarde: Despejado con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h / noche: Despejado con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h
 2026-11-22 05:59:28,lota,Lota,,2026-11-26,4,13,24,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-22 07:35:37,vdelmar,Viña del Mar,,2026-11-22,0,,23,0,mañana: Despejado / tarde: Despejado variando a nubosidad parcial con viento entre 25 y 40 km/h / noche: Nubosidad parcial con viento entre 25 y 40 km/h
+2026-11-22 07:35:37,vdelmar,Viña del Mar,,2026-11-23,1,10,22,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado con viento entre 25 y 40 km/h
+2026-11-22 07:35:37,vdelmar,Viña del Mar,,2026-11-24,2,10,24,0,madrugada: Despejado / mañana: Despejado con viento entre 25 y 40 km/h / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado con viento entre 25 y 40 km/h
+2026-11-22 07:35:37,vdelmar,Viña del Mar,,2026-11-25,3,11,24,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-22 07:35:37,vdelmar,Viña del Mar,,2026-11-26,4,11,22,0,madrugada: Nubosidad parcial / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-22 07:35:43,valpo,Valparaíso,,2026-11-22,0,,22,0,mañana: Despejado / tarde: Despejado variando a nubosidad parcial con viento entre 25 y 40 km/h / noche: Nubosidad parcial con viento entre 25 y 40 km/h
+2026-11-22 07:35:43,valpo,Valparaíso,,2026-11-23,1,11,22,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado con viento entre 25 y 40 km/h
+2026-11-22 07:35:43,valpo,Valparaíso,,2026-11-24,2,11,23,0,madrugada: Despejado / mañana: Despejado con viento entre 25 y 40 km/h / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado con viento entre 25 y 40 km/h
+2026-11-22 07:35:43,valpo,Valparaíso,,2026-11-25,3,12,23,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-22 07:35:43,valpo,Valparaíso,,2026-11-26,4,12,21,0,madrugada: Nubosidad parcial / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-22 07:36:22,algarrobo,Algarrobo,,2026-11-22,0,,21,0,mañana: Despejado / tarde: Despejado variando a nubosidad parcial con viento entre 25 y 40 km/h / noche: Nubosidad parcial con viento entre 25 y 40 km/h
+2026-11-22 07:36:22,algarrobo,Algarrobo,,2026-11-23,1,10,20,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado
+2026-11-22 07:36:22,algarrobo,Algarrobo,,2026-11-24,2,11,21,0,madrugada: Despejado / mañana: Despejado con viento entre 25 y 40 km/h / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado
+2026-11-22 07:36:22,algarrobo,Algarrobo,,2026-11-25,3,12,22,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-22 07:36:22,algarrobo,Algarrobo,,2026-11-26,4,12,21,0,madrugada: Nubosidad parcial / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-22 07:37:40,snfernando,San Fernando,,2026-11-22,0,,25,0,mañana: Nublado variando a nubosidad parcial / tarde: Despejado variando a nubosidad parcial / noche: Nubosidad parcial
+2026-11-22 07:37:40,snfernando,San Fernando,,2026-11-23,1,9,24,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Despejado
+2026-11-22 07:37:40,snfernando,San Fernando,,2026-11-24,2,10,27,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-22 07:37:40,snfernando,San Fernando,,2026-11-25,3,11,32,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-22 07:37:40,snfernando,San Fernando,,2026-11-26,4,12,32,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-22 07:39:08,lota,Lota,,2026-11-22,0,,19,0,mañana: Despejado / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado variando a nubosidad parcial con viento entre 25 y 40 km/h
+2026-11-22 07:39:08,lota,Lota,,2026-11-23,1,12,20,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado con viento entre 25 y 40 km/h
+2026-11-22 07:39:08,lota,Lota,,2026-11-24,2,11,22,0,madrugada: Despejado / mañana: Nubosidad parcial / tarde: Nubosidad parcial con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h / noche: Despejado con viento entre 25 y 40 km/h y ráfagas de viento hasta 60 km/h
+2026-11-22 07:39:08,lota,Lota,,2026-11-25,3,12,25,0,madrugada: Despejado / mañana: Despejado con viento entre 25 y 40 km/h / tarde: Despejado con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h / noche: Despejado con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h
+2026-11-22 07:39:08,lota,Lota,,2026-11-26,4,13,24,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-22 07:39:15,talcahuano,Talcahuano,,2026-11-22,0,,19,0,mañana: Despejado / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado variando a nubosidad parcial con viento entre 25 y 40 km/h
+2026-11-22 07:39:15,talcahuano,Talcahuano,,2026-11-23,1,12,20,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado con viento entre 25 y 40 km/h
+2026-11-22 07:39:15,talcahuano,Talcahuano,,2026-11-24,2,11,22,0,madrugada: Despejado / mañana: Nubosidad parcial / tarde: Nubosidad parcial con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h / noche: Despejado con viento entre 25 y 40 km/h y ráfagas de viento hasta 60 km/h
+2026-11-22 07:39:15,talcahuano,Talcahuano,,2026-11-25,3,12,25,0,madrugada: Despejado / mañana: Despejado con viento entre 25 y 40 km/h / tarde: Despejado con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h / noche: Despejado con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h
+2026-11-22 07:39:15,talcahuano,Talcahuano,,2026-11-26,4,13,24,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-22 07:39:23,concepcion,Concepción,SCIE,2026-11-22,0,,19,0,mañana: Despejado / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado variando a nubosidad parcial con viento entre 25 y 40 km/h
+2026-11-22 07:39:23,concepcion,Concepción,SCIE,2026-11-23,1,12,20,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado con viento entre 25 y 40 km/h
+2026-11-22 07:39:23,concepcion,Concepción,SCIE,2026-11-24,2,11,22,0,madrugada: Despejado / mañana: Nubosidad parcial / tarde: Nubosidad parcial con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h / noche: Despejado con viento entre 25 y 40 km/h y ráfagas de viento hasta 60 km/h
+2026-11-22 07:39:23,concepcion,Concepción,SCIE,2026-11-25,3,12,25,0,madrugada: Despejado / mañana: Despejado con viento entre 25 y 40 km/h / tarde: Despejado con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h / noche: Despejado con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h
+2026-11-22 07:39:23,concepcion,Concepción,SCIE,2026-11-26,4,13,24,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-22 08:14:14,cauquenes,Cauquenes,,2026-11-22,0,,26,0,mañana: Despejado / tarde: Despejado con viento entre 25 y 40 km/h variando a nubosidad parcial / noche: Nubosidad parcial
+2026-11-22 08:14:14,cauquenes,Cauquenes,,2026-11-23,1,10,24,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial con viento entre 25 y 40 km/h / noche: Despejado
+2026-11-22 08:14:14,cauquenes,Cauquenes,,2026-11-24,2,9,25,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h / noche: Despejado con viento entre 25 y 40 km/h y ráfagas de viento hasta 60 km/h
+2026-11-22 08:14:14,cauquenes,Cauquenes,,2026-11-25,3,11,28,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado con viento entre 25 y 40 km/h
+2026-11-22 08:14:14,cauquenes,Cauquenes,,2026-11-26,4,12,31,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-22 08:14:29,parral,Parral,,2026-11-22,0,,24,0,mañana: Despejado / tarde: Despejado variando a nubosidad parcial / noche: Nubosidad parcial
+2026-11-22 08:14:29,parral,Parral,,2026-11-23,1,10,24,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Despejado con viento entre 25 y 40 km/h
+2026-11-22 08:14:29,parral,Parral,,2026-11-24,2,9,25,0,madrugada: Despejado / mañana: Nubosidad parcial / tarde: Despejado con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h / noche: Despejado con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h
+2026-11-22 08:14:29,parral,Parral,,2026-11-25,3,10,29,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado con viento entre 25 y 40 km/h
+2026-11-22 08:14:29,parral,Parral,,2026-11-26,4,11,31,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado

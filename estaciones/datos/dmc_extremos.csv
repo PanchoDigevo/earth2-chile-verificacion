@@ -3720,7 +3720,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-22,330020,"Quinta Normal, Santiago",-33.445,-70.6828,520.0,Estación Central,26.4,10.1,0.0
 2026-11-22,330021,Pudahuel Santiago,-33.3783,-70.7878,474.0,Pudahuel,26.1,9.7,0.0
 2026-11-22,330030,"Santo Domingo, Ad.",-33.6561,-71.6133,77.0,Santo Domingo,20.4,8.9,0.0
-2026-11-22,330031,"Juan Fernández, Estación Meteorológica.",-33.6358,-78.8331,40.0,Juan Fernández,18.6,14.0,2.3
+2026-11-22,330031,"Juan Fernández, Estación Meteorológica.",-33.6358,-78.8331,40.0,Juan Fernández,18.6,14.0,3.9
 2026-11-22,330071,Talagante,-33.6703,-70.8494,390.0,Talagante,,,0.0
 2026-11-22,330075,Río Clarillo,-33.7283,-70.4967,876.0,Pirque,26.7,7.9,0.0
 2026-11-22,330076,Chorombo Hacienda,-33.5294,-71.2292,145.0,María Pinto,26.5,8.3,
@@ -3764,10 +3764,10 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-22,380082,Isla Mocha Ad.,-38.3839,-73.8692,6.0,Tirúa,17.2,5.5,0.0
 2026-11-22,390006,"Pichoy, Valdivia Ad.",-39.6567,-73.0872,18.0,Mariquina,18.8,3.8,0.0
 2026-11-22,390015,Isla Teja  (Universidad Austral Valdivia),-39.7994,-73.2583,15.0,Valdivia,17.9,6.3,2.2
-2026-11-22,390028,Villarrica,-39.19,-72.1122,393.0,Villarrica,15.7,7.3,1.1
+2026-11-22,390028,Villarrica,-39.19,-72.1122,393.0,Villarrica,15.7,7.3,1.2
 2026-11-22,390029,Panguipulli,-39.6344,-72.3439,229.0,Panguipulli,15.9,4.6,3.5
 2026-11-22,390043,Corral ESSAL,-39.89,-73.4261,24.0,Corral,17.9,7.4,15.4
-2026-11-22,390056,Pucón Aeródromo,-39.2911,-71.9169,268.0,Pucón,16.9,7.9,4.1
+2026-11-22,390056,Pucón Aeródromo,-39.2911,-71.9169,268.0,Pucón,16.9,7.9,5.7
 2026-11-22,400013,Juan Kalt Bode (Fundación Adolfo Matthei),-40.5906,-73.1122,53.0,Osorno,13.9,5.2,0.0
 2026-11-22,400058,"La Unión, Agrotec",-40.31,-73.0039,60.0,La Unión,17.2,5.4,1.1
 2026-11-22,400060,"Fundo el Maitén, Paillaco",-40.0836,-72.6589,194.0,Paillaco,15.8,4.1,2.3

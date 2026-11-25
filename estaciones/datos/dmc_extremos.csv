@@ -3986,7 +3986,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-24,270009,Copiapó Universidad de Atacama,-27.3589,-70.3533,362.0,Copiapó,27.4,16.6,0.0
 2026-11-24,270022,"Copiapo, Cerro Antenas",-27.3628,-70.2831,946.0,Copiapó,25.0,12.4,0.0
 2026-11-24,280010,Freirina Nicolasa,-28.5169,-71.01,156.0,Freirina,27.3,12.3,0.0
-2026-11-24,280028,"Alto del Carmen, Los Sauces",-28.7778,-70.4706,854.0,Alto del Carmen,21.3,15.7,
+2026-11-24,280028,"Alto del Carmen, Los Sauces",-28.7778,-70.4706,854.0,Alto del Carmen,29.9,12.4,0.0
 2026-11-24,290004,"La Florida, La Serena Ad.",-29.9144,-71.2067,146.0,La Serena,23.2,13.8,0.0
 2026-11-24,290013,"Cerro la Silla, observatorio astronómico",-29.2583,-70.7344,2377.0,La Higuera,16.8,10.2,
 2026-11-24,300024,Ovalle Escuela Agrícola,-30.58,-71.1867,310.0,Ovalle,27.5,12.1,0.0
@@ -4064,6 +4064,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-24,390029,Panguipulli,-39.6344,-72.3439,229.0,Panguipulli,19.0,6.8,0.0
 2026-11-24,390043,Corral ESSAL,-39.89,-73.4261,24.0,Corral,19.7,7.0,0.0
 2026-11-24,390056,Pucón Aeródromo,-39.2911,-71.9169,268.0,Pucón,19.5,7.7,0.0
+2026-11-24,400013,Juan Kalt Bode (Fundación Adolfo Matthei),-40.5906,-73.1122,53.0,Osorno,19.5,7.7,0.0
 2026-11-24,400058,"La Unión, Agrotec",-40.31,-73.0039,60.0,La Unión,18.7,7.0,0.0
 2026-11-24,400060,"Fundo el Maitén, Paillaco",-40.0836,-72.6589,194.0,Paillaco,19.4,7.2,0.1
 2026-11-24,400061,Purranque,-40.8667,-73.0236,75.0,Purrangue,,,0.0

@@ -29269,3 +29269,33 @@ emision,indice,ciudad,icao,fecha,dia,tmin,tmax,lluvia,texto
 2026-11-25 07:11:12,pmontt,Puerto Montt,SCTE,2026-11-27,2,10,19,0,madrugada: Despejado / mañana: Nublado variando a despejado / tarde: Despejado / noche: Despejado
 2026-11-25 07:11:12,pmontt,Puerto Montt,SCTE,2026-11-28,3,10,19,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
 2026-11-25 07:11:12,pmontt,Puerto Montt,SCTE,2026-11-29,4,11,18,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-25 08:20:05,chillan,Chillán,SCCH,2026-11-25,0,,28,0,mañana: Nubosidad parcial con viento entre 25 y 40 km/h variando a despejado / tarde: Despejado con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h / noche: Despejado con viento entre 25 y 40 km/h
+2026-11-25 08:20:05,chillan,Chillán,SCCH,2026-11-26,1,11,33,0,madrugada: Despejado con viento entre 25 y 40 km/h / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-25 08:20:05,chillan,Chillán,SCCH,2026-11-27,2,13,31,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-25 08:20:05,chillan,Chillán,SCCH,2026-11-28,3,13,30,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-25 08:20:05,chillan,Chillán,SCCH,2026-11-29,4,13,29,0,madrugada: Nubosidad parcial / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-25 08:20:17,sancarlos,San Carlos,,2026-11-25,0,,27,0,mañana: Nubosidad parcial con viento entre 25 y 40 km/h variando a despejado / tarde: Despejado con viento entre 25 y 40 km/h y ráfagas de viento hasta 50 km/h / noche: Despejado con viento entre 25 y 40 km/h
+2026-11-25 08:20:17,sancarlos,San Carlos,,2026-11-26,1,10,33,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-25 08:20:17,sancarlos,San Carlos,,2026-11-27,2,12,31,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-25 08:20:17,sancarlos,San Carlos,,2026-11-28,3,13,30,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-25 08:20:17,sancarlos,San Carlos,,2026-11-29,4,12,28,0,madrugada: Nubosidad parcial / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-25 08:20:38,talca,Talca,,2026-11-25,0,,31,0,mañana: Nubosidad parcial variando a despejado / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado
+2026-11-25 08:20:38,talca,Talca,,2026-11-26,1,11,33,0,madrugada: Despejado / mañana: Nubosidad parcial / tarde: Despejado / noche: Despejado
+2026-11-25 08:20:38,talca,Talca,,2026-11-27,2,13,32,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-25 08:20:38,talca,Talca,,2026-11-28,3,13,30,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-25 08:20:38,talca,Talca,,2026-11-29,4,13,29,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-25 08:20:45,linares,Linares,,2026-11-25,0,,31,0,mañana: Nubosidad parcial variando a despejado / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado
+2026-11-25 08:20:45,linares,Linares,,2026-11-26,1,11,33,0,madrugada: Despejado / mañana: Nubosidad parcial / tarde: Despejado / noche: Despejado
+2026-11-25 08:20:45,linares,Linares,,2026-11-27,2,12,32,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-25 08:20:45,linares,Linares,,2026-11-28,3,13,30,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-25 08:20:45,linares,Linares,,2026-11-29,4,13,29,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-25 08:20:54,curico,Curicó,SCIC,2026-11-25,0,,31,0,mañana: Nubosidad parcial variando a despejado / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado
+2026-11-25 08:20:54,curico,Curicó,SCIC,2026-11-26,1,12,32,0,madrugada: Despejado / mañana: Nubosidad parcial / tarde: Despejado / noche: Despejado
+2026-11-25 08:20:54,curico,Curicó,SCIC,2026-11-27,2,14,32,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-25 08:20:54,curico,Curicó,SCIC,2026-11-28,3,14,31,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-25 08:20:54,curico,Curicó,SCIC,2026-11-29,4,14,30,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-25 08:20:54,molina,Molina,,2026-11-25,0,,31,0,mañana: Nubosidad parcial variando a despejado / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado
+2026-11-25 08:20:54,molina,Molina,,2026-11-26,1,12,32,0,madrugada: Despejado / mañana: Nubosidad parcial / tarde: Despejado / noche: Despejado
+2026-11-25 08:20:54,molina,Molina,,2026-11-27,2,14,32,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado
+2026-11-25 08:20:54,molina,Molina,,2026-11-28,3,14,31,0,madrugada: Despejado / mañana: Despejado / tarde: Nubosidad parcial / noche: Despejado
+2026-11-25 08:20:54,molina,Molina,,2026-11-29,4,14,30,0,madrugada: Despejado / mañana: Despejado / tarde: Despejado / noche: Despejado

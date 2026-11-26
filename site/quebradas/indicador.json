@@ -1,15 +1,15 @@
 {
-"generado": "2026-11-26T11:30Z",
+"generado": "2026-11-26T22:09Z",
 "lluvia_prevista": {
 "GFS": {
-"corrida": "20261126_06",
+"corrida": "20261126_18",
 "mm6": 0.0,
-"mm24": 0.0,
+"mm24": 0.1,
 "mm48": 0.1
 }
 },
 "mm6": 0.0,
-"mm24": 0.0,
+"mm24": 0.1,
 "horas_lluvia_7d": {},
 "factor_antecedente": 1.0,
 "parametros": {

@@ -30869,3 +30869,18 @@ emision,indice,ciudad,icao,fecha,dia,tmin,tmax,lluvia,texto
 2026-11-26 18:06:43,visviri,Visviri,,2026-11-29,3,1,21,1,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado con viento entre 25 y 40 km/h / noche: Cubierto y chubascos con viento entre 25 y 40 km/h
 2026-11-26 18:06:43,visviri,Visviri,,2026-11-30,4,3,20,1,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado con viento entre 25 y 40 km/h / noche: Cubierto y chubascos con viento entre 25 y 40 km/h
 2026-11-26 18:06:43,visviri,Visviri,,2026-12-01,5,4,20,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nublado con viento entre 25 y 40 km/h / noche: Nubosidad parcial con viento entre 25 y 40 km/h
+2026-11-26 20:03:33,stgoc,Santiago Sector Centro,,2026-11-27,1,14,31,0,madrugada: Despejado / mañana: Nubosidad parcial variando a despejado / tarde: Despejado / noche: Despejado
+2026-11-26 20:03:33,stgoc,Santiago Sector Centro,,2026-11-28,2,14,32,0,madrugada: Despejado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-26 20:03:33,stgoc,Santiago Sector Centro,,2026-11-29,3,13,31,0,madrugada: Despejado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-26 20:03:33,stgoc,Santiago Sector Centro,,2026-11-30,4,13,30,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-26 20:03:33,stgoc,Santiago Sector Centro,,2026-12-01,5,13,30,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-26 20:15:40,stgop,Santiago Sector Poniente,SCEL,2026-11-27,1,13,31,0,madrugada: Despejado variando a nubosidad parcial / mañana: Nublado y neblina variando a despejado / tarde: Despejado con viento entre 25 y 40 km/h / noche: Despejado
+2026-11-26 20:15:40,stgop,Santiago Sector Poniente,SCEL,2026-11-28,2,14,32,0,madrugada: Despejado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-26 20:15:40,stgop,Santiago Sector Poniente,SCEL,2026-11-29,3,13,31,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-26 20:15:40,stgop,Santiago Sector Poniente,SCEL,2026-11-30,4,13,30,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-26 20:15:40,stgop,Santiago Sector Poniente,SCEL,2026-12-01,5,13,30,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-26 20:15:50,stgos,Santiago Sector Sur,,2026-11-27,1,13,31,0,madrugada: Despejado variando a nubosidad parcial / mañana: Nublado y neblina variando a despejado / tarde: Despejado / noche: Despejado
+2026-11-26 20:15:50,stgos,Santiago Sector Sur,,2026-11-28,2,12,32,0,madrugada: Despejado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-26 20:15:50,stgos,Santiago Sector Sur,,2026-11-29,3,11,30,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-26 20:15:50,stgos,Santiago Sector Sur,,2026-11-30,4,11,30,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-26 20:15:50,stgos,Santiago Sector Sur,,2026-12-01,5,11,29,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial

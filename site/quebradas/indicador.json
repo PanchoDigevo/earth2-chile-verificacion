@@ -1,12 +1,6 @@
 {
-"generado": "2026-11-27T10:40Z",
+"generado": "2026-11-27T11:35Z",
 "lluvia_prevista": {
-"AIFS": {
-"corrida": "20261127_00",
-"mm6": 0.0,
-"mm24": 0.4,
-"mm48": 1.1
-},
 "GFS": {
 "corrida": "20261127_06",
 "mm6": 0.0,
@@ -15,7 +9,7 @@
 }
 },
 "mm6": 0.0,
-"mm24": 0.4,
+"mm24": 0.1,
 "horas_lluvia_7d": {},
 "factor_antecedente": 1.0,
 "parametros": {

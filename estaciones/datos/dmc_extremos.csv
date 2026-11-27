@@ -4314,7 +4314,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-26,330075,Río Clarillo,-33.7283,-70.4967,876.0,Pirque,31.6,13.5,0.0
 2026-11-26,330076,Chorombo Hacienda,-33.5294,-71.2292,145.0,María Pinto,28.2,11.2,
 2026-11-26,330077,El Colorado,-33.35,-70.2936,2750.0,Lo Barnechea,15.9,9.1,0.0
-2026-11-26,330111,Lo Prado Cerro San Francisco,-33.4581,-70.9486,1068.0,Pudahuel,27.0,13.1,0.1
+2026-11-26,330111,Lo Prado Cerro San Francisco,-33.4581,-70.9486,1068.0,Pudahuel,27.0,13.1,0.2
 2026-11-26,330112,San José  Guayacán,-33.6153,-70.3506,928.0,San José de Maipo,30.3,10.7,0.0
 2026-11-26,330113,El Paico,-33.7064,-71.0081,275.0,El Monte,28.2,12.5,0.0
 2026-11-26,330114,San Pablo - DASA,-33.4422,-70.7467,490.0,Pudahuel,32.6,14.5,0.0
@@ -4322,7 +4322,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-26,330121,Curacaví Ad.,-33.4111,-71.1678,203.0,Curacaví,29.8,12.2,0.0
 2026-11-26,330122,"Aguas Andinas, La Florida",-33.545,-70.5483,670.0,La Florida,30.0,14.0,0.0
 2026-11-26,330160,"El Milagro, Buin",-33.7544,-70.7644,460.0,Buin,29.6,11.5,0.0
-2026-11-26,330161,"San Antonio, Lo Zarate",-33.5305,-71.5061,103.0,Cartagena,22.3,8.9,0.0
+2026-11-26,330161,"San Antonio, Lo Zarate",-33.5305,-71.5061,103.0,Cartagena,22.3,8.9,0.1
 2026-11-26,330162,Colina (Reg.),-33.1622,-70.6431,755.0,Colina,31.7,15.8,0.0
 2026-11-26,330163,Peldehue Ad.,-33.1139,-70.6858,670.0,Colina,33.3,13.2,0.0
 2026-11-26,330193,Llanos de Caleu - La Dormida,-33.0494,-71.0014,1450.0,Tiltil,21.2,16.3,0.0
@@ -4347,7 +4347,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-26,380018,Lonquimay,-38.455,-71.3619,912.0,Lonquimay,30.1,2.4,0.0
 2026-11-26,380029,La Araucanía Ad.,-38.9344,-72.6533,98.0,Temuco,28.3,10.0,0.0
 2026-11-26,380032,Rucamanque-UFRO,-38.6608,-72.6056,344.0,Temuco,26.4,9.7,0.0
-2026-11-26,380033,Maquehue-UFRO,-38.8378,-72.6944,74.0,Temuco,28.0,8.1,0.0
+2026-11-26,380033,Maquehue-UFRO,-38.8378,-72.6944,74.0,Temuco,28.0,8.1,0.1
 2026-11-26,380063,Victoria (Reg.),-38.2289,-72.3433,336.0,Victoria,29.3,5.3,0.0
 2026-11-26,380080,Lequecahue Tirúa Ad.,-38.3594,-73.4883,152.0,Tirúa,22.4,10.6,0.0
 2026-11-26,380082,Isla Mocha Ad.,-38.3839,-73.8692,6.0,Tirúa,22.4,10.6,0.0

@@ -4455,7 +4455,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-27,330020,"Quinta Normal, Santiago",-33.445,-70.6828,520.0,Estación Central,29.4,14.6,0.0
 2026-11-27,330021,Pudahuel Santiago,-33.3783,-70.7878,474.0,Pudahuel,29.9,14.4,0.0
 2026-11-27,330030,"Santo Domingo, Ad.",-33.6561,-71.6133,77.0,Santo Domingo,21.4,16.0,0.0
-2026-11-27,330031,"Juan Fernández, Estación Meteorológica.",-33.6358,-78.8331,40.0,Juan Fernández,17.6,14.3,0.0
+2026-11-27,330031,"Juan Fernández, Estación Meteorológica.",-33.6358,-78.8331,40.0,Juan Fernández,17.6,14.3,0.1
 2026-11-27,330071,Talagante,-33.6703,-70.8494,390.0,Talagante,29.3,14.7,0.0
 2026-11-27,330075,Río Clarillo,-33.7283,-70.4967,876.0,Pirque,28.7,10.5,0.0
 2026-11-27,330076,Chorombo Hacienda,-33.5294,-71.2292,145.0,María Pinto,28.0,15.2,
@@ -4493,7 +4493,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-27,380018,Lonquimay,-38.455,-71.3619,912.0,Lonquimay,26.2,5.3,0.0
 2026-11-27,380029,La Araucanía Ad.,-38.9344,-72.6533,98.0,Temuco,25.0,7.4,0.0
 2026-11-27,380032,Rucamanque-UFRO,-38.6608,-72.6056,344.0,Temuco,24.9,10.7,0.0
-2026-11-27,380033,Maquehue-UFRO,-38.8378,-72.6944,74.0,Temuco,25.7,8.1,0.0
+2026-11-27,380033,Maquehue-UFRO,-38.8378,-72.6944,74.0,Temuco,25.7,8.1,0.1
 2026-11-27,380063,Victoria (Reg.),-38.2289,-72.3433,336.0,Victoria,28.0,7.6,0.0
 2026-11-27,380080,Lequecahue Tirúa Ad.,-38.3594,-73.4883,152.0,Tirúa,21.3,9.8,0.0
 2026-11-27,380082,Isla Mocha Ad.,-38.3839,-73.8692,6.0,Tirúa,21.3,9.8,0.0
@@ -4525,7 +4525,7 @@ fecha,codigo,nombre,lat,lon,altura_m,comuna,tmax,tmin,mm
 2026-11-27,520006,"Carlos Ibañez, Punta Arenas Ap.",-53.0017,-70.8386,43.0,Punta Arenas,17.2,7.1,
 2026-11-27,520012,Instituto de la Patagonia (Jorge Schytte),-53.13,-70.8875,11.0,Punta Arenas,17.2,7.0,0.0
 2026-11-27,520014,Punta Arenas Unidad Aeropolicial,-53.1528,-70.9264,53.0,Punta Arenas,16.9,7.7,0.0
-2026-11-27,520015,Magallanes Villa Tehuelche,-52.4289,-71.4161,176.0,Laguna Blanca,17.5,5.8,0.0
+2026-11-27,520015,Magallanes Villa Tehuelche,-52.4289,-71.4161,176.0,Laguna Blanca,17.5,5.8,0.1
 2026-11-27,520030,"Cerro Sombrero, Estrecho de Magallanes",-52.7764,-69.2947,64.0,Primavera,18.9,4.3,0.0
 2026-11-27,530005,"Fuentes Martínez, Porvenir Ad.",-53.2536,-70.3261,25.0,Porvenir,17.2,4.4,0.0
 2026-11-27,530008,Escuela Alberto Hurtado,-53.1669,-70.9453,60.0,Punta Arenas,16.8,7.7,0.0

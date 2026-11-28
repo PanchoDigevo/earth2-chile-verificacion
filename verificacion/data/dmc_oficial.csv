@@ -32479,3 +32479,28 @@ emision,indice,ciudad,icao,fecha,dia,tmin,tmax,lluvia,texto
 2026-11-28 07:20:22,melipilla,Melipilla,,2026-11-30,2,14,27,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nubosidad parcial
 2026-11-28 07:20:22,melipilla,Melipilla,,2026-12-01,3,11,27,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
 2026-11-28 07:20:22,melipilla,Melipilla,,2026-12-02,4,13,27,0,madrugada: Nublado / mañana: Nublado / tarde: Despejado / noche: Despejado
+2026-11-28 07:21:07,melipilla,Melipilla,,2026-11-28,0,,28,0,mañana: Despejado variando a nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial variando a cubierto
+2026-11-28 07:21:07,melipilla,Melipilla,,2026-11-29,1,15,27,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-28 07:21:07,melipilla,Melipilla,,2026-11-30,2,14,27,0,madrugada: Nublado / mañana: Nublado / tarde: Nublado / noche: Nubosidad parcial
+2026-11-28 07:21:07,melipilla,Melipilla,,2026-12-01,3,11,27,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-28 07:21:07,melipilla,Melipilla,,2026-12-02,4,13,27,0,madrugada: Nublado / mañana: Nublado / tarde: Despejado / noche: Despejado
+2026-11-28 07:39:39,antartica,Península Antártica,SCRM,2026-11-28,0,,2,1,"mañana: Cubierto y neblina / tarde: Cubierto y neblina / noche: Cubierto, lluvia débil y neblina"
+2026-11-28 07:39:39,antartica,Península Antártica,SCRM,2026-11-29,1,0,1,1,"madrugada: Cubierto y niebla variando a nublado / mañana: Nublado / tarde: Cubierto, lluvia débil y neblina / noche: Cubierto, lluvia débil y neblina"
+2026-11-28 07:39:39,antartica,Península Antártica,SCRM,2026-11-30,2,0,2,0,madrugada: Cubierto y neblina / mañana: Cubierto y neblina con viento entre 40 y 60 km/h y ráfagas de viento hasta 70 km/h variando a nublado / tarde: Nublado / noche: Cubierto y neblina con viento entre 40 y 60 km/h
+2026-11-28 07:39:39,antartica,Península Antártica,SCRM,2026-12-01,3,-1,0,0,madrugada: Cubierto y neblina / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-28 07:39:39,antartica,Península Antártica,SCRM,2026-12-02,4,-1,0,0,madrugada: Cubierto y neblina / mañana: Nublado / tarde: Nublado / noche: Nublado
+2026-11-28 08:46:19,pichilemu,Pichilemu,,2026-11-28,0,,22,0,mañana: Nublado y neblina / tarde: Nubosidad parcial / noche: Nublado
+2026-11-28 08:46:19,pichilemu,Pichilemu,,2026-11-29,1,15,21,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nubosidad parcial / noche: Nublado
+2026-11-28 08:46:19,pichilemu,Pichilemu,,2026-11-30,2,14,22,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-28 08:46:19,pichilemu,Pichilemu,,2026-12-01,3,13,21,0,madrugada: Nublado / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-28 08:46:19,pichilemu,Pichilemu,,2026-12-02,4,14,21,0,madrugada: Nublado / mañana: Nublado / tarde: Despejado / noche: Nubosidad parcial
+2026-11-28 09:04:03,valpo,Valparaíso,,2026-11-28,0,,21,0,mañana: Cubierto y neblina variando a nublado / tarde: Nublado / noche: Nublado variando a cubierto
+2026-11-28 09:04:03,valpo,Valparaíso,,2026-11-29,1,16,22,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-28 09:04:03,valpo,Valparaíso,,2026-11-30,2,13,22,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-28 09:04:03,valpo,Valparaíso,,2026-12-01,3,14,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-28 09:04:03,valpo,Valparaíso,,2026-12-02,4,14,21,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nublado
+2026-11-28 09:04:16,vdelmar,Viña del Mar,,2026-11-28,0,,21,0,mañana: Cubierto y neblina variando a nublado / tarde: Nublado / noche: Nublado variando a cubierto
+2026-11-28 09:04:16,vdelmar,Viña del Mar,,2026-11-29,1,16,22,0,madrugada: Cubierto / mañana: Cubierto / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-28 09:04:16,vdelmar,Viña del Mar,,2026-11-30,2,12,22,0,madrugada: Nubosidad parcial / mañana: Nubosidad parcial / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-28 09:04:16,vdelmar,Viña del Mar,,2026-12-01,3,14,22,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nubosidad parcial
+2026-11-28 09:04:16,vdelmar,Viña del Mar,,2026-12-02,4,14,22,0,madrugada: Nublado / mañana: Nublado / tarde: Nubosidad parcial / noche: Nublado

@@ -1,21 +1,21 @@
 {
-"generado": "2026-11-27T23:07Z",
+"generado": "2026-11-28T10:55Z",
 "lluvia_prevista": {
 "AIFS": {
-"corrida": "20261127_12",
-"mm6": 0.2,
-"mm24": 0.4,
+"corrida": "20261128_00",
+"mm6": 0.0,
+"mm24": 0.7,
 "mm48": 1.1
 },
 "GFS": {
-"corrida": "20261127_18",
+"corrida": "20261128_06",
 "mm6": 0.0,
-"mm24": 0.0,
-"mm48": 0.4
+"mm24": 0.6,
+"mm48": 0.7
 }
 },
-"mm6": 0.2,
-"mm24": 0.4,
+"mm6": 0.0,
+"mm24": 0.7,
 "horas_lluvia_7d": {},
 "factor_antecedente": 1.0,
 "parametros": {
@@ -37,8 +37,8 @@
 {
 "id": 1,
 "nombre": "Quebrada de Apoquindo (San Carlos de Apoquindo)",
-"p6": 0.027,
-"p24": 0.026,
+"p6": 0.026,
+"p24": 0.027,
 "p": 0.027,
 "nivel": "bajo",
 "mm_atencion": 10.0,
